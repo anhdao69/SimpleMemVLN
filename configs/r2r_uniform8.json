@@ -1,0 +1,8 @@
+{
+  "dataset_name": "r2r_uniform8",
+  "annotation_path": "$ANNOTATION_PATH",
+  "data_path": "$DATA_ROOT",
+  "tag": "3d",
+  "dataset_format": "janusvln",
+  "history": "uniform8"
+}
