@@ -4,6 +4,14 @@ set -euo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 cd "$PROJECT_ROOT"
 
+# Full-episode path. The existing Uniform8 CLI remains available below.
+if [[ "${1:-}" == "--vln_config" ]]; then
+    ENV_DIR="${ENV_DIR:-$PROJECT_ROOT/.venv}"
+    export PYTHONPATH="$PROJECT_ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+    exec "$ENV_DIR/bin/torchrun" --standalone --nproc_per_node="${NPROC_PER_NODE:-4}" \
+        -m qwen_vl.train.train_qwen "$@"
+fi
+
 : "${ANNOTATION_PATH:?Set ANNOTATION_PATH to the Uniform-8 annotation JSON file}"
 : "${DATA_ROOT:?Set DATA_ROOT to the directory containing the referenced images}"
 export ANNOTATION_PATH DATA_ROOT

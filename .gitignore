@@ -6,7 +6,10 @@ __pycache__/
 
 .venv/
 cache/
-data/
+/data/
+artifacts/
+outputs/
+staging/
 output/
 logs/
 *.log

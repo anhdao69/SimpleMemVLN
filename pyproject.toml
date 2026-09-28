@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "simplememvln"
 version = "0.1.0"
-description = "Qwen3.5 R2R Uniform-8 supervised fine-tuning"
+description = "Qwen3.5 full-episode streaming navigation"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -18,7 +18,12 @@ dependencies = [
     "safetensors==0.8.0",
     "torch==2.10.0",
     "torchvision==0.25.0",
-    "transformers==5.3.0",
+    "transformers==5.11.0",
+    "flash-linear-attention==0.5.2",
+    "fla-core==0.5.2",
+    "tilelang==0.1.14",
+    "pyyaml>=6.0.2",
+    "pytest>=8.3",
 ]
 
 [tool.setuptools.packages.find]
@@ -34,12 +39,7 @@ required-environments = [
 [tool.uv.sources]
 torch = { index = "pytorch-cu129" }
 torchvision = { index = "pytorch-cu129" }
-flash-attn = { index = "astral-cu129" }
-
-[[tool.uv.index]]
-name = "astral-cu129"
-url = "https://wheels.astral.sh/simple/cu129/"
-explicit = true
+flash-attn = { url = "https://huggingface.co/anhdao69/stagevln-v2-wheel-transfer-20260924/resolve/main/flash_attn-2.8.3%2Bcu.12.9.torch.2.10-cp312-cp312-manylinux_2_24_x86_64.whl" }
 
 [[tool.uv.index]]
 name = "pytorch-cu129"

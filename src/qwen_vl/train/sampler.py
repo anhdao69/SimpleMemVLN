@@ -82,6 +82,12 @@ def _get_train_sampler(
     train_dataset = train_dataset if train_dataset is not None else self.train_dataset
     if train_dataset is None or not has_length(train_dataset):
         return None
+    if hasattr(train_dataset, 'encoded_lengths'):
+        from qwen_vl.data.episode_dataset import EpisodeLengthSampler
+        return EpisodeLengthSampler(train_dataset.encoded_lengths, seed=self.args.seed,
+                                    group_size=self.args.world_size*self.args.gradient_accumulation_steps,
+                                    pool_size=max(64,self.args.world_size*self.args.gradient_accumulation_steps),
+                                    world_size=self.args.world_size)
     if getattr(self.args, "group_by_modality_length", False):
         return LengthGroupedSampler(
             batch_size=self.args.train_batch_size,

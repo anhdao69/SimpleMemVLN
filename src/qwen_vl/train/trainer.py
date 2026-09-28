@@ -17,11 +17,20 @@ class QwenSFTTrainer(Trainer):
         self.model_accepts_loss_kwargs = True
 
     def _get_num_items_in_batch(self, batch_samples, device):
-        count = torch.tensor(sum(batch["labels"].shape[0] for batch in batch_samples), device=device)
+        count = torch.tensor(sum(batch.get('num_actions', batch.get('labels',torch.empty(0)).shape[0]) for batch in batch_samples), device=device)
         return self.accelerator.gather(count).sum()
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         inputs = dict(inputs)
+        if 'num_actions' in inputs:
+            if model.training and (num_items_in_batch is None or num_items_in_batch <= 0):
+                raise ValueError('Training requires a positive global update action count')
+            outputs = model(**inputs)
+            loss = outputs['loss_sum'] / inputs['num_actions'] if num_items_in_batch is None else (
+                outputs['loss_sum'] * self.accelerator.num_processes / num_items_in_batch)
+            if not torch.isfinite(loss):
+                raise FloatingPointError('Nonfinite episode loss; abort distributed update')
+            return (loss, outputs) if return_outputs else loss
         labels = inputs.pop("labels")
         outputs = model(**inputs)
         logits = outputs["logits"]
@@ -57,7 +66,7 @@ class QwenSFTTrainer(Trainer):
         merger_names = {
             name
             for name, parameter in self.model.named_parameters()
-            if parameter.requires_grad and ".visual.merger." in name
+            if parameter.requires_grad and (".visual.merger." in name or name.startswith('classifier.'))
         }
 
         grouped_parameters = []

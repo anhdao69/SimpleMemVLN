@@ -1,0 +1,7 @@
+model:
+  output_mode: classification
+observations:
+  serializer_version: vln_observation_stream_v3
+  max_step_group_tokens: 320
+  append_action_tokens: false
+  fixed_decision_cue: "\nAction:"

@@ -1,0 +1,33 @@
+model:
+  backbone: Qwen/Qwen3.5-4B
+  revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+  output_mode: classification
+observations:
+  expected_rgb_shape: [480, 640, 3]
+  expected_visual_tokens: 300
+  max_prefix_tokens: 512
+memory:
+  mode: full_context
+  kv_window_steps_including_current: null
+  evict_before_new_step: false
+  kv_guard_tokens: 262144
+training:
+  use_cache: false
+  microbatch_episodes_per_rank: 1
+  nominal_episodes_per_update: 64
+  gradient_accumulation_steps: 16
+  model_max_length: 65536
+  epochs: 1
+  backbone_lr: 0.000005
+  classifier_lr: 0.00005
+  weight_decay: 0.01
+  warmup_steps: 0.03
+  seed: 429
+  checkpoint_decoder_layers: true
+  length_bucket_pool_episodes: 64
+  tail_policy: accelerate_repeat
+runtime:
+  text_attention: flash_attention_2
+  vision_attention: flash_attention_2
+  vision_microbatch_images: 4
+  max_logical_context_tokens: 262144

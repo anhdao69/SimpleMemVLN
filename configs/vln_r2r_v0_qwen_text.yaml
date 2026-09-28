@@ -1,0 +1,12 @@
+model:
+  output_mode: qwen_text
+observations:
+  serializer_version: vln_append_only_chat_v1
+  max_step_group_tokens: 384
+  append_action_tokens: true
+training:
+  model_max_length: 73728
+  supervise_assistant_terminator: true
+generation:
+  max_response_tokens_including_eos: 16
+  fixed_separator: "\n"

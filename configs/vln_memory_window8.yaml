@@ -1,0 +1,7 @@
+memory:
+  mode: window8
+  kv_window_steps_including_current: 8
+  evict_before_new_step: true
+  kv_guard_tokens: 4096
+runtime:
+  text_attention: simplememvln_step_attention

@@ -93,6 +93,10 @@ def _save_model(trainer, output_dir):
 
 
 def train():
+    import sys
+    if '--vln_config' in sys.argv:
+        from qwen_vl.train.train_episode import train_episode
+        return train_episode()
     parser = transformers.HfArgumentParser(
         (ModelArguments, DataArguments, TrainingArguments)
     )
