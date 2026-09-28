@@ -1,0 +1,24 @@
+# Overlay on vln_r2r_v0_base.yaml; text head configuration is unchanged.
+model:
+  output_mode: qwen_text
+observations:
+  serializer_version: vln_append_only_chat_v1
+  max_step_group_tokens: 384
+  append_action_tokens: true
+training:
+  model_max_length: 73728
+  supervise_assistant_terminator: true
+  nominal_episodes_per_update: 8
+  gradient_accumulation_steps: 2
+  epochs: 3
+  backbone_lr: 0.000005
+  classifier_lr: 0.000005
+  warmup_steps: 122
+  expected_total_steps: 4059
+  expected_warmup_steps: 122
+  dataloader_num_workers: 4
+  save_strategy: epoch
+  save_total_limit: null
+generation:
+  max_response_tokens_including_eos: 16
+  fixed_separator: "\n"

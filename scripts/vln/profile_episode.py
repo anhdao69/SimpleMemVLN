@@ -45,7 +45,10 @@ def main():
     # All ranks select identical records; only rank zero publishes the manifest.
     if int(os.environ.get("RANK", 0)) == 0:
         path.write_text(
-            "".join(json.dumps(selected[i % len(selected)]) + "\n" for i in range(64))
+            "".join(
+                json.dumps(selected[i % len(selected)]) + "\n"
+                for i in range(cfg["training"]["nominal_episodes_per_update"])
+            )
         )
         (path.parent / "representatives.json").write_text(
             json.dumps(

@@ -12,6 +12,7 @@ from qwen_vl.data.episode_dataset import EpisodeDataset, episode_collator
 from qwen_vl.train.argument import TrainingArguments
 from qwen_vl.train.trainer import QwenSFTTrainer
 from qwen_vl.train.vln_runtime import resolve_config, load_model
+from qwen_vl.train.campaign import ScheduleGuard, CampaignReports, checkpoint_policy
 
 
 class MeasurementCallback(transformers.TrainerCallback):
@@ -22,6 +23,7 @@ class MeasurementCallback(transformers.TrainerCallback):
     def on_step_begin(self, args, state, control, **kwargs):
         torch.cuda.synchronize()
         self.started = time.perf_counter()
+        self.unix_started = time.time()
         torch.cuda.reset_peak_memory_stats()
 
     def on_step_end(self, args, state, control, **kwargs):
@@ -29,6 +31,8 @@ class MeasurementCallback(transformers.TrainerCallback):
         record = dict(
             update=state.global_step,
             seconds=time.perf_counter() - self.started,
+            unix_start=self.unix_started,
+            unix_end=time.time(),
             peak_allocated_gib=torch.cuda.max_memory_allocated() / 2**30,
             peak_reserved_gib=torch.cuda.max_memory_reserved() / 2**30,
         )
@@ -204,7 +208,6 @@ def train_episode():
         remove_unused_columns=False,
         average_tokens_across_devices=True,
         dataloader_drop_last=False,
-        dataloader_num_workers=2,
         accelerator_config={
             "even_batches": True,
             "split_batches": False,
@@ -217,9 +220,7 @@ def train_episode():
         lr_scheduler_kwargs={"min_lr_rate": 0.1},
         max_grad_norm=1.0,
         logging_steps=1,
-        save_steps=args.save_steps,
-        save_total_limit=2,
-        save_strategy="no" if args.profile_only else "steps",
+        **checkpoint_policy(t, args.profile_only, args.save_steps),
         report_to="none",
         seed=t["seed"],
         deepspeed=args.deepspeed,
@@ -253,6 +254,12 @@ def train_episode():
             ),
             flush=True,
         )
+    callbacks = [MeasurementCallback(out)]
+    if t.get("expected_total_steps") is not None and not args.profile_only:
+        callbacks.append(
+            ScheduleGuard(t["expected_total_steps"], t["expected_warmup_steps"])
+        )
+        callbacks.append(CampaignReports())
     trainer = EpisodeTrainer(
         model=model,
         args=training_args,
@@ -261,7 +268,7 @@ def train_episode():
         processing_class=serializer.tokenizer,
         serializer=serializer,
         data_contract=data_contract,
-        callbacks=[MeasurementCallback(out)],
+        callbacks=callbacks,
     )
     if list(out.glob("checkpoint-*")) and not args.resume_from_checkpoint:
         raise ValueError("Explicit resume required for existing checkpoints")
