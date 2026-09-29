@@ -70,6 +70,17 @@ class SimpleMemVLNForNavigation(nn.Module):
             gradient_checkpointing_kwargs=gradient_checkpointing_kwargs
             or {"use_reentrant": False}
         )
+        threshold = self.navigation_config['training'].get('activation_offload_min_tokens')
+        if threshold is not None:
+            from functools import partial
+            from qwen_vl.models.activation_offload import checkpoint_with_cpu_offload
+            self.backbone.model.language_model._set_gradient_checkpointing(
+                enable=True,
+                gradient_checkpointing_func=partial(
+                    checkpoint_with_cpu_offload, min_tokens=threshold,
+                    **(gradient_checkpointing_kwargs or {'use_reentrant': False}),
+                ),
+            )
 
     def embed(self, input_ids, pixel_values=None, image_grid_thw=None):
         embeddings = self.backbone.model.language_model.embed_tokens(input_ids)

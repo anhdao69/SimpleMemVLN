@@ -61,7 +61,14 @@ class CampaignReports(TrainerCallback):
 
     def on_save(self, args, state, control, **kwargs):
         epoch = int(round(state.epoch))
-        self._report(args, (epoch - 1) * 1353 + 1, epoch * 1353, f"epoch-{epoch}")
+        epochs = int(args.num_train_epochs)
+        if epochs != args.num_train_epochs or state.max_steps % epochs:
+            raise ValueError('Epoch reports require a whole-epoch schedule')
+        steps_per_epoch = state.max_steps // epochs
+        if state.global_step != epoch * steps_per_epoch:
+            raise ValueError('Epoch report requested outside an epoch boundary')
+        self._report(args, (epoch - 1) * steps_per_epoch + 1,
+                     state.global_step, f"epoch-{epoch}")
 
 
 def check_memory_profile(root, max_reserved=78.0):
