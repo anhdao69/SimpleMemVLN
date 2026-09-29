@@ -43,3 +43,24 @@ successful smoke before training starts.
 Remote campaign: `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/outputs/joint15_b_bs8_e2_20260929`.
 The source snapshot and all smoke logs are retained there. Interactive allocation
 4469 is preserved; only the previously authorized Window8 training step was canceled.
+
+## Submission and measured runtime
+
+Submitted Slurm job **4544**, `smv-joint15-full-b-e2`, on 2026-09-29. Last checked
+pending for scheduler priority. The submitted job's time limit was increased to
+**72 hours via `scontrol`**; the tested source/template remains unchanged at 48
+hours, and its hashes still match the successful smoke. Training has not started.
+
+A separate 20-update timing sample on the normal shuffled joint corpus completed
+successfully (interactive step 4469.25). Excluding the first update, mean wall time
+was 24.0601 seconds/update, projecting to **51.49 hours** for 7,704 updates before
+checkpoint overhead. Budget **40–60 hours plus queue time**, with uncertainty from
+the small sample, length distribution, kernel warm-up, and shared storage.
+Across all 20 updates, action-weighted loss was 0.303180, mean sampled GPU
+utilization 84.36%, and peak reserved memory 68.37 GiB. This timing run saves no
+weights and is not used to initialize the full run.
+
+Training source commit: `6bb2b10a2fe21cb6e25a265afc5a2af39b7de4f6`.
+The submitted job checks 7,704 steps and 232 warmup steps at Trainer startup,
+then writes first-50-update and epoch reports automatically. Those full-training
+measurements remain pending until the scheduler starts the job.
