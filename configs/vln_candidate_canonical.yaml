@@ -5,7 +5,7 @@ observations:
   serializer_version: vln_candidate_logits_v1
   max_step_group_tokens: 384
   append_action_tokens: true
-  feedback_format: candidate_token
+  feedback_format: canonical_action_text
 training:
   class_weighting: none
   effective_number_beta: 0.9999

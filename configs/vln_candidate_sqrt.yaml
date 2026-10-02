@@ -7,7 +7,7 @@ observations:
   append_action_tokens: true
   feedback_format: candidate_token
 training:
-  class_weighting: none
+  class_weighting: sqrt_inverse_frequency
   effective_number_beta: 0.9999
   supervise_assistant_terminator: false
 runtime:

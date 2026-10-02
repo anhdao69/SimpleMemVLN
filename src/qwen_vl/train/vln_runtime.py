@@ -1,4 +1,5 @@
 """Shared validated loading and recipe resolution for train and serving."""
+
 import json
 import os
 from pathlib import Path
@@ -11,9 +12,9 @@ from qwen_vl.models.nav_model import SimpleMemVLNForNavigation
 from qwen_vl.stream.window_attention import register_window_attention
 
 
-def resolve_config(base, output, memory=None):
+def resolve_config(base, output, memory=None, policy=None):
     cfg = {}
-    for path in (base, output, memory):
+    for path in (base, output, policy, memory):
         if path:
             with open(path) as f:
                 cfg = deep_merge(cfg, yaml.safe_load(f))
@@ -47,8 +48,11 @@ def load_model(cfg, model_path=None):
                     raise RuntimeError(f"Unapproved GDN fallback: {name} {fn}")
     processor = transformers.AutoProcessor.from_pretrained(source, revision=revision)
     serializer = EpisodeSerializer(processor, cfg)
-    return SimpleMemVLNForNavigation(backbone, cfg,
-        candidate_token_ids=getattr(serializer, 'candidate_token_ids', None)), serializer
+    return SimpleMemVLNForNavigation(
+        backbone,
+        cfg,
+        candidate_token_ids=getattr(serializer, "candidate_token_ids", None),
+    ), serializer
 
 
 def load_checkpoint(path, model_path=None):

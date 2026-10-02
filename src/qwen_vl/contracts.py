@@ -1,4 +1,5 @@
 """Versioned episode and navigation contracts (no model/CUDA imports)."""
+
 from copy import deepcopy
 from pathlib import Path
 
@@ -72,7 +73,7 @@ def validate_episode(episode, root=None, check_images=True):
     )
     for key in required:
         if not str(episode.get(key, "")).strip():
-            raise ValueError(f'Missing {key}: {episode.get("episode_uid")}')
+            raise ValueError(f"Missing {key}: {episode.get('episode_uid')}")
     if episode.get("observation_action_alignment") != "observation_before_action":
         raise ValueError("Episode must explicitly declare observation_before_action")
     steps = episode.get("steps", [])
@@ -81,7 +82,7 @@ def validate_episode(episode, root=None, check_images=True):
     for index, step in enumerate(steps):
         if step["step_id"] != index or step.get("is_valid") is not True:
             raise ValueError(
-                f'Invalid chronology/target: {episode["episode_uid"]}:{index}'
+                f"Invalid chronology/target: {episode['episode_uid']}:{index}"
             )
         parse_action(step["action_name"])
         if (step["action_name"] == "STOP") != (index == len(steps) - 1):
@@ -103,13 +104,24 @@ def validate_config(cfg, world_size=None):
         raise ValueError("Serializer/output conflict")
     if obs["append_action_tokens"] != (mode in ("qwen_text", "candidate_logits")):
         raise ValueError("Action-history/output conflict")
-    if mode == 'candidate_logits':
-        if cfg['model'].get('action_head_mode', 'lm_rows_trainable') not in ('lm_rows_trainable', 'lm_rows_frozen', 'copied_linear'):
-            raise ValueError('Unknown candidate action head')
-        if obs.get('feedback_format', 'candidate_token') not in ('candidate_token', 'canonical_action_text'):
-            raise ValueError('Unknown candidate feedback format')
-        if train.get('class_weighting', 'none') not in ('none', 'sqrt_inverse_frequency', 'effective_number'):
-            raise ValueError('Unknown class weighting')
+    if mode == "candidate_logits":
+        if cfg["model"].get("action_head_mode", "lm_rows_trainable") not in (
+            "lm_rows_trainable",
+            "lm_rows_frozen",
+            "copied_linear",
+        ):
+            raise ValueError("Unknown candidate action head")
+        if obs.get("feedback_format", "candidate_token") not in (
+            "candidate_token",
+            "canonical_action_text",
+        ):
+            raise ValueError("Unknown candidate feedback format")
+        if train.get("class_weighting", "none") not in (
+            "none",
+            "sqrt_inverse_frequency",
+            "effective_number",
+        ):
+            raise ValueError("Unknown class weighting")
     if mode == "qwen_text" and not train.get("supervise_assistant_terminator"):
         raise ValueError("Text actions must supervise assistant terminator")
     if train["microbatch_episodes_per_rank"] != 1 or train["use_cache"]:

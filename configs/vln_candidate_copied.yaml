@@ -1,6 +1,6 @@
 model:
   output_mode: candidate_logits
-  action_head_mode: lm_rows_trainable
+  action_head_mode: copied_linear
 observations:
   serializer_version: vln_candidate_logits_v1
   max_step_group_tokens: 384

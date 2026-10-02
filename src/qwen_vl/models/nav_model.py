@@ -1,7 +1,9 @@
 """Thin native Qwen bridge: frozen vision, full text graph and sparse readouts."""
+
 import torch
 from torch import nn
 from qwen_vl.stream.positions import PositionLedger
+from qwen_vl.stream.timing import timed
 
 
 def per_action_token_loss(logits, targets, action_index, num_actions):
@@ -41,29 +43,53 @@ class SimpleMemVLNForNavigation(nn.Module):
         self.backbone.model.visual.requires_grad_(False)
         self.backbone.model.visual.eval()
         self.classifier = None
-        if self.output_mode == 'candidate_logits':
-            if candidate_token_ids is None or len(candidate_token_ids)!=4 or len(set(candidate_token_ids))!=4:
-                raise ValueError('Four verified candidate token IDs required')
-            if not all(0 <= i < backbone.lm_head.weight.shape[0] for i in candidate_token_ids):
-                raise ValueError('Candidate token outside LM vocabulary')
-            self.register_buffer('candidate_token_ids', torch.tensor(candidate_token_ids,
-                dtype=torch.long, device=backbone.lm_head.weight.device), persistent=False)
-            mode=navigation_config['model'].get('action_head_mode','lm_rows_trainable')
-            if mode == 'lm_rows_frozen':
+        if self.output_mode == "candidate_logits":
+            if (
+                candidate_token_ids is None
+                or len(candidate_token_ids) != 4
+                or len(set(candidate_token_ids)) != 4
+            ):
+                raise ValueError("Four verified candidate token IDs required")
+            if not all(
+                0 <= i < backbone.lm_head.weight.shape[0] for i in candidate_token_ids
+            ):
+                raise ValueError("Candidate token outside LM vocabulary")
+            self.register_buffer(
+                "candidate_token_ids",
+                torch.tensor(
+                    candidate_token_ids,
+                    dtype=torch.long,
+                    device=backbone.lm_head.weight.device,
+                ),
+                persistent=False,
+            )
+            mode = navigation_config["model"].get(
+                "action_head_mode", "lm_rows_trainable"
+            )
+            if mode == "lm_rows_frozen":
                 # This also freezes input embeddings when the parameters are tied.
                 backbone.lm_head.requires_grad_(False)
-            elif mode == 'copied_linear':
-                head=backbone.lm_head
-                self.classifier=nn.Linear(head.weight.shape[1],4,bias=head.bias is not None,
-                    device=head.weight.device,dtype=head.weight.dtype)
+            elif mode == "copied_linear":
+                head = backbone.lm_head
+                self.classifier = nn.Linear(
+                    head.weight.shape[1],
+                    4,
+                    bias=head.bias is not None,
+                    device=head.weight.device,
+                    dtype=head.weight.dtype,
+                )
                 with torch.no_grad():
-                    self.classifier.weight.copy_(head.weight.index_select(0,self.candidate_token_ids))
+                    self.classifier.weight.copy_(
+                        head.weight.index_select(0, self.candidate_token_ids)
+                    )
                     if head.bias is not None:
-                        self.classifier.bias.copy_(head.bias.index_select(0,self.candidate_token_ids))
+                        self.classifier.bias.copy_(
+                            head.bias.index_select(0, self.candidate_token_ids)
+                        )
                 if head.weight is not backbone.model.language_model.embed_tokens.weight:
                     head.requires_grad_(False)
-            elif mode != 'lm_rows_trainable':
-                raise ValueError('Unsupported action head mode')
+            elif mode != "lm_rows_trainable":
+                raise ValueError("Unsupported action head mode")
         if self.output_mode == "classification":
             width = backbone.config.text_config.hidden_size
             if width != 2560:
@@ -90,28 +116,38 @@ class SimpleMemVLNForNavigation(nn.Module):
 
     def action_logits(self, hidden):
         """Project only four pretrained rows; never construct vocabulary logits."""
-        if self.output_mode != 'candidate_logits':
-            raise ValueError('Candidate readout requested for another output mode')
+        if self.output_mode != "candidate_logits":
+            raise ValueError("Candidate readout requested for another output mode")
         if self.classifier is not None:
             return self.classifier(hidden)
-        head=self.backbone.lm_head
-        bias=None if head.bias is None else head.bias.index_select(0,self.candidate_token_ids)
-        return torch.nn.functional.linear(hidden,head.weight.index_select(0,self.candidate_token_ids),bias)
+        head = self.backbone.lm_head
+        bias = (
+            None
+            if head.bias is None
+            else head.bias.index_select(0, self.candidate_token_ids)
+        )
+        return torch.nn.functional.linear(
+            hidden, head.weight.index_select(0, self.candidate_token_ids), bias
+        )
 
     def gradient_checkpointing_enable(self, gradient_checkpointing_kwargs=None):
         self.backbone.model.language_model.gradient_checkpointing_enable(
             gradient_checkpointing_kwargs=gradient_checkpointing_kwargs
             or {"use_reentrant": False}
         )
-        threshold = self.navigation_config['training'].get('activation_offload_min_tokens')
+        threshold = self.navigation_config["training"].get(
+            "activation_offload_min_tokens"
+        )
         if threshold is not None:
             from functools import partial
             from qwen_vl.models.activation_offload import checkpoint_with_cpu_offload
+
             self.backbone.model.language_model._set_gradient_checkpointing(
                 enable=True,
                 gradient_checkpointing_func=partial(
-                    checkpoint_with_cpu_offload, min_tokens=threshold,
-                    **(gradient_checkpointing_kwargs or {'use_reentrant': False}),
+                    checkpoint_with_cpu_offload,
+                    min_tokens=threshold,
+                    **(gradient_checkpointing_kwargs or {"use_reentrant": False}),
                 ),
             )
 
@@ -121,7 +157,7 @@ class SimpleMemVLNForNavigation(nn.Module):
             features = []
             offset = 0
             count = self.navigation_config["runtime"]["vision_microbatch_images"]
-            with torch.no_grad():
+            with torch.no_grad(), timed(self, "vision_encoder"):
                 for start in range(0, len(image_grid_thw), count):
                     grid = image_grid_thw[start : start + count]
                     patches = int(grid.prod(-1).sum())
@@ -156,16 +192,23 @@ class SimpleMemVLNForNavigation(nn.Module):
             position_ids = PositionLedger().append(
                 self.backbone.model, input_ids, mm_token_type_ids, image_grid_thw
             )
-        return self.backbone.model.language_model(
-            inputs_embeds=self.embed(input_ids, pixel_values, image_grid_thw),
-            position_ids=position_ids,
-            attention_mask=None,
-            past_key_values=cache,
-            use_cache=cache is not None,
-            step_plan=step_plan,
-            stream_append=stream_append,
-            output_hidden_states=False,
-        ).last_hidden_state
+        embeddings = self.embed(input_ids, pixel_values, image_grid_thw)
+        stage = (
+            "streaming_language_model_append"
+            if pixel_values is not None
+            else "feedback_language_model_append"
+        )
+        with timed(self, stage):
+            return self.backbone.model.language_model(
+                inputs_embeds=embeddings,
+                position_ids=position_ids,
+                attention_mask=None,
+                past_key_values=cache,
+                use_cache=cache is not None,
+                step_plan=step_plan,
+                stream_append=stream_append,
+                output_hidden_states=False,
+            ).last_hidden_state
 
     def forward(
         self,
@@ -184,17 +227,20 @@ class SimpleMemVLNForNavigation(nn.Module):
         hidden = self.hidden(
             input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan
         )
-        if self.output_mode == 'candidate_logits':
-            logits=self.action_logits(hidden[0,read_positions])
+        if self.output_mode == "candidate_logits":
+            logits = self.action_logits(hidden[0, read_positions])
             from qwen_vl.models.action_loss import action_losses
-            training=self.navigation_config['training']
-            weights=training.get('action_class_weights')
+
+            training = self.navigation_config["training"]
+            weights = training.get("action_class_weights")
             if weights is None:
-                if training.get('class_weighting','none')!='none':
-                    raise ValueError('Class weights must be resolved from training data before use')
-                weights=[1.]*4
-            unweighted,losses=action_losses(logits,action_class_ids,weights)
-            predictions=logits.argmax(-1)
+                if training.get("class_weighting", "none") != "none":
+                    raise ValueError(
+                        "Class weights must be resolved from training data before use"
+                    )
+                weights = [1.0] * 4
+            unweighted, losses = action_losses(logits, action_class_ids, weights)
+            predictions = logits.argmax(-1)
         elif self.output_mode == "classification":
             logits = self.classifier(hidden[0, read_positions])
             losses = torch.nn.functional.cross_entropy(
@@ -217,6 +263,6 @@ class SimpleMemVLNForNavigation(nn.Module):
             predictions=predictions,
             action_losses=losses.detach(),
         )
-        if self.output_mode=='candidate_logits':
-            result['unweighted_loss_sum']=unweighted.detach().sum()
+        if self.output_mode == "candidate_logits":
+            result["unweighted_loss_sum"] = unweighted.detach().sum()
         return result

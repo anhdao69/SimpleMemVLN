@@ -1,4 +1,5 @@
 """Failure-adjusted metrics retain the entire scheduled denominator."""
+
 import math
 from collections import Counter
 
@@ -40,6 +41,20 @@ def summarize(records):
         result[name + "_coverage"] = len(values)
         result[name + "_undefined"] = count - len(values)
     result["forced_stops"] = sum(bool(r.get("forced_stop")) for r in records)
+    result["mean_episode_steps"] = (
+        sum(len(r.get("actions", [])) for r in records) / count
+    )
+    result["invalid_responses"] = sum(
+        any(
+            message in r.get("failure_reason", "")
+            for message in (
+                "Invalid navigation response",
+                "Forbidden structural token",
+                "Response limit reached",
+            )
+        )
+        for r in records
+    )
     actions = [a for r in records for a in r.get("actions", [])]
     result["predicted_action_counts"] = dict(
         Counter(str(a["predicted"]) for a in actions)
@@ -57,6 +72,7 @@ def summarize(records):
             "model_latency" if key == "model_seconds" else key.removesuffix("_seconds")
         )
         result[prefix + "_p50_seconds"] = quantile(values, 0.5)
+        result[prefix + "_mean_seconds"] = sum(values) / len(values) if values else None
         result[prefix + "_p95_seconds"] = quantile(values, 0.95)
     result["peak_kv_tokens"] = max(
         (a.get("retained_kv_tokens", 0) for a in actions), default=0
@@ -64,7 +80,7 @@ def summarize(records):
     result["peak_allocated_gib"] = max(
         (a.get("peak_allocated_gib", 0) for a in actions), default=0
     )
-    result[
-        "environment_timing_note"
-    ] = "Habitat env.step includes simulation and rendering; not separated by this adapter"
+    result["environment_timing_note"] = (
+        "Habitat env.step includes simulation and rendering; not separated by this adapter"
+    )
     return result

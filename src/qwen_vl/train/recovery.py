@@ -94,7 +94,7 @@ def rewind_reports(root, step):
     """Archive the failed attempt and exclude replayed updates from reports."""
     root = Path(root)
     archive = root/'recovery-history'/str(time.time_ns())
-    for pattern in ('profile_rank*.jsonl','exposures_rank*.jsonl','microtimes_rank*.jsonl'):
+    for pattern in ('profile_rank*.jsonl','exposures_rank*.jsonl','microtimes_rank*.jsonl','action_metrics.jsonl'):
         for path in root.glob(pattern):
             retained = []
             for line in path.read_text().splitlines():
