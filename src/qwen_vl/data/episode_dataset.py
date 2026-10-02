@@ -25,12 +25,11 @@ class EpisodeDataset(Dataset):
         for ep in self.episodes:
             length = serializer.encode_prefix(ep["instruction"])["input_ids"].numel()
             length += len(ep["steps"]) * step_length
-            if serializer.mode == "qwen_text":
+            if serializer.mode in ("qwen_text", "candidate_logits"):
                 from qwen_vl.contracts import ACTIONS
 
                 length += sum(
-                    len(serializer.action_ids[ACTIONS.index(s["action_name"])])
-                    + len(serializer.separator)
+                    len(serializer.feedback_ids(ACTIONS.index(s["action_name"])))
                     for s in ep["steps"]
                 )
             if length > serializer.config["training"]["model_max_length"]:

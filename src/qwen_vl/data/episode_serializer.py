@@ -2,7 +2,7 @@
 import hashlib
 import torch
 from PIL import Image
-from qwen_vl.contracts import ACTIONS, SERIALIZERS, validate_episode
+from qwen_vl.contracts import ACTIONS, HABITAT_IDS, CANDIDATES, SERIALIZERS, validate_episode
 from qwen_vl.data.data_qwen import QWEN3_5_NON_THINKING_CHAT_TEMPLATE
 
 IMAGE = "<|vision_start|><|image_pad|><|vision_end|>"
@@ -39,12 +39,23 @@ class EpisodeSerializer:
             tokenize=False,
             add_generation_prompt=True,
         )
+        if self.mode == 'candidate_logits':
+            from qwen_vl.data.candidates import DECISION_CUE, validate_candidates
+            self.observation_text += DECISION_CUE
+            self.candidate_token_ids = validate_candidates(self.tokenizer, CANDIDATES, self.observation_text)
         self.template_hash = hashlib.sha256(
             QWEN3_5_NON_THINKING_CHAT_TEMPLATE.encode()
         ).hexdigest()
 
     def ids(self, text):
         return self.tokenizer.encode(text, add_special_tokens=False)
+
+    def feedback_ids(self, class_id):
+        if class_id not in range(len(ACTIONS)):
+            raise ValueError('Invalid feedback class')
+        if self.mode == 'candidate_logits' and self.config['observations'].get('feedback_format', 'candidate_token') == 'candidate_token':
+            return [self.candidate_token_ids[class_id], self.eos] + self.separator
+        return self.action_ids[class_id] + self.separator
 
     def text_block(self, ids):
         ids = torch.tensor([ids], dtype=torch.long)
@@ -59,14 +70,21 @@ class EpisodeSerializer:
                 + "<|im_end|>\n<|im_start|>user\n"
             )
         else:
+            system = SYSTEM
+            if self.mode == 'candidate_logits':
+                from qwen_vl.data.candidates import CANDIDATE_SYSTEM
+                system = CANDIDATE_SYSTEM
             rendered = self.tokenizer.apply_chat_template(
                 [
-                    {"role": "system", "content": SYSTEM + instruction},
+                    {"role": "system", "content": system + instruction},
                     {"role": "user", "content": IMAGE},
                 ],
                 tokenize=False,
                 add_generation_prompt=True,
             )
+            if self.mode == 'candidate_logits':
+                from qwen_vl.data.candidates import DECISION_CUE
+                rendered += DECISION_CUE
             if not rendered.endswith(self.observation_text):
                 raise ValueError("Chat renderer rewrites historical fragments")
             text = rendered[: -len(self.observation_text)]
@@ -104,6 +122,8 @@ class EpisodeSerializer:
         block.pop("attention_mask", None)
         cap = self.config["observations"]["max_step_group_tokens"]
         reserve = 0 if self.mode == "classification" else 16 + len(self.separator)
+        if self.mode == 'candidate_logits':
+            reserve = max(len(self.feedback_ids(c)) for c in range(len(ACTIONS)))
         if ids.numel() + reserve > cap:
             raise ValueError(
                 f"Step {step_id} exceeds cap including response reservation"
@@ -126,6 +146,11 @@ class EpisodeSerializer:
             classes.append(cls)
             if self.mode == "classification":
                 reads.append(cursor - 1)
+            elif self.mode == 'candidate_logits':
+                reads.append(cursor - 1)
+                feedback = self.feedback_ids(cls)
+                blocks.append(self.text_block(feedback))
+                cursor += len(feedback)
             else:
                 ids = self.action_ids[cls]
                 target_positions.extend(range(cursor, cursor + len(ids)))
@@ -161,11 +186,11 @@ class EpisodeSerializer:
         return result
 
     def metadata(self):
-        return dict(
+        result = dict(
             serializer=SERIALIZERS[self.mode],
             template_sha256=self.template_hash,
             actions=list(ACTIONS),
-            habitat_ids=[1, 2, 3, 0],
+            habitat_ids=list(HABITAT_IDS),
             action_token_ids=self.action_ids,
             eos=self.eos,
             separator_ids=self.separator,
@@ -174,3 +199,11 @@ class EpisodeSerializer:
             rotary_precision="fp32_preserved_across_module_casts_v1",
             config=self.config,
         )
+        if self.mode == 'candidate_logits':
+            from qwen_vl.data.candidates import DECISION_CUE
+            result.update(candidate_tokens=list(CANDIDATES), candidate_token_ids=self.candidate_token_ids,
+                          decision_cue=DECISION_CUE,
+                          feedback_format=self.config['observations'].get('feedback_format', 'candidate_token'),
+                          feedback_token_ids=[self.feedback_ids(c) for c in range(len(ACTIONS))],
+                          action_head_mode=self.config['model'].get('action_head_mode','lm_rows_trainable'))
+        return result

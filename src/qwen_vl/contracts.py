@@ -4,10 +4,12 @@ from pathlib import Path
 
 ACTIONS = ("MOVE_FORWARD", "TURN_LEFT", "TURN_RIGHT", "STOP")
 HABITAT_IDS = (1, 2, 3, 0)
+CANDIDATES = ("A", "B", "C", "D")
 MODEL_REVISION = "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
 SERIALIZERS = {
     "classification": "vln_observation_stream_v3",
     "qwen_text": "vln_append_only_chat_v1",
+    "candidate_logits": "vln_candidate_logits_v1",
 }
 
 
@@ -99,8 +101,15 @@ def validate_config(cfg, world_size=None):
     obs, train = cfg["observations"], cfg["training"]
     if obs["serializer_version"] != SERIALIZERS[mode]:
         raise ValueError("Serializer/output conflict")
-    if obs["append_action_tokens"] != (mode == "qwen_text"):
+    if obs["append_action_tokens"] != (mode in ("qwen_text", "candidate_logits")):
         raise ValueError("Action-history/output conflict")
+    if mode == 'candidate_logits':
+        if cfg['model'].get('action_head_mode', 'lm_rows_trainable') not in ('lm_rows_trainable', 'lm_rows_frozen', 'copied_linear'):
+            raise ValueError('Unknown candidate action head')
+        if obs.get('feedback_format', 'candidate_token') not in ('candidate_token', 'canonical_action_text'):
+            raise ValueError('Unknown candidate feedback format')
+        if train.get('class_weighting', 'none') not in ('none', 'sqrt_inverse_frequency', 'effective_number'):
+            raise ValueError('Unknown class weighting')
     if mode == "qwen_text" and not train.get("supervise_assistant_terminator"):
         raise ValueError("Text actions must supervise assistant terminator")
     if train["microbatch_episodes_per_rank"] != 1 or train["use_cache"]:
