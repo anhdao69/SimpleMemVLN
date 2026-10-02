@@ -47,7 +47,8 @@ def load_model(cfg, model_path=None):
                     raise RuntimeError(f"Unapproved GDN fallback: {name} {fn}")
     processor = transformers.AutoProcessor.from_pretrained(source, revision=revision)
     serializer = EpisodeSerializer(processor, cfg)
-    return SimpleMemVLNForNavigation(backbone, cfg), serializer
+    return SimpleMemVLNForNavigation(backbone, cfg,
+        candidate_token_ids=getattr(serializer, 'candidate_token_ids', None)), serializer
 
 
 def load_checkpoint(path, model_path=None):

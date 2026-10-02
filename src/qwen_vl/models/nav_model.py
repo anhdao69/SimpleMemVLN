@@ -32,7 +32,7 @@ class SimpleMemVLNForNavigation(nn.Module):
             )
         return result
 
-    def __init__(self, backbone, navigation_config):
+    def __init__(self, backbone, navigation_config, candidate_token_ids=None):
         super().__init__()
         self.backbone = backbone
         self.config = backbone.config
@@ -41,6 +41,29 @@ class SimpleMemVLNForNavigation(nn.Module):
         self.backbone.model.visual.requires_grad_(False)
         self.backbone.model.visual.eval()
         self.classifier = None
+        if self.output_mode == 'candidate_logits':
+            if candidate_token_ids is None or len(candidate_token_ids)!=4 or len(set(candidate_token_ids))!=4:
+                raise ValueError('Four verified candidate token IDs required')
+            if not all(0 <= i < backbone.lm_head.weight.shape[0] for i in candidate_token_ids):
+                raise ValueError('Candidate token outside LM vocabulary')
+            self.register_buffer('candidate_token_ids', torch.tensor(candidate_token_ids,
+                dtype=torch.long, device=backbone.lm_head.weight.device), persistent=False)
+            mode=navigation_config['model'].get('action_head_mode','lm_rows_trainable')
+            if mode == 'lm_rows_frozen':
+                # This also freezes input embeddings when the parameters are tied.
+                backbone.lm_head.requires_grad_(False)
+            elif mode == 'copied_linear':
+                head=backbone.lm_head
+                self.classifier=nn.Linear(head.weight.shape[1],4,bias=head.bias is not None,
+                    device=head.weight.device,dtype=head.weight.dtype)
+                with torch.no_grad():
+                    self.classifier.weight.copy_(head.weight.index_select(0,self.candidate_token_ids))
+                    if head.bias is not None:
+                        self.classifier.bias.copy_(head.bias.index_select(0,self.candidate_token_ids))
+                if head.weight is not backbone.model.language_model.embed_tokens.weight:
+                    head.requires_grad_(False)
+            elif mode != 'lm_rows_trainable':
+                raise ValueError('Unsupported action head mode')
         if self.output_mode == "classification":
             width = backbone.config.text_config.hidden_size
             if width != 2560:
@@ -64,6 +87,16 @@ class SimpleMemVLNForNavigation(nn.Module):
         super().train(mode)
         self.backbone.model.visual.eval()
         return self
+
+    def action_logits(self, hidden):
+        """Project only four pretrained rows; never construct vocabulary logits."""
+        if self.output_mode != 'candidate_logits':
+            raise ValueError('Candidate readout requested for another output mode')
+        if self.classifier is not None:
+            return self.classifier(hidden)
+        head=self.backbone.lm_head
+        bias=None if head.bias is None else head.bias.index_select(0,self.candidate_token_ids)
+        return torch.nn.functional.linear(hidden,head.weight.index_select(0,self.candidate_token_ids),bias)
 
     def gradient_checkpointing_enable(self, gradient_checkpointing_kwargs=None):
         self.backbone.model.language_model.gradient_checkpointing_enable(
@@ -151,7 +184,18 @@ class SimpleMemVLNForNavigation(nn.Module):
         hidden = self.hidden(
             input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan
         )
-        if self.output_mode == "classification":
+        if self.output_mode == 'candidate_logits':
+            logits=self.action_logits(hidden[0,read_positions])
+            from qwen_vl.models.action_loss import action_losses
+            training=self.navigation_config['training']
+            weights=training.get('action_class_weights')
+            if weights is None:
+                if training.get('class_weighting','none')!='none':
+                    raise ValueError('Class weights must be resolved from training data before use')
+                weights=[1.]*4
+            unweighted,losses=action_losses(logits,action_class_ids,weights)
+            predictions=logits.argmax(-1)
+        elif self.output_mode == "classification":
             logits = self.classifier(hidden[0, read_positions])
             losses = torch.nn.functional.cross_entropy(
                 logits.float(), action_class_ids, reduction="none"
@@ -166,10 +210,13 @@ class SimpleMemVLNForNavigation(nn.Module):
                 num_actions,
             )
             predictions = None
-        return dict(
+        result = dict(
             loss_sum=losses.sum(),
             num_actions=num_actions,
             logits=logits,
             predictions=predictions,
             action_losses=losses.detach(),
         )
+        if self.output_mode=='candidate_logits':
+            result['unweighted_loss_sum']=unweighted.detach().sum()
+        return result
