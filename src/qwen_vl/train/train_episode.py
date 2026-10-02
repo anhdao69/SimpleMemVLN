@@ -43,10 +43,58 @@ class MeasurementCallback(transformers.TrainerCallback):
 
 
 class EpisodeTrainer(QwenSFTTrainer):
-    def __init__(self, *args, serializer, data_contract, **kwargs):
+    def __init__(self, *args, serializer, data_contract, recovery_save_steps=0, **kwargs):
         self.serializer = serializer
         self.data_contract = data_contract
+        self.recovery_save_steps = recovery_save_steps
         super().__init__(*args, **kwargs)
+
+    def get_train_dataloader(self):
+        # Trainer fetches all GAS slots before forward. Keep those batches on
+        # CPU; _prepare_inputs transfers/casts only the current episode.
+        placement = self.accelerator.device_placement
+        self.accelerator.device_placement = False
+        try:
+            return super().get_train_dataloader()
+        finally:
+            self.accelerator.device_placement = placement
+
+    def _get_train_sampler(self, train_dataset=None):
+        sampler = super()._get_train_sampler(train_dataset)
+        self._episode_sampler = sampler
+        return sampler
+
+    def _run_epoch(self, model, epoch, *args, **kwargs):
+        # Accelerate's resume SkipBatchSampler adds a third wrapper. Its
+        # set_epoch traversal does not reach our underlying episode sampler.
+        # Set the canonical Trainer epoch directly, including resumed epochs.
+        sampler = getattr(self, '_episode_sampler', None)
+        if hasattr(sampler, 'set_epoch'):
+            sampler.set_epoch(epoch)
+        return super()._run_epoch(model, epoch, *args, **kwargs)
+
+    def _save_checkpoint(self, model, trial):
+        super()._save_checkpoint(model, trial)
+        if not self.recovery_save_steps:
+            return
+        from qwen_vl.train.recovery import mark_complete, prune_recovery
+        import torch.distributed as dist
+        self.accelerator.wait_for_everyone()
+        error = [None]
+        if self.args.process_index == 0:
+            try:
+                path = Path(self.args.output_dir)/f'checkpoint-{self.state.global_step}'
+                epochs = int(self.args.num_train_epochs)
+                boundary = (epochs > 0 and self.state.max_steps % epochs == 0
+                            and self.state.global_step % (self.state.max_steps // epochs) == 0)
+                mark_complete(path, self.args.world_size, boundary)
+                prune_recovery(self.args.output_dir, keep=2)
+            except Exception as exc:
+                error[0] = repr(exc)
+        if dist.is_initialized():
+            dist.broadcast_object_list(error, src=0)
+        if error[0]:
+            raise RuntimeError(f'Checkpoint completion failed: {error[0]}')
 
     def training_step(self, model, inputs, num_items_in_batch=None):
         torch.cuda.synchronize()
@@ -152,6 +200,7 @@ def train_episode():
     p.add_argument("--deepspeed", default="deepspeed.json")
     p.add_argument("--gradient_accumulation_steps", type=int)
     p.add_argument("--save_steps", type=int, default=500)
+    p.add_argument("--recovery-save-steps", type=int, default=0)
     p.add_argument(
         "--profile-only",
         action="store_true",
@@ -171,6 +220,14 @@ def train_episode():
     transformers.set_seed(t["seed"])
     out = Path(args.output_dir)
     out.mkdir(parents=True, exist_ok=True)
+    if args.recovery_save_steps < 0:
+        raise ValueError('Recovery interval cannot be negative')
+    if args.resume_from_checkpoint == 'auto':
+        from qwen_vl.train.recovery import latest_checkpoint
+        selected = latest_checkpoint(out)
+        if selected is None and list(out.glob('checkpoint-*')):
+            raise ValueError('No complete recovery checkpoint; refusing to restart silently')
+        args.resume_from_checkpoint = str(selected) if selected else None
     model, serializer = load_model(cfg, args.model_name_or_path)
     dataset = EpisodeDataset(
         args.manifest, serializer, args.episode_limit, args.selection
@@ -190,6 +247,12 @@ def train_episode():
             (Path(args.resume_from_checkpoint) / "resume_contract.json").read_text()
         )
         validate_resume_contract(saved, serializer.metadata(), data_contract)
+        if args.recovery_save_steps:
+            from qwen_vl.train.recovery import validate_complete, quarantine_incomplete, rewind_reports
+            recovery_record = validate_complete(args.resume_from_checkpoint)
+            if int(os.environ.get('RANK', 0)) == 0:
+                quarantine_incomplete(out)
+                rewind_reports(out, recovery_record['step'])
     elif list(out.glob("checkpoint-*")) or (out / "final").exists():
         raise ValueError("Explicit resume required for existing training outputs")
     training_args = TrainingArguments(
@@ -255,6 +318,11 @@ def train_episode():
             flush=True,
         )
     callbacks = [MeasurementCallback(out)]
+    if args.recovery_save_steps and not args.profile_only:
+        from qwen_vl.train.recovery import RecoverySaves
+        if training_args.save_total_limit is not None:
+            raise ValueError('Recovery retention requires save_total_limit=null to preserve epochs')
+        callbacks.append(RecoverySaves(args.recovery_save_steps))
     if t.get("expected_total_steps") is not None and not args.profile_only:
         callbacks.append(
             ScheduleGuard(t["expected_total_steps"], t["expected_warmup_steps"])
@@ -268,6 +336,7 @@ def train_episode():
         processing_class=serializer.tokenizer,
         serializer=serializer,
         data_contract=data_contract,
+        recovery_save_steps=args.recovery_save_steps if not args.profile_only else 0,
         callbacks=callbacks,
     )
     if list(out.glob("checkpoint-*")) and not args.resume_from_checkpoint:
