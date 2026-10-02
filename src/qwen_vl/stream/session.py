@@ -2,7 +2,7 @@
 from collections import deque
 import time
 import torch
-from qwen_vl.contracts import action_result, parse_action
+from qwen_vl.contracts import ACTIONS, CANDIDATES, action_result, parse_action
 from qwen_vl.stream.cache import (
     make_stream_cache_fp32,
     evict_kv,
@@ -62,6 +62,8 @@ class StreamSession:
         reserve = block["input_ids"].numel()
         if self.serializer.mode == "qwen_text":
             reserve += 16 + len(self.serializer.separator)
+        elif self.serializer.mode == 'candidate_logits':
+            reserve += max(len(self.serializer.feedback_ids(c)) for c in range(len(ACTIONS)))
         if (
             self.positions.logical_token_count + reserve
             > self.cfg["runtime"]["max_logical_context_tokens"]
@@ -89,7 +91,22 @@ class StreamSession:
             start = self.positions.logical_token_count
             hidden = self._append(block)
             extra = {}
-            if self.serializer.mode == "classification":
+            if self.serializer.mode == 'candidate_logits':
+                logits=self.model.action_logits(hidden[0,-1])
+                if logits.shape != (len(ACTIONS),) or not torch.isfinite(logits).all():
+                    raise ValueError('Invalid candidate logits')
+                cls=int(logits.argmax())
+                feedback=self.serializer.feedback_ids(cls)
+                self._append(self.serializer.text_block(feedback))
+                extra.update(generated_tokens=0, feedback_token_ids=feedback)
+                if self.cfg['runtime'].get('action_diagnostics',False):
+                    scores=logits.float()
+                    top=scores.topk(2).values
+                    extra.update(action_logits=scores.cpu().tolist(),
+                        action_probabilities=scores.softmax(-1).cpu().tolist(),
+                        candidate_token_ids=list(self.serializer.candidate_token_ids),
+                        candidate_tokens=list(CANDIDATES), margin_top1_top2=float(top[0]-top[1]))
+            elif self.serializer.mode == "classification":
                 logits = self.model.classifier(hidden[0, -1])
                 cls = int(logits.argmax())
                 extra["logits"] = logits.float().cpu().tolist()
