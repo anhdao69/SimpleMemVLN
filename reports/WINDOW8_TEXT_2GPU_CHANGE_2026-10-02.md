@@ -1,5 +1,29 @@
 # Window8 text-policy two-GPU replacement — startup smoke gated
 
+## Update-50 reporter failure and correction
+
+Job 4625 passed the startup memory test (72.941 GiB reserved) and completed
+50 production updates, then failed in the reporting callback. The original
+reporter required exactly four profile rows per update despite the new two-rank
+layout. Both rank files contain all 50 updates; this was not missing data or OOM.
+No recovery checkpoint exists because the first save was scheduled at update 100.
+
+The callback now passes `TrainingArguments.world_size` explicitly. The reporter
+checks the exact expected rank files, one profile per rank/update, and exposure
+coverage for each rank/update. Missing ranks and duplicate updates remain errors.
+Regression tests exercise actual update-50 and epoch callbacks at 1, 2, and 4
+ranks. No model, optimizer, loss, or schedule settings change.
+
+Validation: 87 local tests passed, 10 GPU/tokenizer-dependent tests skipped.
+The patched callback was replayed successfully against the actual failed
+Window8 run and completed four-rank FullContext logs (first 50 and epoch 2).
+Window8 first-50 report: action-weighted loss 0.3137337, last-update loss
+0.2095579, mean 41.742 s/update, peak reserved 59.666 GiB.
+Remote validation artifacts and corrected modules are retained under
+`outputs/reporting-fix-20261002-xP6bW8/`. No jobs were changed or resubmitted
+during this fix. Existing immutable job sources were preserved; a new submission
+must package these corrected modules, not reuse the old cached source/launcher.
+
 ## Approved replacement submission
 
 User approved running the mandatory smoke test inside the 768 GiB allocation

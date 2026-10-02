@@ -51,7 +51,7 @@ class CampaignReports(TrainerCallback):
         if args.process_index == 0:
             from scripts.vln.report_campaign import write_report
 
-            write_report(args.output_dir, start, end, name)
+            write_report(args.output_dir, start, end, name, world_size=args.world_size)
         if dist.is_initialized():
             dist.barrier()
 

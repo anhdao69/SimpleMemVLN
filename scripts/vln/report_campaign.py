@@ -7,23 +7,37 @@ from pathlib import Path
 import statistics
 
 
-def build_report(run, start, end):
+def build_report(run, start, end, *, world_size):
     run = Path(run)
+    if not isinstance(world_size, int) or world_size < 1 or start < 1 or end < start:
+        raise ValueError("Invalid report world size or update range")
+    expected_updates = set(range(start, end + 1))
     profiles, examples = defaultdict(list), []
-    for path in run.glob("profile_rank*.jsonl"):
+    for prefix in ("profile", "exposures"):
+        expected = {f"{prefix}_rank{rank}.jsonl" for rank in range(world_size)}
+        if {p.name for p in run.glob(f"{prefix}_rank*.jsonl")} != expected:
+            raise ValueError(f"Incomplete distributed {prefix} ranks; expected {world_size}")
+    for rank in range(world_size):
+        path = run / f"profile_rank{rank}.jsonl"
+        seen = set()
         for line in path.read_text().splitlines():
             row = json.loads(line)
             if start <= row["update"] <= end:
+                if row["update"] in seen:
+                    raise ValueError(f"Duplicate update measurement in rank {rank}")
+                seen.add(row["update"])
                 profiles[row["update"]].append(row)
-    for path in run.glob("exposures_rank*.jsonl"):
+        if seen != expected_updates:
+            raise ValueError(f"Incomplete distributed update measurements in rank {rank}")
+        path = run / f"exposures_rank{rank}.jsonl"
+        seen_exposures = set()
         for line in path.read_text().splitlines():
             row = json.loads(line)
             if start <= row["update"] + 1 <= end:
+                seen_exposures.add(row["update"] + 1)
                 examples.append(row)
-    if set(profiles) != set(range(start, end + 1)) or any(
-        len(v) != 4 for v in profiles.values()
-    ):
-        raise ValueError("Incomplete distributed update measurements")
+        if seen_exposures != expected_updates:
+            raise ValueError(f"Incomplete distributed exposures in rank {rank}")
     flat = [r for rows in profiles.values() for r in rows]
     begin, finish = min(r["unix_start"] for r in flat), max(r["unix_end"] for r in flat)
     util = []
@@ -46,6 +60,7 @@ def build_report(run, start, end):
         for step in sorted(profiles)
     }
     return dict(
+        world_size=world_size,
         start_update=start,
         end_update=end,
         completed_updates=len(profiles),
@@ -71,8 +86,8 @@ def build_report(run, start, end):
     )
 
 
-def write_report(run, start, end, name):
-    report = build_report(run, start, end)
+def write_report(run, start, end, name, *, world_size):
+    report = build_report(run, start, end, world_size=world_size)
     directory = Path(run) / "reports"
     directory.mkdir(exist_ok=True)
     (directory / f"{name}.json").write_text(json.dumps(report, indent=2) + "\n")
