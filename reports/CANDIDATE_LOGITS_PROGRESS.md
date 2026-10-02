@@ -24,3 +24,28 @@ saved resolved counts -> reload. Preserve old-mode metadata byte-for-byte.
   cost if wrong: changed admitted episode population. Covered by config test.
 - Ruling: component timings are opt-in, synchronized diagnostics, not headline
   latency; nested history/LM timings must not be added together.
+- Task 5: real H100 integration passed all four memory/feedback combinations;
+  exact checkpoint reload passed after a 2-GPU, GAS4, global8 smoke (3 updates).
+  Local suite 63 passed/10 skipped; remote full GPU suite 73 passed/0 skipped.
+- Task 6: implemented in 066938a; matched same-H100 benchmark completed,
+  82.65 ms candidate versus 122.85 ms text median on the verified repeat.
+- Final review: fresh read-only reviewer found no Critical/Important issues;
+  independently verified 63 passed/10 skips locally.
+- Final: minor (deferred): integration high-margin criterion compares against
+  observed error and is mathematically redundant. Independent absolute/RMS
+  bounds still enforce numerical parity; exact argmax agreement is reported,
+  not asserted. Strengthen the fixed-fixture decision gate in a later change.
+- Final: Ruling: full-training convergence and Habitat quality remain unclaimed
+  — smoke is insufficient and the server Janus interpreter lacks Habitat — cost
+  if wrong: experimental quality could be misread as validated; report marks all
+  candidate navigation scores pending.
+- Final: Ruling: remote smoke/reload/benchmark evidence is verified by the main
+  implementer, outside the reviewer's local scope — cost if wrong: runtime
+  regressions missed by CPU tests; retain raw remote results and run final suite.
+- Final: fixed benchmark allocator provenance (legacy CUDA env alias was omitted)
+  — test_benchmark_records_legacy_allocator_environment RED→GREEN;
+  full suite 64 passed/10 skipped locally and 74 passed/0 skipped on H100.
+- Ruling: report the new paired H100 timings separately from historical Blackwell
+  results — original RGB artifact is unavailable on this server; both new models
+  use the same documented replacement frame — cost if wrong: an invalid
+  cross-environment speed claim. No such claim is made.

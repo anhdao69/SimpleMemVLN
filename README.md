@@ -1,5 +1,19 @@
 # SimpleMemVLN
 
+## Candidate-logit experiment (`streaming_logits`)
+
+The new `candidate_logits` mode selects four verified single-token pretrained
+Qwen LM-head rows, without autoregressive action generation. Default
+`lm_rows_trainable` uses the normal backbone LR; explicit feedback supports
+candidate tokens or deterministic canonical action text. Both FullContext and
+Window8 preserve action history and GDN state. Existing text checkpoints keep
+their original contract.
+
+See the [implementation report and exact run commands](reports/CANDIDATE_LOGITS_IMPLEMENTATION_2026-10-02.md)
+for production-recipe overlays, class balancing, smoke/reload evidence,
+profiling, and pending Habitat ablations. Candidate navigation quality is
+**not yet evaluated in Habitat**.
+
 ## Full-episode streaming R2R
 
 The episode path implements the supplied [v2 plan](plans/SimpleMemVLN_Implementation_Plan.md):

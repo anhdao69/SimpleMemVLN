@@ -20,6 +20,12 @@ def quantile(values, fraction):
     return float(np.quantile(np.asarray(values, dtype=np.float64), fraction))
 
 
+def allocator_config():
+    return os.environ.get(
+        "PYTORCH_ALLOC_CONF", os.environ.get("PYTORCH_CUDA_ALLOC_CONF", "")
+    )
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--family", choices=("stage", "simple"), required=True)
@@ -133,7 +139,7 @@ def main():
         python=platform.python_version(),
         torch=torch.__version__,
         transformers=transformers.__version__,
-        allocator=os.environ.get("PYTORCH_ALLOC_CONF", ""),
+        allocator=allocator_config(),
         median_seconds=statistics.median(durations),
         mean_seconds=statistics.fmean(durations),
         p95_seconds=quantile(durations, 0.95),

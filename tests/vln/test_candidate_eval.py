@@ -25,3 +25,13 @@ def test_closed_loop_summary_does_not_invent_supervised_recall():
     assert abs(r["model_latency_mean_seconds"] - 0.15) < 1e-10
     assert r["predicted_stops"] == 1
     assert "stop_recall" not in r
+
+
+def test_benchmark_records_legacy_allocator_environment(monkeypatch):
+    from scripts.vln.benchmark_inference import allocator_config
+
+    monkeypatch.delenv("PYTORCH_ALLOC_CONF", raising=False)
+    monkeypatch.setenv("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
+    assert allocator_config() == "expandable_segments:True"
+    monkeypatch.setenv("PYTORCH_ALLOC_CONF", "backend:cudaMallocAsync")
+    assert allocator_config() == "backend:cudaMallocAsync"

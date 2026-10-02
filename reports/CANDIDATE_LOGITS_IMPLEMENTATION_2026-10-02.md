@@ -94,6 +94,9 @@ the full accumulation window, not the sum of weights. DDP's averaging is
 compensated by world size exactly as in the existing trainer. Default `none`
 is the clean baseline; the sqrt overlay is the recommended mild balancing
 experiment. Compare both rather than asserting that balancing improves SR.
+For the approximate R2R counts in the request, sqrt weights are about
+`[0.7102, 1.3554, 1.3991, 4.3448]` in canonical action order; training recomputes
+them from its exact manifest rather than hardcoding those estimates.
 
 `action_metrics.jsonl` records globally summed confusion counts, precision and
 recall per class, overall accuracy, macro accuracy (mean four-class recall;
@@ -107,9 +110,11 @@ Four-way CE must not be numerically equated with token-level text-policy CE.
 
 ## Verification evidence
 
-Local CPU suite: 63 passed, 10 tokenizer/GPU-dependent skips. Remote GPU suite
-before the final profiling additions: 66 passed, zero skips. Final verification
-results and smoke details are recorded below when complete.
+Local CPU suite: **64 passed, 10 tokenizer/GPU-dependent skips**. Remote full GPU
+suite: **74 passed, zero skips**, 52 dependency warnings. Independent read-only
+review found no Critical/Important issues and reproduced the pre-final suite
+(63 passed/10 skips). The final added test fixes benchmark provenance for the
+legacy `PYTORCH_CUDA_ALLOC_CONF` variable used by the approved recipe.
 
 Real pinned-model gates used one allocated H100, 12 real observations from a
 short R2R episode, and a backward pass from its final STOP loss. All four
@@ -126,10 +131,106 @@ LM-head call during candidate streaming.
 | Window8 | canonical text | 2.0090 | 0.0942 | 12/12 | 19.33 |
 
 BF16 chunked/offline versus incremental kernels are not bitwise identical;
-maximum logit differences were 0.25–0.3125. The gate checks numerical bounds and
-high-margin decisions, not just matching argmax. These are short-episode runtime
+maximum logit differences were 0.25–0.3125. The gate enforces absolute/RMS
+numerical bounds. Review noted one deferred minor: its additional high-margin
+criterion is mathematically redundant with the observed error; the reported
+12/12 argmax agreement is measured but not asserted. These are short-episode runtime
 checks, not full-dataset memory admission or navigation results. The initial
 loss difference between feedback formats shows why this control matters.
+
+Two-GPU Window8 candidate-token smoke used the eight shortest R2R episodes,
+global batch 8 (2 × 1 × GAS4), LR 5e-6, zero warmup, three cosine-schedule updates.
+All three epoch checkpoints and the final model were saved. Exact model reload
+passed the existing 1e-5 logit / 1e-4 summed-loss tolerances; reference loss sum
+was 4.81544733. No OOM or nonfinite loss occurred.
+
+| Update | Unweighted/weighted CE (`none`) | Update seconds | Max reserved GiB across ranks |
+|---|---:|---:|---:|
+| 1 | 0.4526 | 6.059 | 59.80 |
+| 2 | 0.3652 | 4.059 | 59.80 |
+| 3 | 0.6007 | 4.023 | 59.80 |
+
+End-to-end smoke wall time including load and saves was 210.19 s (Trainer
+runtime 184.59 s). Update-only times exclude checkpoint I/O and loader prefetch.
+First-update accuracy was 90%, but STOP recall was zero and macro accuracy
+24.52%: the logs expose majority-class behavior instead of treating low CE as
+navigation success. The three losses are not monotonic or a convergence result.
+The selected set has 156 forward, 3 left, 3 right and 8 STOP targets per pass;
+it is especially unrepresentative of the full data. Do not use its speed to
+estimate full-dataset training time or its memory as a longest-episode gate.
+
+Raw validation artifacts are under the isolated remote directory
+`/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/outputs/logits-dev-xLLoog`:
+`integration-*.json`, `pytest-final-gpu.log`, `reload.log`, `smoke.log`, and
+`outputs/candidate-smoke/{action_metrics,profile_rank0,profile_rank1}.jsonl`.
+Existing training source snapshots and Slurm jobs were not changed. The current
+Janus `.venv` has neither `habitat` nor `habitat_sim`; no closed-loop Habitat
+run is claimed. Full 100/1,839-episode commands require the validated simulator
+environment used for earlier evaluations.
+
+## Measured H100 serving-speed check
+
+One model process at a time on the same otherwise idle allocated H100 80GB,
+Python 3.12.13, Torch 2.10.0+cu129, Transformers 5.11.0, expandable segments,
+BF16 and the existing attention/GDN runtime. CUDA-synchronized full decisions,
+16 warmups + 64 measured steps, repeated real 640×480 RGB, one reset excluded
+from timing; no rendering/IPC/model loading included. Both models used two CPU
+threads. This follows the historical timing procedure, but not its Blackwell
+hardware, four-thread setting, or exact RGB file. **No cross-report speed claim.**
+
+Input: `JanusVLN/data/trajectory_data/R2R/train/1/step_0000_TURN_RIGHT.png`, SHA256
+`a77da7861c69221503832598f13e9e6e4952cf056f96f5912f33a54900c7b579`.
+Instruction: “Go around the right side of the center unit and stop by the right
+side doorway with the dining table and mirror in it.” Both policies receive
+the same frame/instruction and accumulate their own predictions.
+
+| Window8 policy | Median ms/action | Mean | p95 | Peak live GiB | Retained KV | Generated tokens/action |
+|---|---:|---:|---:|---:|---:|---:|
+| Candidate, three-update smoke | 82.65 | 83.06 | 86.16 | 8.664 | 2,651 | 0 |
+| Old qwen_text, epoch 1 `checkpoint-1353` | 122.85 | 123.34 | 126.73 | 8.663 | 2,611 | 3 |
+
+This is about 33% lower median latency in this controlled runtime test, not a
+quality-matched trained-policy result. A preceding repeat measured 82.72 versus
+128.13 ms, illustrating run-to-run variability. Candidate KV is slightly larger
+because its mapping prompt/cue differs, despite shorter action feedback.
+
+Separate synchronized component runs measured candidate preprocessing ~6.23 ms,
+vision ~9.51 ms, observation-language append ~32.90 ms, four-row projection
+~0.053 ms, and deterministic history append ~32.89 ms. The history time includes
+~32.58 ms of language processing and must not be added to it again. The old text
+decoder costs roughly 75 ms in the first instrumented run; the original
+observation-language/vision work remains. Eliminating token generation does not
+eliminate the model forward or the history append, and is not a 3× speedup.
+
+Raw timing files: `speed-verified-{candidate,text}-{headline,components}.json`
+in the isolated remote directory above. Both old text checkpoint loading and
+its generation/parsing path succeeded unchanged. The final benchmark source
+records both modern and legacy allocator environment variable spellings.
+
+## Changed surfaces and compatibility review
+
+- Contracts/serialization: `contracts.py`, `data/candidates.py`,
+  `data/episode_serializer.py`, `data/episode_dataset.py`.
+- Shared readout/objective: `models/nav_model.py`, `models/action_loss.py`.
+- Streaming: `stream/session.py`, opt-in `stream/timing.py`; no changes to
+  cache eviction, GDN kernels, positional ledger or Window8 attention engine.
+- Training: `train/vln_runtime.py`, `train/train_episode.py`,
+  `train/action_reporting.py`, `train/recovery.py`. Existing global-normalization
+  and optimizer implementations remain in `trainer.py` and are tested directly.
+- Metrics: `eval/action_metrics.py`, `eval/metrics.py`; Habitat itself consumes
+  the same navigation result API without a candidate-specific special case.
+- Tools: `scripts/vln/{check_candidate_integration,evaluate_actions,benchmark_inference}.py`.
+- Configs: baseline candidate overlay plus canonical-feedback, frozen, copied,
+  sqrt, effective-number and tiny-smoke overlays.
+- Tests: seven `tests/vln/test_candidate_*.py` files. Existing old-mode tests
+  also ran; all runtime paths share the same canonical action definitions.
+
+Source paths above are relative to `src/qwen_vl/` unless otherwise qualified.
+No checkpoint, dataset, authentication token, or large artifact is committed.
+The branch is experimental: full training/convergence, long-episode memory
+admission, 100/1,839-episode Habitat results, and the completed quality ablation
+remain required before promotion. One reviewer-noted redundant test criterion
+is deferred as described above; numerical parity bounds remain active.
 
 ## Reproducible commands
 
@@ -224,7 +325,7 @@ python -c 'import gzip,json,os,pathlib; p=pathlib.Path("artifacts"); p.mkdir(exi
 "$HABITAT_PYTHON" -m qwen_vl.eval.habitat_r2r \
   --checkpoint "$CANDIDATE_CHECKPOINT" \
   --habitat-config "$JANUS_ROOT/config/vln_r2r.yaml" \
-  --data-root "$DATA_ROOT" --simulator-source "$JANUS_ROOT" \
+  --data-root "$DATA_ROOT" --simulator-source "$JANUS_ROOT/src" \
   --model-python "$MODEL_PYTHON" --model-path "$MODEL_PATH" \
   --episode-list artifacts/val_unseen_100.json --out artifacts/candidate-val-unseen-100
 ```
