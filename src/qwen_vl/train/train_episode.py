@@ -174,6 +174,11 @@ class EpisodeTrainer(QwenSFTTrainer):
                     .cpu()
                     .tolist()
                 )
+            if 'unweighted_loss_sum' in output:
+                record['unweighted_loss_sum']=float(output['unweighted_loss_sum'])
+            if hasattr(self,'action_metrics_callback') and prediction is not None:
+                self.action_metrics_callback.add(truth,prediction,output['loss_sum'],
+                    output.get('unweighted_loss_sum',output['loss_sum']))
             with (
                 Path(self.args.output_dir)
                 / f"exposures_rank{self.args.process_index}.jsonl"
@@ -228,6 +233,8 @@ def train_episode():
         if selected is None and list(out.glob('checkpoint-*')):
             raise ValueError('No complete recovery checkpoint; refusing to restart silently')
         args.resume_from_checkpoint = str(selected) if selected else None
+    from qwen_vl.models.action_loss import resolve_class_balance
+    resolve_class_balance(cfg,args.manifest,args.episode_limit,args.selection)
     model, serializer = load_model(cfg, args.model_name_or_path)
     dataset = EpisodeDataset(
         args.manifest, serializer, args.episode_limit, args.selection
@@ -339,6 +346,10 @@ def train_episode():
         recovery_save_steps=args.recovery_save_steps if not args.profile_only else 0,
         callbacks=callbacks,
     )
+    if cfg['model']['output_mode']=='candidate_logits':
+        from qwen_vl.train.action_reporting import ActionMetricsCallback
+        trainer.action_metrics_callback=ActionMetricsCallback(out)
+        trainer.add_callback(trainer.action_metrics_callback)
     if list(out.glob("checkpoint-*")) and not args.resume_from_checkpoint:
         raise ValueError("Explicit resume required for existing checkpoints")
     result = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
@@ -360,7 +371,7 @@ def train_episode():
                     episode_uid=sample["episode_uid"],
                     loss_sum=float(check["loss_sum"]),
                     logits=check["logits"].float().cpu().tolist()
-                    if model.output_mode == "classification"
+                    if model.output_mode in ("classification", "candidate_logits")
                     else None,
                 ),
                 indent=2,
