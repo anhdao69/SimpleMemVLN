@@ -1,5 +1,27 @@
 # Window8 text-policy two-GPU replacement — startup smoke gated
 
+## Corrected resubmission: job 4643
+
+At the user's request, submitted job **4643** on worker-2 with two GPUs,
+24 CPUs, 768 GiB RAM, and `afterany:4642`. Verified the cached Slurm script
+hash and resources before releasing 4643 and cancelling interactive 4642.
+FullContext candidate job 4623 was left untouched.
+
+New immutable campaign:
+`/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/outputs/window8_text_2gpu_reportfix_20261002-xguUNX`.
+Original text-policy source was copied and checksum-compared: only
+`src/qwen_vl/train/campaign.py` and `scripts/vln/report_campaign.py` changed,
+using the reporting correction from commit `33a2735`. The actual staged callback
+passed against all 50 saved two-rank updates before submission. Local suite:
+87 passed, 10 skipped. Source, manifest, and runtime checksums are startup gates.
+
+Recipe remains joint R2R/RxR_15deg, Window8 qwen_text, global batch eight via
+2 ranks × GAS4, two epochs, LR 5e-6, 7704 updates / 232 warmup. CPU optimizer
+offload is retained. A fresh three-update longest-episode memory test runs under
+the new allocation before production; previous PASS artifacts are not reused.
+Starts from pretrained weights because failed 4625 saved no checkpoint. No old
+logs/checkpoints were removed. Startup log is `slurm-4643.log` in this campaign.
+
 ## Update-50 reporter failure and correction
 
 Job 4625 passed the startup memory test (72.941 GiB reserved) and completed
