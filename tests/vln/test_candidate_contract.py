@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 import os
 import pytest
 import torch
@@ -26,8 +27,11 @@ def config(feedback="candidate_token"):
                 output_mode="candidate_logits", action_head_mode="lm_rows_trainable"
             ),
             observations=dict(
-                serializer_version="vln_candidate_logits_v1",
-                append_action_tokens=True,
+                serializer_version=(
+                    "vln_candidate_logits_no_action_history_v1"
+                    if feedback == "none" else "vln_candidate_logits_v1"
+                ),
+                append_action_tokens=feedback != "none",
                 max_step_group_tokens=384,
                 feedback_format=feedback,
             ),
@@ -36,7 +40,7 @@ def config(feedback="candidate_token"):
     )
 
 
-@pytest.fixture(params=["candidate_token", "canonical_action_text"])
+@pytest.fixture(params=["candidate_token", "canonical_action_text", "none"])
 def candidate_serializer(request):
     path = os.environ.get("VLN_MODEL_PATH")
     if not path:
@@ -112,7 +116,8 @@ def test_exact_token_boundary_and_history(candidate_serializer, tmp_path):
             (
                 [32 + i]
                 if s.config["observations"]["feedback_format"] == "candidate_token"
-                else s.ids(ACTIONS[i])
+                else ([] if s.config["observations"]["feedback_format"] == "none"
+                      else s.ids(ACTIONS[i]))
             )
             + [s.eos]
             + s.separator
@@ -125,6 +130,19 @@ def test_exact_token_boundary_and_history(candidate_serializer, tmp_path):
     ds = EpisodeDataset(manifest, s)
     assert ds.encoded_lengths[0] == encoded["input_ids"].numel()
     assert s.metadata()["candidate_token_ids"] == [32, 33, 34, 35]
+    # Metamorphic guard: teacher-forcing targets must not leak into no-history inputs.
+    changed = deepcopy(ep)
+    for step in changed["steps"][:-1]:
+        step["action_name"] = ACTIONS[(ACTIONS.index(step["action_name"]) + 1) % 3]
+    altered = s.encode_episode(changed)
+    assert not torch.equal(encoded["action_class_ids"], altered["action_class_ids"])
+    if s.config["observations"]["feedback_format"] == "none":
+        for key in ("input_ids", "mm_token_type_ids", "pixel_values", "image_grid_thw", "read_positions"):
+            assert torch.equal(encoded[key], altered[key]), key
+        assert encoded["step_plan"] == altered["step_plan"]
+        assert s.ids(obs + "<|im_end|>\n") == s.ids(obs) + [s.eos] + s.separator
+    else:
+        assert not torch.equal(encoded["input_ids"], altered["input_ids"])
 
 
 def test_reject_multitoken_or_context_merging_candidate(

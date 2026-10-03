@@ -14,6 +14,14 @@ SERIALIZERS = {
 }
 
 
+def serializer_version(config):
+    """History ablations must never silently inherit a history checkpoint contract."""
+    mode = config["model"]["output_mode"]
+    if mode == "candidate_logits" and config["observations"].get("feedback_format") == "none":
+        return "vln_candidate_logits_no_action_history_v1"
+    return SERIALIZERS[mode]
+
+
 def parse_action(text):
     text = text.strip()
     if text not in ACTIONS:
@@ -100,9 +108,12 @@ def validate_config(cfg, world_size=None):
     if mode not in SERIALIZERS or memory not in ("full_context", "window8"):
         raise ValueError("Unsupported output or memory mode")
     obs, train = cfg["observations"], cfg["training"]
-    if obs["serializer_version"] != SERIALIZERS[mode]:
+    if obs["serializer_version"] != serializer_version(cfg):
         raise ValueError("Serializer/output conflict")
-    if obs["append_action_tokens"] != (mode in ("qwen_text", "candidate_logits")):
+    has_action_history = mode == "qwen_text" or (
+        mode == "candidate_logits" and obs.get("feedback_format", "candidate_token") != "none"
+    )
+    if obs["append_action_tokens"] != has_action_history:
         raise ValueError("Action-history/output conflict")
     if mode == "candidate_logits":
         if cfg["model"].get("action_head_mode", "lm_rows_trainable") not in (
@@ -114,6 +125,7 @@ def validate_config(cfg, world_size=None):
         if obs.get("feedback_format", "candidate_token") not in (
             "candidate_token",
             "canonical_action_text",
+            "none",
         ):
             raise ValueError("Unknown candidate feedback format")
         if train.get("class_weighting", "none") not in (

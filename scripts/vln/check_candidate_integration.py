@@ -18,7 +18,7 @@ def main():
     p.add_argument("--memory", choices=["full_context", "window8"], required=True)
     p.add_argument(
         "--feedback",
-        choices=["candidate_token", "canonical_action_text"],
+        choices=["candidate_token", "canonical_action_text", "none"],
         required=True,
     )
     p.add_argument("--checkpoint")
@@ -30,6 +30,9 @@ def main():
         "configs/vln_memory_window8.yaml" if args.memory == "window8" else None,
     )
     cfg["observations"]["feedback_format"] = args.feedback
+    if args.feedback == "none":
+        cfg["observations"]["append_action_tokens"] = False
+        cfg["observations"]["serializer_version"] = "vln_candidate_logits_no_action_history_v1"
     cfg["runtime"]["action_diagnostics"] = True
     model, s = (
         load_checkpoint(args.checkpoint, args.model_path)
@@ -127,6 +130,8 @@ def main():
             with Image.open(ep["steps"][step]["rgb_path"]) as rgb:
                 result = session.observe("candidate-integration", step, rgb)
             assert result["action_name"] in ACTIONS and result["generated_tokens"] == 0
+            if args.feedback == "none":
+                assert result["feedback_token_ids"] == [s.eos] + s.separator
             assert session.observe("candidate-integration", step, None) is result
             assert_state_dtypes(session.cache)
             spans.append((start, session.positions.logical_token_count))

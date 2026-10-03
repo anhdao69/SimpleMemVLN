@@ -7,7 +7,7 @@ from qwen_vl.contracts import (
     ACTIONS,
     HABITAT_IDS,
     CANDIDATES,
-    SERIALIZERS,
+    serializer_version,
     validate_episode,
 )
 from qwen_vl.data.data_qwen import QWEN3_5_NON_THINKING_CHAT_TEMPLATE
@@ -63,6 +63,13 @@ class EpisodeSerializer:
     def feedback_ids(self, class_id):
         if class_id not in range(len(ACTIONS)):
             raise ValueError("Invalid feedback class")
+        if (
+            self.mode == "candidate_logits"
+            and self.config["observations"].get("feedback_format") == "none"
+        ):
+            # Close the assistant turn without revealing the target/prediction.
+            # Fixed boundaries remain in the same observation step group.
+            return [self.eos] + self.separator
         if (
             self.mode == "candidate_logits"
             and self.config["observations"].get("feedback_format", "candidate_token")
@@ -203,7 +210,7 @@ class EpisodeSerializer:
 
     def metadata(self):
         result = dict(
-            serializer=SERIALIZERS[self.mode],
+            serializer=serializer_version(self.config),
             template_sha256=self.template_hash,
             actions=list(ACTIONS),
             habitat_ids=list(HABITAT_IDS),

@@ -1,0 +1,17 @@
+# Apply as --policy_config, after the production schedule overlay.
+# Pair with FullContext (no --memory_config) for the initial ablation.
+model:
+  output_mode: candidate_logits
+  action_head_mode: lm_rows_trainable
+observations:
+  serializer_version: vln_candidate_logits_no_action_history_v1
+  max_step_group_tokens: 384
+  append_action_tokens: false
+  feedback_format: "none"
+training:
+  class_weighting: none
+  effective_number_beta: 0.9999
+  supervise_assistant_terminator: false
+runtime:
+  action_diagnostics: false
+  profile_components: false
