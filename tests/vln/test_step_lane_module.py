@@ -202,3 +202,24 @@ def test_output_projection_receives_projection_dtype_under_autocast():
     handle.remove()
     assert output.dtype == torch.bfloat16
     assert seen == [torch.bfloat16]
+
+
+def test_single_token_gradient_path_uses_differentiable_chunk_kernel():
+    m=lane()
+    calls=[]
+    def chunk(**kwargs):
+        calls.append('chunk')
+        return reference_kernel(**kwargs)
+    def recurrent(**kwargs):
+        calls.append('recurrent')
+        return reference_kernel(**kwargs)
+    m._chunk_kernel,m._recurrent_kernel=chunk,recurrent
+    x=torch.randn(1,1,7,requires_grad=True)
+    roles=torch.tensor([[3]],dtype=torch.uint8)
+    output,_=m(x,roles,return_final_state=True)
+    output.sum().backward()
+    assert calls==['chunk']
+    calls.clear()
+    with torch.inference_mode():
+        m(x.detach(),roles,return_final_state=True)
+    assert calls==['recurrent']

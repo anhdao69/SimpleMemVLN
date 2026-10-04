@@ -141,3 +141,16 @@ def test_installed_zero_projection_has_exact_zero_input_and_upstream_gradients()
         if name != 'out_proj.weight':
             assert parameter.grad.eq(0).all(), name
     assert m.out_proj.weight.grad.abs().sum() > 0
+
+
+def test_production_single_token_functional_scan_has_backward():
+    chunk,recurrent=kernels()
+    m=ParallelStepLane(2560,StepLaneSpec(layers=(16,)),device='cuda',dtype=torch.bfloat16,
+                       chunk_kernel=chunk,recurrent_kernel=recurrent,lane_seed=73)
+    with torch.no_grad():
+        m.out_proj.weight.normal_(std=.002)
+    x=torch.randn(1,1,2560,device='cuda',dtype=torch.bfloat16,requires_grad=True)
+    output,state=m(x,torch.tensor([[3]],device='cuda',dtype=torch.uint8),return_final_state=True)
+    (output.float().square().sum()+state.square().sum()).backward()
+    assert x.grad is not None and torch.isfinite(x.grad).all() and x.grad.abs().sum()>0
+    assert all(p.grad is not None and torch.isfinite(p.grad).all() for p in m.parameters())

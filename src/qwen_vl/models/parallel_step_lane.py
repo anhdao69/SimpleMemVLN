@@ -128,7 +128,10 @@ class ParallelStepLane(nn.Module):
         # No in-place mutations of intermediates saved for full-episode backward.
         g = torch.where(write[..., None], g_raw, 0.)
         beta = torch.where(write[..., None], beta_raw, 0.)
-        kernel = self._recurrent_kernel if length == 1 else self._chunk_kernel
+        # The fused recurrent backend is a serving kernel; functional/autograd
+        # calls always use the differentiable chunk path, even at length one.
+        serving_token = length == 1 and return_final_state and not torch.is_grad_enabled()
+        kernel = self._recurrent_kernel if serving_token else self._chunk_kernel
         # Protect the caller's functional state even against kernels that alias or
         # mutate initial_state. clone preserves the full BPTT graph.
         read, final_state = kernel(q=q, k=k, v=v, g=g, beta=beta,
