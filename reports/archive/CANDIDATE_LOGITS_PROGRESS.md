@@ -1,6 +1,6 @@
 # Candidate-logits implementation ledger
 
-Plan/spec: reports/CANDIDATE_LOGITS_DESIGN.md. Base 341ec2c.
+Plan/spec: reports/archive/CANDIDATE_LOGITS_DESIGN.md. Base 341ec2c.
 User explicitly approved implementation with three amendments; no further
 design-approval pause. Isolated sibling worktree avoids altering old checkout.
 Shared interfaces: serializer candidate_ids/feedback_ids -> readout/session;

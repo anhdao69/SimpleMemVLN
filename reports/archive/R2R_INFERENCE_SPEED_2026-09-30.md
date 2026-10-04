@@ -82,5 +82,5 @@ must not be extrapolated to their 500-step latency.
   R2R navigation rollout or a success-rate measurement. The separate Habitat
   evaluations measure navigation performance and include simulation/IPC cost.
   The older H100 Window8-A smoke profile in
-  `reports/H100_R2R_SMOKE_2026-09-28.md` uses different weights, hardware and
+  `reports/archive/H100_R2R_SMOKE_2026-09-28.md` uses different weights, hardware and
   timing boundaries; its milliseconds are not pooled with these results.

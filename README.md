@@ -1,5 +1,7 @@
 # SimpleMemVLN
 
+[R2R `val_unseen` evaluation and inference-speed comparison](reports/R2R_ALL_VERSIONS_COMPARISON_2026-10-03.md).
+
 ## Candidate-logit experiment (`streaming_logits`)
 
 The new `candidate_logits` mode selects four verified single-token pretrained
@@ -9,10 +11,11 @@ candidate tokens or deterministic canonical action text. Both FullContext and
 Window8 preserve action history and GDN state. Existing text checkpoints keep
 their original contract.
 
-See the [implementation report and exact run commands](reports/CANDIDATE_LOGITS_IMPLEMENTATION_2026-10-02.md)
+See the [implementation report and exact run commands](reports/archive/CANDIDATE_LOGITS_IMPLEMENTATION_2026-10-02.md)
 for production-recipe overlays, class balancing, smoke/reload evidence,
-profiling, and pending Habitat ablations. Candidate navigation quality is
-**not yet evaluated in Habitat**.
+profiling, and pending Habitat ablations. The joint FullContext candidate
+checkpoints have completed R2R `val_unseen` evaluations at epochs 1 and 2;
+see the comparison report above for SR, SPL and inference speed.
 
 ## Full-episode streaming R2R
 
@@ -20,7 +23,7 @@ The episode path implements the supplied [v2 plan](plans/SimpleMemVLN_Implementa
 pretrained Qwen3.5-4B, frozen vision/merger, full-episode text gradients,
 an action classifier or sparse action-text loss, and native persistent GDN
 with FullContext or prefix + eight-step attention. See
-[implementation evidence](reports/H100_R2R_SMOKE_2026-09-28.md) and the
+[implementation evidence](reports/archive/H100_R2R_SMOKE_2026-09-28.md) and the
 [execution ledger](IMPLEMENTATION_PROGRESS.md) for measured gates and limitations.
 
 The H100 environment uses Python 3.12, Torch 2.10/cu129, Transformers 5.11,

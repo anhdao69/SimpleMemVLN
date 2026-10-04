@@ -72,7 +72,7 @@ at immutable revision `73d866c31e398596a67cd8be6f7dbfd25ab9241d` and
 at `cd17ac0d434f3df908ca1401aa11e86e1a125d40`. Published checkpoint
 SHA256 entries were verified locally. Both use the pinned Qwen3.5-4B base.
 The evaluation source and environment are described in
-`reports/R2R_EVALUATION_2026-09-29.md`.
+`reports/archive/R2R_EVALUATION_2026-09-29.md`.
 
 ## Speed and historical context
 
@@ -81,7 +81,7 @@ The separately measured, **isolated** 64-action inference medians were
 84.57 ms for Window8 epoch 1. Window8 remained near 84 ms per action through
 a 500-action repeated-frame replay while FullContext grew with retained KV.
 These controlled repeated-frame timings are detailed in
-`reports/R2R_INFERENCE_SPEED_2026-09-30.md`; they are not Habitat rollout
+`reports/archive/R2R_INFERENCE_SPEED_2026-09-30.md`; they are not Habitat rollout
 latency or navigation scores. The simultaneous four-worker Habitat run shares
 one GPU and its per-action latency is affected by contention and route length.
 
