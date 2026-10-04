@@ -11,6 +11,8 @@ from qwen_vl.contracts import (
     validate_episode,
 )
 from qwen_vl.data.data_qwen import QWEN3_5_NON_THINKING_CHAT_TEMPLATE
+from qwen_vl.data.lane_metadata import build_lane_roles
+from qwen_vl.research.lane_contract import parse_step_lane_spec
 
 IMAGE = "<|vision_start|><|image_pad|><|vision_end|>"
 SYSTEM = (
@@ -158,6 +160,8 @@ class EpisodeSerializer:
         blocks = [self.encode_prefix(episode["instruction"])]
         prefix = blocks[0]["input_ids"].numel()
         cursor = prefix
+        lane_spec = parse_step_lane_spec(self.config)
+        observation_spans = []
         spans, reads, target_positions, action_index, classes = [], [], [], [], []
         for t, step in enumerate(episode["steps"]):
             with Image.open(step["rgb_path"]) as image:
@@ -165,6 +169,7 @@ class EpisodeSerializer:
             blocks.append(block)
             start = cursor
             cursor += block["input_ids"].numel()
+            observation_spans.append((start, cursor))
             cls = ACTIONS.index(step["action_name"])
             classes.append(cls)
             if self.mode == "classification":
@@ -206,6 +211,18 @@ class EpisodeSerializer:
             num_actions=len(classes),
             episode_uid=episode["episode_uid"],
         )
+        if lane_spec is not None:
+            roles = build_lane_roles(prefix, tuple(observation_spans), tuple(spans), cursor)
+            for t, (_, end) in enumerate(spans):
+                if self.mode == "qwen_text":
+                    # Derive independently from the supervised first response target.
+                    first_target = next(pos for pos, action in zip(target_positions, action_index) if action == t)
+                    decision = first_target - 1
+                else:
+                    decision = reads[t]
+                if end - 1 <= decision:
+                    raise ValueError("Lane writer must follow the action decision")
+            result["step_lane_roles"] = roles
         return result
 
     def metadata(self):
@@ -222,6 +239,9 @@ class EpisodeSerializer:
             rotary_precision="fp32_preserved_across_module_casts_v1",
             config=self.config,
         )
+        lane_spec = parse_step_lane_spec(self.config)
+        if lane_spec is not None:
+            result["step_lane"] = lane_spec.to_dict()
         if self.mode == "candidate_logits":
             from qwen_vl.data.candidates import DECISION_CUE
 

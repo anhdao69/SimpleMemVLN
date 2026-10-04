@@ -153,4 +153,7 @@ def validate_config(cfg, world_size=None):
         != world_size * train["gradient_accumulation_steps"]
     ):
         raise ValueError("Global episode batch must equal world size × accumulation")
+    from qwen_vl.research.lane_contract import parse_step_lane_spec
+
+    parse_step_lane_spec(cfg)
     return cfg
