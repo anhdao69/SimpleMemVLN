@@ -69,17 +69,30 @@ class QwenSFTTrainer(Trainer):
             if parameter.requires_grad and (".visual.merger." in name or name.startswith('classifier.'))
         }
 
+        lane_names = {
+            name for name, parameter in self.model.named_parameters()
+            if parameter.requires_grad and ".step_lane." in name
+        }
+        lane_lr = getattr(self.model, "navigation_config", {}).get("training", {}).get(
+            "step_lane_lr", 1e-4
+        )
+        if lane_names and (not __import__("math").isfinite(lane_lr) or lane_lr <= 0):
+            raise ValueError("step_lane_lr must be finite and positive")
         grouped_parameters = []
-        for is_merger, learning_rate in (
-            (False, self.args.learning_rate),
-            (True, self.args.mm_projector_lr),
+        for kind, learning_rate in (
+            ("backbone", self.args.learning_rate),
+            ("merger", self.args.mm_projector_lr),
+            ("lane", lane_lr),
         ):
             for use_decay in (True, False):
                 parameters = [
                     parameter
                     for name, parameter in self.model.named_parameters()
                     if parameter.requires_grad
-                    and (name in merger_names) is is_merger
+                    and (
+                        "lane" if name in lane_names else
+                        "merger" if name in merger_names else "backbone"
+                    ) == kind
                     and (name in decay_names) is use_decay
                 ]
                 if parameters:

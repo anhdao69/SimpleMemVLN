@@ -1,0 +1,79 @@
+generation:
+  fixed_separator: '
+
+    '
+  max_response_tokens_including_eos: 16
+memory:
+  evict_before_new_step: true
+  kv_guard_tokens: 5120
+  kv_window_steps_including_current: 8
+  mode: window8
+model:
+  action_head_mode: lm_rows_trainable
+  backbone: Qwen/Qwen3.5-4B
+  output_mode: candidate_logits
+  revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+  step_lane:
+    enabled: true
+    version: parallel_step_lane_v1
+    layers:
+    - 16
+    - 20
+    - 24
+    - 28
+    init_seed: 429
+    clock_mode: step_end
+observations:
+  append_action_tokens: false
+  expected_rgb_shape:
+  - 480
+  - 640
+  - 3
+  expected_visual_tokens: 300
+  feedback_format: none
+  max_prefix_tokens: 2048
+  max_step_group_tokens: 384
+  serializer_version: vln_candidate_logits_no_action_history_v1
+runtime:
+  action_diagnostics: false
+  max_logical_context_tokens: 262144
+  profile_components: false
+  text_attention: simplememvln_step_attention
+  vision_attention: flash_attention_2
+  vision_microbatch_images: 4
+training:
+  activation_offload_min_tokens: 65536
+  backbone_lr: 5.0e-06
+  checkpoint_decoder_layers: true
+  class_weighting: none
+  classifier_lr: 5.0e-06
+  dataloader_num_workers: 2
+  effective_number_beta: 0.9999
+  epochs: 1
+  expected_total_steps: 3852
+  expected_warmup_steps: 116
+  gradient_accumulation_steps: 2
+  length_bucket_pool_episodes: 64
+  microbatch_episodes_per_rank: 1
+  model_max_length: 262144
+  nominal_episodes_per_update: 8
+  save_strategy: epoch
+  save_total_limit: null
+  seed: 429
+  supervise_assistant_terminator: false
+  tail_policy: accelerate_repeat
+  use_cache: false
+  warmup_steps: 116
+  weight_decay: 0.01
+  action_class_counts:
+  - 1659308
+  - 740699
+  - 697802
+  - 30815
+  action_class_weights:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  class_weight_normalization: training_probability_mean_one_v1
+  step_lane_lr: 0.0001

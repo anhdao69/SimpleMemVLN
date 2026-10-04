@@ -33,11 +33,28 @@ class StreamSession:
         self.last_result = None
         self.model.backbone.model.rope_deltas = None
         self.busy = False
-        self._append(self.serializer.encode_prefix(instruction))
+        spec = getattr(self.model, "step_lane_spec", None)
+        self.step_lane_cache = None
+        if spec is not None:
+            from qwen_vl.stream.lane_cache import StepLaneCache
+            self.step_lane_cache = StepLaneCache(
+                spec, episode_uid, device=next(self.model.parameters()).device
+            )
+        self._append_with_role(self.serializer.encode_prefix(instruction), 0)
         self.prefix_length = self.positions.logical_token_count
         self.valid = True
 
-    def _append(self, block):
+    def _append_with_role(self, block, role, *, complete=False):
+        if getattr(self.model, "step_lane_spec", None) is None:
+            return self._append(block)
+        roles = torch.full_like(block["input_ids"], role, dtype=torch.uint8)
+        if complete:
+            if roles.numel() == 0:
+                raise ValueError("Step lane requires a post-decision closing token")
+            roles[0, -1] = 3
+        return self._append(block, step_lane_roles=roles)
+
+    def _append(self, block, *, step_lane_roles=None):
         device = next(self.model.parameters()).device
         block = {k: v.to(device) if torch.is_tensor(v) else v for k, v in block.items()}
         length = block["input_ids"].numel()
@@ -46,6 +63,16 @@ class StreamSession:
             > self.cfg["runtime"]["max_logical_context_tokens"]
         ):
             raise ValueError("Logical serving context exhausted")
+        logical_start = self.positions.logical_token_count
+        lane_kwargs = {}
+        if getattr(self.model, "step_lane_spec", None) is not None:
+            if step_lane_roles is None:
+                raise ValueError("Append to enabled step lane requires explicit roles")
+            lane_kwargs = dict(
+                step_lane_roles=step_lane_roles.to(device),
+                step_lane_cache=self.step_lane_cache,
+                step_lane_logical_start=logical_start,
+            )
         positions = self.positions.append(
             self.model.backbone.model,
             block["input_ids"],
@@ -53,9 +80,11 @@ class StreamSession:
             block.get("image_grid_thw"),
         )
         hidden = self.model.hidden(
-            **block, position_ids=positions, cache=self.cache, stream_append=True
+            **block, position_ids=positions, cache=self.cache, stream_append=True, **lane_kwargs
         )
         assert_state_dtypes(self.cache)
+        if lane_kwargs:
+            self.step_lane_cache.assert_complete_append(self.positions.logical_token_count)
         if kv_length(self.cache) > self.cfg["memory"]["kv_guard_tokens"]:
             raise ValueError("Resident KV exceeds declared guard")
         return hidden
@@ -100,7 +129,7 @@ class StreamSession:
                 block = self.serializer.encode_observation(rgb, step_id)
             self._begin_step(step_id, block)
             start = self.positions.logical_token_count
-            hidden = self._append(block)
+            hidden = self._append_with_role(block, 1)
             extra = {}
             if self.serializer.mode == "candidate_logits":
                 with timed(self.model, "action_logit_projection"):
@@ -110,7 +139,7 @@ class StreamSession:
                 cls = int(logits.argmax())
                 feedback = self.serializer.feedback_ids(cls)
                 with timed(self.model, "action_history_append"):
-                    self._append(self.serializer.text_block(feedback))
+                    self._append_with_role(self.serializer.text_block(feedback), 2, complete=True)
                 extra.update(generated_tokens=0, feedback_token_ids=feedback)
                 if self.cfg["runtime"].get("action_diagnostics", False):
                     scores = logits.float()
@@ -137,10 +166,9 @@ class StreamSession:
                 for _ in range(16):
                     token = int(self.model.backbone.lm_head(hidden[0, -1]).argmax())
                     if token == self.serializer.eos:
-                        self._append(
-                            self.serializer.text_block(
-                                [token] + self.serializer.separator
-                            )
+                        self._append_with_role(
+                            self.serializer.text_block([token] + self.serializer.separator),
+                            2, complete=True,
                         )
                         text = self.serializer.tokenizer.decode(
                             response,
@@ -157,7 +185,7 @@ class StreamSession:
                     if token in forbidden:
                         raise ValueError(f"Forbidden structural token {token}")
                     response.append(token)
-                    hidden = self._append(self.serializer.text_block([token]))
+                    hidden = self._append_with_role(self.serializer.text_block([token]), 2)
                 else:
                     raise ValueError(
                         "Response limit reached without assistant terminator"

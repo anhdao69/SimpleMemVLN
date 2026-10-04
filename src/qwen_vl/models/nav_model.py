@@ -109,6 +109,15 @@ class SimpleMemVLNForNavigation(nn.Module):
             ):
                 backbone.lm_head.requires_grad_(False)
 
+        from qwen_vl.research.lane_contract import parse_step_lane_spec
+        spec = parse_step_lane_spec(navigation_config, backbone.config.text_config)
+        if spec is not None:
+            from qwen_vl.models.install_step_lane import install_step_lanes
+            install_step_lanes(
+                self, spec,
+                init_seed=navigation_config["model"]["step_lane"].get("init_seed", 429),
+            )
+
     def train(self, mode=True):
         super().train(mode)
         self.backbone.model.visual.eval()
@@ -187,7 +196,22 @@ class SimpleMemVLNForNavigation(nn.Module):
         position_ids=None,
         cache=None,
         stream_append=False,
+        step_lane_roles=None,
+        step_lane_cache=None,
+        step_lane_logical_start=None,
     ):
+        lane_kwargs = {}
+        if getattr(self, "step_lane_spec", None) is not None:
+            if step_lane_roles is None:
+                raise ValueError("Enabled step lane requires explicit roles")
+            if cache is not None and (self.training or torch.is_grad_enabled()):
+                raise ValueError("Step lane cached forward is inference-only")
+            if cache is None and (step_lane_cache is not None or step_lane_logical_start is not None):
+                raise ValueError("Uncached lane forward cannot use serving state")
+            lane_kwargs = dict(step_lane_roles=step_lane_roles, step_lane_cache=step_lane_cache,
+                               step_lane_logical_start=step_lane_logical_start)
+        elif any(x is not None for x in (step_lane_roles, step_lane_cache, step_lane_logical_start)):
+            raise ValueError("Lane metadata supplied to a disabled model")
         if position_ids is None:
             position_ids = PositionLedger().append(
                 self.backbone.model, input_ids, mm_token_type_ids, image_grid_thw
@@ -208,6 +232,7 @@ class SimpleMemVLNForNavigation(nn.Module):
                 step_plan=step_plan,
                 stream_append=stream_append,
                 output_hidden_states=False,
+                **lane_kwargs,
             ).last_hidden_state
 
     def forward(
@@ -223,9 +248,11 @@ class SimpleMemVLNForNavigation(nn.Module):
         response_action_index,
         num_actions,
         episode_uid=None,
+        step_lane_roles=None,
     ):
         hidden = self.hidden(
-            input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan
+            input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan,
+            step_lane_roles=step_lane_roles,
         )
         if self.output_mode == "candidate_logits":
             logits = self.action_logits(hidden[0, read_positions])

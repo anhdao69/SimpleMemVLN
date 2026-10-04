@@ -218,7 +218,10 @@ def train_episode():
     p.add_argument("--max-optimizer-updates", type=int, default=-1)
     p.add_argument("--run-name", default="r2r_episode")
     p.add_argument("--output_dir", default="outputs/r2r_episode")
-    p.add_argument("--resume_from_checkpoint")
+    initialization = p.add_mutually_exclusive_group()
+    initialization.add_argument("--resume_from_checkpoint")
+    initialization.add_argument("--init-policy-checkpoint",
+                                help="Strict trained-wrapper weights, fresh lanes and optimizer")
     p.add_argument("--deepspeed", default="deepspeed.json")
     p.add_argument("--gradient_accumulation_steps", type=int)
     p.add_argument("--save_steps", type=int, default=500)
@@ -255,10 +258,29 @@ def train_episode():
                 "No complete recovery checkpoint; refusing to restart silently"
             )
         args.resume_from_checkpoint = str(selected) if selected else None
+    if not args.resume_from_checkpoint and (
+        list(out.glob("checkpoint-*")) or (out / "final").exists()
+    ):
+        raise ValueError("Explicit resume required for existing training outputs")
     from qwen_vl.models.action_loss import resolve_class_balance
 
     resolve_class_balance(cfg, args.manifest, args.episode_limit, args.selection)
-    model, serializer = load_model(cfg, args.model_name_or_path)
+    initialization_report = None
+    if args.init_policy_checkpoint:
+        from qwen_vl.train.lane_initialization import (
+            initialize_step_lane_from_policy, checkpoint_identity,
+        )
+        model, serializer, initialization_report = initialize_step_lane_from_policy(
+            args.init_policy_checkpoint, args.model_name_or_path, cfg,
+            lane_seed=cfg["model"]["step_lane"].get("init_seed", 429),
+        )
+        if int(os.environ.get("RANK", 0)) == 0:
+            initialization_report["parent_identity"] = checkpoint_identity(args.init_policy_checkpoint)
+            (out / "lane_initialization.json").write_text(
+                json.dumps(initialization_report, indent=2) + "\n"
+            )
+    else:
+        model, serializer = load_model(cfg, args.model_name_or_path)
     dataset = EpisodeDataset(
         args.manifest, serializer, args.episode_limit, args.selection
     )
@@ -288,8 +310,6 @@ def train_episode():
             if int(os.environ.get("RANK", 0)) == 0:
                 quarantine_incomplete(out)
                 rewind_reports(out, recovery_record["step"])
-    elif list(out.glob("checkpoint-*")) or (out / "final").exists():
-        raise ValueError("Explicit resume required for existing training outputs")
     training_args = TrainingArguments(
         output_dir=str(out),
         run_name=args.run_name,
@@ -353,6 +373,9 @@ def train_episode():
             flush=True,
         )
     callbacks = [MeasurementCallback(out)]
+    if getattr(model, "step_lane_spec", None) is not None:
+        from qwen_vl.train.lane_reporting import LaneParameterCallback
+        callbacks.append(LaneParameterCallback(out))
     if args.recovery_save_steps and not args.profile_only:
         from qwen_vl.train.recovery import RecoverySaves
 

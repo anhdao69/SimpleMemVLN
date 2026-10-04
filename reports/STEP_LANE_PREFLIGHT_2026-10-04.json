@@ -1,0 +1,121 @@
+{
+  "source_sha": "f194e23",
+  "parent": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/outputs/nohistory_joint_epoch1_20261003-6Ajh9c/train/final",
+  "parent_config": {
+    "generation": {
+      "fixed_separator": "\n",
+      "max_response_tokens_including_eos": 16
+    },
+    "memory": {
+      "evict_before_new_step": false,
+      "kv_guard_tokens": 262144,
+      "kv_window_steps_including_current": null,
+      "mode": "full_context"
+    },
+    "model": {
+      "action_head_mode": "lm_rows_trainable",
+      "backbone": "Qwen/Qwen3.5-4B",
+      "output_mode": "candidate_logits",
+      "revision": "851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    },
+    "observations": {
+      "append_action_tokens": false,
+      "expected_rgb_shape": [
+        480,
+        640,
+        3
+      ],
+      "expected_visual_tokens": 300,
+      "feedback_format": "none",
+      "max_prefix_tokens": 2048,
+      "max_step_group_tokens": 384,
+      "serializer_version": "vln_candidate_logits_no_action_history_v1"
+    },
+    "runtime": {
+      "action_diagnostics": false,
+      "max_logical_context_tokens": 262144,
+      "profile_components": false,
+      "text_attention": "flash_attention_2",
+      "vision_attention": "flash_attention_2",
+      "vision_microbatch_images": 4
+    },
+    "training": {
+      "activation_offload_min_tokens": 65536,
+      "backbone_lr": 5e-06,
+      "checkpoint_decoder_layers": true,
+      "class_weighting": "none",
+      "classifier_lr": 5e-06,
+      "dataloader_num_workers": 4,
+      "effective_number_beta": 0.9999,
+      "epochs": 1,
+      "expected_total_steps": 3852,
+      "expected_warmup_steps": 116,
+      "gradient_accumulation_steps": 2,
+      "length_bucket_pool_episodes": 64,
+      "microbatch_episodes_per_rank": 1,
+      "model_max_length": 262144,
+      "nominal_episodes_per_update": 8,
+      "save_strategy": "epoch",
+      "save_total_limit": null,
+      "seed": 429,
+      "supervise_assistant_terminator": false,
+      "tail_policy": "accelerate_repeat",
+      "use_cache": false,
+      "warmup_steps": 116,
+      "weight_decay": 0.01,
+      "action_class_counts": [
+        1659308,
+        740699,
+        697802,
+        30815
+      ],
+      "action_class_weights": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "class_weight_normalization": "training_probability_mean_one_v1"
+    }
+  },
+  "parent_navigation_sha256": "d2a510c50d3b148987371ba6d1f61271c5e32d3b875778363616f020fd7c7b75",
+  "parent_weights": {
+    "pytorch_model.bin": "6d492d012a872193adefb002057ea4c4e42a28301ffae1d1177c200e6a8b136d"
+  },
+  "versions": {
+    "torch": "2.10.0+cu129",
+    "transformers": "5.11.0",
+    "flash-linear-attention": "0.5.2",
+    "fla-core": "0.5.2",
+    "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+    "deepspeed": "0.16.4",
+    "accelerate": "1.13.0"
+  },
+  "python": "3.12.13",
+  "manifests": {
+    "r2r_train.jsonl": "a0eba63ad454d0ec11c7dd063f024cb4b6c47ad5ec9e08ba92528e3f45b98e48",
+    "r2r_rxr15_train_20260929.jsonl": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933"
+  },
+  "baseline_tests": {
+    "cpu": {
+      "passed": 93,
+      "skipped": 12
+    },
+    "gpu": {
+      "passed": 105,
+      "skipped": 0
+    }
+  },
+  "allocation": {
+    "job": 4652,
+    "node": "worker-3",
+    "gpu_count": 4,
+    "gpu": "H10080GB",
+    "host_memory_gib": 480
+  },
+  "protected_jobs": [
+    4643,
+    4649
+  ],
+  "parent_reload_pass": true
+}
