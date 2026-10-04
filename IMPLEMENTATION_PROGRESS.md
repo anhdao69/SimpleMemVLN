@@ -116,7 +116,7 @@ No measurements or GPU correctness gates are claimed until recorded.
 ## Final measured state
 
 Canonical results and remaining gates are in
-`reports/H100_R2R_SMOKE_2026-09-28.md`; compact remote evidence is copied to
+`reports/archive/H100_R2R_SMOKE_2026-09-28.md`; compact remote evidence is copied to
 `artifacts/remote_evidence/` locally.
 
 - Final suite: 22 passed, no skipped tests. Lock check, compilation and format

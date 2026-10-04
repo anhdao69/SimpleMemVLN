@@ -1,12 +1,14 @@
 # SimpleMemVLN
 
+[R2R `val_unseen` evaluation and inference-speed comparison](reports/R2R_ALL_VERSIONS_COMPARISON_2026-10-03.md).
+
 ## Full-episode streaming R2R
 
 The episode path implements the supplied [v2 plan](plans/SimpleMemVLN_Implementation_Plan.md):
 pretrained Qwen3.5-4B, frozen vision/merger, full-episode text gradients,
 an action classifier or sparse action-text loss, and native persistent GDN
 with FullContext or prefix + eight-step attention. See
-[implementation evidence](reports/H100_R2R_SMOKE_2026-09-28.md) and the
+[implementation evidence](reports/archive/H100_R2R_SMOKE_2026-09-28.md) and the
 [execution ledger](IMPLEMENTATION_PROGRESS.md) for measured gates and limitations.
 
 The H100 environment uses Python 3.12, Torch 2.10/cu129, Transformers 5.11,
