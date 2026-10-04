@@ -1,5 +1,7 @@
 # SimpleMemVLN
 
+[R2R `val_unseen` evaluation and inference-speed comparison](reports/R2R_ALL_VERSIONS_COMPARISON_2026-10-03.md).
+
 Minimal Qwen3.5-4B supervised fine-tuning for R2R navigation with up to eight
 uniformly sampled history frames and the current observation. The visual
 backbone stays frozen while the vision merger and language model are trained.
