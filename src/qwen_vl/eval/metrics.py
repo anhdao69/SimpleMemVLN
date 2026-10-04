@@ -1,5 +1,4 @@
 """Failure-adjusted metrics retain the entire scheduled denominator."""
-
 import math
 from collections import Counter
 
@@ -80,7 +79,7 @@ def summarize(records):
     result["peak_allocated_gib"] = max(
         (a.get("peak_allocated_gib", 0) for a in actions), default=0
     )
-    result["environment_timing_note"] = (
-        "Habitat env.step includes simulation and rendering; not separated by this adapter"
-    )
+    result[
+        "environment_timing_note"
+    ] = "Habitat env.step includes simulation and rendering; not separated by this adapter"
     return result
