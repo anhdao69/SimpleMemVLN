@@ -1,11 +1,10 @@
-"""Single-session JSON-lines model subprocess; RGB transport is lossless PNG."""
+"""Single-session JSON-lines model subprocess; RGB transport is lossless raw bytes or PNG."""
 import argparse
-import base64
 import contextlib
-import io
 import json
+import os
 import sys
-from PIL import Image
+from qwen_vl.stream.transport import decode_rgb
 
 
 def main():
@@ -22,7 +21,45 @@ def main():
 
         model, serializer = load_checkpoint(args.checkpoint, args.model_path)
         session = StreamSession(model, serializer)
-    protocol_stdout.write(json.dumps({"status": "ready"}) + "\n")
+    import platform
+    import transformers
+    import importlib.metadata
+    runtime = dict(status="ready", python=platform.python_version(), torch=torch.__version__,
+                   transformers=transformers.__version__, gpu=torch.cuda.get_device_name(),
+                   capability=torch.cuda.get_device_capability(),
+                   flash_attn=importlib.metadata.version("flash-attn"),
+                   fla=importlib.metadata.version("flash-linear-attention"),
+                   output_mode=serializer.mode, memory_mode=model.navigation_config["memory"]["mode"],
+                   cuda_runtime=torch.version.cuda,
+                   allocator_config=os.environ.get("PYTORCH_ALLOC_CONF", os.environ.get("PYTORCH_CUDA_ALLOC_CONF", "")),
+                   torch_threads=torch.get_num_threads(),
+                   dependencies={name: importlib.metadata.version(name) for name in
+                                 ("numpy", "pillow", "tokenizers", "fla-core", "triton")})
+    # Record the exact checkpoint policy; never infer it from a repository name.
+    metadata = serializer.metadata()
+    runtime.update(
+        serializer=metadata["serializer"],
+        feedback_format=metadata.get("feedback_format"),
+        append_action_tokens=model.navigation_config["observations"]["append_action_tokens"],
+        kv_window_steps_including_current=model.navigation_config["memory"].get(
+            "kv_window_steps_including_current"
+        ),
+    )
+    if serializer.mode == "candidate_logits":
+        runtime.update(
+            candidate_token_ids=metadata["candidate_token_ids"],
+            feedback_token_ids=metadata["feedback_token_ids"],
+        )
+    if getattr(model, "step_lane_spec", None) is not None:
+        runtime.update(
+            step_lane=model.step_lane_spec.to_dict(),
+            step_lane_parameter_count=sum(
+                p.numel() for name, p in model.named_parameters()
+                if ".step_lane." in name
+            ),
+            step_lane_state_dtype="torch.float32",
+        )
+    protocol_stdout.write(json.dumps(runtime) + "\n")
     protocol_stdout.flush()
     for line in sys.stdin:
         try:
@@ -33,9 +70,7 @@ def main():
                     session.reset(request["episode_uid"], request["instruction"])
                     response = {"status": "ok"}
                 elif request["operation"] == "observe":
-                    with Image.open(
-                        io.BytesIO(base64.b64decode(request["rgb_png"]))
-                    ) as rgb:
+                    with decode_rgb(request) as rgb:
                         response = session.observe(
                             request["episode_uid"], request["step_id"], rgb
                         )
@@ -44,10 +79,22 @@ def main():
                             "peak_allocated_gib": torch.cuda.max_memory_allocated()
                             / 2**30,
                         }
+                        lane_cache = getattr(session, "step_lane_cache", None)
+                        if lane_cache is not None:
+                            # Metadata only: no tensor reductions or state mutation.
+                            response["step_lane_state"] = {
+                                "layers": list(lane_cache.spec.layers),
+                                "logical_tokens": session.positions.logical_token_count,
+                                "processed_tokens": dict(lane_cache._processed_tokens),
+                                "dtypes": sorted({str(v.dtype) for v in lane_cache._states.values()}),
+                                "bytes": sum(v.numel() * v.element_size() for v in lane_cache._states.values()),
+                            }
                 else:
                     raise ValueError("Unknown operation")
         except Exception as exc:
-            response = {"status": "failure", "error": f"{type(exc).__name__}: {exc}"}
+            # CUDA/runtime failures cannot be repaired by simply resetting a session.
+            fatal = isinstance(exc, (torch.OutOfMemoryError, RuntimeError))
+            response = {"status": "fatal" if fatal else "failure", "error": f"{type(exc).__name__}: {exc}"}
         protocol_stdout.write(json.dumps(response) + "\n")
         protocol_stdout.flush()
 
