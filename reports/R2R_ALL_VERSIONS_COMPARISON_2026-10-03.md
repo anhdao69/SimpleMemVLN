@@ -1,12 +1,12 @@
 # R2R `val_unseen`: all evaluated StageVLN and SimpleMemVLN versions
 
-Updated 2026-10-05 from the local StageVLN-v2 and SimpleMemVLN evaluation journals, checkpoint metadata, training reports, and per-action timing files. The completed-results table contains only full-split R2R evaluations; a separately timestamped section records the ongoing Window8 candidate epoch-2 run. It does not use training loss, one-episode smoke runs, or partial RxR runs as navigation scores.
+Updated 2026-10-06 from the local StageVLN-v2 and SimpleMemVLN evaluation journals, checkpoint metadata, training reports, and per-action timing files. The completed-results table contains **24 full-split R2R evaluations**. It does not use training loss, smoke runs, or partial RxR runs as navigation scores. Raw artifacts remain local; this report is the consolidated interpretation.
 
 ## What is comparable
 
 All completed R2R quality rows below were checked against the same set of **1,839 R2R-VLNCE `val_unseen` episode IDs**. The evaluation dataset gzip has SHA256 `1767a407e2c8a011fbb7abece76cd64c5b39ff9fa0e9e340ebdce5a490d167c3`; the Habitat config has SHA256 `dd20dd0e43e6dff3e552b63e9bc70c74062170c39352564758835c313bcf468f`. The Stage path and Janus path hold byte-identical dataset files; the scene directory used by Stage resolves to the Janus scene directory. Both evaluators use Habitat 0.2.4, 640×480 RGB at 79° HFOV, a 0.25 m forward action, 15° turns, a 3 m success radius, seed 42, and a 500-action cap with a forced final STOP when needed. SR and SPL are final Habitat episode metrics. Oracle success is proximity at **any** visited point; navigation error is final distance to goal.
 
-This is a **checkpoint comparison**, not a controlled architectural ablation. Training data, schedules, history representation, prompts, output policy, and model runtimes differ. Stage executes an invalid generated action as STOP; SimpleMem records a failed episode as zero SR/SPL. Stage recorded zero invalid outputs in these full runs; the joint SimpleMem text epoch-1 run had one failed episode. No official R2R test-set result is claimed.
+This is a **checkpoint comparison**, not a controlled architectural ablation. Training data, schedules, history representation, prompts, output policy, and model runtimes differ. Stage executes an invalid generated action as STOP; SimpleMem records a failed episode as zero SR/SPL. Stage recorded zero invalid outputs in these full runs. Joint SimpleMem FullContext text epoch 1 and Window8 text epoch 2 each had one failed episode, retained in the denominator. No official R2R test-set result is claimed.
 
 ## Version and training dataset
 
@@ -22,9 +22,11 @@ This is a **checkpoint comparison**, not a controlled architectural ablation. Tr
 | SimpleMem `streaming` Window8-B, epoch 1 | Instruction prefix plus latest eight complete observation/feedback groups in full-attention KV; persistent GDN state; text actions | Same R2R-only corpus, independently initialized; completed epoch 1 at step 1,353 of a three-epoch schedule; later checkpoints were unavailable for this evaluation |
 | SimpleMem `streaming` joint FullContext-B, epochs 1–2 | FullContext streaming with text actions | Joint R2R (10,819) + English RxR_15deg (19,996) = 30,815 training episodes / 3,128,624 actions; successive snapshots at steps 3,852 / 7,704 of one two-epoch schedule |
 | SimpleMem `streaming_logits` joint candidate, epochs 1–2 | FullContext streaming; score only pretrained LM rows A/B/C/D, choose argmax, append fixed candidate-token feedback; no generated action text | Same joint R2R + English RxR_15deg corpus; successive snapshots at steps 3,852 / 7,704 of one two-epoch schedule |
-| SimpleMem joint Window8-B text, epoch 1 | Eight complete observation/action groups retained in full-attention KV; persistent GDN; generated text actions | Same joint corpus; completed first epoch at step 3,852 of a two-epoch schedule; R2R evaluation complete |
-| SimpleMem `streaming_logits` joint Window8 candidate, epochs 1–2 | Four-way candidate logits; prefix plus eight observation/feedback groups in full-attention KV; persistent GDN; selected candidate token fed back | Same joint corpus; epoch 1 at update 3,852 and epoch 2 at 7,704 of a two-epoch schedule; epoch-1 R2R complete, epoch 2 running |
+| SimpleMem joint Window8-B text, epochs 1–2 | Eight complete observation/action groups retained in full-attention KV; persistent GDN; generated text actions | Same joint corpus; successive snapshots at steps 3,852/7,704 of a two-epoch schedule |
+| SimpleMem `streaming_logits` joint Window8 candidate, epochs 1–2 | Four-way candidate logits; prefix plus eight observation/feedback groups in full-attention KV; persistent GDN; selected candidate token fed back | Same joint corpus; successive snapshots at updates 3,852 and 7,704 of a two-epoch schedule |
 | SimpleMem `streaming_logits` joint FullContext candidate NoHistory, epoch 1 | Full visual context and persistent GDN; four-way candidate logits; no action-content feedback, only fixed assistant closure | Same joint corpus; completed **one-epoch** cosine schedule, update 3,852/3,852; 116 warmup updates, versus 232 for the two-epoch candidate models |
+| SimpleMem `streaming_logits_dual` joint FullContext DualLane NoHistory FromBase, epochs 1–2 | NoHistory candidate policy plus trained parallel step lanes at layers 16/20/24/28; full visual KV and native GDN persist | Same joint corpus; initialized from Qwen3.5-4B base with fresh lanes; successive snapshots at updates 3,852/7,704; 232 warmup updates |
+| SimpleMem `streaming_logits_dual` joint FullContext DualLane NoHistory Adapted, epochs 1–2 | Same inference contract and lane placement as FromBase | Same joint corpus; initialized from the completed FullContext candidate NoHistory parent with fresh lanes, then trained for two **additional** epochs; snapshots at adaptation updates 3,852/7,704; 116 warmup updates. The adaptation schedule was extended at update 100 with optimizer/scheduler/RNG state preserved |
 
 The candidate labels map A/B/C/D to forward/left/right/STOP. Stage's explicit frame histories re-encode selected frames for each decision; SimpleMem streams each new observation into persistent state. The SimpleMem Window8 policy evicts old **full-attention KV groups**, while GDN state and logical positions continue across the episode. These implementations are therefore different even when two rows mention “8” or “4.”
 
@@ -32,14 +34,14 @@ The older Window8 narrative called step 1,353 “intermediate.” Its saved `tra
 
 ### Exact inference contracts for the new setups
 
-The three newly evaluated candidate checkpoints use the pinned Qwen3.5-4B base revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`, frozen vision encoder during training, trainable language backbone/tied LM rows, four-way cross entropy without class weighting, backbone LR 5e-6, weight decay 0.01, and training seed 429. Global episode batch is eight. Evaluation uses the checkpoint metadata without overriding its memory or feedback policy.
+The joint candidate and DualLane checkpoints use the pinned Qwen3.5-4B base revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`, frozen vision encoder during training, trainable language backbone/tied LM rows, four-way cross entropy without class weighting, backbone LR 5e-6, weight decay 0.01, and training seed 429. Global episode batch is eight. DualLane projections use LR 1e-4. Evaluation uses the checkpoint metadata without overriding its memory or feedback policy.
 
 - **Window8 text:** autoregressively generates canonical action text; feeds the generated response back. Window8 counts the current observation among the eight retained groups.
 - **Window8 candidate, epochs 1 and 2:** chooses argmax over A/B/C/D (`32/33/34/35`) and appends `[selected_id, 248046, 198]`. No action text is generated. Old observation/feedback groups are evicted together from full-attention KV; the instruction prefix stays.
 - **FullContext candidate with action history:** same candidate decision/feedback contract, but all observation/feedback groups remain in full-attention KV.
 - **FullContext candidate NoHistory:** chooses the same four-way action, then appends only `[248046, 198]` for every class. Neither canonical action text nor the selected candidate token is appended. **Visual history is retained.** This is not a stateless or current-frame-only policy.
 
-All evaluated SimpleMem variants preserve advancing logical/MRoPE positions and FP32 GDN recurrent state across observations, resetting at episode boundaries. Model weights and primary computation use BF16, while recurrent state and rotary calculations preserve FP32. STOP is a model decision; the evaluator forces STOP only at the 500-action cap and records that separately.
+All evaluated SimpleMem variants preserve advancing logical/MRoPE positions and FP32 native GDN recurrent state across observations, resetting at episode boundaries. DualLane adds four trained parallel lane states, also FP32, totaling 1 MiB per session. The lane reads during observation and writes once per layer after each decision, using the fixed no-history closure rather than an action token. Model weights and primary computation use BF16, while recurrent state and rotary calculations preserve FP32. STOP is a model decision; the evaluator forces STOP only at the 500-action cap and records that separately.
 
 ## Completed R2R quality
 
@@ -59,20 +61,29 @@ All rows are full-split results over 1,839 episodes. Success counts were recompu
 | SimpleMem R2R-only FullContext-B epoch 3 | 761 | 41.38% | 37.50% | 6.75 m | 54.92% | 0 failed |
 | SimpleMem R2R-only Window8-B epoch 1 | 756 | 41.11% | 36.86% | 6.71 m | 54.21% | 0 failed |
 | SimpleMem joint FullContext-B text epoch 1 | 891 | 48.45% | 44.81% | 6.09 m | 56.12% | 1 failed |
-| **SimpleMem joint FullContext-B text epoch 2** | **916** | **49.81%** | **45.40%** | **5.99 m** | **60.58%** | 0 failed |
+| SimpleMem joint FullContext-B text epoch 2 | 916 | 49.81% | 45.40% | 5.99 m | 60.58% | 0 failed |
 | SimpleMem joint FullContext candidate epoch 1 | 874 | 47.53% | 43.45% | 6.25 m | 56.17% | 0 failed |
 | SimpleMem joint FullContext candidate epoch 2 | 882 | 47.96% | 44.01% | 6.26 m | 58.56% | 0 failed |
 | SimpleMem joint Window8-B text epoch 1 | 907 | 49.32% | 45.56% | 6.04 m | 59.87% | 0 failed |
+| SimpleMem joint Window8-B text epoch 2 | **960** | **52.20%** | **48.19%** | **5.68 m** | 59.98% | 1 failed |
 | SimpleMem joint Window8 candidate epoch 1 | 862 | 46.87% | 42.96% | 6.48 m | 54.59% | 0 failed |
+| SimpleMem joint Window8 candidate epoch 2 | 886 | 48.18% | 42.85% | 6.21 m | 57.53% | 0 failed |
 | SimpleMem joint FullContext candidate NoHistory epoch 1 | 899 | 48.89% | 45.30% | 6.00 m | 57.53% | 0 failed |
+| SimpleMem joint DualLane FromBase epoch 1 | 924 | 50.24% | 46.60% | 5.83 m | 57.21% | 0 failed |
+| SimpleMem joint DualLane FromBase epoch 2 | 902 | 49.05% | 44.75% | 6.32 m | 59.76% | 0 failed |
+| SimpleMem joint DualLane Adapted epoch 1 | 802 | 43.61% | 38.97% | 6.75 m | 57.69% | 0 failed |
+| SimpleMem joint DualLane Adapted epoch 2 | 806 | 43.83% | 39.23% | 6.58 m | 57.15% | 0 failed |
 
-The highest observed SR in this set is joint FullContext-B text epoch 2 at **49.81%**. Candidate-logit epoch 2 improves on its own epoch 1 by eight successes (**0.44 percentage points**) but remains **1.85 points below** joint text epoch 2. This is a checkpoint comparison across independently trained policies, not an isolated effect of the output format. Stage v3 with memory disabled differs from enabled v3 by only one success; that single inference toggle does not support a claim that memory improved this trained policy. The R2R-only FullContext epoch-1 snapshot is the best of its three R2R-only epochs; training longer did not improve this validation SR.
+The highest observed SR is **joint Window8 text epoch 2: 960/1,839 = 52.20%**, with 48.19% SPL. DualLane FromBase epoch 1 is next by SR at 50.24%. Stage v3 with memory disabled differs from enabled v3 by only one success; that single inference toggle does not support a claim that memory improved this trained policy. The R2R-only FullContext epoch-1 snapshot is the best of its three R2R-only epochs; training longer did not improve this validation SR. One failed episode in each of joint FullContext text epoch 1 and Window8 text epoch 2 remains in the 1,839-episode denominator with zero SR/SPL.
 
 ### What the completed comparisons support
 
 - **NoHistory versus FullContext candidate with action history:** 899 versus 874 successes at epoch 1 (**+1.36 percentage points SR**, +1.85 points SPL), and 899 versus 882 at epoch 2 (**+0.92 points SR**, +1.29 points SPL). Deltas are computed from unrounded metrics; subtracting displayed rounded SR values can give 0.93 instead of 0.92. NoHistory has the higher measured full-split SR, but this does not isolate a causal benefit of removing action tokens: its one-epoch schedule ends at update 3,852, while the with-history epoch-1 checkpoint is halfway through a two-epoch schedule. There are no repeated training seeds or significance claims here.
-- **Joint Window8 text versus joint FullContext text, epoch 1:** 907 versus 891 successes, **+0.87 points SR**. Window8 text is nine successes below the best joint FullContext text epoch 2 (**−0.49 points SR**), while its SPL is slightly higher: 45.56% versus 45.40%.
+- **Joint Window8 text:** epoch 2 improves on epoch 1 from 907 to 960 successes (**+2.88 points SR**) and is 44 successes above joint FullContext text epoch 2 (**+2.39 points SR**). This is a comparison of trained checkpoints, not an isolated effect of limiting KV history.
 - **Joint Window8 candidate versus FullContext candidate, epoch 1:** 862 versus 874 successes, **−0.65 points SR**. Window8 candidate versus Window8 text is **−2.45 points SR** (862 versus 907), across independently trained output policies.
+- **Joint Window8 candidate epoch 2:** 886 versus 862 successes at epoch 1 (**+1.31 points SR**); SPL falls slightly from 42.96% to 42.85%. Window8 text epoch 2 exceeds candidate epoch 2 by 74 successes (**+4.02 points SR**), across separately trained output policies.
+- **DualLane FromBase:** epoch 1 has 924 successes, versus 902 at epoch 2 (**−1.20 points SR** after the second epoch). Its epoch-1 SR is 25 successes above the separate NoHistory parent (**+1.36 points**), but the weights were initialized from Qwen base and trained on a different schedule; this is not the causal effect of adding lanes.
+- **DualLane Adapted:** epoch 2 has 806 successes, four more than epoch 1 (**+0.22 points SR**). Both are below the NoHistory parent (899 successes). Adapted includes two additional training epochs from that parent, so the comparison does not isolate lane utility. The adapted and FromBase runs also differ in initialization and warmup schedule.
 
 | Completed joint policy | Model-predicted STOP episodes | Forced STOP at cap | Mean actions/episode |
 |---|---:|---:|---:|
@@ -81,14 +92,20 @@ The highest observed SR in this set is joint FullContext-B text epoch 2 at **49.
 | SimpleMem joint Window8-B text epoch 1 | 1627 | 212 | 115.39 |
 | SimpleMem joint Window8 candidate epoch 1 | 1654 | 185 | 107.21 |
 | SimpleMem joint FullContext candidate NoHistory epoch 1 | 1708 | 131 | 92.09 |
+| SimpleMem joint Window8-B text epoch 2 | 1734 | 104 | 89.44 |
+| SimpleMem joint Window8 candidate epoch 2 | 1671 | 168 | 105.40 |
+| SimpleMem joint DualLane FromBase epoch 1 | 1709 | 130 | 90.32 |
+| SimpleMem joint DualLane FromBase epoch 2 | 1714 | 125 | 93.64 |
+| SimpleMem joint DualLane Adapted epoch 1 | 1678 | 161 | 107.55 |
+| SimpleMem joint DualLane Adapted epoch 2 | 1675 | 164 | 103.84 |
 
-These rows have zero evaluation failures. Forced STOP is part of the shared protocol, not a model-predicted STOP or an evaluation failure.
+The Window8 text epoch-2 row has one invalid response/failure, so its predicted and forced STOP counts sum to 1,838. All other rows in this STOP table have zero evaluation failures. Forced STOP is part of the shared protocol, not a model-predicted STOP or an evaluation failure.
 
 ## Controlled inference speed
 
-Each row below uses one model process at a time on the same otherwise idle 96 GiB NVIDIA Blackwell GPU (compute capability 12.0), BF16, Torch 2.10.0+cu129, four CPU threads and the expandable CUDA allocator. The input is the **same real 640×480 Habitat RGB frame**, SHA256 `e69cf147c19881da0e08cc69fe0204dc5de0f13fce8579eae5ecd78850558e27`, and the same instruction: “Walk into the living room and keep walking straight past the living room. Then walk into the entrance under the balcony. Wait in the entrance to the other room.” Each short probe resets once, receives 16 untimed warmup observations, then receives **64 timed repeated-frame observations** while accumulating its **own** history. CUDA is synchronized around each full decision. The measured boundary includes preprocessing, vision, memory/history work, language computation and action decoding or selection. It excludes loading, reset, Habitat simulation and cross-process IPC. No gold action history is supplied. All measured decisions were valid.
+Each row below uses one model process at a time on the same 96 GiB NVIDIA Blackwell GPU (compute capability 12.0), BF16, Torch 2.10.0+cu129 for SimpleMem, four CPU threads and the expandable CUDA allocator. The input is the **same real 640×480 Habitat RGB frame**, SHA256 `e69cf147c19881da0e08cc69fe0204dc5de0f13fce8579eae5ecd78850558e27`, and the same instruction: “Walk into the living room and keep walking straight past the living room. Then walk into the entrance under the balcony. Wait in the entrance to the other room.” Each short probe resets once, receives 16 untimed warmup observations, then receives **64 timed repeated-frame observations** while accumulating its **own** history. CUDA is synchronized around each full decision. The measured boundary includes preprocessing, vision, memory/history work, language computation and action decoding or selection. It excludes loading, reset, Habitat simulation and cross-process IPC. No gold action history is supplied. All measured decisions were valid.
 
-The October 5 refresh paused the only active R2R rollout at a committed episode boundary and verified that no model compute processes remained before benchmarking. Each probe ran in its own process, one model at a time; the rollout was then resumed from its journal. The three new candidate rows pool **three independent 16-warmup + 64-measured-action runs** (192 timed actions per row); their pooled median, mean and p95 use all three runs, without selecting the fastest repetition. The refreshed Window8 text and FullContext candidate controls each use one new 64-action run. Other rows retain the earlier isolated measurements, whose per-action medians and means were recomputed from the saved records on October 5. Thus this is a complete coverage table, not a claim that every older checkpoint was rerun today.
+The October 5 refresh paused the only active R2R rollout at a committed episode boundary and verified that no model compute processes remained before benchmarking. Each probe ran in its own process, one model at a time; the rollout was then resumed from its journal. Its three new candidate rows pool **three independent 16-warmup + 64-measured-action runs** (192 timed actions per row). Other older rows retain their saved isolated measurements. On October 6, after all R2R evaluations finished, a new sequential session measured the NoHistory parent, all four trained DualLane exports, and Window8 text epochs 1/2 twice each (128 timed actions per row, pooled without selecting the faster repetition). Three unrelated service processes retained about 33 GiB of GPU memory at the initial check; GPU utilization was 0% then, but continuous absence of interference was not established. The repeated parent control was stable at 63.88/63.99 ms. October 5 and October 6 figures share the workload and GPU but are separate sessions; small cross-session differences are not meaningful.
 
 | Policy | Median ms/action ↓ | Mean | p95 | Generated tokens/action |
 |---|---:|---:|---:|---:|
@@ -108,11 +125,16 @@ The October 5 refresh paused the only active R2R rollout at a committed episode 
 | SimpleMem joint FullContext candidate epoch 1 | 63.57 | 63.45 | 65.20 | 0 |
 | SimpleMem joint FullContext candidate epoch 2 | 63.14 | 63.02 | 64.90 | 0 |
 | SimpleMem joint Window8-B text epoch 1 | 84.31 | 85.72 | 91.21 | 3 |
+| SimpleMem joint Window8-B text epoch 2 (Oct 6 pooled) | 84.34 | 85.28 | 91.88 | 3 |
 | SimpleMem joint Window8 candidate epoch 1 | 57.09 | 57.15 | 57.52 | 0 |
-| SimpleMem joint Window8 candidate epoch 2 (R2R partial) | 57.63 | 58.99 | 61.18 | 0 |
+| SimpleMem joint Window8 candidate epoch 2 | 57.63 | 58.99 | 61.18 | 0 |
 | SimpleMem joint FullContext candidate NoHistory epoch 1 | 62.75 | 62.79 | 67.36 | 0 |
+| SimpleMem joint DualLane FromBase epoch 1 (Oct 6 pooled) | 72.67 | 72.17 | 75.94 | 0 |
+| SimpleMem joint DualLane FromBase epoch 2 (Oct 6 pooled) | 71.90 | 71.66 | 73.73 | 0 |
+| SimpleMem joint DualLane Adapted epoch 1 (Oct 6 pooled) | 72.22 | 71.77 | 74.07 | 0 |
+| SimpleMem joint DualLane Adapted epoch 2 (Oct 6 pooled) | 72.15 | 72.10 | 74.44 | 0 |
 
-The matched **joint** epoch-1 candidate is 1.50× faster at the median than joint epoch-1 FullContext text (63.57 versus 95.55 ms/action). Its four-row logit projection alone averages about 0.046 ms, but the image encoder, language append and deterministic feedback append still run. This is whole-policy serving latency, not an isolated causal measurement of the output head. Stage uses Transformers 5.3.0 and fresh reader generation; SimpleMem uses Transformers 5.11.0 and persistent streaming. Their per-action figures describe these implementations on this machine and should not be labeled architecture-only speedups.
+The matched **joint** epoch-1 candidate is 1.50× faster at the median than joint epoch-1 FullContext text (63.57 versus 95.55 ms/action). Its four-row logit projection alone averages about 0.046 ms, but the image encoder, language append and deterministic feedback append still run. On October 6, the NoHistory parent control pooled median was **63.99 ms/action**; the four trained DualLane exports were **71.90–72.67 ms/action**, about **7.91–8.68 ms/action** slower on the matched short workload. This is whole-policy serving latency, not an isolated causal measurement of the output head or lanes. Stage uses Transformers 5.3.0 and fresh reader generation; SimpleMem uses Transformers 5.11.0 and persistent streaming. Their per-action figures describe these implementations on this machine and should not be labeled architecture-only speedups.
 
 FullContext latency rises with history length. In a separate 500-measured-action repeated-frame replay after the same 16 warmups:
 
@@ -125,10 +147,17 @@ FullContext latency rises with history length. In a separate 500-measured-action
 | SimpleMem joint FullContext candidate epoch 2 | 86.08 | 108.71 | 107.23 |
 | SimpleMem joint Window8-B text epoch 1 | 85.00 | 91.65 | 85.09 |
 | SimpleMem joint Window8 candidate epoch 1 | 57.44 | 60.52 | 57.27 |
-| SimpleMem joint Window8 candidate epoch 2 (R2R partial) | 57.54 | 60.73 | 57.68 |
+| SimpleMem joint Window8 candidate epoch 2 | 57.54 | 60.73 | 57.68 |
 | SimpleMem joint FullContext candidate NoHistory epoch 1 | 84.63 | 111.20 | 108.18 |
+| SimpleMem joint FullContext NoHistory epoch 1 (Oct 6 control) | 84.42 | 110.31 | 107.16 |
+| SimpleMem joint DualLane FromBase epoch 1 (Oct 6) | 93.17 | 118.60 | 115.92 |
+| SimpleMem joint DualLane FromBase epoch 2 (Oct 6) | 93.22 | 120.22 | 117.15 |
+| SimpleMem joint DualLane Adapted epoch 1 (Oct 6) | 93.42 | 119.21 | 115.99 |
+| SimpleMem joint DualLane Adapted epoch 2 (Oct 6) | 93.81 | 119.59 | 116.62 |
+| SimpleMem joint Window8-B text epoch 1 (Oct 6 control) | 84.83 | 92.03 | 84.73 |
+| SimpleMem joint Window8-B text epoch 2 (Oct 6) | 84.60 | 91.48 | 84.62 |
 
-The historical Window8 and FullContext candidate rows are different checkpoints and training policies. FullContext candidate KV grows; Window8 bounds full-attention KV, explaining its flatter long-horizon timing. The joint Window8 text checkpoint retained at most 2,618 KV tokens in these timing runs; FullContext candidate epoch 2 reached 165,218 at 516 total steps. Three clean 64-action repetitions for joint Window8 text had medians **90.79, 88.29, and 84.22 ms**; the refreshed short-run table uses the new 84.31 ms control measurement. This historical spread matters when comparing small speed differences. These repeated-frame runs are latency probes, **not navigation rollouts or SR measurements**. Stage variants do not have a matched 500-action probe here.
+The historical Window8 and FullContext candidate rows are different checkpoints and training policies. FullContext KV grows; Window8 bounds full-attention KV, explaining its flatter long-horizon timing. October 6 Window8 text epochs 1/2 retained 2,618 KV tokens; all four DualLane exports and the NoHistory parent retained 164,702 at 516 total steps. Three older clean 64-action repetitions for joint Window8 text had medians **90.79, 88.29, and 84.22 ms**. The October 6 matched repetitions were **84.35/84.50 ms** for epoch 1 and **84.43/84.30 ms** for epoch 2. This historical spread matters when comparing small speed differences. These repeated-frame runs are latency probes, **not navigation rollouts or SR measurements**. Stage variants do not have a matched 500-action probe here.
 
 ### Repeat spread and recorded rollout latency
 
@@ -137,8 +166,20 @@ Independent short-run medians, in ms/action:
 | Newly measured policy | Repetition 1 / 2 / 3 |
 |---|---:|
 | SimpleMem joint Window8 candidate epoch 1 | 56.95 / 57.09 / 57.31 |
-| SimpleMem joint Window8 candidate epoch 2 (R2R partial) | 60.80 / 57.27 / 60.25 |
+| SimpleMem joint Window8 candidate epoch 2 | 60.80 / 57.27 / 60.25 |
 | SimpleMem joint FullContext candidate NoHistory epoch 1 | 62.16 / 62.15 / 63.40 |
+
+October 6 independent short-run medians, in ms/action. The short results above pool all 128 actions for each DualLane row; pooling is not the average of the two displayed medians.
+
+| Policy | Repetition 1 / 2 | Pooled median / mean / p95 |
+|---|---:|---:|
+| FullContext NoHistory parent epoch 1 | 63.88 / 63.99 | 63.99 / 64.15 / 68.00 |
+| DualLane FromBase epoch 1 | 74.03 / 70.23 | 72.67 / 72.17 / 75.94 |
+| DualLane FromBase epoch 2 | 72.44 / 70.94 | 71.90 / 71.66 / 73.73 |
+| DualLane Adapted epoch 1 | 70.55 / 72.96 | 72.22 / 71.77 / 74.07 |
+| DualLane Adapted epoch 2 | 72.88 / 71.68 | 72.15 / 72.10 / 74.44 |
+| Window8 text epoch 1 control | 84.35 / 84.50 | 84.42 / 84.79 / 86.49 |
+| Window8 text epoch 2 | 84.43 / 84.30 | 84.34 / 85.28 / 91.88 |
 
 With the refreshed controls, Window8 candidate epoch 1 is **1.48×** faster than Window8 text on this short probe. NoHistory's short-run median is close to the FullContext candidate controls; these few repeats do not establish a general speed advantage. On the 500-action probe, FullContext NoHistory latency grows with KV history, while Window8 remains approximately flat. Checkpoint quality and inference speed remain separate measurements.
 
@@ -149,19 +190,26 @@ Completed-rollout model latencies were recorded under changing GPU contention an
 | Joint Window8 text epoch 1 | 203.58 / 184.79 / 291.41 | 209.72 | 2,718 |
 | Joint Window8 candidate epoch 1 | 178.93 / 179.44 / 234.93 | 184.98 | 2,758 |
 | Joint FullContext NoHistory epoch 1 | 200.00 / 205.01 / 297.62 | 206.17 | 159,648 |
+| Joint Window8 text epoch 2 | 162.37 / 173.93 / 234.38 | 168.47 | 2,718 |
+| Joint Window8 candidate epoch 2 | 167.48 / 158.15 / 234.68 | 173.69 | 2,758 |
+| Joint DualLane FromBase epoch 1 | 221.66 / 249.55 / 448.33 | 227.65 | 159,648 |
+| Joint DualLane FromBase epoch 2 | 144.09 / 151.46 / 203.31 | 150.14 | 159,648 |
+| Joint DualLane Adapted epoch 1 | 182.27 / 234.63 / 443.58 | 188.33 | 159,647 |
+| Joint DualLane Adapted epoch 2 | 135.21 / 128.83 / 186.80 | 141.29 | 159,636 |
 
 October 5 raw measurements and exact commands are in `artifacts/inference_speed/refresh-20261005/` (`manifest.json`, 15 measurement JSONs and their logs). Each new candidate has `*-64-r{1,2,3}.json` and `*-500-r1.json`; the controls have `*-64-r1.json`. All 15 probes completed with valid decisions. The 500-action measurements each use a separate reset and 16 warmup observations; they are not pooled with the short runs.
+
+October 6 measurements and exact commands are in `artifacts/inference_speed/dual-20261006/`: `manifest.json`, **21 measurement JSONs**, and their logs. They cover ten short parent/DualLane probes, five separate 500-action parent/DualLane probes, four short Window8-text probes, and two separate 500-action Window8-text probes. The first five short probes run parent, FromBase 1/2, Adapted 1/2; repetition 2 reverses that order, ending with the parent control. All 21 exited successfully and every recorded decision was valid. Long probes have one repetition each; no broad serving percentile or statistical significance is claimed.
 
 ## Unfinished or unmeasured variants
 
 - Joint text-policy RxR_15deg evaluations are **partial**: epoch 1 stopped at 803/3,669 (43.21% partial SR), and epoch 2 stopped at 278/3,669 (40.29% partial SR, one failure). These are excluded from the R2R quality table and are not final RxR scores.
-- Joint Window8 text epoch 1, Window8 candidate epoch 1, and FullContext NoHistory epoch 1 are now **complete** and included above. Window8 candidate epoch 2 remains partial; see the timestamped snapshot below.
-- The new `streaming_logits_dual` branch implements an additional associative step lane alongside native GDN. Its 2026-10-04 implementation report describes joint adaptation from the NoHistory parent, numerical gates, and server timing probes. No full R2R journal or matched Blackwell policy benchmark for that trained variant is available in this local evaluation set; no SR or comparable speed is assigned to it.
+- Window8 text epochs 1/2, Window8 candidate epochs 1/2, FullContext NoHistory epoch 1, and DualLane FromBase/Adapted epochs 1/2 are **complete** and included above. The server's fresh zero-output-lane timing in `DUAL_LANE_IMPLEMENTATION_2026-10-04.md` uses a different 17-observation fixture and hardware context; its 84.225/98.125 ms medians are not pooled with the trained-checkpoint Blackwell probes here.
 - Candidate controls (`canonical_action_text` feedback, frozen LM rows, copied linear head, square-root/effective-number class weights) are implemented configurations, not completed full-training and Habitat-evaluation rows. No SR or speed is imputed to them.
 
-## Ongoing R2R evaluation snapshot
+## Evaluation status
 
-At **2026-10-05 07:13:07 Asia/Ho_Chi_Minh**, Window8 candidate epoch 2 had **920/1,839 episodes**, **427 successes**, **46.41% partial SR**, **41.34% partial SPL**, and **0 evaluation failures**. The rollout was paused at 889 completed episodes for isolated speed measurements, then resumed with the identical checkpoint, source and runtime contracts; the journal has advanced beyond that point. This row is not a final score and is excluded from completed-model rankings.
+At **2026-10-06 19:19 Asia/Ho_Chi_Minh**, all 24 R2R rows in this report were complete. Each has 1,839 distinct official episode IDs. Success counts, SR/SPL, failures and the new speed probes were checked from local artifacts; no partial R2R score is used in the ranking. The two stopped RxR runs remain partial and are listed separately above.
 
 ## Evidence and limits
 
@@ -174,15 +222,29 @@ Earlier SimpleMem evaluation, speed, and training reports are preserved under `r
 | Setup | Hugging Face repository under `anhdao69/` | Immutable download revision | Evaluated checkpoint / local journal |
 |---|---|---|---|
 | Joint Window8 text | `SimpleMemVLN-R2R-RxR15deg-Window8-B` | `3c17fdd7519742d4510fb1e2f6c3151a2bb9ae67` | `epoch-1`; `window8-rxr15-text-r2r/epoch-1` |
+| Joint Window8 text | `SimpleMemVLN-R2R-RxR15deg-Window8-B` | `0a111c781477440d45afef600f3b79c340416d9f` | `epoch-2`; `window8-rxr15-text-r2r/epoch-2` |
 | Joint Window8 candidate | `SimpleMemVLN-R2R-RxR15deg-Window8-CandidateLogits` | `04d3b2264a532a8ad7f778a3e23391fa12f6c98f` | `epoch-1`; `window8-candidate-r2r/epoch-1` |
 | Joint Window8 candidate | `SimpleMemVLN-R2R-RxR15deg-Window8-CandidateLogits` | `4e1b922fb7d243a01170d963d4b675a0483bab72` | `epoch-2`; `window8-candidate-r2r/epoch-2` |
 | Joint FullContext candidate NoHistory | `SimpleMemVLN-R2R-RxR15deg-FullContext-CandidateLogits-NoHistory` | `40de30d7febd215849f6bf56679eb1a11a47a073` | `epoch-1`; `fullcontext-candidate-nohistory-r2r/epoch-1` |
+| Joint DualLane FromBase | `SimpleMemVLN-R2R-RxR15deg-FullContext-DualLane-NoHistory-FromBase` | `394847e9072106ee08abc052812c98b972aa6bf7` | `epoch-1`; `duallane-nohistory-frombase-r2r/epoch-1` |
+| Joint DualLane FromBase | `SimpleMemVLN-R2R-RxR15deg-FullContext-DualLane-NoHistory-FromBase` | `1f36ade02b4036d33af7793599d43ea16ce45675` | `epoch-2`; `duallane-nohistory-frombase-r2r/epoch-2` |
+| Joint DualLane Adapted | `SimpleMemVLN-R2R-RxR15deg-FullContext-DualLane-NoHistory-Adapted` | `6036f64ead4164731d02351ea0ccd9b5d3b67dba` | `epoch-1`; `duallane-nohistory-adapted-r2r/epoch-1` |
+| Joint DualLane Adapted | `SimpleMemVLN-R2R-RxR15deg-FullContext-DualLane-NoHistory-Adapted` | `e7e4d3dc7357d34e78646827fd9556240131899c` | `epoch-2`; `duallane-nohistory-adapted-r2r/epoch-2` |
 
-All downloaded manifest entries were verified before evaluation. The three newly completed journals contain the same 1,839 unique official episode IDs in the same deterministic order, with matching dataset, Habitat configuration, base assets, seed, action cap, failure policy and lossless transport. The new candidate evaluations use source commit `9786b15a9889712caee8bf9ab16a523a3b5b546d`, based on `streaming_logits` commit `f194e238aa9cab5d8271791a62630cdb9376d7cf`; the latest NoHistory serializer was retained. Its validation suite passed 115 tests with four GPU/training-specific tests skipped, followed by real-checkpoint Habitat smoke tests. Candidate epoch-1/2 Window8 evaluation contracts match except for checkpoint path and weight hash.
+All downloaded manifest entries needed for each evaluation were verified before launch. Each completed R2R journal contains the same 1,839 distinct official episode IDs. The newer SimpleMem contracts match the dataset and Habitat config hashes above, seed 42, 500-action cap, zero-SR/SPL failure policy, and lossless transport. The earlier candidate evaluations use source commit `9786b15a9889712caee8bf9ab16a523a3b5b546d`, based on `streaming_logits` commit `f194e238aa9cab5d8271791a62630cdb9376d7cf`; its validation suite passed 115 tests with four GPU/training-specific tests skipped, followed by real-checkpoint Habitat smoke tests. Candidate epoch-1/2 Window8 evaluation contracts match except for checkpoint path and weight hash.
+
+The four DualLane runs and October 6 timing session use evaluation source commit `c30489bf55678d425c64ea2c9739cf4f9b2e9508` in the local `eval_dual_variants_20261005` worktree based on `streaming_logits_dual`. The native strict loader, lane implementation, and no-history serializer are retained. Within each DualLane training path, epoch-1 and epoch-2 `navigation.json` are equal; trainer state records epochs 1.0/2.0 and updates 3,852/7,704 of 7,704. Each export passed `scripts/vln/check_dual_evaluation.py` and a two-episode Habitat smoke before its full run: trained lane projections and observation outputs are nonzero, FP32 sidecars total 1 MiB, one write per selected layer follows each decision, retries preserve state, episode reset clears state, and four-step offline/stream scores pass the declared numerical gate with all four argmax actions matching. These fixtures establish tested runtime behavior; the full closed-loop journals supply SR/SPL.
+
+The older DualLane implementation report described an initially requested one-pass adaptation. The published Adapted checkpoint metadata supersedes that schedule description: training was extended to two adaptation epochs at update 100, retaining 116 warmup updates. Adapted therefore has the parent's completed joint pass plus two adaptation passes; FromBase has two passes from Qwen base. Their validation differences cannot be attributed only to initialization or lane design.
 
 Weight SHA256 values:
 
 - Joint Window8 text epoch 1: `e5c81d168326d59e6b48321fbd73da713b280a92dc2fcd0865e15aa8382f281e`.
+- Joint Window8 text epoch 2: `4391b1f697616e2f003c0afbfed5f85327e4c2986d8922f73cd1a556bbf6dbcf`.
 - Joint Window8 candidate epoch 1: `4f481c576ae0253679820bec257238cda75c72a1dfcb25c9c0bab880ed3f6605`.
 - Joint Window8 candidate epoch 2: `fb5aec690ddb6419ad5656efa2c36bdefdb933c086683280dc0c91712fe894d1`.
 - Joint FullContext candidate NoHistory epoch 1: `6d492d012a872193adefb002057ea4c4e42a28301ffae1d1177c200e6a8b136d`.
+- Joint DualLane FromBase epoch 1: `b369b9c994a59f23ad055e60c0417febcb3b2075f59135c7b9d17c646a248cd9`.
+- Joint DualLane FromBase epoch 2: `5243a1a61ac64929e78f94f79300f36a6f0a46c4de90f928aba2609d6c8afc96`.
+- Joint DualLane Adapted epoch 1: `7e2e6d97678b9f93b976608756bcb31294bd8d111a43c27347ad395e97ece183`.
+- Joint DualLane Adapted epoch 2: `9c857eda5cd929cfc4735026add1bdf10d1bf6d6e16b0223af3d1194d002265e`.
