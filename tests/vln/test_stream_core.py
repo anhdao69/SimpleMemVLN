@@ -129,4 +129,5 @@ def test_fla_hopper_backward_matches_fp32_recurrent_oracle():
     from fla.ops.backends import BackendRegistry
 
     registry = BackendRegistry._registries["common"]
-    assert "common:chunk_bwd_dqkwg:tilelang" in registry._logged
+    if torch.cuda.get_device_capability()[0] == 9:
+        assert "common:chunk_bwd_dqkwg:tilelang" in registry._logged

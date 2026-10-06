@@ -77,9 +77,8 @@ PYTHONPATH=src /path/to/habitat/python -m qwen_vl.eval.habitat_r2r \
   --episode-list artifacts/eval_episode_ids.json --out artifacts/rollouts
 ```
 
-Rollout failures remain in the SR/SPL denominator. The current server's
-available Janus environment lacks Habitat; simulator execution and raw
-capture-before-action replay remain separate, unverified gates.
+Rollout failures remain in the SR/SPL denominator. The parallel evaluator below
+uses the existing Habitat environment and a separate pinned model environment.
 
 ## Legacy Uniform8 workflow (not revalidated)
 
@@ -144,3 +143,57 @@ The source and launcher receive local syntax, configuration, lockfile, and
 preflight validation. A complete GPU training run was not performed on the
 local development machine because it does not have the required dataset and
 NVIDIA environment.
+
+## Evaluate the three published FullContext-B epochs
+
+The evaluator uses the streaming branch's persistent native GDN/conv/full-attention
+state and greedy Qwen action decoding. It encodes only the current RGB frame and
+commits generated response tokens, EOS and separator once per action. It never
+switches these FullContext checkpoints to a sliding window.
+
+```bash
+uv sync --locked
+PYTHONPATH=src .venv/bin/python -m scripts.vln.download_eval_checkpoints
+
+# One model + Habitat worker per epoch. Default: share physical GPU 0.
+# Set EVAL_GPUS='0 1 2' if three GPUs are available.
+# Start with the SAME two episodes for all epochs, in a separate output directory.
+OUTPUT_DIR="$PWD/artifacts/evaluation/smoke" \
+  bash scripts/eval/run_r2r_epochs.sh --max-episodes 2
+
+# Full val_unseen, all 1,839 episodes for each epoch, in parallel:
+setsid nohup bash scripts/eval/run_r2r_epochs.sh \
+  > artifacts/evaluation-launch.log 2>&1 < /dev/null &
+```
+
+The launcher defaults to the existing `spatialstack_dagger` Habitat interpreter
+and R2R data under `SpatialForcing-VLN`. Override `EVAL_PYTHON`, `MODEL_PYTHON`,
+`R2R_DATA` (literal path with `{split}`), `MP3D_SCENES`, `CHECKPOINT_ROOT`,
+`MODEL_PATH`, `OUTPUT_DIR`, `EVAL_GPUS` and `SPLIT` as needed. Use `SPLIT=val_seen`
+with a different `OUTPUT_DIR` for seen validation. Each epoch gets an independent
+log and result directory. `worker_pids.txt` contains the three process-group IDs;
+interrupting the foreground launcher stops its model children too.
+
+Each directory contains `evaluation_contract.json`, `runtime.json`,
+`episodes.jsonl`, and `summary.json`. The journal preserves trajectories, generated
+action text/IDs, predicted/executed actions, failure reasons and timings. Summary
+SR/SPL are fractions over evaluated episodes; `scheduled_episodes` and `complete`
+make partial progress explicit. Failures contribute zero SR/SPL. A broken model
+process or fatal CUDA error stops the worker for investigation. Recoverable policy
+failures are counted and evaluation continues with a fresh episode.
+Forced STOP at decision 500 is recorded separately. Oracle success is measured
+from observed distance-to-goal; nDTW remains undefined unless supplied by Habitat.
+
+Rerunning the same command resumes completed episodes. Resume rejects changed
+weights, navigation metadata, data, evaluator/model source, episode selection or
+simulator configuration. Duplicate/unexpected journal IDs are rejected. Use a new
+output directory for a different experiment; do not mix smoke and full results.
+The launcher enables expandable CUDA allocations to limit fragmentation as
+FullContext KV grows. Raw RGB transport is lossless and avoids PNG compression overhead. Model latency
+includes preprocessing, visual encoding, decoding and final token commitment;
+transport and Habitat step latency are recorded separately.
+
+```bash
+PYTHONPATH=src VLN_MODEL_PATH="$PWD/artifacts/checkpoints/qwen-base" \
+  OMP_NUM_THREADS=4 .venv/bin/python -m pytest tests/vln -q
+```
