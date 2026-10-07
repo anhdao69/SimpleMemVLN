@@ -231,6 +231,7 @@ class SimpleMemVLNForNavigation(nn.Module):
                 use_cache=cache is not None,
                 step_plan=step_plan,
                 stream_append=stream_append,
+                window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps', 1),
                 output_hidden_states=False,
                 **lane_kwargs,
             ).last_hidden_state

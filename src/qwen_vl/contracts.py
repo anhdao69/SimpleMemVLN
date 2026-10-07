@@ -108,6 +108,9 @@ def validate_config(cfg, world_size=None):
     if mode not in SERIALIZERS or memory not in ("full_context", "window8"):
         raise ValueError("Unsupported output or memory mode")
     obs, train = cfg["observations"], cfg["training"]
+    window_batch = cfg['runtime'].get('window_attention_batch_steps', 1)
+    if type(window_batch) is not int or not 1 <= window_batch <= 64:
+        raise ValueError('Window attention batch steps must be an integer in [1,64]')
     if obs["serializer_version"] != serializer_version(cfg):
         raise ValueError("Serializer/output conflict")
     has_action_history = mode == "qwen_text" or (
