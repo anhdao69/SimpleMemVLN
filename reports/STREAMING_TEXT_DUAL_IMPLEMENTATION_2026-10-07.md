@@ -205,3 +205,61 @@ requires four GPUs and at least 400 GiB free disk, and checks the requested
 
 Raw qualification evidence is under
 `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-evidence`.
+
+
+The final mixed-length stress test replayed eight distinct RxR episodes,
+including the 627-observation episode, for three complete optimizer updates.
+All four ranks completed the expected exposures; peak reserved GPU memory was
+76.8848 GiB, guarded host working set 295.6010 GiB, and no host guard triggered.
+The supervisor reported PASS and the independent profile verifier reported
+`MIXED_TAIL_VERIFIED`. This complements the all-longest and offload-boundary
+profiles by exercising changing episode sizes across accumulation slots.
+
+
+## Production identity
+
+The production source is commit `a7e442cbd3c43cf3ec238eaa527e9c67f5ce2408`,
+pushed to `origin/streaming_text_dual`. Its tracked files were compared
+byte-for-byte against the GPU-tested development checkout and copied into a
+detached Git worktree with tracked files made read-only. Later report-only
+commits do not change that running source.
+
+Run root:
+`/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007`.
+The launch passed its production preflight in Slurm step **4659.45**, worker-3.
+The parent interactive shell **4659.0** remains available.
+
+The complete manifest is
+`/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl`,
+SHA-256 `5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933`.
+`qualification.json` in the run root records source file hashes and the
+qualification results. `launch_requested.json` records the exact command and
+source revision. Training logs are `supervisor/command.log`, sampled RAM is
+`supervisor/host_memory.jsonl`, and model/checkpoint output is `train/`.
+
+The run uses the original pinned Qwen3.5-4B snapshot directly, without an
+initial-policy checkpoint or resume argument: two epochs over the full joint
+manifest, Window8, canonical text action history, four H100 ranks and GAS2.
+
+
+At **2026-10-07 04:27:32 UTC**, all four ranks had completed **12/7,704**
+updates with contiguous progress and finite logged losses (latest 0.3506).
+All four schedule gates passed `(7704, 232)`. Observed production maximum
+reserved GPU memory was 66.7559 GiB and maximum guarded host RAM 332.9547 GiB.
+The launch verifier wrote `launch_verified.json`. The first-50 campaign report
+had not yet run at this verification point. Startup/early length-bucket timings
+are insufficient for a reliable completion ETA. Training remains active;
+completion of both epochs and navigation quality are future results.
+
+To inspect this run from the login node:
+
+```bash
+squeue --steps -j 4659
+tail -f /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/supervisor/command.log
+```
+
+If the owned training step fails, allocation 4659 and its interactive shell
+remain available. Diagnose the recorded error first, select only a checkpoint
+with a valid `RECOVERY_COMPLETE.json`, and use the existing strict resume path
+with the same source/config/manifest. The fresh launcher deliberately refuses
+to overwrite this run; it is not an automatic retry loop.

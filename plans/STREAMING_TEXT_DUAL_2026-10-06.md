@@ -67,3 +67,21 @@ No claim of 100% universal correctness or improved navigation SR follows from
 these gates. The October 6 consolidated report shows mixed candidate dual-lane
 quality results and a stronger existing Window8 text baseline; this experiment
 needs its own subsequent navigation evaluation.
+
+## Executed qualification and selected settings
+
+Qualification completed on October 7: 231 pinned-suite tests passed, actual
+text zero-init/gradient/streaming gates passed, and distributed loss and recovery
+references passed. Strict trained-lane export equality and multi-step R2R/RxR
+reload checks passed. The 627-observation all-longest workload peaked at
+76.9434 GiB GPU memory; the mixed-tail replay also passed. Select window batch
+16, vision microbatch four, four loader workers per rank and the existing
+65,536-token activation-offload threshold. Keep the GPU ZeRO-2 optimizer.
+
+The qualified code is `a7e442c`; production step is `4659.45` on worker-3.
+Both epochs start from the original base, with canonical text action history.
+Four rank schedule gates confirmed 7,704 optimizer updates and 232 warmup steps.
+The detailed implementation report records source/manifest hashes, measured
+performance, resource limits, checkpoint behavior and production paths.
+After training, evaluate each epoch on the same navigation splits as the
+Window8 text baseline before drawing quality conclusions.
