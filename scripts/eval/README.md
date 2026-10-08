@@ -88,3 +88,45 @@ checkpoint results, not a controlled initialization-only or lane-only ablation.
 The older implementation report describes the original one-pass adaptation
 plan; the published checkpoint metadata/training provenance describes the
 actual extended schedule used by these exports.
+
+## Window8 text DualLane exports
+
+Use the `streaming_text_dual` source and the same Habitat command above. The
+saved contract is `qwen_text` with canonical action history, supervised EOS,
+and Window8 KV. Strictly load the complete export through `load_checkpoint`;
+do not initialize new lanes or use the candidate-logit audit for this model.
+The greedy vocabulary head generates action text and `<|im_end|>` (at most
+16 response tokens). Exact canonical parsing maps it to a Habitat action.
+Generated STOP ends the rollout; a forced STOP at the 500-action cap is logged
+separately. Invalid responses count as failed episodes with zero SR/SPL.
+
+Before each observation, evict groups older than the latest eight, preserving
+the instruction prefix. Each group includes RGB, generated action text, EOS
+and newline. Native GDN recurrence, FP32 DualLane banks and logical/MRoPE
+positions continue across eviction. Four lanes at layers 16/20/24/28 write
+once on the final newline, after the entire response decision. Episode reset
+clears both recurrent memories. `window_attention_batch_steps: 16` accelerates
+offline training attention; streaming inference consumes one observation at
+a time through the cached attention path.
+
+Run the trained-export audit before a separate two-episode Habitat smoke and
+the full 1,839-episode split:
+
+```bash
+"$MODEL_PYTHON" scripts/vln/check_text_dual_evaluation.py \
+  --checkpoint "$CHECKPOINT" --model-path "$BASE_MODEL" \
+  --image "$REAL_HABITAT_RGB" --out "$AUDIT_JSON"
+```
+
+The 17-frame fixture crosses two Window8 boundaries. It checks trained lane
+parameters, unchanged state on nonwriter tokens, post-EOS writers, FP32 state,
+KV membership, retries, episode reset, and offline/streamed vocabulary scores
+under fixed canonical history (atol .75, rtol .03, RMS <= .15). Its separate
+unmodified greedy replay checks actual text decoding. Fixed-history decisions
+are controlled only for that numerical fixture; Habitat evaluation always
+uses the original greedy head. Neither fixture is a navigation SR measurement.
+
+The initial published epoch 1 is update 3,852 of a two-epoch 7,704-update
+schedule, from Qwen base with fresh lanes, joint R2R + English RxR 15-degree
+training, seed 429 and 232 warmup updates. It must be identified as a
+mid-schedule checkpoint in comparisons with completed two-epoch policies.
