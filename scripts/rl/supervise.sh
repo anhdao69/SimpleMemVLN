@@ -4,7 +4,7 @@
 #  1. Keeps training unit rl-$RUN_NAME alive: if it stops before COMPLETE it is relaunched with
 #     --resume from the last per-rank checkpoint (at most 6 restarts per 6 hours).
 #  2. After COMPLETE, evaluates exports/step_FINAL on R2R val_unseen with the unchanged evaluator,
-#     sharded over both GPUs (scripts/rl/eval_shards.py), merges the shards and writes the paired
+#     in 4 shards (2 per GPU; scripts/rl/eval_shards.py), merges the shards and writes the paired
 #     comparison against the completed baseline journal.
 set -uo pipefail
 NAME=${1:?run name}; CONFIG=${2:?config}; FINAL=${3:?final step}
@@ -33,9 +33,9 @@ launch_train() {
 say "supervisor start $NAME $CONFIG final=$FINAL"
 while true; do
   if [ -f "$RUN/COMPLETE" ]; then
-    [ -f "$EVAL/ids0.json" ] || { mkdir -p "$EVAL"; python3 scripts/rl/eval_shards.py split "$BASELINE" 2 "$EVAL/ids" >> "$LOG" 2>&1; }
+    [ -f "$EVAL/ids0.json" ] || { mkdir -p "$EVAL"; python3 scripts/rl/eval_shards.py split "$BASELINE" 4 "$EVAL/ids" >> "$LOG" 2>&1; }
     done_shards=0
-    for pair in "0 1" "1 0"; do
+    for pair in "0 1" "1 0" "2 1" "3 0"; do
       set -- $pair
       shard="$EVAL/shard$1"
       if complete "$shard"; then
@@ -48,8 +48,8 @@ while true; do
           --episode-list "$EVAL/ids$1.json" >> "$LOG" 2>&1
       fi
     done
-    if [ $done_shards = 2 ]; then
-      python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL/shard0" "$EVAL/shard1" >> "$LOG" 2>&1 &&
+    if [ $done_shards = 4 ]; then
+      python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL"/shard{0,1,2,3} >> "$LOG" 2>&1 &&
       python3 scripts/rl/compare_evals.py --base "$BASELINE" --new "$EVAL/val_unseen" --name-base sft_epoch2 \
         --name-new "$NAME-step$FINAL" --out "$EVAL/comparison.json" >> "$LOG" 2>&1 &&
       say "evaluation merged and compared: $EVAL" && exit 0
