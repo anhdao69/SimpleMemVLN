@@ -163,41 +163,83 @@ def gather_objects(obj):
     return out
 
 
-def rollout_group(session, env_factory, state, item, step, cfg, device):
+class RolloutWorker:
+    """One simulator server + one streaming session + one CUDA stream (one rollout thread)."""
+
+    def __init__(self, model, serializer, env_factory, device):
+        self.env_factory, self.device = env_factory, device
+        self.env = env_factory()
+        self.session = SamplingSession(model, serializer)
+        self.stream = torch.cuda.Stream(device)
+
+    def run(self, item, *, step, attempt, sample_idx, budget, cfg):
+        r = cfg['rollout']
+        seed = rollout_seed(cfg['run']['seed'], step, item['episode_id'], attempt, sample_idx)
+        for _ in range(3):
+            try:
+                with torch.cuda.stream(self.stream):
+                    episode = run_episode(self.session, self.env, item, temperature=r['temperature'],
+                                          budget=budget, seed=seed, sample_idx=sample_idx,
+                                          reward_cfg=cfg['reward'], device=self.device)
+                self.stream.synchronize()
+                episode.update(attempt=attempt, budget=budget)
+                return episode
+            except EnvironmentError_ as exc:
+                log('environment failure, restarting server:', exc)
+                try:
+                    self.env.close()
+                except Exception:
+                    pass
+                self.env = self.env_factory()
+        raise RuntimeError('Environment failed three times on one episode')
+
+    def close(self):
+        self.env.close()
+
+
+def rollout_rank(workers, items, step, cfg):
+    """All groups of this rank, G samples each, ActiveVLN dynamic sampling, K threads.
+
+    Seeds depend only on (step, episode, attempt, sample), so results do not depend on
+    which worker or in which order a sample runs.
+    """
+    import queue
+    from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+
     r = cfg['rollout']
     attempts = 1 + (r['dynamic_sampling']['max_sample_attempts'] if r['dynamic_sampling']['enabled'] else 0)
-    budget = activevln_budget(item['N_star'], item['activevln_merged_len'],
-                              r['budget_factor'], r['budget_cap'])
-    if r.get('budget_limit'):
-        budget = min(budget, r['budget_limit'])  # smoke tests only
-    history = []
-    for attempt in range(attempts):
-        group = []
-        for sample_idx in range(r['group_size']):
-            seed = rollout_seed(cfg['run']['seed'], step, item['episode_id'], attempt, sample_idx)
-            for retry in range(3):
-                try:
-                    episode = run_episode(session, state['env'], item, temperature=r['temperature'],
-                                          budget=budget, seed=seed, sample_idx=sample_idx,
-                                          reward_cfg=cfg['reward'], device=device)
-                    break
-                except EnvironmentError_ as exc:
-                    log('environment failure, restarting server:', exc)
-                    try:
-                        state['env'].close()
-                    except Exception:
-                        pass
-                    state['env'] = env_factory()
-            else:
-                raise RuntimeError('Environment failed three times on one episode')
-            episode.update(attempt=attempt, budget=budget)
-            group.append(episode)
-        history.append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
-                        for e in group])
-        if any(e['success'] for e in group):
-            break
-    # ActiveVLN: the last re-rolled group replaces the earlier one even if it also fails.
-    return group, history
+    free = queue.Queue()
+    for worker in workers:
+        free.put(worker)
+
+    def task(item, attempt, sample_idx, budget):
+        worker = free.get()
+        try:
+            return worker.run(item, step=step, attempt=attempt, sample_idx=sample_idx,
+                              budget=budget, cfg=cfg)
+        finally:
+            free.put(worker)
+
+    budgets = []
+    for item in items:
+        budget = activevln_budget(item['N_star'], item['activevln_merged_len'], r['budget_factor'], r['budget_cap'])
+        budgets.append(min(budget, r['budget_limit']) if r.get('budget_limit') else budget)
+    groups, history = [None] * len(items), [[] for _ in items]
+    with ThreadPoolExecutor(max_workers=len(workers)) as pool:
+        def submit(i, attempt):
+            return attempt, [pool.submit(task, items[i], attempt, k, budgets[i]) for k in range(r['group_size'])]
+        pending = {i: submit(i, 0) for i in range(len(items))}
+        while pending:
+            wait([f for _, fs in pending.values() for f in fs], return_when=FIRST_COMPLETED)
+            for i in [i for i, (_, fs) in pending.items() if all(f.done() for f in fs)]:
+                attempt, futures = pending.pop(i)
+                group = [f.result() for f in futures]
+                history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
+                                   for e in group])
+                groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)
+                if not any(e['success'] for e in group) and attempt + 1 < attempts:
+                    pending[i] = submit(i, attempt + 1)
+    return groups, history
 
 
 def main():
@@ -312,8 +354,9 @@ def main():
         env_root['MP3D_SCENES'], local_rank, episode_list, split=cfg['env']['split'],
         pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
         log_path=out / f'env_rank{rank}.log')
-    env_state = {'env': env_factory()}
-    log('environment ready', env_state['env'].info)
+    workers = [RolloutWorker(model, serializer, env_factory, device)
+               for _ in range(cfg['rollout'].get('workers_per_rank', 1))]
+    log('environments ready', len(workers), workers[0].env.info)
     dummy = DummyItem(serializer)
 
     for step in range(start_step, total_steps):
@@ -326,17 +369,12 @@ def main():
 
         # ---- rollout phase: same weights as the learner (colocated, no sync) ----
         model.eval()
-        session = SamplingSession(model, serializer)
-        groups, reroll = [], []
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
-        for item in local:
-            group, history = rollout_group(session, env_factory, env_state, item, step, cfg, device)
-            groups.append(group)
-            reroll.append(history)
+        groups, reroll = rollout_rank(workers, local, step, cfg)
+        torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
-        del session
         torch.cuda.empty_cache()
 
         # ---- advantages (each group lives on one rank) and verl weights ----
@@ -474,7 +512,8 @@ def main():
                 for old in kept[:-cfg['run']['keep_resumable']]:
                     shutil.rmtree(old)
             dist.barrier()
-    env_state['env'].close()
+    for worker in workers:
+        worker.close()
     if rank == 0:
         (out / 'COMPLETE' if not smoke and engine.global_steps == total_steps else out / 'STOPPED').write_text(
             json.dumps(dict(global_steps=engine.global_steps, total_steps=total_steps,
