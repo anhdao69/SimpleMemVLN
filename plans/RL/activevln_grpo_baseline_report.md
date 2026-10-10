@@ -174,4 +174,43 @@ replay on train episodes (incl. a fallback-mirror scan) gives Habitat success wi
 | `scripts/rl/audit_activevln_pool.py`, `download_train_scenes.py`, `check_ds_accumulation.py`, `eval_export.sh` | data audit, scenes, distributed-gradient gate, evaluation launcher |
 | `tests/rl/` | unit tests |
 
-(Validation, training, evaluation and analysis sections follow as runs complete.)
+| `src/qwen_vl/rl/rollout_pool.py` | multi-process rollout helpers that read the learner's live weights through CUDA IPC |
+| `src/qwen_vl/rl/checkpoint.py` | exact per-rank ZeRO-2 save/restore (memory-mapped) |
+| `scripts/rl/launch_unit.sh`, `supervise.sh`, `memwatch.sh` | isolated `systemd-run --user` units, auto-resume supervisor, memory log |
+
+---
+
+## 5. Validation (Phase 3)
+
+| Gate | Evidence | Result |
+|---|---|---|
+| Environment / simulator | `rl/env_server.py` on R2R `train`: GT-action replay of 3 episodes (incl. a fallback-mirror scan) → Habitat success, SPL 0.98–1.0; renders 480×640 on the requested GPU | pass |
+| Rollout encoding | `tests/rl/test_rollout_encoding.py`: on canonical actions, `encode_rollout` equals `EpisodeSerializer.encode_episode` tensor-for-tensor (ids, pixels, grids, step plan, targets); unterminated final responses handled | pass |
+| Sampling | `tests/rl/test_sampling.py`: 20k draws match softmax(ℓ/T) within 1%; returned log-prob/entropy exact; seed-reproducible | pass |
+| Reward / budget / GRPO / loss | `tests/rl/test_algos.py`: reward edge cases (strict d<3), unbiased-std GRPO incl. zero-variance groups, budget conversion, verl dual-clip values, on-policy gradient = −A, **micro-batch token-mean weights reproduce verl's aggregation exactly** | pass |
+| Distributed accumulation (G6b) | `scripts/rl/check_ds_accumulation.py` (2 ranks, unequal items, zero-loss padding, manual boundaries) | max rel. grad error 9.8e-8; exactly 1 optimizer step |
+| Resume (exactness) | `scripts/rl/check_resume.py` (2 ranks, bf16 ZeRO-2): per-rank save → fresh engine → load → step | bitwise-identical params and fp32 masters |
+| Rollout helpers | `scripts/rl/check_rollout_pool.py`: IPC helper vs learner, same seed → identical actions and log-probs; after an in-place weight change the helper samples from the new policy | pass |
+| Log-prob parity rollout ↔ trainer | logged every step (`logp_mismatch_*`): streaming cached forward vs full-episode training forward | mean ≈0.004 nats/token, max ≈0.2 |
+| End-to-end smoke | 2-rank runs (`/data/anh/rl_baseline/runs/smoke1`, `smoke2`): finite loss, grad-norm 2–4 before clipping, LR 1e-6, one update/step, exports written | pass |
+| Parameter update | export vs base (memory-mapped diff): 0/297 vision tensors changed; LM tensors changed with relative change ≈1e-5 after 2 updates | pass |
+| Export loads in the evaluator | 2-episode run of the unchanged evaluator on a smoke export | 2/2 complete, 0 invalid responses |
+| Determinism | full-scale step 0 re-run after a restart: identical reward (6.803) and success (0.719) | pass |
+| Resources | per rank: ≈43–48 GiB peak (train), 16 GiB (rollout); host RAM: trainer ≈3 GB anon + helpers ≈2.2 GB each; checkpoint 25 GB/rank | fits beside other users' jobs |
+
+### 5.1 Engineering incidents (and fixes)
+
+1. **Host OOM killed the tmux session.** Two ranks reading DeepSpeed's ZeRO-2 checkpoint (and, at
+   init, ZeRO-2 staging all bf16 weights through host RAM) exceeded the 62 GB shared host. The kernel
+   OOM killer then made systemd stop the whole tmux pane scope (Claude included). Fixes: every GPU job
+   runs in its own `systemd-run --user` unit (MemoryHigh 36G / MemoryMax 50G, no swap; user lingering
+   enabled); base weights load memory-mapped; DeepSpeed's resume replaced by an exact per-rank
+   save/restore; the trainable parameters are split into 8 AdamW groups with identical
+   hyperparameters so ZeRO-2 stages one ~0.5 B-parameter group at a time.
+2. **Rollouts were launch-bound.** Batch-1 streaming decoding issues hundreds of small CUDA/Triton
+   kernels per action from Python (~0.14–0.27 s/action on the shared GPUs). Threads serialize on the
+   GIL (the trainer sat at 100 % of one core). Fix: 3 helper processes per GPU whose parameters are
+   CUDA-IPC views of the learner's own tensors (exactness gate above). CUDA IPC needs the default
+   allocator (`expandable_segments` uses `pidfd_getfd`, which this host forbids). Rollout phase:
+   ≈800 s → ≈165–245 s per step.
+

@@ -416,6 +416,10 @@ def main():
             pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
             log_path=str(out / f'env_rank{rank}.log')), local_rank, cfg['rollout']['helpers_per_rank'])
         log('rollout helpers ready', cfg['rollout']['helpers_per_rank'])
+        # Every tensor the helpers map now lives in ordinary cudaMalloc segments, which CUDA IPC
+        # shares without ptrace rights. All later (training) allocations may use expandable
+        # segments, which the learner needs to avoid fragmentation on the shared GPU.
+        torch.cuda.memory._set_allocator_settings('expandable_segments:True')
     else:
         workers = [RolloutWorker(model, serializer, env_factory, device)
                    for _ in range(cfg['rollout'].get('workers_per_rank', 1))]
