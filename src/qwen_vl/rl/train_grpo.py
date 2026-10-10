@@ -33,6 +33,7 @@ import yaml
 
 from qwen_vl.rl.algos import (activevln_budget, grpo_advantages, loss_weights, micro_batches,
                               policy_loss_terms)
+from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
 from qwen_vl.rl.rollout import rollout_seed, run_episode
@@ -63,6 +64,20 @@ def load_pool(cfg):
     if cfg['data']['shuffle']:
         raise ValueError('ActiveVLN trains in fixed data order')
     return pool
+
+
+def load_base_mmap(path, model_path):
+    """``vln_runtime.load_checkpoint`` with the same strict checks, but memory-mapped weights."""
+    from qwen_vl.train.vln_runtime import load_model
+
+    metadata = json.loads((Path(path) / 'navigation.json').read_text())
+    model, serializer = load_model(metadata['config'], model_path)
+    if serializer.metadata() != metadata:
+        raise ValueError('Checkpoint tokenizer/serializer/codec contract differs')
+    state = torch.load(Path(path) / 'pytorch_model.bin', map_location='cpu', weights_only=True, mmap=True)
+    model.load_state_dict(state, strict=True)
+    del state
+    return model, serializer
 
 
 def enable_checkpointing(model, min_tokens):
@@ -245,9 +260,8 @@ def main():
         if actual != cfg['base']['weight_sha256']:
             raise ValueError(f'Base checkpoint hash {actual} differs from the configured SFT weights')
     dist.barrier()
-    from qwen_vl.train.vln_runtime import load_checkpoint
     started = time.perf_counter()
-    model, serializer = load_checkpoint(str(base), cfg['base']['model_path'])
+    model, serializer = load_base_mmap(base, cfg['base']['model_path'])
     log(f'loaded base in {time.perf_counter() - started:.0f}s')
     if cfg['trainable'] != 'language_model':
         raise ValueError('Only the SFT trainable set is supported')
@@ -267,9 +281,9 @@ def main():
     start_step = 0
     if args.resume:
         rl_state = json.loads(state_file.read_text())
-        load_path, _ = engine.load_checkpoint(str(out / 'resumable'), tag=rl_state['tag'])
-        if load_path is None:
-            raise RuntimeError('Resumable checkpoint could not be loaded')
+        # Per-rank, memory-mapped restore (rl/checkpoint.py); DeepSpeed's own ZeRO-2 resume
+        # materializes every rank's fp32 partitions on the host and exhausted its RAM.
+        load_rank_state(engine, out / 'resumable' / rl_state['tag'], rank, world)
         start_step = rl_state['next_step']
         if engine.global_steps != start_step:
             raise RuntimeError('Optimizer step counter disagrees with the RL state')
@@ -452,7 +466,7 @@ def main():
             dist.barrier()
         if done % cfg['run']['save_every'] == 0 or done == total_steps:
             tag = f'step_{done:04d}'
-            engine.save_checkpoint(str(out / 'resumable'), tag=tag)
+            save_rank_state(engine, out / 'resumable' / tag, rank, world)
             dist.barrier()
             if rank == 0:
                 state_file.write_text(json.dumps(dict(next_step=done, tag=tag, total_steps=total_steps)) + '\n')
