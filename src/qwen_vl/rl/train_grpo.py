@@ -280,7 +280,8 @@ def rollout_rank_pool(pool, items, step, cfg):
         episode.update(attempt=attempt, budget=budgets[i])
         pending[i][1][k] = episode
         if len(pending[i][1]) == G:
-            group = [pending.pop(i)[1][j] for j in range(G)]
+            finished = pending.pop(i)[1]
+            group = [finished[j] for j in range(G)]
             history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
                                for e in group])
             groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)

@@ -119,6 +119,8 @@ def helper_main(index, device_index, tensors, navigation_metadata, model_path, e
             else:
                 raise RuntimeError('Environment failed three times on one episode')
             torch.cuda.synchronize()
+            # Idle helpers must not pin cached blocks while the learner trains on this GPU.
+            torch.cuda.empty_cache()
             results.put(('done', key, episode))
         env.close()
     except BaseException:
