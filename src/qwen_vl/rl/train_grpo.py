@@ -36,6 +36,7 @@ from qwen_vl.rl.algos import (activevln_budget, grpo_advantages, loss_weights, m
 from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
+from qwen_vl.rl.placement import redistribute, should_offload
 from qwen_vl.rl.rollout import rollout_seed, run_episode
 from qwen_vl.rl.sampling import SamplingSession
 
@@ -88,6 +89,9 @@ def load_base_mmap(path, model_path):
     return model, serializer
 
 
+HOST_OFFLOAD = {'on': False}  # set per training episode by rl/placement.should_offload
+
+
 def checkpoint_with_host_offload(function, *args, min_tokens, **kwargs):
     """SFT ``checkpoint_with_cpu_offload`` with pageable (not pinned) host buffers.
 
@@ -101,7 +105,7 @@ def checkpoint_with_host_offload(function, *args, min_tokens, **kwargs):
     kwargs.pop('use_reentrant', None)
     hidden = args[0]
     context = (torch.autograd.graph.save_on_cpu(pin_memory=False)
-               if hidden.shape[-2] >= min_tokens else nullcontext())
+               if HOST_OFFLOAD['on'] or hidden.shape[-2] >= min_tokens else nullcontext())
     with context:
         return checkpoint(function, *args, use_reentrant=False, **kwargs)
 
@@ -486,6 +490,9 @@ def main():
         weights = loss_weights([e['response_tokens'] for e in trajectories],
                                [e['micro_batch'] for e in trajectories], world, num_mb_global)
         items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
+        placement = dict(moved=0, free_gib=[])
+        if world > 1:
+            items, placement = redistribute(items, device)
         n_max = int(all_reduce([len(items)], dist.ReduceOp.MAX, device)[0])
         steps_needed = max(n_max, 1)
 
@@ -494,11 +501,13 @@ def main():
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
         stats = dict(pg_loss=0.0, clipfrac=0.0, tokens=0, mismatch_abs=0.0, mismatch_max=0.0,
-                     train_entropy=0.0, forward_tokens=0)
+                     train_entropy=0.0, forward_tokens=0, offloaded=0)
         for i in range(steps_needed):
             engine.set_gradient_accumulation_boundary(i == steps_needed - 1)
             if i < len(items):
                 e, w = items[i]
+                HOST_OFFLOAD['on'] = should_offload(e, i == 0, device)
+                stats['offloaded'] += HOST_OFFLOAD['on']
                 batch = to_device(encode_rollout(serializer, e['instruction'], e['_frames'],
                                                  e['_responses']), device)
                 logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
@@ -524,6 +533,7 @@ def main():
             if not torch.isfinite(loss):
                 raise FloatingPointError(f'Non-finite RL loss at step {step}')
             engine.backward(loss, scale_wrt_gas=False)
+            HOST_OFFLOAD['on'] = False
             del batch, logp, loss
         engine.step()
         grad_norm = engine.get_global_grad_norm()
@@ -548,7 +558,7 @@ def main():
             'attempt', 'model_seconds', 'env_seconds')} for r in records],
             groups=[[e['success'] for e in g] for g in groups],
             rerolls=[len(h) - 1 for h in reroll], discarded=sum(len(h[:-1]) * G for h in reroll),
-            stats=stats, items=len(items), rollout_seconds=rollout_seconds, train_seconds=train_seconds,
+            stats=stats, items=len(items), placement=placement, rollout_seconds=rollout_seconds, train_seconds=train_seconds,
             rollout_peak=rollout_peak, train_peak=train_peak))
         if rank == 0:
             recs = [r for g in gathered for r in g['records']]
@@ -568,6 +578,10 @@ def main():
                 reroll_rounds=sum(sum(g['rerolls']) for g in gathered),
                 discarded_trajectories=sum(g['discarded'] for g in gathered),
                 trained_trajectories=sum(g['items'] for g in gathered),
+                trained_per_rank=[g['items'] for g in gathered],
+                moved_trajectories=gathered[0]['placement']['moved'],
+                free_gib_before_update=gathered[0]['placement']['free_gib'],
+                offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
                 pg_loss=sum(g['stats']['pg_loss'] for g in gathered) / world,
                 clipfrac=sum(g['stats']['clipfrac'] for g in gathered) / max(1, tok),
                 logp_mismatch_mean=sum(g['stats']['mismatch_abs'] for g in gathered) / max(1, tok),
