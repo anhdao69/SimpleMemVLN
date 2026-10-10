@@ -43,6 +43,17 @@ from qwen_vl.rl.sampling import SamplingSession
 REPO = Path(__file__).resolve().parents[3]
 
 
+def release_host_memory():
+    """Return freed rollout frames to the OS (glibc keeps freed heap otherwise) on the shared host."""
+    import ctypes
+    import gc
+    gc.collect()
+    try:
+        ctypes.CDLL('libc.so.6').malloc_trim(0)
+    except OSError:
+        pass
+
+
 def log(*parts):
     print(f'[{datetime.datetime.now():%H:%M:%S} rank{dist.get_rank() if dist.is_initialized() else 0}]',
           *parts, flush=True)
@@ -601,6 +612,7 @@ def main():
                 f.write(json.dumps(metric) + '\n')
             log('STEP', json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in metric.items()}))
         del groups, trajectories, items
+        release_host_memory()
         done = step + 1
         if done in cfg['run']['export_steps'] or done == total_steps:
             if rank == 0:

@@ -83,7 +83,7 @@ def redistribute(items, device):
     return kept, dict(free_gib=[r['free'] / GIB for r in reports], moved=len(moved))
 
 
-HOST_SAFETY_BYTES = 8 * GIB
+HOST_SAFETY_BYTES = 16 * GIB
 
 
 def device_free(device):

@@ -2,7 +2,7 @@
 # Unattended supervisor for an ActiveVLN GRPO run (runs as its own user unit).
 # Usage: supervise.sh RUN_NAME CONFIG FINAL_STEP
 #  1. Keeps training unit rl-$RUN_NAME alive: if it stops before COMPLETE it is relaunched with
-#     --resume from the last per-rank checkpoint (at most 6 restarts per 6 hours).
+#     --resume from the last per-rank checkpoint (at most 12 restarts per 6 hours).
 #  2. After COMPLETE, evaluates exports/step_FINAL on R2R val_unseen with the unchanged evaluator,
 #     in 4 shards (2 per GPU; scripts/rl/eval_shards.py), merges the shards and writes the paired
 #     comparison against the completed baseline journal.
@@ -63,7 +63,7 @@ while true; do
     now=$(date +%s); kept=()
     for t in "${restarts[@]}"; do [ $((now - t)) -lt 21600 ] && kept+=("$t"); done
     restarts=("${kept[@]}")
-    if [ ${#restarts[@]} -ge 6 ]; then say "too many restarts; giving up"; exit 1; fi
+    if [ ${#restarts[@]} -ge 12 ]; then say "too many restarts; giving up"; exit 1; fi
     [ ${#restarts[@]} -gt 0 ] || [ -s "$RUN/rl_state.json" ] || [ -d "$RUN" ] && say "training unit inactive before COMPLETE"
     [ -f "$LOGS/$NAME.log" ] && tail -n 3 "$LOGS/$NAME.log" >> "$LOG"
     restarts+=("$now"); launch_train
