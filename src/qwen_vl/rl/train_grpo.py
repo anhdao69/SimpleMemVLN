@@ -80,14 +80,30 @@ def load_base_mmap(path, model_path):
     return model, serializer
 
 
+def checkpoint_with_host_offload(function, *args, min_tokens, **kwargs):
+    """SFT ``checkpoint_with_cpu_offload`` with pageable (not pinned) host buffers.
+
+    On the shared GPUs, long RL episodes need their per-layer checkpoint inputs moved off
+    the device; pageable memory keeps that host RAM reclaimable-accounted under the unit cap.
+    The non-reentrant checkpoint graph, and therefore every gradient, is unchanged.
+    """
+    from contextlib import nullcontext
+    from torch.utils.checkpoint import checkpoint
+
+    kwargs.pop('use_reentrant', None)
+    hidden = args[0]
+    context = (torch.autograd.graph.save_on_cpu(pin_memory=False)
+               if hidden.shape[-2] >= min_tokens else nullcontext())
+    with context:
+        return checkpoint(function, *args, use_reentrant=False, **kwargs)
+
+
 def enable_checkpointing(model, min_tokens):
     """SFT checkpointing without mutating the navigation config the export must keep."""
-    from qwen_vl.models.activation_offload import checkpoint_with_cpu_offload
-
     lm = model.backbone.model.language_model
     lm.gradient_checkpointing_enable(gradient_checkpointing_kwargs={'use_reentrant': False})
     lm._set_gradient_checkpointing(enable=True, gradient_checkpointing_func=partial(
-        checkpoint_with_cpu_offload, min_tokens=min_tokens, use_reentrant=False))
+        checkpoint_with_host_offload, min_tokens=min_tokens))
 
 
 def build_engine(model, cfg, world):

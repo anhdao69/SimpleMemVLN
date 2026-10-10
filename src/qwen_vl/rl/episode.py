@@ -62,5 +62,8 @@ def response_log_probs(model, batch, temperature, with_entropy=False):
     logits = model.backbone.lm_head(hidden[0, positions - 1]).float() / temperature
     logp_all = torch.log_softmax(logits, dim=-1)
     logp = logp_all.gather(-1, batch['input_ids'][0, positions].unsqueeze(-1)).squeeze(-1)
-    entropy = -(logp_all.exp() * logp_all).sum(-1) if with_entropy else None
+    entropy = None
+    if with_entropy:  # diagnostic only: keep it out of the autograd graph
+        with torch.no_grad():
+            entropy = -(logp_all.exp() * logp_all).sum(-1)
     return logp, entropy
