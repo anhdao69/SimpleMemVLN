@@ -51,7 +51,7 @@ optim:
   warmup_steps: 0
 trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
 runtime:
-  activation_offload_min_tokens: 49152         # port: only very long episodes keep layer inputs on the host
+  activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
   checkpoint_decoder_layers: true
 run:
   seed: 20261010

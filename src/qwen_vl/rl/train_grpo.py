@@ -356,7 +356,12 @@ def main():
         cfg['rollout']['budget_limit'] = args.budget_limit
 
     import deepspeed
-    deepspeed.init_distributed(dist_backend='nccl', timeout=datetime.timedelta(hours=4))
+    timeout = datetime.timedelta(hours=4)
+    # DeepSpeed creates its data-parallel groups with dist.new_group, whose NCCL timeout is 10
+    # minutes unless given; a rank slowed by the shared host must not abort the collective.
+    _new_group = dist.new_group
+    dist.new_group = lambda *a, **kw: _new_group(*a, **{**kw, 'timeout': kw.get('timeout') or timeout})
+    deepspeed.init_distributed(dist_backend='nccl', timeout=timeout)
     rank, world = dist.get_rank(), dist.get_world_size()
     local_rank = int(os.environ.get('LOCAL_RANK', 0))
     torch.cuda.set_device(local_rank)
