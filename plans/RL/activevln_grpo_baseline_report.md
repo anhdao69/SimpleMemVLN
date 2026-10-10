@@ -1,6 +1,14 @@
 # ActiveVLN GRPO baseline on SimpleMemVLN — technical report
 
 Status: **IN PROGRESS** (this file is updated as runs complete; see §9 for the run log).
+
+> **Scope decision (user, 2026-10-10 ~12:00 UTC).** The full 4K run was stopped at step 22 and replaced
+> by a run **from scratch on a 1k subset** = the first 1,000 rows of ActiveVLN's fixed-order 4K list
+> (exactly the instructions of ActiveVLN's first 125 steps; 60 of 61 scans; N\* mean 58.9 vs 58.2;
+> SHA-256 `ba062de3…`), with maximum training speed requested, and **R2R only** (the RxR15 baseline
+> evaluation is not needed now). Config: `configs/rl/activevln_grpo_r2r1k.yaml`; everything else is
+> identical to the 4K configuration. The final step is 125; the result is therefore a 1k-instruction,
+> one-epoch ActiveVLN-GRPO baseline, not a 500-step 4K reproduction.
 Branch: `RL_baseline`. Specification: `plans/RL/activevln_baseline_spec.md`.
 Reference analysis of the official code: `plans/RL/activevln_reference_analysis.md`.
 
