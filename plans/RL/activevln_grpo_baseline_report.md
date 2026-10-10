@@ -196,6 +196,8 @@ replay on train episodes (incl. a fallback-mirror scan) gives Habitat success wi
 | Parameter update | export vs base (memory-mapped diff): 0/297 vision tensors changed; LM tensors changed with relative change ≈1e-5 after 2 updates | pass |
 | Export loads in the evaluator | 2-episode run of the unchanged evaluator on a smoke export | 2/2 complete, 0 invalid responses |
 | Determinism | full-scale step 0 re-run after a restart: identical reward (6.803) and success (0.719) | pass |
+| Resume (real model) | main run stopped after the step-3 checkpoint; the supervisor relaunched it with `--resume`; per-rank state memory-mapped and restored in ≈4.5 min; DeepSpeed step counter asserted equal to the RL step | pass |
+| Activation offload | step 0 re-run with pageable host offload of layer inputs (≥16,384 tokens): identical grad-norm (1.94) and metrics | pass (gradients unchanged) |
 | Resources | per rank: ≈43–48 GiB peak (train), 16 GiB (rollout); host RAM: trainer ≈3 GB anon + helpers ≈2.2 GB each; checkpoint 25 GB/rank | fits beside other users' jobs |
 
 ### 5.1 Engineering incidents (and fixes)
@@ -213,4 +215,9 @@ replay on train episodes (incl. a fallback-mirror scan) gives Habitat success wi
    CUDA-IPC views of the learner's own tensors (exactness gate above). CUDA IPC needs the default
    allocator (`expandable_segments` uses `pidfd_getfd`, which this host forbids). Rollout phase:
    ≈800 s → ≈165–245 s per step.
+3. **CUDA OOM on the shared GPUs.** Other users' jobs grew from ≈23 GB to ≈31 GB per GPU while our
+   learner peaks at ≈55 GB (bf16 weights 9.7 + fp32 master 8.4 + Adam 16.8 + fp32 grads 8.4 GB +
+   activations). Fixes: after the IPC-shared weights are allocated the learner switches the
+   allocator to expandable segments (no fragmentation), long episodes keep each layer's checkpoint
+   input in pageable host memory, and the diagnostic entropy is computed outside autograd.
 
