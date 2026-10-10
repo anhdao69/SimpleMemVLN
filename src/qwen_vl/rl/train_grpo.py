@@ -402,13 +402,13 @@ def main():
         pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
         log_path=out / f'env_rank{rank}.log')
     backend = cfg['rollout'].get('backend', 'threads')
-    workers, pool = [], None
+    workers, helpers = [], None
     if backend == 'processes':
         from qwen_vl.rl.rollout_pool import RolloutPool
         if 'expandable_segments:True' in os.environ.get('PYTORCH_ALLOC_CONF', '') + os.environ.get(
                 'PYTORCH_CUDA_ALLOC_CONF', ''):
             raise RuntimeError('CUDA IPC with expandable segments needs ptrace rights; unset PYTORCH_ALLOC_CONF')
-        pool = RolloutPool(model, json.loads(base_navigation), cfg['base']['model_path'], dict(
+        helpers = RolloutPool(model, json.loads(base_navigation), cfg['base']['model_path'], dict(
             python=env_root['EVAL_PYTHON'], habitat_config=str(REPO / cfg['env']['habitat_config']),
             data_path=env_root['R2R_DATA'], scenes_dir=env_root['MP3D_SCENES'], gpu=local_rank,
             episode_list=str(episode_list), split=cfg['env']['split'],
@@ -433,10 +433,10 @@ def main():
         model.eval()
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
-        if pool is not None:
+        if helpers is not None:
             torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
-            pool.check_storage()
-            groups, reroll = rollout_rank_pool(pool, local, step, cfg)
+            helpers.check_storage()
+            groups, reroll = rollout_rank_pool(helpers, local, step, cfg)
         else:
             groups, reroll = rollout_rank(workers, local, step, cfg)
         torch.cuda.synchronize()
@@ -582,8 +582,8 @@ def main():
             dist.barrier()
     for worker in workers:
         worker.close()
-    if pool is not None:
-        pool.close()
+    if helpers is not None:
+        helpers.close()
     if rank == 0:
         (out / 'COMPLETE' if not smoke and engine.global_steps == total_steps else out / 'STOPPED').write_text(
             json.dumps(dict(global_steps=engine.global_steps, total_steps=total_steps,
