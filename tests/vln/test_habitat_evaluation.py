@@ -6,6 +6,25 @@ from qwen_vl.eval.habitat_r2r import select_episodes, load_journal, rollout_epis
 from qwen_vl.stream.transport import encode_rgb, decode_rgb
 
 
+def test_model_startup_timeout_does_not_change_action_timeout(monkeypatch):
+    from qwen_vl.eval import habitat_r2r as adapter
+    process = SimpleNamespace(stdout=object())
+    monkeypatch.setattr(adapter.subprocess, 'Popen', lambda *a, **kw: process)
+    monkeypatch.setattr(adapter.selectors, 'DefaultSelector',
+                        lambda: SimpleNamespace(register=lambda *a: None))
+    waits = []
+    def ready(model):
+        waits.append(model.timeout)
+        return {'status': 'ready'}
+    monkeypatch.setattr(adapter.ModelProcess, 'read', ready)
+    model = adapter.ModelProcess('python', 'checkpoint', startup_timeout=3600)
+    assert waits == [3600]
+    assert model.timeout == 600
+    for value in (0, -1, float('nan'), float('inf')):
+        with pytest.raises(ValueError):
+            adapter.ModelProcess('python', 'checkpoint', startup_timeout=value)
+
+
 def test_rxr_guide_and_ground_truth_paths_resolve_from_split_and_role():
     from qwen_vl.eval.habitat_r2r import resolve_dataset_path
     template = '/datasets/rxr_15deg/{split}/{split}_{role}.json.gz'
