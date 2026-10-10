@@ -221,3 +221,49 @@ replay on train episodes (incl. a fallback-mirror scan) gives Habitat success wi
    allocator to expandable segments (no fragmentation), long episodes keep each layer's checkpoint
    input in pageable host memory, and the diagnostic entropy is computed outside autograd.
 
+
+---
+
+## 6. Training configuration and commands
+
+Configuration: `configs/rl/activevln_grpo_r2r4k.yaml` (every value annotated as ActiveVLN's or as a
+"port:" difference). Summary: 500 RL steps = 1 epoch of the 4,000-instruction list in parquet order;
+8 instructions × G = 4 per step; T = 1.2, top-p 1.0; per-episode budget ceil(min(2·M,120)·N\*/M)
+primitive actions; dynamic sampling ≤ 2 re-roll rounds; reward 15·(1−d/3) on success; GRPO
+(unbiased std, ε 1e-6); dual-clip PPO (0.2/0.28/3.0) with one on-policy update per step; verl
+micro-batch token-mean (2 trajectories); AdamW 1e-6 constant, (0.9, 0.999), wd 0.01, clip 1.0, no
+warmup, KL 0, entropy 0; language model trainable, vision frozen; bf16, DeepSpeed ZeRO-2, 2 ranks;
+3 IPC rollout helpers per GPU; exports every 50 steps; resumable per-rank state every 50 steps.
+
+Environment: `source /data/anh/simplemem-eval/env.sh` (EVAL_PYTHON = Habitat 0.2.4 / Python 3.10,
+MODEL_PYTHON = `.venv`, Python 3.12.13, torch 2.10.0+cu129, transformers 5.11.0, DeepSpeed 0.16.4,
+flash-attn 2.8.3, fla 0.5.2).
+
+```bash
+# data audit (needs pyarrow: isolated tools venv)
+/data/anh/rl_baseline/tools-venv/bin/python scripts/rl/audit_activevln_pool.py \
+  --parquet /data/anh/code/ActiveVLN/data/r2r_4000_train.parquet \
+  --r2r-root $DATA_ROOT/datasets/R2R_VLNCE_v1-3_preprocessed \
+  --out data/rl/activevln_r2r4k.jsonl --report data/rl/activevln_r2r4k_audit.json
+# train scenes
+.venv/bin/python scripts/rl/download_train_scenes.py --train-json $DATA_ROOT/datasets/R2R_VLNCE_v1-3_preprocessed/train/train.json.gz \
+  --scenes-dir $MP3D_SCENES --record /data/anh/rl_baseline/records/train-scene-mirror-verified.json
+# gates
+.venv/bin/python -m pytest -q tests/rl
+.venv/bin/torchrun --nproc_per_node=2 scripts/rl/check_ds_accumulation.py
+.venv/bin/torchrun --nproc_per_node=2 scripts/rl/check_resume.py /tmp/resume_toy
+PYTORCH_ALLOC_CONF= .venv/bin/python scripts/rl/check_rollout_pool.py 1 /tmp/pool_check
+# training (unattended; resumes automatically; evaluates steps 500 and 350 when done)
+systemd-run --user --unit=rl-supervisor --collect -p WorkingDirectory=$PWD /bin/bash scripts/rl/supervise.sh
+#   which launches:  scripts/rl/launch_unit.sh rl-grpo-r2r4k LOG /usr/bin/env PYTORCH_ALLOC_CONF= \
+#     .venv/bin/torchrun --nproc_per_node=2 -m qwen_vl.rl.train_grpo \
+#     --config configs/rl/activevln_grpo_r2r4k.yaml --output-dir /data/anh/rl_baseline/runs/grpo_r2r4k [--resume]
+# evaluation of an export with the baseline's exact protocol
+bash scripts/rl/eval_export.sh /data/anh/rl_baseline/runs/grpo_r2r4k/exports/step_0500 GPU OUT_DIR
+python3 scripts/rl/compare_evals.py --base /data/anh/simplemem-eval/results/r2r-full/epoch-2 --new OUT_DIR --out CMP.json
+```
+
+Run artifacts: `/data/anh/rl_baseline/runs/grpo_r2r4k/` (`run_config.json` with git commit, versions,
+DeepSpeed config; `metrics.jsonl` per step; `rollouts/step_*_rank*.jsonl` per trajectory;
+`exports/step_XXXX/` evaluable checkpoints with `rl_provenance.json`; `resumable/`), logs in
+`/data/anh/rl_baseline/logs/`.
