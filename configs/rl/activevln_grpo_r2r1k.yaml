@@ -1,0 +1,61 @@
+# ActiveVLN GRPO baseline on a 1k subset (user request 2026-10-10: faster run).
+# The 1k set is the first 1,000 rows of ActiveVLN's fixed-order 4K list = its first 125 steps.
+# Otherwise identical to activevln_grpo_r2r4k.yaml (arvillion/ActiveVLN @ 3a0c63b, examples/vlnce/r2r.sh +
+# train_vlnce_4gpus.yaml) ported to the SimpleMemVLN Window8 text policy.
+# Every value below is ActiveVLN's unless the comment says "port:".
+base:
+  checkpoint: /data/anh/checkpoints/simplemem/joint-window8-text-b/epoch-2
+  weight_sha256: 4391b1f697616e2f003c0afbfed5f85327e4c2986d8922f73cd1a556bbf6dbcf
+  model_path: /data/anh/checkpoints/simplemem/qwen-base
+data:
+  pool: data/rl/activevln_r2r4k.jsonl          # data/r2r_4000_train.parquet, row order kept
+  pool_sha256: a1f93b807ab419e4940750fb1ceec2a2db192977d5132895385820f3c23bd4d1
+  max_prompts: 1000                             # port: 1k prefix of the 4K list (user request)
+  subset_sha256: ba062de32d362951d56066519f3a07caab621b0d62d75cd296aff2660ed81358
+  prompts_per_step: 8                           # data.train_batch_size
+  shuffle: false                                # data.shuffle false: fixed parquet order
+  epochs: 1                                     # 1000 / 8 = 125 steps
+env:
+  habitat_config: docs/evaluation_setup/vln_r2r.yaml   # port: SimpleMem's Habitat 0.2.4 / HFOV 79 contract
+  split: train
+rollout:
+  group_size: 4                                 # actor_rollout_ref.rollout.n
+  temperature: 1.2
+  top_p: 1.0
+  budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
+  budget_cap: 120                               # port: converted to primitives with N*/M per episode
+  dynamic_sampling: {enabled: true, max_sample_attempts: 2}
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 4
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
+reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
+algorithm:
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+optim:
+  lr: 1.0e-6
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 8                               # port: identical groups; bounds ZeRO-2 host RAM at init
+  grad_clip: 1.0
+  warmup_steps: 0
+trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
+runtime:
+  activation_offload_min_tokens: 16384         # port: long episodes keep layer inputs on the host (shared GPUs)
+  checkpoint_decoder_layers: true
+run:
+  seed: 20261010
+  save_every: 25                                # port: more frequent than trainer.save_freq=50 (shared host)
+  extra_save_steps: []
+  export_steps: [25, 50, 75, 100, 125]
+  keep_resumable: 1

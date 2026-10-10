@@ -63,6 +63,14 @@ def load_pool(cfg):
     pool = [json.loads(line) for line in body.decode().splitlines()]
     if cfg['data']['shuffle']:
         raise ValueError('ActiveVLN trains in fixed data order')
+    limit = cfg['data'].get('max_prompts')
+    if limit:
+        # A prefix of the fixed-order list: exactly the instructions ActiveVLN's first
+        # limit/8 steps would consume.
+        pool = pool[:limit]
+        subset = ''.join(json.dumps(r, sort_keys=True) + '\n' for r in pool)
+        if hashlib.sha256(subset.encode()).hexdigest() != cfg['data']['subset_sha256']:
+            raise ValueError('RL subset hash differs from the configured prefix')
     return pool
 
 

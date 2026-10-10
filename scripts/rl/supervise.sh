@@ -1,60 +1,68 @@
 #!/usr/bin/env bash
-# Unattended supervisor for the ActiveVLN GRPO baseline (runs as its own user unit).
-#  1. Keeps training unit rl-grpo-r2r4k alive: if it stops before COMPLETE, it is relaunched
-#     with --resume from the last per-rank checkpoint (at most 6 restarts per 6 hours).
-#  2. After COMPLETE, evaluates the final export (step 500) and ActiveVLN's reference step
-#     (350) on R2R val_unseen with the unchanged evaluator (scripts/rl/eval_export.sh).
+# Unattended supervisor for an ActiveVLN GRPO run (runs as its own user unit).
+# Usage: supervise.sh RUN_NAME CONFIG FINAL_STEP
+#  1. Keeps training unit rl-$RUN_NAME alive: if it stops before COMPLETE it is relaunched with
+#     --resume from the last per-rank checkpoint (at most 6 restarts per 6 hours).
+#  2. After COMPLETE, evaluates exports/step_FINAL on R2R val_unseen with the unchanged evaluator,
+#     sharded over both GPUs (scripts/rl/eval_shards.py), merges the shards and writes the paired
+#     comparison against the completed baseline journal.
 set -uo pipefail
+NAME=${1:?run name}; CONFIG=${2:?config}; FINAL=${3:?final step}
 ROOT=/data/anh/code/SimpleMem
-RUN=/data/anh/rl_baseline/runs/grpo_r2r4k
+RUN=/data/anh/rl_baseline/runs/$NAME
 LOGS=/data/anh/rl_baseline/logs
-EVALS=/data/anh/rl_baseline/evals
-LOG=$LOGS/supervisor.log
+EVAL=/data/anh/rl_baseline/evals/$NAME-step$(printf %04d "$FINAL")
+BASELINE=/data/anh/simplemem-eval/results/r2r-full/epoch-2
+UNIT=rl-$NAME
+LOG=$LOGS/supervisor-$NAME.log
 cd "$ROOT"
 say() { echo "$(date -Is) $*" >> "$LOG"; }
+complete() { python3 -c "import json,sys; sys.exit(0 if json.load(open('$1/summary.json')).get('complete') else 1)" 2>/dev/null; }
 restarts=()
 
 launch_train() {
   local extra=()
   [ -s "$RUN/rl_state.json" ] && extra=(--resume)
   say "launch training ${extra[*]}"
-  scripts/rl/launch_unit.sh rl-grpo-r2r4k "$LOGS/grpo_r2r4k.log" /usr/bin/env PYTORCH_ALLOC_CONF= \
+  scripts/rl/launch_unit.sh "$UNIT" "$LOGS/$NAME.log" /usr/bin/env PYTORCH_ALLOC_CONF= \
     PYTORCH_CUDA_ALLOC_CONF= .venv/bin/torchrun --nproc_per_node=2 --master_port 29661 \
-    -m qwen_vl.rl.train_grpo --config configs/rl/activevln_grpo_r2r4k.yaml --output-dir "$RUN" \
-    "${extra[@]}" >> "$LOG" 2>&1
-  (setsid nohup scripts/rl/memwatch.sh rl-grpo-r2r4k "$LOGS/memwatch_grpo_r2r4k.log" >/dev/null 2>&1 &)
+    -m qwen_vl.rl.train_grpo --config "$CONFIG" --output-dir "$RUN" "${extra[@]}" >> "$LOG" 2>&1
+  (setsid nohup scripts/rl/memwatch.sh "$UNIT" "$LOGS/memwatch_$NAME.log" >/dev/null 2>&1 &)
 }
 
-launch_eval() {  # step gpu
-  local step=$1 gpu=$2 unit="rl-eval-step$1"
-  local out="$EVALS/grpo_r2r4k-step$(printf %04d "$step")/val_unseen"
-  mkdir -p "$out"
-  say "launch eval step $step on GPU $gpu -> $out"
-  scripts/rl/launch_unit.sh "$unit" "$LOGS/eval_step${step}.log" \
-    bash scripts/rl/eval_export.sh "$RUN/exports/step_$(printf %04d "$step")" "$gpu" "$out" >> "$LOG" 2>&1
-}
-
-say "supervisor start"
+say "supervisor start $NAME $CONFIG final=$FINAL"
 while true; do
   if [ -f "$RUN/COMPLETE" ]; then
-    complete=0
-    for pair in "500 1" "350 0"; do
+    [ -f "$EVAL/ids0.json" ] || { mkdir -p "$EVAL"; python3 scripts/rl/eval_shards.py split "$BASELINE" 2 "$EVAL/ids" >> "$LOG" 2>&1; }
+    done_shards=0
+    for pair in "0 1" "1 0"; do
       set -- $pair
-      f="$EVALS/grpo_r2r4k-step$(printf %04d "$1")/val_unseen/summary.json"
-      if python3 -c "import json,sys; sys.exit(0 if json.load(open('$f')).get('complete') else 1)" 2>/dev/null; then
-        complete=$((complete + 1))
-      elif ! systemctl --user is-active -q "rl-eval-step$1"; then
-        launch_eval "$1" "$2"
+      shard="$EVAL/shard$1"
+      if complete "$shard"; then
+        done_shards=$((done_shards + 1))
+      elif ! systemctl --user is-active -q "rl-eval-$NAME-$1"; then
+        say "launch eval shard $1 on GPU $2"
+        mkdir -p "$shard"
+        scripts/rl/launch_unit.sh "rl-eval-$NAME-$1" "$LOGS/eval-$NAME-shard$1.log" \
+          bash scripts/rl/eval_export.sh "$RUN/exports/step_$(printf %04d "$FINAL")" "$2" "$shard" \
+          --episode-list "$EVAL/ids$1.json" >> "$LOG" 2>&1
       fi
     done
-    if [ $complete = 2 ]; then say "all evaluations complete"; exit 0; fi
-  elif ! systemctl --user is-active -q rl-grpo-r2r4k; then
+    if [ $done_shards = 2 ]; then
+      python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL/shard0" "$EVAL/shard1" >> "$LOG" 2>&1 &&
+      python3 scripts/rl/compare_evals.py --base "$BASELINE" --new "$EVAL/val_unseen" --name-base sft_epoch2 \
+        --name-new "$NAME-step$FINAL" --out "$EVAL/comparison.json" >> "$LOG" 2>&1 &&
+      say "evaluation merged and compared: $EVAL" && exit 0
+      say "merge/compare failed"; exit 1
+    fi
+  elif ! systemctl --user is-active -q "$UNIT"; then
     now=$(date +%s); kept=()
     for t in "${restarts[@]}"; do [ $((now - t)) -lt 21600 ] && kept+=("$t"); done
     restarts=("${kept[@]}")
     if [ ${#restarts[@]} -ge 6 ]; then say "too many restarts; giving up"; exit 1; fi
-    say "training unit inactive before COMPLETE; last log lines:"; tail -n 5 "$LOGS/grpo_r2r4k.log" >> "$LOG"
+    [ ${#restarts[@]} -gt 0 ] || [ -s "$RUN/rl_state.json" ] || [ -d "$RUN" ] && say "training unit inactive before COMPLETE"
+    [ -f "$LOGS/$NAME.log" ] && tail -n 3 "$LOGS/$NAME.log" >> "$LOG"
     restarts+=("$now"); launch_train
   fi
-  sleep 120
+  sleep 60
 done
