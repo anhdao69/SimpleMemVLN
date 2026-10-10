@@ -97,7 +97,18 @@ def build_engine(model, cfg, world):
     if any('.visual.' in n for n, p in model.named_parameters() if p.requires_grad):
         raise RuntimeError('Vision tower must stay frozen')
     o = cfg['optim']
-    optimizer = torch.optim.AdamW([{'params': trainable, 'weight_decay': o['weight_decay']}],
+    # Identical hyperparameters in every group (AdamW is elementwise; clipping uses the global
+    # norm), but ZeRO-2 stages each group's flat buffer through host RAM one group at a time:
+    # one 4.2 B-parameter group needs ~17 GB of host RAM per rank and OOM-killed the job.
+    groups, chunk, target = [], [], sum(p.numel() for p in trainable) / o.get('param_groups', 8)
+    for parameter in trainable:
+        chunk.append(parameter)
+        if sum(p.numel() for p in chunk) >= target:
+            groups.append(chunk)
+            chunk = []
+    if chunk:
+        groups.append(chunk)
+    optimizer = torch.optim.AdamW([{'params': g, 'weight_decay': o['weight_decay']} for g in groups],
                                   lr=o['lr'], betas=tuple(o['betas']), eps=o['eps'])
     ds_config = {
         'train_micro_batch_size_per_gpu': 1,
@@ -502,7 +513,8 @@ def main():
                                      algorithm='activevln_grpo', config=cfg, git_commit=git, smoke=smoke))
                 log('exported step', done, digest)
             dist.barrier()
-        if done % cfg['run']['save_every'] == 0 or done == total_steps:
+        if (done % cfg['run']['save_every'] == 0 or done == total_steps
+                or done in cfg['run'].get('extra_save_steps', [])):
             tag = f'step_{done:04d}'
             save_rank_state(engine, out / 'resumable' / tag, rank, world)
             dist.barrier()

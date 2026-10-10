@@ -40,6 +40,7 @@ optim:
   betas: [0.9, 0.999]
   eps: 1.0e-8
   weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 8                               # port: identical groups; bounds ZeRO-2 host RAM at init
   grad_clip: 1.0
   warmup_steps: 0
 trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
@@ -49,5 +50,6 @@ runtime:
 run:
   seed: 20261010
   save_every: 50                                # trainer.save_freq
+  extra_save_steps: [3]                         # early checkpoint for a real-model resume check
   export_steps: [50, 100, 150, 200, 250, 300, 350, 400, 450, 500]
   keep_resumable: 1
