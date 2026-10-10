@@ -1,5 +1,7 @@
 # SimpleMemVLN
 
+[Detailed R2R and RxR evaluation setup for a new server](EVALUATION_SETUP.md).
+
 [R2R `val_unseen` evaluation and inference-speed comparison](reports/R2R_ALL_VERSIONS_COMPARISON_2026-10-03.md).
 
 Minimal Qwen3.5-4B supervised fine-tuning for R2R navigation with up to eight

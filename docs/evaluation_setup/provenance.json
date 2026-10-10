@@ -1,0 +1,35 @@
+{
+  "captured": "2026-10-10",
+  "habitat_lab": {
+    "version": "0.2.4",
+    "commit": "1639e1ae732ba1e84199a1a04b79c7243c3f8586"
+  },
+  "habitat_sim": {
+    "version": "0.2.4",
+    "commit": "f179b584bcd713c5a2a998132211e2cae881d6d1",
+    "cuda_enabled": false,
+    "built_with_bullet": false,
+    "renderer": "headless EGL"
+  },
+  "extensions": {
+    "repository": "https://github.com/phamquandung/SpatialStack",
+    "commit": "b1f435642e5397dbd1523d4c58efe504402b881e",
+    "original_directory": "src/habitat_extensions",
+    "license": "SPATIALSTACK_LICENSE",
+    "modified": false
+  },
+  "dataset_sha256": {
+    "r2r_val_unseen": "1767a407e2c8a011fbb7abece76cd64c5b39ff9fa0e9e340ebdce5a490d167c3",
+    "rxr15_val_unseen_guide": "0bf7358953a1b59502d7876611bf5da817d19ce7a8d9922b740a53a93812b94e",
+    "rxr15_val_unseen_guide_gt": "ac381254bfc019a55c62d993a770ffb7a0b77c02fa0c18118a99d02e6bc6b959"
+  },
+  "files_sha256": {
+    "SPATIALSTACK_LICENSE": "e43150faa61d7a613f0800e9558ab2e20e8801dacfa6f94f100d657c33a23981",
+    "habitat-constraints.txt": "26035b201d3998075cd11a8ca7c5b81e9a3a435805815b5d61aa084850b2f681",
+    "habitat_extensions/__init__.py": "731ac74198e869ec0cfacb321d8da837132c5ede09d5de70530d8ee03a38d0b8",
+    "habitat_extensions/measures.py": "9ac6c8fe31446b6fc3422dd2d1efec4657136ab04060dc3291597f66b3f9bee2",
+    "habitat_extensions/task.py": "653966a4c6f3adbd2a3b6b3ff7b8d4657c1ccb7c6f363edf8d55db884c8e08f5",
+    "vln_r2r.yaml": "dd20dd0e43e6dff3e552b63e9bc70c74062170c39352564758835c313bcf468f",
+    "vln_rxr15.yaml": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869"
+  }
+}
