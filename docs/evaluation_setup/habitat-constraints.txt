@@ -1,0 +1,13 @@
+# Simulator environment only: observed evaluation package versions.
+# This is a compatibility constraint set, not a complete transitive lock.
+numpy==1.26.4
+gym==0.23.0
+hydra-core==1.3.4
+omegaconf==2.3.1
+numpy-quaternion==2024.0.13
+numba==0.66.0
+llvmlite==0.48.0
+scipy==1.15.3
+opencv-python==4.11.0.86
+pillow==11.3.0
+fastdtw==0.3.4
