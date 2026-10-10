@@ -27,7 +27,7 @@ launch_train() {
   scripts/rl/launch_unit.sh "$UNIT" "$LOGS/$NAME.log" /usr/bin/env PYTORCH_ALLOC_CONF= \
     PYTORCH_CUDA_ALLOC_CONF= .venv/bin/torchrun --nproc_per_node=2 --master_port 29661 \
     -m qwen_vl.rl.train_grpo --config "$CONFIG" --output-dir "$RUN" "${extra[@]}" >> "$LOG" 2>&1
-  systemd-run --user --unit="rl-memwatch-$NAME" --collect -p MemoryMax=200M /bin/bash scripts/rl/memwatch.sh "$UNIT" "$LOGS/memwatch_$NAME.log" >/dev/null 2>&1 || true
+  systemd-run --user --unit="rl-memwatch-$NAME" --collect -p MemoryMax=200M /bin/bash /data/anh/code/SimpleMem/scripts/rl/memwatch.sh "$UNIT" "$LOGS/memwatch_$NAME.log" >/dev/null 2>&1 || true
 }
 
 say "supervisor start $NAME $CONFIG final=$FINAL"
