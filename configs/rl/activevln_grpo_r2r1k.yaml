@@ -55,7 +55,7 @@ runtime:
   checkpoint_decoder_layers: true
 run:
   seed: 20261010
-  save_every: 25                                # port: more frequent than trainer.save_freq=50 (shared host)
+  save_every: 10                                # port: more frequent than trainer.save_freq=50 (shared host)
   extra_save_steps: []
   export_steps: [25, 50, 75, 100, 125]
   keep_resumable: 1

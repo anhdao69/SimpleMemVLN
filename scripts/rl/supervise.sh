@@ -21,7 +21,11 @@ complete() { python3 -c "import json,sys; sys.exit(0 if json.load(open('$1/summa
 restarts=()
 
 launch_train() {
-  local extra=()
+  local extra=() waited=0
+  # A failed transient unit stays loaded while it deactivates; wait until it is collected.
+  while [ "$(systemctl --user show "$UNIT" -p LoadState --value 2>/dev/null)" = loaded ] && [ $waited -lt 600 ]; do
+    systemctl --user reset-failed "$UNIT" 2>/dev/null; sleep 10; waited=$((waited + 10))
+  done
   [ -s "$RUN/rl_state.json" ] && extra=(--resume)
   say "launch training ${extra[*]}"
   scripts/rl/launch_unit.sh "$UNIT" "$LOGS/$NAME.log" /usr/bin/env PYTORCH_ALLOC_CONF= \

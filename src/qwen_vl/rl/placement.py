@@ -45,7 +45,7 @@ def redistribute(items, device):
     """items: this rank's [(episode, weight)]. Returns this rank's items after placement + stats."""
     rank, world = dist.get_rank(), dist.get_world_size()
     torch.cuda.empty_cache()
-    free = torch.cuda.mem_get_info(device)[0]
+    free = device_free(device)
     reports = [None] * world
     dist.all_gather_object(reports, dict(free=free, lengths=[episode_tokens(e) for e, _ in items]))
     assignment = plan([r['free'] for r in reports], [r['lengths'] for r in reports])
@@ -83,9 +83,30 @@ def redistribute(items, device):
     return kept, dict(free_gib=[r['free'] / GIB for r in reports], moved=len(moved))
 
 
+HOST_SAFETY_BYTES = 8 * GIB
+
+
+def device_free(device):
+    """Free device memory including blocks this process's caching allocator holds but does not use."""
+    return (torch.cuda.mem_get_info(device)[0] + torch.cuda.memory_reserved(device)
+            - torch.cuda.memory_allocated(device))
+
+
+def host_available():
+    with open('/proc/meminfo') as f:
+        for line in f:
+            if line.startswith('MemAvailable:'):
+                return int(line.split()[1]) * 1024
+    return 0
+
+
 def should_offload(episode, first_item, device):
-    free = torch.cuda.mem_get_info(device)[0]
-    need = episode_tokens(episode) * ACTIVATION_BYTES_PER_TOKEN + ITEM_MARGIN_BYTES
+    """Offload checkpointed layer inputs only if the GPU is short and the host can take them."""
+    tokens = episode_tokens(episode)
+    need = tokens * ACTIVATION_BYTES_PER_TOKEN + ITEM_MARGIN_BYTES
     if first_item:
         need += STEP_RESERVE_BYTES
-    return need > free
+    if need <= device_free(device):
+        return False
+    host_cost = tokens * (ACTIVATION_BYTES_PER_TOKEN - OFFLOADED_BYTES_PER_TOKEN)
+    return host_available() - host_cost > HOST_SAFETY_BYTES
