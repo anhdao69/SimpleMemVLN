@@ -21,7 +21,9 @@ rollout:
   budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
   budget_cap: 120                               # port: converted to primitives with N*/M per episode
   dynamic_sampling: {enabled: true, max_sample_attempts: 2}
-  workers_per_rank: 4                           # port: parallel rollout threads per GPU (seeded per sample)
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 3
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
 reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
 algorithm:
   adv_estimator: grpo

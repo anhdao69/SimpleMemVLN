@@ -253,6 +253,42 @@ def rollout_rank(workers, items, step, cfg):
     return groups, history
 
 
+def rollout_rank_pool(pool, items, step, cfg):
+    """rollout_rank for multi-process IPC helpers (rl/rollout_pool.py); same scheduling."""
+    r = cfg['rollout']
+    attempts = 1 + (r['dynamic_sampling']['max_sample_attempts'] if r['dynamic_sampling']['enabled'] else 0)
+    G = r['group_size']
+    budgets = []
+    for item in items:
+        budget = activevln_budget(item['N_star'], item['activevln_merged_len'], r['budget_factor'], r['budget_cap'])
+        budgets.append(min(budget, r['budget_limit']) if r.get('budget_limit') else budget)
+    groups, history, pending = [None] * len(items), [[] for _ in items], {}
+
+    def submit(i, attempt):
+        for k in range(G):
+            pool.submit((i, attempt, k), items[i], temperature=r['temperature'], budget=budgets[i],
+                        seed=rollout_seed(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k),
+                        sample_idx=k, reward_cfg=cfg['reward'])
+        pending[i] = (attempt, {})
+
+    for i in range(len(items)):
+        submit(i, 0)
+    while pending:
+        (i, attempt, k), episode = pool.get()
+        if pending[i][0] != attempt:
+            raise RuntimeError('Out-of-order rollout result')
+        episode.update(attempt=attempt, budget=budgets[i])
+        pending[i][1][k] = episode
+        if len(pending[i][1]) == G:
+            group = [pending.pop(i)[1][j] for j in range(G)]
+            history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
+                               for e in group])
+            groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)
+            if not any(e['success'] for e in group) and attempt + 1 < attempts:
+                submit(i, attempt + 1)
+    return groups, history
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--config', required=True)
@@ -365,9 +401,24 @@ def main():
         env_root['MP3D_SCENES'], local_rank, episode_list, split=cfg['env']['split'],
         pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
         log_path=out / f'env_rank{rank}.log')
-    workers = [RolloutWorker(model, serializer, env_factory, device)
-               for _ in range(cfg['rollout'].get('workers_per_rank', 1))]
-    log('environments ready', len(workers), workers[0].env.info)
+    backend = cfg['rollout'].get('backend', 'threads')
+    workers, pool = [], None
+    if backend == 'processes':
+        from qwen_vl.rl.rollout_pool import RolloutPool
+        if 'expandable_segments:True' in os.environ.get('PYTORCH_ALLOC_CONF', '') + os.environ.get(
+                'PYTORCH_CUDA_ALLOC_CONF', ''):
+            raise RuntimeError('CUDA IPC with expandable segments needs ptrace rights; unset PYTORCH_ALLOC_CONF')
+        pool = RolloutPool(model, json.loads(base_navigation), cfg['base']['model_path'], dict(
+            python=env_root['EVAL_PYTHON'], habitat_config=str(REPO / cfg['env']['habitat_config']),
+            data_path=env_root['R2R_DATA'], scenes_dir=env_root['MP3D_SCENES'], gpu=local_rank,
+            episode_list=str(episode_list), split=cfg['env']['split'],
+            pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
+            log_path=str(out / f'env_rank{rank}.log')), local_rank, cfg['rollout']['helpers_per_rank'])
+        log('rollout helpers ready', cfg['rollout']['helpers_per_rank'])
+    else:
+        workers = [RolloutWorker(model, serializer, env_factory, device)
+                   for _ in range(cfg['rollout'].get('workers_per_rank', 1))]
+        log('environments ready', len(workers), workers[0].env.info)
     dummy = DummyItem(serializer)
 
     for step in range(start_step, total_steps):
@@ -382,7 +433,12 @@ def main():
         model.eval()
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
-        groups, reroll = rollout_rank(workers, local, step, cfg)
+        if pool is not None:
+            torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
+            pool.check_storage()
+            groups, reroll = rollout_rank_pool(pool, local, step, cfg)
+        else:
+            groups, reroll = rollout_rank(workers, local, step, cfg)
         torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
@@ -526,6 +582,8 @@ def main():
             dist.barrier()
     for worker in workers:
         worker.close()
+    if pool is not None:
+        pool.close()
     if rank == 0:
         (out / 'COMPLETE' if not smoke and engine.global_steps == total_steps else out / 'STOPPED').write_text(
             json.dumps(dict(global_steps=engine.global_steps, total_steps=total_steps,
