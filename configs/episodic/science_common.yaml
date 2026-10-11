@@ -1,0 +1,50 @@
+# Episodic-memory campaign: shared scientific recipe (plans/episodic_mem.md §3).
+# Fresh pretrained Qwen3.5-4B, canonical text actions with action history,
+# full joint R2R + English RxR-CE 15deg, complete episodes and full BPTT.
+# Two-epoch schedule (7,704 updates, 232 warmup, cosine min ratio 0.1);
+# Phase-1 runs stop at the epoch-1 boundary (mid-schedule E1 snapshot) with
+# complete optimizer state so epoch 2 can resume exactly on the same profile.
+model:
+  backbone: Qwen/Qwen3.5-4B
+  revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+  output_mode: qwen_text
+observations:
+  serializer_version: vln_append_only_chat_v1
+  append_action_tokens: true
+  expected_rgb_shape: [480, 640, 3]
+  expected_visual_tokens: 300
+  max_prefix_tokens: 2048
+  max_step_group_tokens: 384
+generation:
+  max_response_tokens_including_eos: 16
+  fixed_separator: "\n"
+training:
+  use_cache: false
+  microbatch_episodes_per_rank: 1
+  nominal_episodes_per_update: 8
+  model_max_length: 262144
+  epochs: 2
+  backbone_lr: 0.000005
+  classifier_lr: 0.000005
+  weight_decay: 0.01
+  warmup_steps: 232
+  expected_total_steps: 7704
+  expected_warmup_steps: 232
+  seed: 429
+  checkpoint_decoder_layers: true
+  activation_offload_min_tokens: 65536
+  length_bucket_pool_episodes: 64
+  tail_policy: accelerate_repeat
+  supervise_assistant_terminator: true
+  class_weighting: none
+  save_strategy: epoch
+  save_total_limit: null
+runtime:
+  text_attention: simplememvln_step_attention
+  vision_attention: flash_attention_2
+  vision_microbatch_images: 4
+  max_logical_context_tokens: 262144
+  window_attention_batch_steps: 8
+  profile_components: false
+  action_diagnostics: false
+  episodic_diagnostics: true

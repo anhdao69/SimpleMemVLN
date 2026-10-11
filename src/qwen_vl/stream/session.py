@@ -97,10 +97,10 @@ class StreamSession:
             block["mm_token_type_ids"],
             block.get("image_grid_thw"),
         )
-        if self.episodic is not None:
-            lane_kwargs["episodic_serving"] = self.episodic
+        episodic_kwargs = {} if self.episodic is None else dict(episodic_serving=self.episodic)
         hidden = self.model.hidden(
-            **block, position_ids=positions, cache=self.cache, stream_append=True, **lane_kwargs
+            **block, position_ids=positions, cache=self.cache, stream_append=True,
+            **lane_kwargs, **episodic_kwargs,
         )
         assert_state_dtypes(self.cache)
         if lane_kwargs:

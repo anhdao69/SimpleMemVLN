@@ -1,0 +1,12 @@
+# Runtime profile H2: 2 x H100 80GB, one episode/rank, GAS4 (global batch 8),
+# ZeRO-2 with CPU optimizer offload (configs/deepspeed_zero2_cpu_optimizer.json,
+# zero_force_ds_cpu_optimizer=false keeps the existing torch AdamW).
+training:
+  gradient_accumulation_steps: 4
+  dataloader_num_workers: 0
+  dataloader_pin_memory: false
+  dataloader_persistent_workers: false
+  activation_offload_backend: pinned_arena_v1
+runtime:
+  stage_pixels_bf16: true
+  malloc_trim_each_update: true

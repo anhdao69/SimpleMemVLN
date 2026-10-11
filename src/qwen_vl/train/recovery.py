@@ -110,12 +110,13 @@ def rewind_reports(root, step):
 
 
 class RecoverySaves(TrainerCallback):
-    def __init__(self, interval):
-        if interval < 1:
+    def __init__(self, interval, first_step=0):
+        if interval < 1 or first_step < 0:
             raise ValueError('Recovery interval must be positive')
-        self.interval = interval
+        self.interval, self.first_step = interval, first_step
 
     def on_step_end(self, args, state, control, **kwargs):
-        if state.global_step > 0 and state.global_step % self.interval == 0:
+        if state.global_step > 0 and (state.global_step % self.interval == 0
+                                      or state.global_step == self.first_step):
             control.should_save = True
         return control

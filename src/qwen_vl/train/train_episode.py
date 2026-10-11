@@ -16,10 +16,62 @@ from qwen_vl.train.vln_runtime import resolve_config, load_model
 from qwen_vl.train.campaign import ScheduleGuard, CampaignReports, checkpoint_policy
 
 
-class MeasurementCallback(transformers.TrainerCallback):
+def host_memory_record():
+    """Process RSS plus job-cgroup usage (v1 or v2) for per-update resource logs."""
+    from qwen_vl.train.host_memory import cgroup_sample, process_rss_gib
+    from qwen_vl.models.activation_offload import activation_arena
+
+    record = dict(process_rss_gib=process_rss_gib())
+    try:
+        record.update(cgroup_sample())
+    except Exception as exc:  # resource logging must never stop training
+        record["cgroup_error"] = repr(exc)[:200]
+    arena = activation_arena()
+    if arena is not None:
+        record.update(arena.stats())
+    return record
+
+
+class StopAfterEpochs(transformers.TrainerCallback):
+    """Stop at an epoch boundary without shortening the declared LR schedule."""
+
+    def __init__(self, epochs):
+        if epochs < 1:
+            raise ValueError("stop-after-epochs must be positive")
+        self.epochs = epochs
+
+    def on_epoch_end(self, args, state, control, **kwargs):
+        if round(state.epoch) >= self.epochs:
+            control.should_save = True        # the epoch export/recovery state is written first
+            control.should_training_stop = True
+            print(f"STOP_AFTER_EPOCH {self.epochs} at update {state.global_step}", flush=True)
+        return control
+
+
+class CheckpointRequest(transformers.TrainerCallback):
+    """Slurm pre-termination: save a complete recovery checkpoint at the next update boundary."""
+
     def __init__(self, out):
+        self.flag = Path(out) / "REQUEST_CHECKPOINT_AND_STOP"
+
+    def on_step_end(self, args, state, control, **kwargs):
+        import torch.distributed as dist
+
+        requested = torch.tensor([int(self.flag.exists())], device=args.device)
+        if dist.is_initialized():
+            dist.all_reduce(requested)
+        if int(requested):
+            control.should_save = True
+            control.should_training_stop = True
+            print(f"CHECKPOINT_REQUEST honored at update {state.global_step}", flush=True)
+        return control
+
+
+class MeasurementCallback(transformers.TrainerCallback):
+    def __init__(self, out, malloc_trim=False):
         self.out = Path(out)
         self.started = None
+        self.malloc_trim = malloc_trim
 
     def on_step_begin(self, args, state, control, **kwargs):
         torch.cuda.synchronize()
@@ -36,7 +88,13 @@ class MeasurementCallback(transformers.TrainerCallback):
             unix_end=time.time(),
             peak_allocated_gib=torch.cuda.max_memory_allocated() / 2**30,
             peak_reserved_gib=torch.cuda.max_memory_reserved() / 2**30,
+            device_total_gib=torch.cuda.get_device_properties(0).total_memory / 2**30,
+            cuda_ooms=torch.cuda.memory_stats().get("num_ooms", 0),
         )
+        if self.malloc_trim:
+            import ctypes
+            ctypes.CDLL("libc.so.6").malloc_trim(0)   # return freed staging heap to the OS
+        record.update(host_memory_record())
         with (self.out / f"profile_rank{args.process_index}.jsonl").open("a") as f:
             f.write(json.dumps(record) + "\n")
         if args.process_index == 0:
@@ -45,11 +103,13 @@ class MeasurementCallback(transformers.TrainerCallback):
 
 class EpisodeTrainer(QwenSFTTrainer):
     def __init__(
-        self, *args, serializer, data_contract, recovery_save_steps=0, **kwargs
+        self, *args, serializer, data_contract, recovery_save_steps=0,
+        episodic_diagnostics=False, **kwargs
     ):
         self.serializer = serializer
         self.data_contract = data_contract
         self.recovery_save_steps = recovery_save_steps
+        self.episodic_diagnostics = episodic_diagnostics
         super().__init__(*args, **kwargs)
 
     def get_train_dataloader(self):
@@ -162,6 +222,15 @@ class EpisodeTrainer(QwenSFTTrainer):
     ):
         torch.cuda.synchronize()
         started = time.perf_counter()
+        diagnostics = None
+        if model.training and "episodic_layout" in inputs and self.episodic_diagnostics:
+            diagnostics = {}
+            inputs = dict(inputs, episodic_diagnostics=diagnostics)
+        from qwen_vl.models.activation_offload import activation_arena
+
+        arena = activation_arena()
+        if arena is not None and arena.live:
+            raise RuntimeError("Activation arena still holds inputs from a previous episode")
         loss, output = super().compute_loss(model, inputs, True, num_items_in_batch)
         torch.cuda.synchronize()
         self.last_forward_seconds = time.perf_counter() - started
@@ -185,6 +254,12 @@ class EpisodeTrainer(QwenSFTTrainer):
                 )
             if "unweighted_loss_sum" in output:
                 record["unweighted_loss_sum"] = float(output["unweighted_loss_sum"])
+            if diagnostics is not None:
+                from qwen_vl.stream.episodic import plan_summary
+
+                record["episodic"] = {
+                    str(layer): plan_summary(plan, inputs["episodic_layout"])
+                    for layer, plan in diagnostics.get("plans", {}).items()}
             if hasattr(self, "action_metrics_callback") and prediction is not None:
                 self.action_metrics_callback.add(
                     truth,
@@ -210,6 +285,8 @@ def train_episode():
         "--policy_config",
         help="Optional policy ablation overlay; preserves production schedule",
     )
+    p.add_argument("--runtime_profile",
+                   help="Validated H4/H2 runtime overlay (GAS, loader, offload); merged last")
     p.add_argument("--manifest", required=True)
     p.add_argument("--model_name_or_path")
     p.add_argument("--episode-limit", type=int)
@@ -226,6 +303,10 @@ def train_episode():
     p.add_argument("--gradient_accumulation_steps", type=int)
     p.add_argument("--save_steps", type=int, default=500)
     p.add_argument("--recovery-save-steps", type=int, default=0)
+    p.add_argument("--first-recovery-save-step", type=int, default=0,
+                   help="Extra early recovery save (campaign winner verification)")
+    p.add_argument("--stop-after-epochs", type=int,
+                   help="Stop at this epoch boundary; the full declared schedule is kept")
     p.add_argument(
         "--profile-only",
         action="store_true",
@@ -233,7 +314,8 @@ def train_episode():
     )
     args = p.parse_args()
     cfg = resolve_config(
-        args.vln_config, args.output_config, args.memory_config, args.policy_config
+        args.vln_config, args.output_config, args.memory_config, args.policy_config,
+        args.runtime_profile,
     )
     if args.gradient_accumulation_steps:
         cfg["training"]["gradient_accumulation_steps"] = (
@@ -284,6 +366,19 @@ def train_episode():
     dataset = EpisodeDataset(
         args.manifest, serializer, args.episode_limit, args.selection
     )
+    offload_backend = t.get("activation_offload_backend", "save_on_cpu_pinned")
+    threshold = t.get("activation_offload_min_tokens")
+    arena_record = None
+    if offload_backend == "pinned_arena_v1" and threshold is not None:
+        longest = max(dataset.encoded_lengths)
+        if longest >= threshold:
+            from qwen_vl.models.activation_offload import arena_bytes_for, install_activation_arena
+
+            text = model.config.text_config
+            capacity = arena_bytes_for(longest, text.hidden_size, text.num_hidden_layers)
+            arena = install_activation_arena(capacity)
+            arena_record = dict(longest_tokens=longest, capacity_bytes=arena.capacity)
+            print("ACTIVATION_ARENA", json.dumps(arena_record), flush=True)
     data_contract = dict(
         manifest_sha256=hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
         episode_uids=[e["episode_uid"] for e in dataset.episodes],
@@ -339,6 +434,9 @@ def train_episode():
         max_grad_norm=1.0,
         logging_steps=1,
         **checkpoint_policy(t, args.profile_only, args.save_steps),
+        dataloader_pin_memory=t.get("dataloader_pin_memory", True),
+        dataloader_persistent_workers=t.get("dataloader_persistent_workers", False),
+        dataloader_prefetch_factor=t.get("dataloader_prefetch_factor"),
         report_to="none",
         seed=t["seed"],
         deepspeed=args.deepspeed,
@@ -372,7 +470,13 @@ def train_episode():
             ),
             flush=True,
         )
-    callbacks = [MeasurementCallback(out)]
+    callbacks = [MeasurementCallback(out, cfg["runtime"].get("malloc_trim_each_update", False))]
+    if not args.profile_only:
+        callbacks.append(CheckpointRequest(out))
+    if args.stop_after_epochs:
+        if args.stop_after_epochs >= t["epochs"]:
+            raise ValueError("stop-after-epochs must precede the declared final epoch")
+        callbacks.append(StopAfterEpochs(args.stop_after_epochs))
     if getattr(model, "step_lane_spec", None) is not None:
         from qwen_vl.train.lane_reporting import LaneParameterCallback
         callbacks.append(LaneParameterCallback(out))
@@ -383,7 +487,7 @@ def train_episode():
             raise ValueError(
                 "Recovery retention requires save_total_limit=null to preserve epochs"
             )
-        callbacks.append(RecoverySaves(args.recovery_save_steps))
+        callbacks.append(RecoverySaves(args.recovery_save_steps, args.first_recovery_save_step))
     if (
         t.get("expected_total_steps") is not None
         and not args.profile_only
@@ -402,6 +506,7 @@ def train_episode():
         serializer=serializer,
         data_contract=data_contract,
         recovery_save_steps=args.recovery_save_steps if not args.profile_only else 0,
+        episodic_diagnostics=cfg["runtime"].get("episodic_diagnostics", False),
         callbacks=callbacks,
     )
     if cfg["model"]["output_mode"] == "candidate_logits":
@@ -445,6 +550,8 @@ def train_episode():
                     - wall_start,
                     trainer_runtime_seconds=result.metrics.get("train_runtime"),
                     profile_only=args.profile_only,
+                    stopped_after_epochs=args.stop_after_epochs,
+                    activation_arena=arena_record,
                     update_timer_note="Update callbacks exclude loader prefetch and model load/checkpoint save",
                 ),
                 indent=2,

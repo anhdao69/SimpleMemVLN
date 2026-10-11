@@ -12,9 +12,9 @@ from qwen_vl.models.nav_model import SimpleMemVLNForNavigation
 from qwen_vl.stream.window_attention import register_window_attention
 
 
-def resolve_config(base, output, memory=None, policy=None):
+def resolve_config(base, output, memory=None, policy=None, runtime=None):
     cfg = {}
-    for path in (base, output, policy, memory):
+    for path in (base, output, policy, memory, runtime):
         if path:
             with open(path) as f:
                 cfg = deep_merge(cfg, yaml.safe_load(f))

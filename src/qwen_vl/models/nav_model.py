@@ -161,6 +161,8 @@ class SimpleMemVLNForNavigation(nn.Module):
                 gradient_checkpointing_func=partial(
                     checkpoint_with_cpu_offload,
                     min_tokens=threshold,
+                    backend=self.navigation_config["training"].get(
+                        "activation_offload_backend", "save_on_cpu_pinned"),
                     **(gradient_checkpointing_kwargs or {"use_reentrant": False}),
                 ),
             )

@@ -209,3 +209,24 @@ def batch_reference_selection(budget, ids_by_group, priorities_by_group, upto_gr
     prios = np.concatenate(priorities_by_group[:upto_group + 1])
     keep = admission_order(prios, ids)[:budget]
     return np.sort(ids[keep])
+
+
+def plan_summary(plan, layout, early_steps=3):
+    """Bounded diagnostics: occupancy, age, early-frame concentration, turnover, margins."""
+    final = plan.group_ids(plan.groups - 1)
+    sources = plan.token_sources[plan.group_offsets[-2]:plan.group_offsets[-1]]
+    turnover = 0
+    for t in range(1, plan.groups):
+        before, after = plan.group_ids(t - 1), plan.group_ids(t)
+        turnover += int(np.setdiff1d(before, after, assume_unique=True).size)
+    margins = plan.cutoff_margins[np.isfinite(plan.cutoff_margins)]
+    age = (plan.groups - 1 - sources) if sources.size else np.empty(0)
+    return dict(
+        groups=plan.groups, final_rows=int(final.size),
+        distinct_source_groups=int(np.unique(sources).size),
+        fraction_from_steps_0_2=float(np.mean(sources < early_steps)) if sources.size else None,
+        fraction_first_frame=float(np.mean(sources == 0)) if sources.size else None,
+        mean_age_groups=float(age.mean()) if age.size else None,
+        evicted_total=turnover,
+        margin_quantiles=[float(x) for x in np.quantile(margins, [0, .1, .5])] if margins.size else None,
+        digest=plan.source_digest[:16])

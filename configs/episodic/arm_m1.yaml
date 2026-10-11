@@ -1,0 +1,11 @@
+# M1: recent-context control (R9, B0); one extra complete group, near-budget.
+memory:
+  mode: episodic_window_v1
+  recent_groups_including_current: 9
+  episodic_budget_tokens: 0
+  episodic_granularity: token
+  episodic_score: none
+  episodic_selector_seed: 429
+  episodic_per_source_cap: null
+  evict_before_new_step: true
+  kv_guard_tokens: 5504

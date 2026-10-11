@@ -1,0 +1,11 @@
+# V0: fresh matched native baseline through the generalized path (R8, B0, FIFO).
+memory:
+  mode: episodic_window_v1
+  recent_groups_including_current: 8
+  episodic_budget_tokens: 0
+  episodic_granularity: token
+  episodic_score: none
+  episodic_selector_seed: 429
+  episodic_per_source_cap: null
+  evict_before_new_step: true
+  kv_guard_tokens: 5120

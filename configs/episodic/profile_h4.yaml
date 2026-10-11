@@ -1,0 +1,11 @@
+# Runtime profile H4: 4 x H100 80GB, one episode/rank, GAS2 (global batch 8),
+# ZeRO-2 with GPU optimizer state (deepspeed.json).  Engineering only.
+training:
+  gradient_accumulation_steps: 2
+  dataloader_num_workers: 0
+  dataloader_pin_memory: false
+  dataloader_persistent_workers: false
+  activation_offload_backend: pinned_arena_v1
+runtime:
+  stage_pixels_bf16: true
+  malloc_trim_each_update: true
