@@ -85,6 +85,41 @@ def init(args):
     print(json.dumps(payload, indent=2))
 
 
+def _snapshot(campaign, commit):
+    source = campaign / 'source' / commit
+    if source.exists():
+        raise SystemExit(f'Source snapshot exists: {source}')
+    source.mkdir(parents=True)
+    archive = subprocess.Popen(['git', 'archive', commit], cwd=ROOT, stdout=subprocess.PIPE)
+    subprocess.run(['tar', '-x', '-C', str(source)], stdin=archive.stdout, check=True)
+    if archive.wait() != 0:
+        raise SystemExit('git archive failed')
+    hashes = tree_hashes(source)
+    for path in source.rglob('*'):
+        if path.is_file():
+            path.chmod(0o444)
+    return source, hashes
+
+
+def resnapshot(args):
+    """Add a corrected immutable source; existing attempts keep their recorded source."""
+    campaign = Path(args.campaign_root)
+    manifest = json.loads((campaign / 'campaign_manifest.json').read_text())
+    commit = subprocess.check_output(['git', 'rev-parse', args.source_commit], cwd=ROOT, text=True).strip()
+    source, hashes = _snapshot(campaign, commit)
+    previous = dict(source_commit=manifest['source_commit'], source_dir=manifest['source_dir'],
+                    source_tree_sha256=manifest['source_tree_sha256'])
+    shutil.copy(campaign / 'source_hashes.json', campaign / f'source_hashes.{manifest["source_commit"]}.json')
+    (campaign / 'source_hashes.json').write_text(json.dumps(dict(commit=commit, files=hashes), indent=2) + '\n')
+    manifest.setdefault('source_history', []).append(dict(previous, replaced=time.time(), reason=args.reason))
+    manifest.update(source_commit=commit, source_dir=str(source),
+                    source_tree_sha256=hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest())
+    atomic_write_json(campaign / 'campaign_manifest.json', manifest)
+    append_jsonl(campaign / 'submission_ledger.jsonl', dict(event='resnapshot', previous=previous,
+                                                             source_commit=commit, reason=args.reason))
+    print(json.dumps(dict(source_commit=commit, source_dir=str(source)), indent=2))
+
+
 def _next_attempt(run_dir, profile):
     existing = sorted(run_dir.glob(f'*-{profile}-a*'))
     return len(existing) + 1
@@ -193,10 +228,14 @@ def main():
     s.add_argument('--dry-run', action='store_true')
     s.add_argument('--allow-phase2', action='store_true')
     s.add_argument('--allow-existing-lease', action='store_true')
+    r = sub.add_parser('resnapshot')
+    r.add_argument('--campaign-root', required=True)
+    r.add_argument('--source-commit', required=True)
+    r.add_argument('--reason', required=True)
     t = sub.add_parser('status')
     t.add_argument('--campaign-root', required=True)
     args = p.parse_args()
-    dict(init=init, submit=submit, status=status)[args.command](args)
+    dict(init=init, submit=submit, status=status, resnapshot=resnapshot)[args.command](args)
 
 
 if __name__ == '__main__':

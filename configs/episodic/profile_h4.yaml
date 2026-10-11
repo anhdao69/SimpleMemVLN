@@ -6,7 +6,7 @@ training:
   dataloader_pin_memory: false
   dataloader_persistent_workers: false
   activation_offload_backend: pinned_arena_v1
-  optimizer_group_chunks: 16
+  optimizer_group_chunks: 1   # 16 chunks cost +4.56 GiB GPU on 58K-token episodes (measured); host spike affordable at 512 GiB
 runtime:
   stage_pixels_bf16: true
   malloc_trim_each_update: true

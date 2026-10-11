@@ -1,5 +1,34 @@
 # SimpleMemVLN
 
+## Episodic memory campaign (`c2_episodic`)
+
+`episodic_window_v1` keeps, in each full-attention layer, the instruction prefix, the
+R most recent observation/action groups and at most B older visual K/V rows admitted by
+a fixed write-time priority (committed-write magnitude from the GDN layer below, or a
+SHA-256 random control). Native GDN/conv state still sees every token. Plan:
+[`plans/episodic_mem.md`](plans/episodic_mem.md); evidence and decisions:
+[`reports/episodic_idea/`](reports/episodic_idea/).
+
+* Science configs: `configs/episodic/science_common.yaml` + `arm_{v0,m1,m2,m2c}.yaml`
+  (Phase 1) and `arm_{m5,m5c}.yaml` (Phase 2, gated). Runtime profiles:
+  `profile_h4.yaml` (4 GPUs, GAS2, `deepspeed.json`) and `profile_h2.yaml` (2 GPUs, GAS4,
+  `configs/deepspeed_zero2_cpu_optimizer.json`).
+* Train (inside the campaign coordinator, which adds qualification/lease/supervision):
+  `torchrun ... -m qwen_vl.train.train_qwen --vln_config configs/episodic/science_common.yaml
+  --output_config configs/episodic/arm_m2.yaml --runtime_profile configs/episodic/profile_h4.yaml
+  --deepspeed deepspeed.json --manifest $MANIFEST --model_name_or_path $MODEL
+  --recovery-save-steps 250 --first-recovery-save-step 50 --stop-after-epochs 1`.
+  Epoch 2: same command with `--resume_from_checkpoint <run>/checkpoint-3852` and without
+  `--stop-after-epochs`, on the same profile only.
+* Qualify: `python -m scripts.vln.profile_episodic select|suite ...`; real-model gates:
+  `python -m scripts.vln.check_episodic`.
+* Submit/monitor: `python -m scripts.vln.submit_episodic {init,submit,status}`.
+* Evaluate: the existing `qwen_vl.eval.habitat_r2r`; the export's `navigation.json`
+  selects the memory policy (see `reports/episodic_idea/07_phase1_results.md`).
+* JIT toolchain on this cluster: `CUDA_HOME=/apps/cuda/cuda-12.6.0`,
+  `CXX=/apps/gcc/gcc-12.2.0/bin/g++` (TileLang needs C++20).
+
+
 [Detailed R2R and RxR evaluation setup for a new server](EVALUATION_SETUP.md).
 
 [R2R `val_unseen` evaluation and inference-speed comparison](reports/R2R_ALL_VERSIONS_COMPARISON_2026-10-03.md).

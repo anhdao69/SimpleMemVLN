@@ -73,7 +73,7 @@ def preflight(a):
         free, _ = torch.cuda.mem_get_info(i)
         if free / 2**30 < 75:
             problems.append(f'GPU {i} not idle: {free / 2**30:.1f} GiB free')
-    saved = json.loads((a.campaign / 'source_hashes.json').read_text())
+    saved = json.loads((a.dir / 'source_hashes.json').read_text())   # recorded at submission
     source = Path(a.launch['source_dir'])
     for name, digest in saved['files'].items():
         if hashlib.sha256((source / name).read_bytes()).hexdigest() != digest:
