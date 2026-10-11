@@ -95,9 +95,9 @@ def main():
         a, b = sb[key], sn[key]
         table[name] = dict(base=a, new=b, abs_delta=None if a is None or b is None else b - a,
                            rel_delta=None if not a or b is None else (b - a) / a)
-    both = sum(eb[i]['success'] and en[i]['success'] for i in ids)
-    only_base = sum(eb[i]['success'] and not en[i]['success'] for i in ids)
-    only_new = sum(en[i]['success'] and not eb[i]['success'] for i in ids)
+    both = sum(bool(eb[i]['success'] and en[i]['success']) for i in ids)
+    only_base = sum(bool(eb[i]['success'] and not en[i]['success']) for i in ids)
+    only_new = sum(bool(en[i]['success'] and not eb[i]['success']) for i in ids)
     neither = len(ids) - both - only_base - only_new
     ci = {name: bootstrap([en[i][k] - eb[i][k] for i in ids]) for name, k in (('SR', 'success'), ('SPL', 'spl'))}
     cats = sorted({category(e) for e in list(eb.values()) + list(en.values())})

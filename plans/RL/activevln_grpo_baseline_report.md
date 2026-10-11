@@ -1,6 +1,6 @@
 # ActiveVLN GRPO baseline on SimpleMemVLN — technical report
 
-Status: **IN PROGRESS** (this file is updated as runs complete; see §9 for the run log).
+Status: **COMPLETE for the 1K-subset ActiveVLN GRPO baseline** (training 125/125, full R2R val_unseen evaluation, §8). Run log: §7.1.
 
 > **Scope decision (user, 2026-10-10 ~12:00 UTC).** The full 4K run was stopped at step 22 and replaced
 > by a run **from scratch on a 1k subset** = the first 1,000 rows of ActiveVLN's fixed-order 4K list
@@ -323,3 +323,130 @@ Every resume restarted from an exact per-rank checkpoint (10-step cadence from s
 re-ran the interrupted steps from the beginning; re-run steps reproduce the original rollouts
 (e.g. step 40: identical SR 0.469 / reward 4.95). The systems changes alter only where and how
 gradients are computed (placement, offload, kernel allocator), not their values.
+
+---
+
+## 8. Evaluation and comparison (Phase 4)
+
+Both checkpoints are evaluated with **the identical SimpleMem protocol** (§1.3): `qwen_vl.eval.habitat_r2r`,
+Habitat 0.2.4, R2R-VLNCE v1-3 `val_unseen`, all **1,839** episodes, greedy decoding, 500-action cap,
+seed 42. The RL evaluation contract matches the baseline's on dataset, Habitat config, split, seed,
+protocol, cap, failure policy, transport, simulator, scenes and base assets, and on the full episode
+set; the only differing source files are the new `rl/*.py` modules, which the evaluator does not
+import. The RL export was evaluated in 4 disjoint shards (2 per GPU) of the same episode list and
+merged (`scripts/rl/eval_shards.py`; merging the baseline journal this way reproduces its summary
+exactly up to float summation order). Evidence: `plans/RL/results/`.
+
+| Metric (val_unseen, 1,839 ep.) | SimpleMem SFT (epoch 2) | SimpleMem + ActiveVLN GRPO (1k, step 125) | Δ abs | Δ rel |
+|---|---:|---:|---:|---:|
+| **SR** | 51.55 | **56.88** | **+5.33** | +10.3 % |
+| **SPL** | 47.64 | **50.45** | +2.81 | +5.9 % |
+| **NE (m)** ↓ | 5.80 | **5.31** | −0.50 | −8.6 % |
+| **OSR** | 59.27 | **64.87** | +5.60 | +9.4 % |
+| TL (m) | 9.89 | 10.63 | +0.74 | +7.5 % |
+| Mean actions / episode | 91.3 | 96.6 | +5.3 | +5.8 % |
+| Forced STOP at 500 | 114 | 133 | +19 | |
+| Invalid responses / failed episodes | 0 / 0 | 0 / 0 | | |
+| OSR − SR | 7.72 | 7.99 | +0.27 | |
+
+Statistics (paired, same episodes): success both 771, only SFT 177, only GRPO **275**, neither 616;
+**exact McNemar p = 4.7 × 10⁻⁶**. Bootstrap 95 % CI (10,000 resamples): **ΔSR [+3.10, +7.56]**,
+**ΔSPL [+0.84, +4.78]**. nDTW is not computed for R2R by this evaluator (undefined in both).
+
+Checkpoints: SFT `/data/anh/checkpoints/simplemem/joint-window8-text-b/epoch-2` (SHA-256 `4391b1f6…`);
+GRPO `/data/anh/rl_baseline/runs/grpo_r2r1k/exports/step_0125` (SHA-256 `bc6b7d2a…`).
+Journals: `/data/anh/simplemem-eval/results/r2r-full/epoch-2/` and
+`/data/anh/rl_baseline/evals/grpo_r2r1k-step0125/val_unseen/`.
+
+### 8.1 Published ActiveVLN (context only — not comparable)
+
+| | Backbone / memory | Simulator & eval protocol | RL data | R2R val_unseen SR / SPL / NE / OSR |
+|---|---|---|---|---|
+| ActiveVLN SFT → +RL (paper) | Qwen2.5-VL-3B, full multi-turn history, ≤3 macro actions/turn | Habitat 0.1.7, HFOV 90°, sampled decoding (T 0.2, top-p 0.8), 400-sim-step / 120-call cap, stagnation stop | 4K R2R, step 350 | 38.5 / 33.7 / 6.83 / 42.7 → **50.1 / 43.7 / 5.31 / 58.3** (+11.6 SR) |
+| SimpleMem SFT → +ActiveVLN GRPO (this work) | Qwen3.5-4B, Window8 + GDN memory, 1 primitive/step | Habitat 0.2.4, HFOV 79°, greedy, 500-action cap | **1K** R2R prefix, step 125 | 51.55 / 47.64 / 5.80 / 59.27 → **56.88 / 50.45 / 5.31 / 64.87** (+5.33 SR) |
+
+Different backbones, starting points, simulators, sensors and evaluation protocols: the absolute
+numbers must not be compared. The relative pattern is consistent: outcome GRPO raises SR and OSR
+substantially from an SFT policy; the gain is smaller here from a much stronger SFT start (51.6 vs
+38.5 SR) with a quarter of the RL data and steps.
+
+---
+
+## 9. Analysis (Phase 5)
+
+Per-episode analysis: `plans/RL/results/grpo_r2r1k_step125_failure_analysis.json`
+(`scripts/rl/analyze_failures.py`).
+
+**Where the gain comes from.**
+- Gains appear in every length bin (GT actions): <40: 62.0→66.2; 40–60: 56.0→**63.5**; 60–80: 45.6→48.2;
+  ≥80: 31.9→36.3. By start–goal geodesic distance: <7 m +6.3, 7–10 m +6.0, 10–13 m +2.1, ≥13 m +6.5 SR.
+- Failure taxonomy (SFT → GRPO): never within 3 m 552 → **466**; near miss (stop 3–5 m) 88 → **54**;
+  passed within 3 m then stopped outside 141 → 142; forced STOP at cap 110 → 131.
+  Median stop distance 2.75 → **2.10 m**.
+- Of the 275 newly solved episodes, the SFT policy had been far from the goal in 145, had passed
+  the goal in 69, was a near miss in 35 and hit the cap in 26.
+
+**What changed in behaviour.** The action mix shifted to forward motion (MOVE_FORWARD 72.8 → 78.1 %,
+turns 26.1 → 20.9 %): the policy commits to a route more often, which removes many "never within
+3 m" failures and makes trajectories slightly longer (TL +0.74 m, +5.3 actions). Sampling entropy
+fell from 0.147 to ≈0.08 nats/token over 125 updates; rollout/trainer log-prob agreement stayed
+at ≈0.004 nats/token.
+
+**Weaknesses / limitations of outcome GRPO on this policy.**
+1. **STOP timing is not fixed.** "Passed the goal but stopped outside 3 m" is unchanged (141 → 142)
+   and OSR − SR did not shrink (7.7 → 8.0). The episode-level reward gives every action the same
+   advantage, so the decisive STOP decision gets no specific credit — exactly the gap the
+   analytic-STOP estimators of `plans/RL_technical.md` (§7) target.
+2. **More cap hits.** Forced STOPs rose 114 → 133, concentrated in 60–80-action episodes (31 → 52):
+   committing to forward motion sometimes produces long wandering. The RL budget (2× expert length)
+   is far below the evaluator's 500-action cap, so these trajectories never appeared in training.
+3. **Credit is coarse.** With continuous success-weighted rewards nearly every trajectory receives a
+   non-zero advantage (28–32 of 32 trained per step), but the signal per action is one scalar per
+   ~65-action episode; dynamic sampling discarded 868 of 4,868 rollouts (18 %).
+4. **Entropy decreases steadily** (−45 % in 125 steps); a longer run (the full 4K, 500 steps) may
+   need entropy monitoring to avoid collapse.
+5. **Single seed, single scale.** One RL seed and one data size (1K); no SFT-continuation control with
+   matched compute. The effect is highly significant against the SFT checkpoint, but part of it could
+   come from on-policy exposure that a matched-cost DAgger or SFT control would also give.
+6. **Training-set overlap.** The 1K RL instructions were also SFT data (as in ActiveVLN). Validation
+   scenes are disjoint (0 shared scans/trajectories with val_unseen).
+
+**Deviations from ActiveVLN that matter for interpretation** (§3): 1K prefix / 125 steps instead of
+4K / 500 (user decision); per-primitive actions and budget conversion; vision tower frozen; Habitat
+0.2.4/HFOV 79 training and evaluation; greedy evaluation. All algorithmic pieces (reward, GRPO
+advantage, dual-clip loss, micro-batch token-mean, dynamic sampling, optimizer, LR, batch, group
+size, temperature) are ActiveVLN's.
+
+---
+
+## 10. Research directions (ranked)
+
+Ranking criteria: novelty (N), expected SR benefit on this policy (B), feasibility in this codebase
+(F), experimental cost (C; lower is better). Evidence from this baseline is cited.
+
+| Rank | Direction | N | B | F | C | Why now |
+|---|---|---|---|---|---|---|
+| 1 | **Analytic STOP credit** (exact counterfactual "stop here" value from geometry at every visited decision; `RL_technical.md` §7, verified unbiased by enumeration) | high | high | high (σ = p(STOP) at the first response token is already computed in `response_log_probs`) | low (same rollouts, G = 4) | the dominant residual failure (141 passed-goal failures, OSR−SR 8.0) is untouched by outcome GRPO |
+| 2 | **Geometric state baseline / privileged critic** (HiCo-PO component; `RL_survey.md` §7.4) replacing the group-mean baseline | high | medium–high | medium (per-step geometry is available from the env server) | low; enables G = 2 (half the rollout cost) | outcome advantages are constant over ~65 actions; per-step credit for MOVE/TURN |
+| 3 | **Cap-aware budget / anti-wandering shaping** (train with the evaluator's cap distribution, or penalise loops) | medium | medium | high | low | forced STOPs rose 114 → 133 after RL |
+| 4 | **Efficiency-gated reward (v1)** for SPL | low–medium | medium (SPL) | high | low | SPL gain (+2.8) lags SR (+5.3); TL increased |
+| 5 | **RL for recurrent (GDN) memory**: credit through the persistent linear-attention state, state-dropout / window-length curriculum | high (no prior RL work on GDN VLN policies) | uncertain | medium | medium | unique to SimpleMem's architecture; this baseline shows the full-BPTT RL loop is stable |
+| 6 | **Pass-rate-filtered instruction pool** (drop always-solved instructions) | low | low–medium | high | very low | 29–36 % of groups were all-success |
+| 7 | **On-policy distillation from a privileged geometric teacher** (dense per-step targets) | medium | medium | medium | medium | complementary dense signal; risk of teacher–policy mismatch |
+
+Recommended next experiments (one change at a time, same 1K order, same evaluation):
+(a) matched-compute controls — continued SFT/DAgger on the same 1K instructions, and a second GRPO
+seed; (b) the full 4K / 500-step GRPO run for the scale curve (exports every 50 steps already supported);
+(c) rank 1 (analytic STOP) on top of this exact pipeline; (d) rank 2 replacing the GRPO baseline.
+
+---
+
+## 11. Status against the completion criteria
+
+| Criterion | Status |
+|---|---|
+| GRPO integration passes its tests | **yes** — `tests/rl` (13 tests), DS accumulation, resume, IPC-helper parity, placement gates (§5) |
+| RL training completed | **yes on the 1K subset** (125/125 steps, from scratch, user-directed scope change from 4K) — the 4K/500-step run was stopped at step 22 by user request and not completed |
+| Trained model evaluated | **yes** — full R2R val_unseen, 1,839/1,839 episodes, identical protocol |
+| Comparison documented with evidence | **yes** — §8, `plans/RL/results/` |
+| RxR | not run (user: R2R only); the baseline RxR journal is preserved at 350/3,669 and resumable (`/data/anh/rl_baseline/resume_rxr15_campaign.sh`, sources at worktree `6473321`) |
