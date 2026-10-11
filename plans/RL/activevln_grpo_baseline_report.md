@@ -317,7 +317,7 @@ on-policy update per step, as in ActiveVLN); no format errors were sampled.
 | `stopped_partial_grpo_r2r4k_step22` | 4K run healthy at step 22 (7.3 min/step) | stopped on user request (switch to 1k, from scratch) |
 | `aborted_oomd_grpo_r2r1k` | systemd-oomd killed the user session (incl. this job) under host-memory pressure | fixed: smaller host footprint, no MemoryHigh throttling |
 | `aborted_ram_grpo_r2r1k` | host RAM headroom too small with 3 helpers/GPU | restarted from scratch with 2 helpers/GPU |
-| `grpo_r2r1k` (final) | resumed automatically 7 times by the supervisor after kills caused by the shared host (CUDA OOM at step 26; host-RAM OOMs; one DeepSpeed 10-min NCCL timeout under host thrash); fixes applied between resumes (memory-aware episode placement, allocator-cache-aware free memory, on-demand host offload with headroom guard, 4 h DeepSpeed group timeout, heap trimming, 1 helper/GPU) | **complete, 125/125** |
+| `grpo_r2r1k` (final) | interrupted 8 times by the shared host (1 CUDA OOM at step 26, 6 host-RAM OOM kills, 1 DeepSpeed 10-min NCCL timeout under host thrash) and resumed 13 times in total (8 automatic by the supervisor, 5 deliberate restarts to deploy fixes); fixes applied between resumes (memory-aware episode placement, allocator-cache-aware free memory, on-demand host offload with headroom guard, 4 h DeepSpeed group timeout, heap trimming, 1 helper/GPU) | **complete, 125/125** |
 
 Every resume restarted from an exact per-rank checkpoint (10-step cadence from step 30 on) and
 re-ran the interrupted steps from the beginning; re-run steps reproduce the original rollouts
