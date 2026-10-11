@@ -9,7 +9,7 @@
 |---|---|
 | Campaign UUID | `c42b737b-9519-4be5-9886-c8a2c9c2db50` |
 | Campaign root | `/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic` |
-| Immutable source | `source/a7e5ae5eeb4100bd347ff9e8cfdf225a07ff6d14` (read-only `git archive`; tree SHA-256 `601138f7…2a77`) |
+| Immutable source | `source/469b107696bde6e0565860af45d2a0e35428427e` (read-only `git archive`; supersedes `a7e5ae5`, see 01 D9/D11) |
 | Environment | `/lustre/fs1/home/an221229/code/SimpleMemVLN-c2_episodic/.venv` (uv-locked; must not be modified while jobs run) |
 | Manifest | `artifacts/r2r_rxr15_train.jsonl`, 30,815 episodes, SHA-256 `0e5ee1c3…4515` |
 | Model | Qwen3.5-4B `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
@@ -20,7 +20,7 @@
 
 | Run | Arm | R | B | Policy | Submission | Status |
 |---|---|---:|---:|---|---|---|
-| `P1-V0-s429` | V0 | 8 | 0 | recent FIFO | H4 job **898755**, H2 job **898756** (race, same logical run) | submitted (pending) |
+| `P1-V0-s429` | V0 | 8 | 0 | recent FIFO | H4 job **898758** (`…-H4-a2`), H2 job **898759** (`…-H2-a2`) — race, same logical run; a1 jobs 898755/898756 superseded before start | submitted (pending) |
 | `P1-M1-s429` | M1 | 9 | 0 | recent FIFO | submitted automatically by the verified V0 winner on its profile | not yet submitted |
 | `P1-M2-s429` | M2 | 8 | 300 | committed-write top-B (GDN l−1 → attention l) | same | not yet submitted |
 | `P1-M2c-s429` | M2c | 8 | 300 | per-layer SHA-256 random priority | same | not yet submitted |
@@ -51,7 +51,7 @@ cross-world-size resume is ever performed.
 
 ## Evaluation hand-off (another server)
 
-Use branch `c2_episodic` at (or after) the source commit above; the evaluator is the
+Use branch `c2_episodic` (pushed to GitHub; also `code/c2_episodic_*.bundle` in the Hub repo) at (or after) the source commit above; the evaluator is the
 existing `qwen_vl.eval.habitat_r2r` (see `EVALUATION_SETUP.md`), unchanged. The episodic
 memory policy is read from the export's `navigation.json`; nothing must be passed on the
 command line and mismatches fail closed. The model process reports
@@ -77,3 +77,30 @@ cap), invalid/infra failures, per-episode outcomes (paired across arms), and the
 evaluator journals. Label RxR results "1,000-episode English RxR15 val_unseen panel",
 never full RxR. Evaluate V0, M1, M2, M2c on the same IDs; Phase 2 opens only through
 `08_phase2_decision.md`.
+
+## Operating the campaign after this session
+
+```bash
+C=/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic
+SRC=$C/source/469b107696bde6e0565860af45d2a0e35428427e
+ENV=/lustre/fs1/home/an221229/code/SimpleMemVLN-c2_episodic/.venv
+cd $SRC && PYTHONPATH=$SRC/src:$SRC $ENV/bin/python -m scripts.vln.submit_episodic status --campaign-root $C
+tail -f $C/runs/P1-V0-s429/*/slurm-*.log          # lifecycle states (STATE ...) per attempt
+```
+
+* Per attempt: `status.json`, `events.jsonl`, `preflight.json`, `qualification-<job>/`,
+  `supervisor/` (1 s host-memory samples, GPU samples), `train/` (per-rank profiles,
+  exposures with episodic diagnostics, recovery checkpoints), `upload_complete.json`.
+* Lease: `$C/leases/<run>/LEASE.json` (+ `events.jsonl`, `history/`).
+* **Interrupted attempt** (Slurm pre-termination checkpoint, node failure after a complete
+  recovery checkpoint): resubmit the *same* attempt so it resumes on the same profile:
+  `sbatch --parsable --job-name=<same> --comment=<same> --partition=highgpu --nodes=1 --ntasks=1
+  --gres=gpu:nvidia_h100_80gb_hbm3:<4|2> --cpus-per-task=16 --mem=512G --time=<...>
+  --signal=B:USR1@1800 --output=<attempt>/slurm-%j.log $SRC/train/slurm/episodic_candidate.sbatch <attempt_dir>`
+  and append the job ID to the ledger. The lifecycle re-gates the new allocation
+  (startup longest-episode gate) and resumes with `--resume_from_checkpoint auto`
+  (complete markers only). Never resume an H4 attempt on 2 GPUs or vice versa.
+* **Failure before any valid checkpoint**: submit a new attempt (`submit_episodic submit
+  --run <run> --profiles <winner profile> --qualify startup`).
+* **Epoch 2** (only if the Phase-2/evaluation decision asks for it, for all four arms):
+  resume each run's `checkpoint-3852` on its own profile without `--stop-after-epochs`.

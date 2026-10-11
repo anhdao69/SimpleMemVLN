@@ -91,3 +91,29 @@ forwards. Exact per-step 300-row sets therefore often differ (M2c random: 0 mism
 Decision: keep `committed_mean_l2_v1` unchanged for Phase 1 (plan §5.4 forbids silently
 relaxing/replacing the score); report overlap/margins; a rank-bucket/quantized score is
 a separately versioned Phase-2 stabilization candidate only.
+
+## D9. One optimizer group per hyperparameter set (chunking measured and reverted)
+*Observation.* `optimizer_group_chunks: 16` removed the ZeRO-2 init host spike (H4 anon
+peak 64.6 → 25.2 GiB) but, measured on the same snapshot, fixture (longest R2R ×8) and
+profile, raised peak **allocated GPU** memory 46.02 → 50.58 GiB (+4.56 GiB, reserved
+50.30 → 52.51). (A first comparison was invalid: the runtime profile is merged last and
+overrode a policy-overlay `chunks: 1`; it is retained as `chunks1_invalid_overlay_overridden`.)
+*Choice.* GPU headroom at the 199,735-token episode is the binding constraint (historical
+76.94 GiB reserved vs the 78 GiB gate), while the ~16 GB/rank init host transient is
+affordable at 512 GiB. Both profiles use `optimizer_group_chunks: 1` (inherited grouping).
+Engineering only.
+
+## D10. Attention batch steps = 8 (qualified)
+Single-GPU forward+backward of the real longest episode (no optimizer; full BF16 grads),
+M2: batch 4 / 8 / 16 → identical peak allocated 66.47 GiB (reserved 76.51–76.53), total
+30.5 / 31.8 / 29.9 s (within noise). Attention scratch is not the peak contributor at
+T≈200K; keep the plan's conservative 8 for every arm.
+
+## D11. Superseding never-started submissions
+Jobs 898755/898756 (attempts `P1-V0-s429-{H4,H2}-a1`, source `a7e5ae5` with 16 chunks)
+were still PENDING when D9 was measured. They were cancelled by exact job ID after a live
+identity check (user, job name, campaign comment, state), recorded in the ledger as
+`superseded_before_start`, and replaced by attempts `a2` (jobs 898758/898759, source
+`469b107`). No allocation, training state or checkpoint existed for them. The campaign
+manifest keeps the source history (`resnapshot`); every attempt verifies the source hashes
+recorded at its own submission.
