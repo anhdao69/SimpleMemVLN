@@ -71,6 +71,29 @@ class RolloutEnvironment:
     def position(self):
         return [float(x) for x in self.env.sim.get_agent_state().position]
 
+    def bearing_error(self):
+        """Signed angle (rad) from the agent heading to the first shortest-path point >= 0.5 m away.
+
+        Privileged training-time geometry for the state baseline (plans/RL/research); it never
+        reaches the policy. None when the navmesh has no path.
+        """
+        from habitat_sim.nav import ShortestPath
+        from habitat_sim.utils.common import quat_rotate_vector
+
+        state = self.env.sim.get_agent_state()
+        here = np.asarray(state.position, dtype=np.float64)
+        path = ShortestPath()
+        path.requested_start = here
+        path.requested_end = np.asarray(self.episode.goals[0].position, dtype=np.float64)
+        if not self.env.sim.pathfinder.find_path(path) or len(path.points) < 2:
+            return None
+        target = next((np.asarray(p) for p in path.points[1:] if np.linalg.norm(np.asarray(p) - here) >= 0.5),
+                      np.asarray(path.points[-1]))
+        heading = quat_rotate_vector(state.rotation, np.array([0.0, 0.0, -1.0]))
+        direction = target - here
+        angle = lambda v: math.atan2(-v[0], -v[2])
+        return float((angle(direction) - angle(heading) + math.pi) % (2 * math.pi) - math.pi)
+
     def reset(self, episode_id):
         episode = self.lookup[str(episode_id)]
         self.env.current_episode = episode
@@ -81,7 +104,8 @@ class RolloutEnvironment:
                     instruction=episode.instruction.instruction_text.strip(),
                     geodesic_distance=float(episode.info['geodesic_distance']),
                     distance_to_goal=metrics.get('distance_to_goal'),
-                    position=self.position(), **encode_rgb(observation['rgb']))
+                    position=self.position(), bearing_error=self.bearing_error(),
+                    **encode_rgb(observation['rgb']))
 
     def step(self, action):
         if self.episode is None or self.env.episode_over:
@@ -93,7 +117,8 @@ class RolloutEnvironment:
         metrics = scalar_metrics(self.env)
         result = dict(status='ok', episode_over=bool(self.env.episode_over),
                       distance_to_goal=metrics.get('distance_to_goal'),
-                      position=self.position(), steps=self.steps)
+                      position=self.position(), steps=self.steps,
+                      bearing_error=None if self.env.episode_over else self.bearing_error())
         if self.env.episode_over:
             result['metrics'] = metrics
         else:

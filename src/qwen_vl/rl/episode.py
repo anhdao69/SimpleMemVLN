@@ -50,7 +50,7 @@ def encode_rollout(serializer, instruction, frames, responses, model_max_length=
     return result
 
 
-def response_log_probs(model, batch, temperature, with_entropy=False):
+def response_log_probs(model, batch, temperature, with_entropy=False, probe_token=None):
     """Per-token log pi_T(token) from the full-episode training forward.
 
     Matches verl's actor: logits are divided by the rollout temperature before
@@ -66,4 +66,6 @@ def response_log_probs(model, batch, temperature, with_entropy=False):
     if with_entropy:  # diagnostic only: keep it out of the autograd graph
         with torch.no_grad():
             entropy = -(logp_all.exp() * logp_all).sum(-1)
+    if probe_token is not None:  # tempered log-prob of one token at every response position
+        return logp, entropy, logp_all[:, probe_token]
     return logp, entropy

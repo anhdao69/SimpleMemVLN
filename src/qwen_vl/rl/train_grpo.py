@@ -36,6 +36,8 @@ from qwen_vl.rl.algos import (activevln_budget, grpo_advantages, loss_weights, m
 from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
+from qwen_vl.rl.hico import (GeometricBaseline, action_terms, batch_scale, coefficients, episode_features,
+                             rloo_baselines, stop_values)
 from qwen_vl.rl.placement import redistribute, should_offload
 from qwen_vl.rl.rollout import rollout_seed, run_episode
 from qwen_vl.rl.sampling import SamplingSession
@@ -329,6 +331,67 @@ def rollout_rank_pool(pool, items, step, cfg):
     return groups, history
 
 
+def hico_metrics(gathered, critic):
+    if not gathered[0]['hico']:
+        return {}
+    h = [g['hico'] for g in gathered]
+    total = lambda k: sum(x[k] for x in h)
+    near = max(1, total('near_goal_decisions'))
+    decisions = max(1, total('decisions_local'))
+    trained = max(1, sum(g['stats'].get('decisions', 0) for g in gathered))
+    return dict(
+        estimator_scale=h[0]['scale'], critic_used=h[0]['critic_used'],
+        critic_diagnostics=critic.diagnostics if critic is not None else None,
+        near_goal_decisions=total('near_goal_decisions'),
+        near_goal_nonstop_fraction=total('near_goal_nonstop') / near,
+        near_goal_sigma_mean=total('near_goal_sigma') / near,
+        near_goal_c_sigma_mean=total('near_goal_c_sigma') / near,
+        c_sigma_abs_mean=total('c_sigma_abs') / decisions,
+        c_logpi_abs_mean=total('c_logpi_abs') / decisions,
+        baseline_rmse=(total('baseline_resid_sq') / decisions) ** 0.5,
+        sigma_mismatch_mean=sum(g['stats'].get('sigma_mismatch_abs', 0.0) for g in gathered) / trained,
+        sigma_mismatch_max=max(g['stats'].get('sigma_mismatch_max', 0.0) for g in gathered))
+
+
+def hico_prepare(groups, step, cfg, critic, n_star, world, device):
+    """HiCo-PO coefficients for this rank's groups (rl/hico.py). Returns trajectories, items, stats."""
+    a = cfg['algorithm']
+    estimator = a['estimator']
+    r_max = cfg['reward']['success_reward_base']
+    trajectories = [e for group in groups for e in group]
+    all_rewards = [r for g in gather_objects([e['reward'] for e in trajectories]) for r in g]
+    scale = batch_scale(all_rewards, floor=a['scale_floor'] * r_max)
+    use_critic = estimator == 'critic_stop' and critic is not None and critic.model is not None
+    stats = dict(scale=scale, critic_used=bool(use_critic), near_goal_decisions=0, near_goal_nonstop=0,
+                 near_goal_sigma=0.0, near_goal_c_sigma=0.0, c_sigma_abs=0.0, c_logpi_abs=0.0,
+                 decisions_local=0, baseline_resid_sq=0.0)
+    for group in groups:
+        rloo = rloo_baselines([e['reward'] for e in group])
+        for e, b_rloo in zip(group, rloo):
+            e['N_star'] = n_star[e['episode_id']]
+            q = stop_values(e['step_d'], r_max)
+            baseline = critic.predict(episode_features(e)) if use_critic else np.full(len(q), b_rloo)
+            c_logpi, c_sigma = coefficients(e['actions'], e['reward'], q, baseline, scale,
+                                            analytic_stop=estimator in ('rloo_stop', 'critic_stop'))
+            e['_c_logpi'], e['_c_sigma'] = c_logpi.tolist(), c_sigma.tolist()
+            e['advantage'] = float((e['reward'] - float(np.mean(baseline))) / scale)
+            near = np.asarray(e['step_d']) < 3.0
+            sigma = np.exp(np.asarray(e['step_stop_logp'], dtype=np.float64))
+            nonstop = np.asarray([act != 3 for act in e['actions']])
+            stats['near_goal_decisions'] += int(near.sum())
+            stats['near_goal_nonstop'] += int((near & nonstop).sum())
+            stats['near_goal_sigma'] += float(sigma[near].sum())
+            stats['near_goal_c_sigma'] += float(c_sigma[near].sum())
+            stats['c_sigma_abs'] += float(np.abs(c_sigma).sum())
+            stats['c_logpi_abs'] += float(np.abs(c_logpi).sum())
+            stats['decisions_local'] += len(q)
+            stats['baseline_resid_sq'] += float(((e['reward'] - baseline) ** 2).sum())
+    n_global = int(all_reduce([stats['decisions_local']], device=device)[0])
+    weight = world / n_global   # per-decision normalization over the whole RL step (SFT convention)
+    items = [(e, weight) for e in trajectories if any(e['_c_logpi']) or any(e['_c_sigma'])]
+    return trajectories, items, stats
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--config', required=True)
@@ -386,6 +449,18 @@ def main():
         raise ValueError('Micro-batches must tile groups and ranks')
     num_mb_global = per_step * G // mb_size
     T = cfg['rollout']['temperature']
+    estimator = a.get('estimator', 'grpo')
+    if estimator not in ('grpo', 'rloo', 'rloo_stop', 'critic_stop'):
+        raise ValueError(f'Unknown estimator {estimator}')
+    if estimator != 'grpo' and cfg['rollout']['dynamic_sampling']['enabled']:
+        raise ValueError('HiCo-PO estimators require unfiltered on-policy rollouts (no dynamic sampling)')
+    n_star = {item['episode_id']: item['N_star'] for item in pool}
+    critic = None
+    if estimator == 'critic_stop':
+        c = a['critic']
+        critic = GeometricBaseline(history=c['history_steps'], hidden=c['hidden'], iterations=c['iterations'],
+                                   lr=c['lr'], r_max=cfg['reward']['success_reward_base'],
+                                   seed=cfg['run']['seed'], min_rows=c['min_rows'])
 
     base = Path(cfg['base']['checkpoint'])
     base_navigation = (base / 'navigation.json').read_bytes()
@@ -418,6 +493,8 @@ def main():
         # Per-rank, memory-mapped restore (rl/checkpoint.py); DeepSpeed's own ZeRO-2 resume
         # materializes every rank's fp32 partitions on the host and exhausted its RAM.
         load_rank_state(engine, out / 'resumable' / rl_state['tag'], rank, world)
+        if critic is not None:
+            critic.load(torch.load(out / 'resumable' / rl_state['tag'] / 'critic.pt', weights_only=False))
         start_step = rl_state['next_step']
         if engine.global_steps != start_step:
             raise RuntimeError('Optimizer step counter disagrees with the RL state')
@@ -493,19 +570,31 @@ def main():
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
         torch.cuda.empty_cache()
 
-        # ---- advantages (each group lives on one rank) and verl weights ----
-        trajectories = []
-        for gi, group in enumerate(groups):
-            adv = grpo_advantages([e['reward'] for e in group], a['epsilon'])
-            for e, value in zip(group, adv.tolist()):
-                e['advantage'] = value
-                trajectories.append(e)
-        for mb, keys in enumerate(micro_batches(range(len(trajectories)), mb_size)):
-            for k in keys:
-                trajectories[k]['micro_batch'] = rank * len(trajectories) // mb_size + mb
-        weights = loss_weights([e['response_tokens'] for e in trajectories],
-                               [e['micro_batch'] for e in trajectories], world, num_mb_global)
-        items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
+        hico_stats = {}
+        stop_token = serializer.action_ids[3][0]
+        if critic is not None:
+            # Fit only on previous RL steps (rank 0), so b(z) is independent of this step's actions.
+            fitted = [critic.fit(step) if rank == 0 else None]
+            payload = [critic.model if rank == 0 else None]
+            dist.broadcast_object_list(payload, src=0)
+            dist.broadcast_object_list(fitted, src=0)
+            critic.model, critic.diagnostics = payload[0], fitted[0]
+        if estimator == 'grpo':
+            # ---- advantages (each group lives on one rank) and verl weights ----
+            trajectories = []
+            for gi, group in enumerate(groups):
+                adv = grpo_advantages([e['reward'] for e in group], a['epsilon'])
+                for e, value in zip(group, adv.tolist()):
+                    e['advantage'] = value
+                    trajectories.append(e)
+            for mb, keys in enumerate(micro_batches(range(len(trajectories)), mb_size)):
+                for k in keys:
+                    trajectories[k]['micro_batch'] = rank * len(trajectories) // mb_size + mb
+            weights = loss_weights([e['response_tokens'] for e in trajectories],
+                                   [e['micro_batch'] for e in trajectories], world, num_mb_global)
+            items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
+        else:
+            trajectories, items, hico_stats = hico_prepare(groups, step, cfg, critic, n_star, world, device)
         placement = dict(moved=0, free_gib=[])
         if world > 1:
             items, placement = redistribute(items, device)
@@ -526,14 +615,31 @@ def main():
                 stats['offloaded'] += HOST_OFFLOAD['on']
                 batch = to_device(encode_rollout(serializer, e['instruction'], e['_frames'],
                                                  e['_responses']), device)
-                logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
+                if estimator == 'grpo':
+                    logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
+                else:
+                    logp, entropy, stop_logp = response_log_probs(model, batch, T, with_entropy=True,
+                                                                  probe_token=stop_token)
                 rollout_logp = torch.tensor(e['rollout_logps'], device=device)
                 if logp.shape != rollout_logp.shape:
                     raise RuntimeError('Trainer and rollout response tokens differ')
-                adv = torch.full_like(logp, e['advantage'])
-                token_loss, clipped = policy_loss_terms(logp, logp.detach(), adv, a['clip_ratio_low'],
-                                                        a['clip_ratio_high'], a['clip_ratio_c'])
-                loss = token_loss.sum() * w
+                if estimator == 'grpo':
+                    adv = torch.full_like(logp, e['advantage'])
+                    token_loss, clipped = policy_loss_terms(logp, logp.detach(), adv, a['clip_ratio_low'],
+                                                            a['clip_ratio_high'], a['clip_ratio_c'])
+                    loss = token_loss.sum() * w
+                else:
+                    logpi, sigma = action_terms(logp, stop_logp, batch['response_action_index'],
+                                                batch['num_actions'])
+                    c_logpi = torch.tensor(e['_c_logpi'], device=device, dtype=logpi.dtype)
+                    c_sigma = torch.tensor(e['_c_sigma'], device=device, dtype=sigma.dtype)
+                    loss = -(c_logpi * logpi + c_sigma * sigma).sum() * w
+                    clipped = torch.zeros(1, device=device)
+                    rollout_sigma = torch.tensor([math.exp(v) for v in e['step_stop_logp']], device=device)
+                    gap = (sigma.detach() - rollout_sigma).abs()
+                    stats['sigma_mismatch_abs'] = stats.get('sigma_mismatch_abs', 0.0) + float(gap.sum())
+                    stats['sigma_mismatch_max'] = max(stats.get('sigma_mismatch_max', 0.0), float(gap.max()))
+                    stats['decisions'] = stats.get('decisions', 0) + int(sigma.numel())
                 diff = (logp.detach() - rollout_logp).abs()
                 stats['mismatch_abs'] += float(diff.sum())
                 stats['mismatch_max'] = max(stats['mismatch_max'], float(diff.max()))
@@ -574,7 +680,7 @@ def main():
             'attempt', 'model_seconds', 'env_seconds')} for r in records],
             groups=[[e['success'] for e in g] for g in groups],
             rerolls=[len(h) - 1 for h in reroll], discarded=sum(len(h[:-1]) * G for h in reroll),
-            stats=stats, items=len(items), placement=placement, rollout_seconds=rollout_seconds, train_seconds=train_seconds,
+            stats=stats, items=len(items), placement=placement, hico=hico_stats, rollout_seconds=rollout_seconds, train_seconds=train_seconds,
             rollout_peak=rollout_peak, train_peak=train_peak))
         if rank == 0:
             recs = [r for g in gathered for r in g['records']]
@@ -598,6 +704,7 @@ def main():
                 moved_trajectories=gathered[0]['placement']['moved'],
                 free_gib_before_update=gathered[0]['placement']['free_gib'],
                 offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
+                **hico_metrics(gathered, critic),
                 pg_loss=sum(g['stats']['pg_loss'] for g in gathered) / world,
                 clipfrac=sum(g['stats']['clipfrac'] for g in gathered) / max(1, tok),
                 logp_mismatch_mean=sum(g['stats']['mismatch_abs'] for g in gathered) / max(1, tok),
@@ -616,6 +723,12 @@ def main():
             with (out / 'metrics.jsonl').open('a') as f:
                 f.write(json.dumps(metric) + '\n')
             log('STEP', json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in metric.items()}))
+        if critic is not None:
+            rows = gather_objects([(episode_features(e), np.full(len(e['step_d']), e['reward']))
+                                   for e in trajectories])
+            z = np.concatenate([r[0] for g in rows for r in g])
+            y = np.concatenate([r[1] for g in rows for r in g])
+            critic.add(step, z, y)
         del groups, trajectories, items
         release_host_memory()
         done = step + 1
@@ -633,6 +746,8 @@ def main():
                 or done in cfg['run'].get('extra_save_steps', [])):
             tag = f'step_{done:04d}'
             save_rank_state(engine, out / 'resumable' / tag, rank, world)
+            if critic is not None and rank == 0:
+                torch.save(critic.state(), out / 'resumable' / tag / 'critic.pt')
             dist.barrier()
             if rank == 0:
                 state_file.write_text(json.dumps(dict(next_step=done, tag=tag, total_steps=total_steps)) + '\n')

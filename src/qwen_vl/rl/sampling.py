@@ -23,12 +23,17 @@ MAX_RESPONSE_TOKENS = 16
 SERIALIZER_LOCK = threading.Lock()
 
 
-def tempered_token(logits, temperature, generator):
-    """Sample one token; return (token, log-prob, entropy) under softmax(logits/T)."""
+def tempered_token(logits, temperature, generator, probe=None):
+    """Sample one token; return (token, log-prob, entropy) under softmax(logits/T).
+
+    With ``probe`` a token id, also return that token's tempered log-probability.
+    """
     logp = torch.log_softmax(logits.float() / temperature, dim=-1)
     token = int(torch.multinomial(logp.exp(), 1, generator=generator))
     entropy = float(-(logp.exp() * logp).sum())
-    return token, float(logp[token]), entropy
+    if probe is None:
+        return token, float(logp[token]), entropy
+    return token, float(logp[token]), entropy, float(logp[probe])
 
 
 class SamplingSession(StreamSession):
@@ -73,7 +78,12 @@ class SamplingSession(StreamSession):
         for _ in range(MAX_RESPONSE_TOKENS):
             logits = self.model.backbone.lm_head(hidden[0, -1])
             greedy.append(int(logits.argmax()))
-            token, logp, entropy = tempered_token(logits, temperature, generator)
+            if not tokens:  # decision token: also record sigma_t = pi_T(first token = STOP)
+                token, logp, entropy, stop_logp = tempered_token(
+                    logits, temperature, generator, probe=self.serializer.action_ids[3][0])
+                result['stop_logp'] = stop_logp
+            else:
+                token, logp, entropy = tempered_token(logits, temperature, generator)
             tokens.append(token)
             logps.append(logp)
             entropies.append(entropy)

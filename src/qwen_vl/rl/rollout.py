@@ -3,6 +3,7 @@ import hashlib
 import math
 import time
 
+import numpy as np
 import torch
 
 from qwen_vl.contracts import HABITAT_IDS
@@ -26,6 +27,7 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
     uid = f"rl:train:{obs['scene_id']}:{obs['episode_id']}:{sample_idx}"
     session.reset(uid, instruction)
     frames, responses, distances = [], [], [obs['distance_to_goal']]
+    positions, bearings = [obs['position']], [obs.get('bearing_error')]
     model_seconds = env_seconds = 0.0
     outcome = dict(stopped=False, truncated=False, format_error=False)
     metrics = {}
@@ -44,6 +46,8 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
         obs = env.step(HABITAT_IDS[response['class_id']])
         env_seconds += time.perf_counter() - tick
         distances.append(obs['distance_to_goal'])
+        positions.append(obs['position'])
+        bearings.append(obs.get('bearing_error'))
         if response['class_id'] == 3:
             outcome['stopped'] = True
             metrics = obs['metrics']
@@ -77,4 +81,9 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
         rollout_logps=[lp for r in responses for lp in r['logps']],
         model_seconds=model_seconds, env_seconds=env_seconds,
         wall_seconds=time.perf_counter() - started, **outcome,
+        # Per-decision geometry at the pose where decision t was made (training-time only).
+        step_d=finite[:len(responses)], step_bearing=bearings[:len(responses)],
+        step_path=[float(x) for x in np.concatenate(([0.0], np.cumsum(np.linalg.norm(
+            np.diff(np.asarray(positions, dtype=np.float64), axis=0), axis=1))))[:len(responses)]],
+        step_stop_logp=[r.get('stop_logp') for r in responses],
         _frames=frames, _responses=[dict(tokens=r['tokens'], complete=r['complete']) for r in responses])
