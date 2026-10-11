@@ -5,7 +5,7 @@ cgroup (v1 or v2) about every second, and samples per-GPU memory.  The guard
 sends SIGTERM (then SIGKILL) only to this command's own process group.  It
 never changes cgroup limits, drops caches, cancels an allocation or touches
 pre-existing processes.  Exit status 0 only for exit 0 with no guard trigger
-and no new OOM-kill event.
+and no new OOM or OOM-kill event.
 """
 import argparse
 import json
@@ -58,6 +58,7 @@ def main():
     peaks = dict(job_usage_gib=0., working_set_gib=0., anon_gib=0.)
     gpu_peak = {}
     started, guard, last_gpu = time.time(), False, 0.
+    new_oom = new_oom_kill = 0
     with (out / 'command.log').open('w') as log, (out / 'host_memory.jsonl').open('w') as samples:
         process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
         (out / 'owned_process.json').write_text(json.dumps(dict(
@@ -66,6 +67,8 @@ def main():
             started=started)) + '\n')
         while process.poll() is None:
             sample = cgroup_sample(location)
+            new_oom = max(new_oom, sample['oom'] - first['oom'])
+            new_oom_kill = max(new_oom_kill, sample['oom_kill'] - first['oom_kill'])
             for key in peaks:
                 peaks[key] = max(peaks[key], sample[key])
             record = dict(unix_time=time.time(), **sample)
@@ -78,8 +81,8 @@ def main():
                         gpu_peak[g['index']] = max(gpu_peak.get(g['index'], 0), g['used_mib'])
             samples.write(json.dumps(record) + '\n')
             samples.flush()
-            if sample['working_set_gib'] > guard_gib:
-                guard = True
+            guard = sample['working_set_gib'] > guard_gib
+            if guard or new_oom or new_oom_kill:
                 os.killpg(process.pid, signal.SIGTERM)
                 try:
                     process.wait(timeout=60)
@@ -89,13 +92,14 @@ def main():
             time.sleep(args.interval)
         status = process.wait()
     last = cgroup_sample(location)
-    new_oom_kill = last['oom_kill'] - first['oom_kill']
+    new_oom = max(new_oom, last['oom'] - first['oom'])
+    new_oom_kill = max(new_oom_kill, last['oom_kill'] - first['oom_kill'])
     report = dict(
-        status='PASS' if status == 0 and not guard and new_oom_kill == 0 else 'FAIL',
+        status='PASS' if status == 0 and not guard and new_oom == 0 and new_oom_kill == 0 else 'FAIL',
         exit_code=status, host_guard_triggered=guard, host_guard_gib=guard_gib,
         job_limit_gib=first['job_limit_gib'], sampled_peak_job_usage_gib=peaks['job_usage_gib'],
         sampled_peak_working_set_gib=peaks['working_set_gib'], sampled_peak_anon_gib=peaks['anon_gib'],
-        cgroup_recorded_peak_gib=last['job_peak_gib'], new_oom_kill_events=new_oom_kill,
+        cgroup_recorded_peak_gib=last['job_peak_gib'], new_oom_events=new_oom, new_oom_kill_events=new_oom_kill,
         new_limit_events=last['limit_events'] - first['limit_events'],
         start_usage_gib=first['job_usage_gib'], nvidia_smi_peak_used_mib=gpu_peak,
         seconds=time.time() - started, command=command, cgroup=str(location[1]),

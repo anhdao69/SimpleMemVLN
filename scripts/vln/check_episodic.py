@@ -12,6 +12,8 @@ E. >=500-step cyclic real-RGB dry stream: bounded cache (not a navigation score)
 import argparse
 from copy import deepcopy
 import json
+import hashlib
+import subprocess
 from pathlib import Path
 import time
 import numpy as np
@@ -24,12 +26,17 @@ from qwen_vl.stream.cache import kv_length, make_stream_cache_fp32
 from qwen_vl.models.committed_write import CommittedWriteScorer
 from qwen_vl.research.episodic_contract import parse_episodic_spec, derived_kv_guard
 
+# Frozen from the independent H2 audit protocol, not fitted to a failed replay.
+HELPER_MAX_RELATIVE_ERROR = 0.01
+
+RUNTIME_PROFILE = 'configs/episodic/profile_h4.yaml'
+
 ARMS = {a: f'configs/episodic/arm_{a}.yaml' for a in ('v0', 'm1', 'm2', 'm2c')}
 
 
 def cfg_for(arm):
     return resolve_config('configs/episodic/science_common.yaml', ARMS[arm],
-                          runtime='configs/episodic/profile_h4.yaml')
+                          runtime=RUNTIME_PROFILE)
 
 
 def encode(serializer, episode, device):
@@ -62,7 +69,7 @@ def switch(model, serializer, cfg):
 
 def gate_a(model, serializer, episode, device):
     legacy = resolve_config('configs/episodic/science_common.yaml', 'configs/vln_memory_window8.yaml',
-                            runtime='configs/episodic/profile_h4.yaml')
+                            runtime=RUNTIME_PROFILE)
     legacy['memory']['kv_guard_tokens'] = 4096
     s_legacy = switch(model, serializer, legacy)
     with torch.inference_mode():
@@ -225,17 +232,24 @@ def gate_e(model, serializer, arm, episode, device, steps=520):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
+    global RUNTIME_PROFILE
+    p.add_argument('--runtime-profile', default='configs/episodic/profile_h4.yaml')
     p.add_argument('--model-path', required=True)
     p.add_argument('--manifest', required=True)
     p.add_argument('--out', required=True)
     p.add_argument('--replay-steps', type=int, nargs='+', default=[64, 128])
     p.add_argument('--arms', nargs='+', default=['v0', 'm2', 'm2c'])
     args = p.parse_args()
+    RUNTIME_PROFILE = args.runtime_profile
     torch.manual_seed(429)
     model, serializer = load_model(cfg_for('m2'), args.model_path)
     model.eval()
     device = next(model.parameters()).device
-    report = dict(note='Fixed expert observations and forced canonical responses; no navigation-quality claim.')
+    root = Path(__file__).resolve().parents[2]
+    report = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
+                  source_dirty=bool(subprocess.check_output(['git', 'diff', 'HEAD', '--', '.'], cwd=root)),
+                  runtime_profile=RUNTIME_PROFILE,
+                  runtime_sha256=hashlib.sha256(Path(RUNTIME_PROFILE).read_bytes()).hexdigest(), note='Fixed expert observations and forced canonical responses; no navigation-quality claim.')
     short = fixture(args.manifest, 'r2rce', 24)
     report['A_feature_disabled'] = gate_a(model, serializer, short, device)
     print('GATE_A', json.dumps(report['A_feature_disabled']), flush=True)
@@ -253,7 +267,10 @@ def main():
     report['E_dry_stream'] = [gate_e(model, serializer, arm, fixture(args.manifest, 'rxrce', 40), device)
                               for arm in ('m2', 'v0')]
     a = report['A_feature_disabled']
-    report['passed'] = bool(a['logits_bitwise_equal'] and a['loss_sum_equal']
+    report['helper_max_relative_error'] = HELPER_MAX_RELATIVE_ERROR
+    helper_passed = all(r['finite'] and 0 <= r['final_state_relative_error_vs_fla'] <= HELPER_MAX_RELATIVE_ERROR
+                        for r in report['B_helper_vs_fla'])
+    report['passed'] = bool(helper_passed and a['logits_bitwise_equal'] and a['loss_sum_equal']
                             and all(r['passed'] for r in replay)
                             and all(e['peak_resident_kv'] <= e['guard'] for e in report['E_dry_stream']))
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)

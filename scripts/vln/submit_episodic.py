@@ -50,12 +50,36 @@ def tree_hashes(root):
             if p.is_file() and '__pycache__' not in p.parts}
 
 
+def numerical_report_bytes(path, commit):
+    raw = Path(path).read_bytes()
+    report = json.loads(raw)
+    if (not isinstance(report, dict) or report.get('passed') is not True
+            or report.get('source_commit') != commit or report.get('source_dirty') is not False):
+        raise SystemExit('Numerical evidence must PASS on the clean requested source commit')
+    if not isinstance(report.get('runtime_sha256'), str) or len(report['runtime_sha256']) != 64:
+        raise SystemExit('Numerical evidence must identify its runtime profile')
+    return raw
+
+
+def store_numerical_report(campaign, raw):
+    digest = hashlib.sha256(raw).hexdigest()
+    path = campaign / 'numerical' / f'{digest}.json'
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if not path.exists():
+        path.write_bytes(raw)
+        path.chmod(0o444)
+    elif path.read_bytes() != raw:
+        raise SystemExit('Immutable numerical evidence changed')
+    return dict(path=str(path.resolve()), sha256=digest)
+
+
 def init(args):
     campaign = Path(args.campaign_root)
     manifest_path = campaign / 'campaign_manifest.json'
     if manifest_path.exists():
         raise SystemExit(f'Campaign already initialized: {manifest_path}')
     commit = subprocess.check_output(['git', 'rev-parse', args.source_commit], cwd=ROOT, text=True).strip()
+    numerical_raw = numerical_report_bytes(args.numerical_report, commit)
     source = campaign / 'source' / commit
     if source.exists():
         raise SystemExit(f'Source snapshot exists: {source}')
@@ -70,6 +94,7 @@ def init(args):
         if path.is_file():
             path.chmod(0o444)
     payload = dict(
+        numerical_report=store_numerical_report(campaign, numerical_raw),
         campaign_uuid=str(uuid.uuid4()), created=time.strftime('%Y-%m-%dT%H:%M:%S%z'),
         plan='plans/episodic_mem.md', source_commit=commit, source_dir=str(source),
         source_tree_sha256=hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest(),
@@ -80,7 +105,8 @@ def init(args):
         fixtures=args.fixtures, hf_repo=args.hf_repo, hf_home=args.hf_home,
         protected_jobs=str(campaign / 'protected_jobs.json'),
         disk_reservation_gib=args.disk_reservation_gib, epochs_to_train=1,
-        recovery_save_steps=250, first_recovery_save_step=50, verify_updates=50)
+        recovery_save_steps=250, first_recovery_save_step=50, verify_updates=50,
+        publish_checkpoints=not args.no_upload)
     atomic_write_json(manifest_path, payload)
     print(json.dumps(payload, indent=2))
 
@@ -106,13 +132,16 @@ def resnapshot(args):
     campaign = Path(args.campaign_root)
     manifest = json.loads((campaign / 'campaign_manifest.json').read_text())
     commit = subprocess.check_output(['git', 'rev-parse', args.source_commit], cwd=ROOT, text=True).strip()
+    numerical_raw = numerical_report_bytes(args.numerical_report, commit)
     source, hashes = _snapshot(campaign, commit)
     previous = dict(source_commit=manifest['source_commit'], source_dir=manifest['source_dir'],
-                    source_tree_sha256=manifest['source_tree_sha256'])
+                    source_tree_sha256=manifest['source_tree_sha256'],
+                    numerical_report=manifest.get('numerical_report'))
     shutil.copy(campaign / 'source_hashes.json', campaign / f'source_hashes.{manifest["source_commit"]}.json')
     (campaign / 'source_hashes.json').write_text(json.dumps(dict(commit=commit, files=hashes), indent=2) + '\n')
     manifest.setdefault('source_history', []).append(dict(previous, replaced=time.time(), reason=args.reason))
-    manifest.update(source_commit=commit, source_dir=str(source),
+    manifest.update(numerical_report=store_numerical_report(campaign, numerical_raw),
+                    source_commit=commit, source_dir=str(source),
                     source_tree_sha256=hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest())
     atomic_write_json(campaign / 'campaign_manifest.json', manifest)
     append_jsonl(campaign / 'submission_ledger.jsonl', dict(event='resnapshot', previous=previous,
@@ -142,6 +171,12 @@ def submit(args):
     planned = []
     for profile in args.profiles:
         spec = dict(PROFILES[profile])
+        if getattr(args, 'cpus', None) is not None:
+            spec['cpus'] = args.cpus
+        if getattr(args, 'omp', None) is not None:
+            spec['omp'] = args.omp
+        if min(spec['cpus'], spec['omp']) < 1:
+            raise SystemExit('CPU and OpenMP thread counts must be positive')
         if args.mem and profile in args.mem:
             spec['mem'] = args.mem[profile]
         run_dir = campaign / 'runs' / args.run
@@ -159,13 +194,15 @@ def submit(args):
         launch = dict(
             campaign_uuid=manifest['campaign_uuid'], campaign_root=str(campaign), run_id=args.run, arm=arm,
             profile=profile, attempt=attempt, attempt_dir=str(attempt_dir), job_name=job_name,
+            numerical_report=manifest.get('numerical_report'),
+            partition=getattr(args, 'partition', 'highgpu'),
             comment=comment, source_dir=str(source), source_commit=manifest['source_commit'],
             config_sha256=hashlib.sha256(resolved.encode()).hexdigest(), resources=spec,
             qualification=args.qualify, race_siblings=[p for p in args.profiles if p != profile],
             submit_ablations=list(args.ablations or []), created=time.time())
         atomic_write_json(attempt_dir / 'launch_manifest.json', launch)
         command = ['sbatch', '--parsable', f'--job-name={job_name}', f'--comment={comment}',
-                   '--partition=highgpu', '--nodes=1', '--ntasks=1',
+                   f'--partition={getattr(args, "partition", "highgpu")}', '--nodes=1', '--ntasks=1',
                    f'--gres=gpu:nvidia_h100_80gb_hbm3:{spec["gpus"]}', f'--cpus-per-task={spec["cpus"]}',
                    f'--mem={spec["mem"]}', f'--time={spec["time"]}', '--signal=B:USR1@1800',
                    f'--output={attempt_dir}/slurm-%j.log',
@@ -216,6 +253,8 @@ def main():
     i.add_argument('--fixtures', required=True)
     i.add_argument('--hf-repo', default='anhdao69/Streaming_episodic')
     i.add_argument('--hf-home', default=os.environ.get('HF_HOME', ''))
+    i.add_argument('--numerical-report', required=True, help='Passing numerical report with source_commit/runtime_sha256')
+    i.add_argument('--no-upload', action='store_true', help='Keep checkpoints local; do not publish to the Hub')
     i.add_argument('--disk-reservation-gib', type=float, default=400)
     s = sub.add_parser('submit')
     s.add_argument('--campaign-root', required=True)
@@ -225,6 +264,9 @@ def main():
     s.add_argument('--qualify', choices=['full', 'startup'], default='startup')
     s.add_argument('--ablations', nargs='*', help='Runs the verified winner submits on its profile')
     s.add_argument('--mem', type=lambda x: dict(kv.split('=') for kv in x.split(',')))
+    s.add_argument('--partition', default='highgpu')
+    s.add_argument('--cpus', type=int)
+    s.add_argument('--omp', type=int)
     s.add_argument('--dry-run', action='store_true')
     s.add_argument('--allow-phase2', action='store_true')
     s.add_argument('--allow-existing-lease', action='store_true')
@@ -232,6 +274,7 @@ def main():
     r.add_argument('--campaign-root', required=True)
     r.add_argument('--source-commit', required=True)
     r.add_argument('--reason', required=True)
+    r.add_argument('--numerical-report', required=True)
     t = sub.add_parser('status')
     t.add_argument('--campaign-root', required=True)
     args = p.parse_args()

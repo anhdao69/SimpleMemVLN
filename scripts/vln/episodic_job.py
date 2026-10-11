@@ -56,6 +56,30 @@ class Attempt:
         print(f'STATE {state} {json.dumps(fields)}', flush=True)
 
 
+def numerical_evidence_problems(reference, source_commit, runtime_path):
+    """Reject absent, failed, changed or incompatible numerical release evidence."""
+    import hashlib
+    if not reference:
+        return ['missing numerical qualification evidence']
+    try:
+        raw = Path(reference['path']).read_bytes()
+        report = json.loads(raw)
+        problems = []
+        if hashlib.sha256(raw).hexdigest() != reference['sha256']:
+            problems.append('numerical qualification report changed')
+        if report.get('source_dirty') is not False:
+            problems.append('numerical qualification source was not clean')
+        if report.get('passed') is not True:
+            problems.append('numerical qualification did not pass')
+        if report.get('source_commit') != source_commit:
+            problems.append('numerical qualification source differs')
+        if report.get('runtime_sha256') != hashlib.sha256(Path(runtime_path).read_bytes()).hexdigest():
+            problems.append('numerical qualification runtime differs')
+        return problems
+    except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
+        return [f'invalid numerical qualification evidence: {exc}']
+
+
 def preflight(a):
     import hashlib
     import torch
@@ -75,6 +99,8 @@ def preflight(a):
             problems.append(f'GPU {i} not idle: {free / 2**30:.1f} GiB free')
     saved = json.loads((a.dir / 'source_hashes.json').read_text())   # recorded at submission
     source = Path(a.launch['source_dir'])
+    problems.extend(numerical_evidence_problems(a.launch.get('numerical_report'),
+                    a.launch['source_commit'], source / spec['runtime']))
     for name, digest in saved['files'].items():
         if hashlib.sha256((source / name).read_bytes()).hexdigest() != digest:
             problems.append(f'source changed: {name}')
@@ -260,6 +286,9 @@ class Agent(threading.Thread):
             result = subprocess.run([sys.executable, '-m', 'scripts.vln.submit_episodic', 'submit',
                                      '--campaign-root', str(a.campaign), '--run', run,
                                      '--profiles', a.launch['profile'], '--qualify', 'startup',
+                                     '--partition', a.launch.get('partition', 'highgpu'),
+                                     '--cpus', str(a.launch['resources']['cpus']),
+                                     '--omp', str(a.launch['resources']['omp']),
                                      '--mem', f'{a.launch["profile"]}={a.launch["resources"]["mem"]}'],
                                     cwd=ROOT, capture_output=True, text=True)
             append_jsonl(a.dir / 'events.jsonl', dict(event='ablation_submitted', run=run,
@@ -314,6 +343,8 @@ def train(a):
 
 
 def upload(a, out):
+    if not a.manifest.get('publish_checkpoints', True):
+        return None
     checkpoint = boundary_checkpoint(a, out)
     if checkpoint is None:
         a.status('FAILED', stage='upload', reason='no complete epoch-boundary checkpoint')
@@ -362,7 +393,7 @@ def main():
         a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], republish=True)
         code = upload(a, a.dir / 'train')
         a.status('COMPLETE', uploaded=code == 0)
-        return code
+        return code or 0
     # A resumed attempt (same profile/source) still qualifies its new allocation.
     report = qualify(a, 'startup' if resuming else a.launch['qualification'])
     if not report.get('passed'):
@@ -397,7 +428,7 @@ def main():
     a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], checkpoint=str(boundary))
     code = upload(a, out)
     a.status('COMPLETE', uploaded=code == 0)
-    return code
+    return code or 0
 
 
 if __name__ == '__main__':

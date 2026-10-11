@@ -21,7 +21,8 @@ export LD_LIBRARY_PATH="$(dirname "$(dirname "$CXX")")/lib64:${LD_LIBRARY_PATH:-
 export HF_HOME=$(read_field "$cm" "['hf_home']" "$cm")
 export HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 TOKENIZERS_PARALLELISM=false HF_HUB_DISABLE_PROGRESS_BARS=1
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-export OMP_NUM_THREADS=$(read_field "$manifest" "['resources']['omp']" "$manifest") MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1
+export OMP_NUM_THREADS=$(read_field "$manifest" "['resources']['omp']" "$manifest")
+export MKL_NUM_THREADS="$OMP_NUM_THREADS" OPENBLAS_NUM_THREADS=1
 export TMPDIR=$(mktemp -d "/tmp/epi-${SLURM_JOB_ID:?}-XXXXXX")
 export TRITON_CACHE_DIR="$TMPDIR/triton" TORCH_EXTENSIONS_DIR="$TMPDIR/torch_extensions"
 export PYTHONPATH="$source_dir/src:$source_dir"
