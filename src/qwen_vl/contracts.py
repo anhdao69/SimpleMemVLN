@@ -105,7 +105,9 @@ def validate_episode(episode, root=None, check_images=True):
 def validate_config(cfg, world_size=None):
     mode = cfg["model"]["output_mode"]
     memory = cfg["memory"]["mode"]
-    if mode not in SERIALIZERS or memory not in ("full_context", "window8"):
+    from qwen_vl.research.episodic_contract import EPISODIC_MODE, parse_episodic_spec
+
+    if mode not in SERIALIZERS or memory not in ("full_context", "window8", EPISODIC_MODE):
         raise ValueError("Unsupported output or memory mode")
     obs, train = cfg["observations"], cfg["training"]
     window_batch = cfg['runtime'].get('window_attention_batch_steps', 1)
@@ -148,6 +150,8 @@ def validate_config(cfg, world_size=None):
             or not cfg["memory"]["evict_before_new_step"]
         ):
             raise ValueError("Window8 requires matching attention and FIFO policy")
+    elif memory == EPISODIC_MODE:
+        parse_episodic_spec(cfg)
     elif cfg["memory"]["evict_before_new_step"]:
         raise ValueError("FullContext cannot evict")
     if (
@@ -159,4 +163,26 @@ def validate_config(cfg, world_size=None):
     from qwen_vl.research.lane_contract import parse_step_lane_spec
 
     parse_step_lane_spec(cfg)
+    if memory != EPISODIC_MODE:
+        parse_episodic_spec(cfg)  # rejects stray episodic keys in legacy modes
+    runtime_staging(cfg)
     return cfg
+
+
+def runtime_staging(cfg):
+    """Validated host-staging/offload knobs; engineering only, never the objective."""
+    runtime, train = cfg["runtime"], cfg["training"]
+    workers = train.get("dataloader_num_workers", 2)
+    if type(workers) is not int or workers < 0:
+        raise ValueError("dataloader_num_workers must be a nonnegative integer")
+    prefetch = train.get("dataloader_prefetch_factor")
+    if prefetch is not None and (workers == 0 or type(prefetch) is not int or prefetch < 1):
+        raise ValueError("prefetch factor requires loader workers and a positive integer")
+    for key in ("dataloader_pin_memory", "dataloader_persistent_workers", "stage_pixels_bf16"):
+        value = (runtime if key == "stage_pixels_bf16" else train).get(key)
+        if value is not None and type(value) is not bool:
+            raise ValueError(f"{key} must be boolean")
+    backend = train.get("activation_offload_backend", "save_on_cpu_pinned")
+    if backend not in ("save_on_cpu_pinned", "pinned_arena_v1", "pageable_v1"):
+        raise ValueError(f"Unknown activation offload backend {backend!r}")
+    return dict(workers=workers, prefetch=prefetch, backend=backend)

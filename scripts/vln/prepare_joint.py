@@ -16,20 +16,23 @@ def main():
     p.add_argument('--r2r-manifest', required=True)
     p.add_argument('--out', required=True)
     p.add_argument('--rxr-variant', choices=['original', '15deg'], default='original')
+    p.add_argument('--rxr-source', help='Explicit train_guide.json.gz (server layout)')
+    p.add_argument('--rxr-frames', help='Explicit directory containing <episode_id>/ frames')
     args = p.parse_args()
     root, out = Path(args.data_root), Path(args.out)
     if out.exists():
         raise ValueError('Refusing to overwrite an existing manifest')
-    source = root / ('RxR_CE_15_deg_Trajectory_data/train/train_guide.json.gz'
-                     if args.rxr_variant == '15deg' else 'datasets/rxr/train/train_guide.json.gz')
+    source = Path(args.rxr_source) if args.rxr_source else root / (
+        'RxR_CE_15_deg_Trajectory_data/train/train_guide.json.gz'
+        if args.rxr_variant == '15deg' else 'datasets/rxr/train/train_guide.json.gz')
     version = hashlib.sha256(source.read_bytes()).hexdigest()
     with gzip.open(source, 'rt') as f:
         records = json.load(f)['episodes']
     lookup = {str(r['episode_id']): r for r in records}
     if len(lookup) != len(records):
         raise ValueError('Duplicate source episode IDs')
-    frames = root / ('trajectory_data/RxR_15deg/train'
-                     if args.rxr_variant == '15deg' else 'trajectory_data/RxR/train')
+    frames = Path(args.rxr_frames) if args.rxr_frames else root / (
+        'trajectory_data/RxR_15deg/train' if args.rxr_variant == '15deg' else 'trajectory_data/RxR/train')
     folders = sorted(x for x in frames.iterdir() if x.is_dir())
     rows = [json.loads(s) for s in Path(args.r2r_manifest).read_text().splitlines() if s.strip()]
     for row in rows:

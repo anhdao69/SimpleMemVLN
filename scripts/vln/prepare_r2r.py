@@ -18,9 +18,13 @@ def main():
     p.add_argument("--data-root", required=True)
     p.add_argument("--out", required=True)
     p.add_argument("--split", default="train")
+    p.add_argument("--source", help="Explicit official episodes .json.gz (server layout)")
+    p.add_argument("--frames-root", help="Explicit directory containing <episode_id>/ frames")
     args = p.parse_args()
     root = Path(args.data_root)
-    source = root / f"datasets/r2r/{args.split}/{args.split}.json.gz"
+    source = Path(args.source) if args.source else root / f"datasets/r2r/{args.split}/{args.split}.json.gz"
+    frames_root = (Path(args.frames_root) if args.frames_root
+                   else root / f"trajectory_data/R2R/{args.split}")
     with gzip.open(source, "rt") as f:
         records = json.load(f)["episodes"]
     out = Path(args.out)
@@ -29,7 +33,7 @@ def main():
     for record in records:
         eid = str(record["episode_id"])
         scene = record["scene_id"]
-        folder = root / f"trajectory_data/R2R/{args.split}/{eid}"
+        folder = frames_root / eid
         steps = []
         for image in sorted(folder.glob("step_*.png")):
             match = re.fullmatch(

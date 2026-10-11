@@ -13,6 +13,8 @@ from qwen_vl.contracts import (
 from qwen_vl.data.data_qwen import QWEN3_5_NON_THINKING_CHAT_TEMPLATE
 from qwen_vl.data.lane_metadata import build_lane_roles
 from qwen_vl.research.lane_contract import parse_step_lane_spec
+from qwen_vl.research.episodic_contract import parse_episodic_spec
+from qwen_vl.data.episodic_metadata import build_episodic_layout
 
 IMAGE = "<|vision_start|><|image_pad|><|vision_end|>"
 SYSTEM = (
@@ -211,6 +213,11 @@ class EpisodeSerializer:
             num_actions=len(classes),
             episode_uid=episode["episode_uid"],
         )
+        if parse_episodic_spec(self.config) is not None:
+            # Metadata only: identical tokens, images, targets and loss positions.
+            result["episodic_layout"] = build_episodic_layout(
+                result["input_ids"], self.image_id, prefix,
+                tuple(observation_spans), tuple(spans))
         if lane_spec is not None:
             roles = build_lane_roles(prefix, tuple(observation_spans), tuple(spans), cursor)
             for t, (_, end) in enumerate(spans):
@@ -242,6 +249,9 @@ class EpisodeSerializer:
         lane_spec = parse_step_lane_spec(self.config)
         if lane_spec is not None:
             result["step_lane"] = lane_spec.to_dict()
+        episodic = parse_episodic_spec(self.config)
+        if episodic is not None:
+            result["episodic"] = episodic.to_dict()
         if self.mode == "candidate_logits":
             from qwen_vl.data.candidates import DECISION_CUE
 

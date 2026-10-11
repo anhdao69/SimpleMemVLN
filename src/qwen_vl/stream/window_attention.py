@@ -84,6 +84,115 @@ class _BatchedWindowAttention(torch.autograd.Function):
         return dq, dk, dv, None, None, None, None
 
 
+def _episodic_groups(prefix, spans, recent, plan):
+    """(query start, end, first recent key, sorted episodic IDs) per packed sequence."""
+    if plan is not None:
+        plan.verify()
+        if plan.groups != len(spans) or plan.recent_groups != recent:
+            raise ValueError('Episodic plan does not match this episode/window')
+    groups = [(0, prefix, None, None)]
+    for t, (start, end) in enumerate(spans):
+        ids = None if plan is None else plan.group_ids(t)
+        groups.append((start, end, spans[max(0, t - recent + 1)][0], ids))
+    return groups
+
+
+def _key_index(groups, prefix):
+    """Concatenated original-token K/V source indices for one bounded batch."""
+    import numpy as np
+    pieces, klens = [], []
+    for start, end, first, ids in groups:
+        if first is None:
+            piece = np.arange(prefix, dtype=np.int64)
+        else:
+            old = ids if ids is not None else np.empty(0, np.int64)
+            if old.size and (int(old[0]) < prefix or int(old[-1]) >= first):
+                raise ValueError('Episodic rows must lie between prefix and recent window')
+            piece = np.concatenate((np.arange(prefix, dtype=np.int64), old,
+                                    np.arange(first, end, dtype=np.int64)))
+        pieces.append(piece)
+        klens.append(piece.size)
+    return np.concatenate(pieces), klens
+
+
+def _pack_gathered(query, key, value, groups, prefix):
+    import numpy as np
+    index, klens = _key_index(groups, prefix)
+    device = query.device
+    index = torch.from_numpy(index).to(device, non_blocking=True)
+    q = query[0, :, groups[0][0]:groups[-1][1]].transpose(0, 1)
+    k = key[0].index_select(1, index).transpose(0, 1)
+    v = value[0].index_select(1, index).transpose(0, 1)
+    qlens = [end - start for start, end, _, _ in groups]
+    def cumulative(lengths):
+        return torch.tensor(np.concatenate(([0], np.cumsum(lengths))), dtype=torch.int32, device=device)
+    return (q.contiguous(), k.contiguous(), v.contiguous(), cumulative(qlens), cumulative(klens),
+            max(qlens), max(klens), klens, index)
+
+
+class _EpisodicWindowAttention(torch.autograd.Function):
+    """Prefix + immutable episodic rows + R recent groups, original positions kept.
+
+    Every packed sequence's current query block is its key suffix, so FA2's
+    bottom-right causal alignment exposes exactly the current causal prefix.
+    Only original Q/K/V and the immutable plan are saved.  Backward recomputes
+    one bounded batch at a time and scatter-adds K/V gradients by original
+    token ID into FP32 buffers, so an old row read by many later windows (and
+    the prefix) receives the summed contribution of every window.
+    """
+
+    @staticmethod
+    def forward(ctx, query, key, value, scaling, prefix, spans, recent, plan, batch_steps):
+        ctx.save_for_backward(query, key, value)
+        ctx.scaling, ctx.prefix, ctx.batch_steps, ctx.plan = scaling, prefix, batch_steps, plan
+        ctx.groups = _episodic_groups(prefix, spans, recent, plan)
+        output = query.new_empty((1, query.shape[2], query.shape[1], value.shape[-1]))
+        for offset in range(0, len(ctx.groups), batch_steps):
+            groups = ctx.groups[offset:offset + batch_steps]
+            q, k, v, cuq, cuk, maxq, maxk, _, _ = _pack_gathered(query, key, value, groups, prefix)
+            output[0, groups[0][0]:groups[-1][1]] = _varlen(q, k, v, cuq, cuk, maxq, maxk, scaling)
+        return output
+
+    @staticmethod
+    @torch.autograd.function.once_differentiable
+    def backward(ctx, grad_output):
+        query, key, value = ctx.saved_tensors
+        if ctx.plan is not None:
+            ctx.plan.verify()
+        prefix = ctx.prefix
+        dq = torch.zeros_like(query)
+        # BF16 inputs accumulate in FP32; FP64 reference inputs keep FP64.
+        accumulate = torch.promote_types(key.dtype, torch.float32)
+        dk = torch.zeros(key.shape[1:], dtype=accumulate, device=key.device)
+        dv = torch.zeros(value.shape[1:], dtype=accumulate, device=value.device)
+        for offset in reversed(range(0, len(ctx.groups), ctx.batch_steps)):
+            groups = ctx.groups[offset:offset + ctx.batch_steps]
+            with torch.enable_grad():
+                packed = _pack_gathered(query, key, value, groups, prefix)
+                q, k, v = (x.detach().requires_grad_() for x in packed[:3])
+                cuq, cuk, maxq, maxk, klens, index = packed[3:]
+                out = _varlen(q, k, v, cuq, cuk, maxq, maxk, ctx.scaling)
+                gq, gk, gv = torch.autograd.grad(
+                    out, (q, k, v), grad_output[0, groups[0][0]:groups[-1][1]].contiguous())
+            dq[0, :, groups[0][0]:groups[-1][1]].copy_(gq.transpose(0, 1))
+            gk, gv = gk.to(accumulate).transpose(0, 1), gv.to(accumulate).transpose(0, 1)
+            cursor = sum(klens)
+            for (start, end, first, ids), klen in reversed(list(zip(groups, klens))):
+                cursor -= klen
+                for grad, target in ((gk, dk), (gv, dv)):
+                    piece = grad[:, cursor:cursor + klen]
+                    target[:, :prefix].add_(piece[:, :prefix])
+                    if first is None:
+                        continue
+                    old = 0 if ids is None else ids.size
+                    if old:
+                        # IDs are unique within one window: deterministic scatter.
+                        target.index_add_(1, index[cursor + prefix:cursor + prefix + old],
+                                          piece[:, prefix:prefix + old])
+                    target[:, first:end].add_(piece[:, prefix + old:])
+        return dq, dk.to(key.dtype)[None], dv.to(value.dtype)[None], None, None, None, None, None, None
+
+
 def _flash(q, k, v, scaling):
     from flash_attn import flash_attn_func
     return flash_attn_func(
@@ -158,6 +267,8 @@ def step_flash_attention(
     step_plan=None,
     stream_append=False,
     window_attention_batch_steps=1,
+    episodic_recent_groups=None,
+    episodic_plan=None,
     **kwargs
 ):
     if attention_mask is not None or query.shape[0] != 1 or dropout:
@@ -183,6 +294,16 @@ def step_flash_attention(
         raise ValueError("Uncovered query tokens")
     if type(window_attention_batch_steps) is not int or not 1 <= window_attention_batch_steps <= 64:
         raise ValueError("Window attention batch steps must be an integer in [1,64]")
+    if episodic_recent_groups is not None:
+        if type(episodic_recent_groups) is not int or episodic_recent_groups < 1:
+            raise ValueError('Recent groups must be a positive integer')
+        if episodic_plan is not None and episodic_plan.layer_idx != getattr(module, 'layer_idx', None):
+            raise ValueError('Episodic plan routed to the wrong attention layer')
+        return _EpisodicWindowAttention.apply(
+            query, key, value, scaling, prefix_length, tuple(spans), episodic_recent_groups,
+            episodic_plan, window_attention_batch_steps), None
+    if episodic_plan is not None:
+        raise ValueError('Episodic plan supplied without the episodic window')
     if window_attention_batch_steps > 1:
         return _BatchedWindowAttention.apply(query, key, value, scaling, prefix_length,
                                              tuple(spans), window_attention_batch_steps), None

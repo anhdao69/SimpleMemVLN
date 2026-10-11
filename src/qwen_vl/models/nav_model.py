@@ -109,6 +109,11 @@ class SimpleMemVLNForNavigation(nn.Module):
             ):
                 backbone.lm_head.requires_grad_(False)
 
+        from qwen_vl.research.episodic_contract import parse_episodic_spec
+        self.episodic_spec = parse_episodic_spec(navigation_config, backbone.config.text_config)
+        if self.episodic_spec is not None:
+            from qwen_vl.models.episodic_forward import NATIVE_FORWARD_SHA256, check_native_source
+            check_native_source(NATIVE_FORWARD_SHA256)
         from qwen_vl.research.lane_contract import parse_step_lane_spec
         spec = parse_step_lane_spec(navigation_config, backbone.config.text_config)
         if spec is not None:
@@ -199,6 +204,10 @@ class SimpleMemVLNForNavigation(nn.Module):
         step_lane_roles=None,
         step_lane_cache=None,
         step_lane_logical_start=None,
+        episodic_layout=None,
+        episode_uid=None,
+        episodic_serving=None,
+        episodic_diagnostics=None,
     ):
         lane_kwargs = {}
         if getattr(self, "step_lane_spec", None) is not None:
@@ -222,6 +231,20 @@ class SimpleMemVLNForNavigation(nn.Module):
             if pixel_values is not None
             else "feedback_language_model_append"
         )
+        if self.episodic_spec is not None:
+            from qwen_vl.models.episodic_forward import episodic_text_forward
+
+            with timed(self, stage):
+                return episodic_text_forward(
+                    self.backbone.model.language_model, embeddings, position_ids,
+                    self.episodic_spec, step_plan=step_plan, layout=episodic_layout,
+                    episode_uid=episode_uid, past_key_values=cache, use_cache=cache is not None,
+                    stream_append=stream_append, serving=episodic_serving,
+                    window_attention_batch_steps=self.navigation_config['runtime'].get(
+                        'window_attention_batch_steps', 1),
+                    diagnostics=episodic_diagnostics)
+        if any(x is not None for x in (episodic_layout, episodic_serving, episodic_diagnostics)):
+            raise ValueError("Episodic metadata supplied to a non-episodic model")
         with timed(self, stage):
             return self.backbone.model.language_model(
                 inputs_embeds=embeddings,
@@ -250,10 +273,20 @@ class SimpleMemVLNForNavigation(nn.Module):
         num_actions,
         episode_uid=None,
         step_lane_roles=None,
+        episodic_layout=None,
+        episodic_diagnostics=None,
     ):
+        episodic = {}
+        if self.episodic_spec is not None:
+            if episodic_layout is None or episode_uid is None:
+                raise ValueError("Episodic training needs the serialized layout and episode UID")
+            episodic = dict(episodic_layout=episodic_layout, episode_uid=episode_uid,
+                            episodic_diagnostics=episodic_diagnostics)
+        elif episodic_layout is not None:
+            raise ValueError("Episodic layout supplied to a non-episodic model")
         hidden = self.hidden(
             input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan,
-            step_lane_roles=step_lane_roles,
+            step_lane_roles=step_lane_roles, **episodic,
         )
         if self.output_mode == "candidate_logits":
             logits = self.action_logits(hidden[0, read_positions])

@@ -40,11 +40,29 @@ class StreamSession:
             self.step_lane_cache = StepLaneCache(
                 spec, episode_uid, device=next(self.model.parameters()).device
             )
-        self._append_with_role(self.serializer.encode_prefix(instruction), 0)
+        self.episodic = None
+        spec = getattr(self.model, "episodic_spec", None)
+        if spec is not None:
+            from qwen_vl.stream.episodic_cache import EpisodicSessionState
+            self.episodic = EpisodicSessionState(
+                spec, self.model, episode_uid, device=next(self.model.parameters()).device)
+        self._append_with_role(self.serializer.encode_prefix(instruction), 0, kind="prefix")
         self.prefix_length = self.positions.logical_token_count
         self.valid = True
 
-    def _append_with_role(self, block, role, *, complete=False):
+    def _append_with_role(self, block, role, *, complete=False, kind=None):
+        if self.episodic is not None:
+            if kind is None:
+                raise ValueError("Episodic append requires its score segment kind")
+            offset = None
+            if kind == "observation":
+                image = block["input_ids"][0].eq(self.serializer.image_id).nonzero().reshape(-1)
+                offset = int(image[0])
+            self.episodic.begin_append(kind, self.positions.logical_token_count,
+                                       block["input_ids"].numel(), offset)
+            hidden = self._append(block)
+            self.episodic.end_append(self.cache)
+            return hidden
         if getattr(self.model, "step_lane_spec", None) is None:
             return self._append(block)
         roles = torch.full_like(block["input_ids"], role, dtype=torch.uint8)
@@ -79,6 +97,8 @@ class StreamSession:
             block["mm_token_type_ids"],
             block.get("image_grid_thw"),
         )
+        if self.episodic is not None:
+            lane_kwargs["episodic_serving"] = self.episodic
         hidden = self.model.hidden(
             **block, position_ids=positions, cache=self.cache, stream_append=True, **lane_kwargs
         )
@@ -106,6 +126,10 @@ class StreamSession:
             while self.resident and self.resident[0][0] < step_id - 7:
                 _, length = self.resident.popleft()
                 evict_kv(self.cache, self.prefix_length, length)
+        elif self.episodic is not None:
+            # Freeze the committed cache, admit/evict expired groups, then fix E_t
+            # for every token of this group (observation, response, EOS/separator).
+            self.episodic.promote(self.cache, step_id)
 
     @torch.inference_mode()
     def observe(self, episode_uid, step_id, rgb):
@@ -129,7 +153,10 @@ class StreamSession:
                 block = self.serializer.encode_observation(rgb, step_id)
             self._begin_step(step_id, block)
             start = self.positions.logical_token_count
-            hidden = self._append_with_role(block, 1)
+            if self.episodic is not None:
+                image = block["input_ids"][0].eq(self.serializer.image_id).nonzero().reshape(-1)
+                self.episodic.open_group(step_id, start, start + int(image[0]))
+            hidden = self._append_with_role(block, 1, kind="observation")
             extra = {}
             if self.serializer.mode == "candidate_logits":
                 with timed(self.model, "action_logit_projection"):
@@ -168,7 +195,7 @@ class StreamSession:
                     if token == self.serializer.eos:
                         self._append_with_role(
                             self.serializer.text_block([token] + self.serializer.separator),
-                            2, complete=True,
+                            2, complete=True, kind="response_close",
                         )
                         text = self.serializer.tokenizer.decode(
                             response,
@@ -185,7 +212,8 @@ class StreamSession:
                     if token in forbidden:
                         raise ValueError(f"Forbidden structural token {token}")
                     response.append(token)
-                    hidden = self._append_with_role(self.serializer.text_block([token]), 2)
+                    hidden = self._append_with_role(self.serializer.text_block([token]), 2,
+                                                    kind="response_token")
                 else:
                     raise ValueError(
                         "Response limit reached without assistant terminator"
@@ -199,6 +227,10 @@ class StreamSession:
                 self.resident.append(
                     (step_id, self.positions.logical_token_count - start)
                 )
+            if self.episodic is not None:
+                self.episodic.close_group(self.positions.logical_token_count)
+                if self.cfg["runtime"].get("action_diagnostics", False):
+                    extra["episodic"] = {str(k): v for k, v in self.episodic.summary().items()}
             torch.cuda.synchronize()
             if timer is not None:
                 extra["component_seconds"] = dict(timer.seconds)

@@ -45,6 +45,10 @@ class EpisodeDataset(Dataset):
         result = self.serializer.encode_episode(self.episodes[index])
         if result["input_ids"].numel() != self.encoded_lengths[index]:
             raise ValueError("Audited encoded length disagrees with actual processor")
+        if self.serializer.config["runtime"].get("stage_pixels_bf16", False):
+            # Trainer/DeepSpeed casts floating inputs to BF16 on transfer anyway;
+            # round-to-nearest-even here is bitwise identical and halves staging RAM.
+            result["pixel_values"] = result["pixel_values"].to(torch.bfloat16)
         return result
 
 
