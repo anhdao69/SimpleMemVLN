@@ -74,11 +74,54 @@ Validation: 28 RL unit tests; real-model smoke (σ rollout/trainer mismatch 3e-4
 
 ---
 
-## 4. Experiments — *pending*
+## 4. Experiments
+
+### 4.1 Pilot (val_seen-300 only; no val_unseen tuning)
+
+Same evaluator and protocol as the main comparison, on the 300-episode scene-stratified val_seen subset.
+Gate: HiCo-PO v3 at step 50 must not be worse than GRPO at step 50.
+
+| Checkpoint | SR | SPL | NE (m) | OSR | Forced STOP | Mean actions |
+|---|---:|---:|---:|---:|---:|---:|
+| SFT epoch 2 | 56.33 | 53.06 | 4.95 | 65.00 | 14 | 86.2 |
+| GRPO @ 50 | 52.00 | 46.60 | 5.62 | 69.33 | 23 | 105.8 |
+| GRPO @ 125 | 63.67 | 58.04 | 4.29 | 75.00 | 15 | 88.3 |
+| **HiCo-PO v3 @ 50** | **58.33** | **54.11** | 4.97 | 69.33 | 17 | 92.5 |
+
+GRPO dips below the SFT policy at step 50 (−4.3 SR, +20 % actions, more cap hits) before recovering by
+step 125; HiCo-PO v3 at the same step is +6.3 SR above GRPO and +2.0 above SFT. The gate passed and the
+v3 run continued to step 125. (n = 300; SE ≈ 2.9 SR points — a sanity gate, not a claim.)
+Files: `plans/RL/research/results/pilot_valseen300_*.json`.
 
 ## 5. Results — *pending*
 
-## 6. Diagnostics (STOP credit, SNR, critic) — *pending*
+## 6. Diagnostics (STOP credit, SNR, critic)
+
+### 6.1 Estimator probe on identical rollouts (HiCo v3 run, steps 0–49, 1,600 episodes)
+
+`scripts/rl/stop_credit_probe.py`: per-episode gradient w.r.t. the STOP first-token logit, summed over
+decisions with d < 3 m, for each estimator computed on the **same** logged rollouts
+(`results/stop_probe_hico_v3_steps0-49.json`).
+
+| Estimator | mean | std | fraction non-zero |
+|---|---:|---:|---:|
+| GRPO (group-normalised) | −0.029 | 0.432 | 0.61 |
+| RLOO (v2a) | −0.022 | 0.456 | 0.61 |
+| RLOO + analytic STOP (v2) | −0.013 | **0.365** | 0.63 |
+| critic + analytic STOP (v3) | −0.008 | 0.383 | 0.63 |
+
+- The analytic STOP branch lowers the STOP-logit gradient std by **20 %** relative to RLOO on identical
+  rollouts; the geometric baseline does not lower it further. Means agree within noise (±0.02), as
+  unbiasedness requires.
+- The expected STOP-logit gradient inside 3 m is slightly **negative**: under ActiveVLN's reward
+  (15·(1 − d/3)) moving closer inside the radius still pays, so approach states dominate the few
+  "should have stopped" states.
+- Passed-the-goal-but-failed rollouts (98): median max σ inside 3 m = **0.049**; 27 % never exceed 0.01,
+  44 % exceed 0.1. Much of this failure mode is recognition (the policy never wanted to stop), which no
+  credit-assignment estimator can fully fix; successful rollouts reach median max σ 0.53.
+- Geometric baseline: held-out R² 0.52–0.81 over steps (logged per step) — geometry explains most of the
+  return variance, but per-episode return noise (sampled movement decisions) dominates the STOP-logit
+  gradient variance.
 
 ## 7. Failure analysis — *pending*
 
