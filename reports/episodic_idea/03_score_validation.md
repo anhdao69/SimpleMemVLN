@@ -54,8 +54,10 @@ a full-sequence and an incremental forward are amplified. Training-time diagnost
 real 21-step episodes show cutoff margins at B/B+1 of only ~1e-6–5e-5 (absolute).
 Consequently exact per-step 300-row sets frequently differ between offline and online
 (424/512 and 924/1024 per-layer-step comparisons not identical for M2; 0 for M2c, whose
-priorities do not depend on activations). Per plan §5.4 the score is **not** relaxed or
-replaced; this is a property of the M2 arm to report with its results, and a
+priorities do not depend on activations). On the final snapshot's 96-step replays the
+online sets nevertheless overlap the training-time plans by **98.2–98.3% on average**
+(worst step 93.7–94.0%), i.e. ≈2% of the 300 rows differ, consistent with median cutoff
+margins of ≈3.0e-5. Per plan §5.4 the score is **not** relaxed or replaced; this is a property of the M2 arm to report with its results, and a
 rank-bucket/quantized score is a candidate Phase-2 stabilization experiment only.
 
 Training-time bank diagnostics (M2 smoke, real 21-step R2R): 300 rows from all 13
