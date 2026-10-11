@@ -58,10 +58,35 @@ forecast (mean episode ≈101.5 obs ≈31.8K tokens; offload episodes slower): H
 per update ⇒ ≈13–16 h for epoch 1 (3,852 updates) **before** measurement; the in-job
 speed gate (20 ordinary-sampler updates) replaces this estimate.
 
-### Authoritative interactive pass from the campaign snapshot `a7e5ae5`
+### Authoritative interactive pass from the production snapshot `e28bd01` (all PASS)
 
-See `quals/interactive_894903/H4_snapshot_a7e5ae5/H4/H4_suite.json` (results appended to
-07 when complete).
+Immutable campaign source `source/e28bd01…` (the exact code jobs 898834/898835 run),
+final H4 profile (2 workers, prefetch 2, fork-safe arena after init, chunks 1), 128 GiB
+cgroup, guard 80 GiB, 3 updates per gate, every rank/update/exposure verified, no new
+OOM-kill events. Evidence: `quals/interactive_894903/H4_snapshot_e28bd01*/H4/*/gate.json`.
+
+| Gate | Pass | GPU reserved GiB | Host working set GiB | Host anon GiB | Losses |
+|---|---|---:|---:|---:|---|
+| V0 smoke | ✅ | 36.58 | 62.1 | 54.3 | .2871 .2871 .2858 |
+| M2 smoke | ✅ | 36.58 | 74.3 | 64.9 | .2797 .2797 .2770 |
+| M1 smoke | ✅ | 36.58 | 46.3 | 42.0 | .2809 .2809 .2793 |
+| M2c smoke | ✅ | 36.58 | 66.6 | 58.6 | .2832 .2832 .2818 |
+| V0 longest R2R ×8 | ✅ | 50.40 | 57.2 | 48.6 | .4031 .4031 .4013 |
+| M2 longest R2R ×8 | ✅ | 50.40 | 62.0 | 50.8 | .4035 .4035 .4041 |
+| M1 longest R2R ×8 | ✅ | 50.40 | 51.1 | 42.8 | .3974 .3974 .3974 |
+| M2c longest R2R ×8 | ✅ | 50.40 | 66.6 | 58.2 | .4013 .4013 .4020 |
+| V0 just below offload ×8 | ✅ | 52.96 | 51.6 | 40.4 | .4077 .4077 .4066 |
+| M2 just below offload ×8 | ✅ | 52.96 | 76.6 | 65.5 | .4025 .4025 .4049 |
+| V0 checkpoint save (2 updates) → fresh resume → update 3 | ✅ / ✅ | 36.58 / 38.06 | 57.0 / 68.4 | 49.1 / 59.5 | .2871 .2871 → .2844 |
+| M2 checkpoint save → fresh resume → update 3 | ✅ / ✅ | 36.58 / 38.06 | 52.2 / 53.5 | 48.7 / 49.3 | .2797 .2797 → .2813 |
+
+Not runnable under the 128 GiB / 80 GiB guard with this profile (recorded failures, not
+waived): above-offload and interactive mixed tail (4 arenas + 8 workers + page cache cross
+80 GiB during update 2), longest RxR and the speed gate (4 × 32.7 GB arenas). All of these
+run in-job before the lease.
+
+Earlier development passes (`a7e5ae5`, `469b107`, superseded) are retained under
+`quals/interactive_894903/H4_snapshot_*` with their failures.
 
 ## Host-RAM budget for the production request (512 GiB)
 

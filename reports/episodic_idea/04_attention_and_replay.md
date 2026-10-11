@@ -82,3 +82,31 @@ KV ≤ derived guard; reset clears the bank.
 The cache is bounded (prefix + 300 + 8 groups) and does not grow with episode length.
 M2 serving overhead in this replay (score extraction, sort, repack) ≈ +29% per step;
 this is a dry-stream timing, not the evaluator's closed-loop latency.
+
+## Final-snapshot replay (`e28bd01`, 96-step fixtures) — one retained budget failure
+
+Same gates, new real fixtures (96 observations; R2R and RxR), arms V0/M2/M2c, plus the
+set-overlap metric. Budget unchanged (`atol .75, rtol .03, RMS ≤ .15`).
+
+| Arm | Dataset | Max logit err | RMS | Argmax agree | Decoded actions | Per-step sets identical | Mean / min set overlap | Budget |
+|---|---|---:|---:|---:|---:|---:|---|---|
+| V0 | R2R | 0.812 | 0.042 | 99.65% | 100% | — | — | pass (via rtol term) |
+| M2 | R2R | 0.858 | 0.043 | 98.95% | 100% | 92/768 | **98.2% / 93.7%** | **FAIL** |
+| M2c | R2R | 0.858 | 0.042 | 99.30% | 100% | 768/768 | 100% / 100% | **FAIL** |
+| V0 | RxR | 0.695 | 0.037 | 99.30% | 100% | — | — | pass |
+| M2 | RxR | 0.695 | 0.037 | 99.65% | 100% | 89/768 | **98.3% / 94.0%** | pass |
+| M2c | RxR | 0.695 | 0.037 | 100% | 100% | 768/768 | 100% / 100% | pass |
+
+Finding, retained and not waived: on this R2R fixture the B300 arms exceed the inherited
+BF16 parity budget at one or more vocabulary logits (max 0.858), while V0 on the same
+fixture reaches 0.812 and passes only through the relative term. M2c's selections are
+identical to its offline plan, so the excess is not caused by the selector; it is
+ordinary full-sequence vs incremental BF16 drift with 300 more attended keys. RMS,
+argmax (≥98.95%) and complete decoded actions (100%) are unaffected. Earlier 64/128-step
+fixtures passed for every arm. Interpretation: deployment numerics of all arms differ
+from training numerics by BF16 noise that grows with episode length; evaluation must
+report closed-loop results only, never offline replay as navigation evidence.
+
+Train/serve selection skew for M2, quantified: per-step online episodic sets overlap the
+training-time plan by 98.2–98.3% on average (worst step 93.7%); median B/B+1 cutoff
+margin ≈3.0e-5 on scores ≈0.06. Evidence: `quals/interactive_894903/check_episodic_e28bd01_*.json`.
