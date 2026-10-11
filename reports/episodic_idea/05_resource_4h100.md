@@ -1,16 +1,18 @@
 # 05 — H4 runtime profile (4×H100, GAS2, ZeRO-2 GPU optimizer)
 
-Profile: `configs/episodic/profile_h4.yaml` + `deepspeed.json`. One complete episode per
-rank per microstep, global batch 8, `optimizer_group_chunks: 16`,
-`activation_offload_backend: pinned_arena_v1` (threshold 65,536 tokens),
-`stage_pixels_bf16`, 0 loader workers, no DataLoader pinning, no prefetch,
-`malloc_trim` per update, `window_attention_batch_steps: 8`,
-`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
+Profile (final, snapshot `e28bd01`): `configs/episodic/profile_h4.yaml` + `deepspeed.json`.
+One complete episode per rank per microstep, global batch 8, `optimizer_group_chunks: 1`
+(D9), `activation_offload_backend: pinned_arena_v1` (threshold 65,536 tokens; fork-safe,
+installed at train begin, D12), `stage_pixels_bf16`, **2 persistent loader workers per
+rank, prefetch 2** (D13), no DataLoader pinning, `malloc_trim` per update,
+`window_attention_batch_steps: 8` (D10), `PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`.
+Earlier interactive passes below used earlier source revisions (recorded per gate).
 
 Qualification status: **partially GPU-qualified in the interactive allocation**
-(gates that fit in 128 GiB). The longest-RxR, offload-boundary-with-longest mixed tail,
-stressed checkpoint and representative-speed gates are **pending in-job** (job 898755,
-512 GiB) — they run on that allocation before it may claim the run lease.
+(gates that fit in 128 GiB). The longest-RxR, above-offload, mixed-tail (with the
+longest), stressed checkpoint and representative-speed gates are **pending in-job**
+(job 898834, attempt `P1-V0-s429-H4-a3`, 512 GiB) — they run on that allocation before
+it may claim the run lease.
 
 ## Interactive allocation 894903 (128 GiB cgroup v1, guard 80 GiB = limit − 48)
 
@@ -69,3 +71,41 @@ Per rank at the longest episode: ~3–4 GB process + 32.7 GB pinned arena (exact
 Guard = min(0.9 × 512, 512 − 48) = 460.8 GiB. The in-job gates measure the real peak.
 Historical comparison: 417.9 GiB guarded working set on the same longest fixture with
 the inherited loader/pinning/offload settings.
+
+## Additional measurements (interactive, this session)
+
+**Optimizer group chunking (D9)** — same snapshot `a7e5ae5`, longest R2R ×8, V0, 3 updates:
+
+| `optimizer_group_chunks` | Peak allocated GiB (upd 1 / 2–3) | Peak reserved GiB | Host anon peak GiB |
+|---:|---|---:|---:|
+| 1 | 38.19 / 46.02 | 50.30 | 39.9 |
+| 16 | 42.75 / 50.58 | 52.51 | 26.2 |
+
+**Longest RxR episode, single GPU, forward+backward, no optimizer (D10)** — real
+`82sE5b5pLXE:31149:22206`, 199,735 tokens, full BF16 gradients (7.83 GiB) materialized,
+arena offload of all 32 checkpoint inputs (host anon 47 GiB):
+
+| Arm | attention batch | Peak allocated GiB | Peak reserved GiB | fwd+bwd s |
+|---|---:|---:|---:|---:|
+| V0 | 8 | 66.47 | 76.51 | 76.8 (incl. JIT warm-up) |
+| M2 | 8 | 66.47 | 76.51–76.53 | 30.2–31.8 |
+| M2 | 4 | 66.47 | 76.53 | 30.5 |
+| M2 | 16 | 66.47 | 76.53 | 29.9 |
+
+A ZeRO-2 H4 rank instead holds a ¼ gradient partition (−≈5.8 GiB) plus FP32 master and
+Adam partitions (+≈12.6 GiB): ≈73 GiB allocated expected at the longest episode, so the
+78 GiB reserved gate is tight; it is decided by the in-job longest-RxR gate (historical
+inherited recipe: 76.94 GiB reserved). H2 keeps optimizer state on CPU and has headroom.
+
+**Loader workers (D13)** — ordinary sampler, 512-episode random subsets with all
+episodes < 60K tokens, V0, 20 updates, wall per update over updates 2–20:
+
+| Workers/rank | Data | Wall s/update | Median gap s | fwd/bwd per microstep s | Host working set GiB |
+|---:|---|---:|---:|---|---:|
+| 0 | subset A, cold Lustre | **31.88** | 7.30 | 1.14 / 3.23 | 64.6 |
+| 1 | subset A, warm (re-read; confounded) | 7.24 | 0.11 | 1.05 / 2.35 | 59.1 |
+| **2** | **subset B (disjoint), cold** | **7.29** | **0.11** | 1.05 / 2.30 | 68.8 |
+
+Two workers make cold-read training ≈4.4× faster in wall time on this subset. Forecast
+for the full corpus (longer and offloaded episodes, recovery saves every 250 updates):
+**≈10–13 h for H4 epoch 1** (estimate only; the in-job speed gate measures it).

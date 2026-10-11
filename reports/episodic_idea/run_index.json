@@ -1,7 +1,7 @@
 {
   "campaign_uuid": "c42b737b-9519-4be5-9886-c8a2c9c2db50",
   "campaign_root": "/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
-  "source_commit": "469b107696bde6e0565860af45d2a0e35428427e",
+  "source_commit": "e28bd01f10612851cf9ef303fbddbd43c2cae58a",
   "live_status_command": "python -m scripts.vln.submit_episodic status --campaign-root /groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
   "hub_repo": "anhdao69/Streaming_episodic (private)",
   "runs": [
@@ -28,12 +28,24 @@
           "attempt": "P1-V0-s429-H4-a2",
           "profile": "H4",
           "job": 898758,
-          "status": "submitted"
+          "status": "superseded_before_start (cancelled pending; never allocated)"
         },
         {
           "attempt": "P1-V0-s429-H2-a2",
           "profile": "H2",
           "job": 898759,
+          "status": "superseded_before_start (cancelled pending; never allocated)"
+        },
+        {
+          "attempt": "P1-V0-s429-H4-a3",
+          "profile": "H4",
+          "job": 898834,
+          "status": "submitted"
+        },
+        {
+          "attempt": "P1-V0-s429-H2-a3",
+          "profile": "H2",
+          "job": 898835,
           "status": "submitted"
         }
       ]
@@ -71,5 +83,8 @@
     "interactive_894903": "quals/interactive_894903 (H4 partial; H2 path smoke only)",
     "in_job": "runs/<run>/<attempt>/qualification-<job>/"
   },
-  "superseded_source": "a7e5ae5eeb4100bd347ff9e8cfdf225a07ff6d14"
+  "superseded_source": [
+    "a7e5ae5eeb4100bd347ff9e8cfdf225a07ff6d14",
+    "469b107696bde6e0565860af45d2a0e35428427e"
+  ]
 }

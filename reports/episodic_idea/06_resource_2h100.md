@@ -6,7 +6,7 @@ replacement). Same staging/offload/chunking settings as H4. Global batch 8 = 2 r
 This is **not** numerically identical to H4 and is never resumed from/into H4.
 
 Qualification status: **not qualifiable in the interactive allocation**; full suite
-**pending in-job** (job 898756, 512 GiB).
+**pending in-job** (job 898835, attempt `P1-V0-s429-H2-a3`, 512 GiB).
 
 ## Interactive evidence (128 GiB, cgroup v1)
 
@@ -25,7 +25,9 @@ allocation, not of the profile.
 
 Per rank at the longest episode: ≈48 GB (optimizer/offload buffers) + 32.7 GB arena +
 ≤9.2 GB staging (4 × 627 frames) ≈ 90 GB; 2 ranks ≈ 180 GB plus checkpoint transient →
-512 GiB request, guard 460.8 GiB. Update time ≈ 2× H4 compute (GAS4) + ≈6.5 s CPU Adam ⇒
-≈28–32 s ⇒ ≈30–35 h for epoch 1 (estimate; replaced by the in-job speed gate).
+512 GiB request, guard 460.8 GiB. With two prefetching loader workers per rank (D13), update time ≈ 2× H4 compute (GAS4)
++ ≈6.5 s CPU Adam ⇒ ≈20–25 s ⇒ ≈22–28 h for epoch 1 (estimate; replaced by the in-job
+speed gate). Worker processes and ≤4 staged episodes add ≈15 GB/rank; the pinned arena is
+never inherited by workers (D12).
 Historical: an H2 GPU-optimizer attempt passed update 1 at 77.0 GiB and OOMed at update 2;
 a 240 GiB CPU-offload attempt was OOM-killed; therefore no GPU-optimizer H2 variant is used.
