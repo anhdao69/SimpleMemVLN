@@ -3,7 +3,7 @@
   "campaign_root": "/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
   "source_commit": "e28bd01f10612851cf9ef303fbddbd43c2cae58a",
   "live_status_command": "python -m scripts.vln.submit_episodic status --campaign-root /groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
-  "hub_repo": "anhdao69/Streaming_episodic (private)",
+  "hub_repo": "anhdao69/Streaming_episodic (public)",
   "runs": [
     {
       "run": "P1-V0-s429",

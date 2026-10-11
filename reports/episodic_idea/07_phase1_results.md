@@ -14,7 +14,7 @@
 | Manifest | `artifacts/r2r_rxr15_train.jsonl`, 30,815 episodes, SHA-256 `0e5ee1c3…4515` |
 | Model | Qwen3.5-4B `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a` |
 | Schedule | 2 epochs = 7,704 updates, warmup 232, cosine min 0.1, LR 5e-6, AdamW (0.9, 0.95), wd 0.01, clip 1.0, seed 429; **stop at the epoch-1 boundary (update 3,852)** |
-| Hub | private `anhdao69/Streaming_episodic`, folder `<run>/<attempt>/` |
+| Hub | **public** `anhdao69/Streaming_episodic` (made public at the user's request, 2026-10-11; the uploader's `private=True` only applies to repo creation and is ignored for this existing repo), folder `<run>/<attempt>/` |
 
 ## Runs
 
@@ -104,3 +104,22 @@ tail -f $C/runs/P1-V0-s429/*/slurm-*.log          # lifecycle states (STATE ...)
   --run <run> --profiles <winner profile> --qualify startup`).
 * **Epoch 2** (only if the Phase-2/evaluation decision asks for it, for all four arms):
   resume each run's `checkpoint-3852` on its own profile without `--stop-after-epochs`.
+
+## End-to-end lifecycle rehearsal (interactive, real wrapper + trainer)
+
+A scratch campaign (`quals/rehearsal_e28bd01/`) ran the production
+`train/slurm/episodic_candidate.sbatch` and `episodic_job.py` from a copy of the `e28bd01`
+source whose only change is a 64-episode manifest with a 16-update schedule (warmup 1),
+verification after 4 updates, saves every 4, and an intentionally invalid Hub ID:
+
+`ALLOCATED → PREFLIGHT_PASSED → startup gate PASS → CLAIMED (atomic lease) →
+TRAINING_VERIFIED (≥4 healthy updates on all 4 ranks, checkpoint-4 complete and SHA-256
+hashed, host guard respected) → ACTIVE → STOP_AFTER_EPOCH 1 at update 8 of 16
+(ScheduleGuard (16,1) PASS, epoch-1 campaign report) → final export stamped
+global_step 8 → COMPLETE (checkpoint-8 = epoch boundary) → upload attempted → failed on
+the invalid repo ID → COMPLETE uploaded=false, exit 1.`
+
+The first rehearsal attempt failed at qualification because the scratch `fixtures.json`
+was empty (a rehearsal setup error; production fixtures list every gate). Retained.
+The Hub upload path itself was verified separately with a 7-file self-test folder
+(remote sizes matched; folder removed afterwards).
