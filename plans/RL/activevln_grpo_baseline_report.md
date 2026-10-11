@@ -275,3 +275,51 @@ Run artifacts: `/data/anh/rl_baseline/runs/grpo_r2r4k/` (`run_config.json` with 
 DeepSpeed config; `metrics.jsonl` per step; `rollouts/step_*_rank*.jsonl` per trajectory;
 `exports/step_XXXX/` evaluable checkpoints with `rl_provenance.json`; `resumable/`), logs in
 `/data/anh/rl_baseline/logs/`.
+
+---
+
+## 7. Completed run: `grpo_r2r1k` (ActiveVLN GRPO, 1k R2R subset, from the SFT checkpoint)
+
+| Item | Value |
+|---|---|
+| Run directory | `/data/anh/rl_baseline/runs/grpo_r2r1k` |
+| Config | `configs/rl/activevln_grpo_r2r1k.yaml` (final state at commit `6855f8e`) |
+| Started / finished | 2026-10-10 13:22 UTC / 2026-10-11 08:44:58 UTC (`COMPLETE`: global_steps 125/125) |
+| Optimizer updates | 125 (one per RL step, asserted every step) |
+| Trajectories | 4,000 trained-batch trajectories (125 × 32) + 868 discarded by dynamic sampling; 262,696 simulator actions |
+| Final export | `exports/step_0125/` — weights SHA-256 `bc6b7d2ad6a8de4669734e84b95526833c6cacd4cbc1cf42077716f03ced4a03`, `navigation.json` byte-identical to the base, `rl_provenance.json` |
+| Other exports | `exports/step_{0025,0050,0075,0100}/` |
+| Resumable state | `resumable/step_0125/rank{0,1}.pt` (exact per-rank ZeRO-2 state) |
+| Training curve | `/data/anh/rl_baseline/evals/grpo_r2r1k-step0125/training_summary.json` |
+
+Training statistics (sampled rollouts at T = 1.2 on *new* train instructions each step, so these are
+not a held-out learning curve; last record per step):
+
+| Steps | Train SR | Train OSR | Train SPL | Mean reward | Mean actions | Truncated | All-fail groups | All-success groups | Entropy | Grad-norm |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0–24 | 0.618 | 0.666 | 0.589 | 6.01 | 63.7 | 0.046 | 0.045 | 0.285 | 0.147 | 1.96 |
+| 25–49 | 0.579 | 0.659 | 0.540 | 5.90 | 67.3 | 0.086 | 0.065 | 0.255 | 0.125 | 1.98 |
+| 50–74 | 0.620 | 0.711 | 0.578 | 6.76 | 64.4 | 0.098 | 0.060 | 0.310 | 0.093 | 2.44 |
+| 75–99 | 0.630 | 0.686 | 0.588 | 6.75 | 66.4 | 0.061 | 0.040 | 0.330 | 0.075 | 2.80 |
+| 100–124 | 0.651 | 0.726 | 0.603 | 7.24 | 66.7 | 0.069 | 0.045 | 0.355 | 0.081 | 2.60 |
+
+Rollout ↔ trainer log-prob mismatch stayed at ≈0.0035–0.004 nats/token; clip fraction 0 (one
+on-policy update per step, as in ActiveVLN); no format errors were sampled.
+
+### 7.1 Run log (all attempts, for reproducibility)
+
+| Run | What happened | Outcome |
+|---|---|---|
+| `smoke1`, `smoke2` | 2-rank smoke tests (budget-capped and full budget), export/eval/resume gates | pass |
+| `aborted_threads_grpo_r2r4k` | 4K run with rollout threads: GIL-bound | stopped, replaced by IPC helpers |
+| `aborted_serial_grpo_r2r4k` | 4K run, serial rollouts: >20 min/step | stopped |
+| `aborted_cachefix_grpo_r2r4k`, `aborted_oom1/2_grpo_r2r4k` | 4K run: idle-helper GPU cache; CUDA OOM on shared GPUs | fixed (cache release, expandable segments, entropy outside autograd) |
+| `stopped_partial_grpo_r2r4k_step22` | 4K run healthy at step 22 (7.3 min/step) | stopped on user request (switch to 1k, from scratch) |
+| `aborted_oomd_grpo_r2r1k` | systemd-oomd killed the user session (incl. this job) under host-memory pressure | fixed: smaller host footprint, no MemoryHigh throttling |
+| `aborted_ram_grpo_r2r1k` | host RAM headroom too small with 3 helpers/GPU | restarted from scratch with 2 helpers/GPU |
+| `grpo_r2r1k` (final) | resumed automatically 7 times by the supervisor after kills caused by the shared host (CUDA OOM at step 26; host-RAM OOMs; one DeepSpeed 10-min NCCL timeout under host thrash); fixes applied between resumes (memory-aware episode placement, allocator-cache-aware free memory, on-demand host offload with headroom guard, 4 h DeepSpeed group timeout, heap trimming, 1 helper/GPU) | **complete, 125/125** |
+
+Every resume restarted from an exact per-rank checkpoint (10-step cadence from step 30 on) and
+re-ran the interrupted steps from the beginning; re-run steps reproduce the original rollouts
+(e.g. step 40: identical SR 0.469 / reward 4.95). The systems changes alter only where and how
+gradients are computed (placement, offload, kernel allocator), not their values.
