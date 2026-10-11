@@ -449,4 +449,5 @@ seed; (b) the full 4K / 500-step GRPO run for the scale curve (exports every 50 
 | RL training completed | **yes on the 1K subset** (125/125 steps, from scratch, user-directed scope change from 4K) — the 4K/500-step run was stopped at step 22 by user request and not completed |
 | Trained model evaluated | **yes** — full R2R val_unseen, 1,839/1,839 episodes, identical protocol |
 | Comparison documented with evidence | **yes** — §8, `plans/RL/results/` |
+| Scope decision on 4K (2026-10-11) | after the 1k results, the user chose to **keep the 1k scope** rather than continue to the official 4K / 500-step schedule. A continuation from `grpo_r2r1k`'s exact step-125 state on `configs/rl/activevln_grpo_r2r4k.yaml` would be equivalent to a fresh 4K run (same fixed data order, step-indexed seeds, constant LR) and remains available |
 | RxR | not run (user: R2R only); the baseline RxR journal is preserved at 350/3,669 and resumable (`/data/anh/rl_baseline/resume_rxr15_campaign.sh`, sources at worktree `6473321`) |
