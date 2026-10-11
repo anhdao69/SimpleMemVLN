@@ -117,3 +117,54 @@ identity check (user, job name, campaign comment, state), recorded in the ledger
 `469b107`). No allocation, training state or checkpoint existed for them. The campaign
 manifest keeps the source history (`resnapshot`); every attempt verifies the source hashes
 recorded at its own submission.
+
+## D12. Pinned arena must not be inherited by forked loader workers; arena after init
+*Observation (measured on evc103, kernel 4.18.0-553.123.1.el8_10).* Forking a process
+after `cudaHostRegister` of a 4 GiB anonymous buffer **eagerly copies the pinned pages**
+(job anon +4.0 GiB at fork; child RSS 4.41 GiB). `torch.empty(pin_memory=True)`
+(`cudaHostAlloc`) is not copied. With the inherited 4 workers/rank this mechanism alone
+would duplicate any registered buffer per worker — a plausible contributor to the
+historical 300–418 GiB peaks. *Choice.* The arena is an `mmap` anonymous mapping with
+`MADV_DONTFORK` (fork cost measured 0.0 GiB, child RSS 0.41 GiB) registered with
+`cudaHostRegister`, explicitly unregistered before unmapping (`close()`), and installed
+at `on_train_begin` — after DeepSpeed init and any checkpoint load, whose transient
+host copies previously coincided with it (startup peak = max instead of sum). Tested by
+`tests/vln/test_episodic_arena.py`. Engineering only (identical saved values).
+
+## D13. Two prefetching loader workers per rank
+*Observation.* With 0 workers, loading happened between microsteps inside each update:
+on the ordinary sampler (512-episode subset < 60K tokens, H4, 20 updates, cold Lustre
+reads) wall time was **31.9 s/update** with only ≈8.8 s of forward/backward. Per image,
+a cold Lustre read costs 21–44 ms and decode + processor ≈11 ms (single thread), i.e.
+3.5–5.5 s per 100-frame episode before contention from 4 concurrent ranks, versus
+≈3.5–4.5 s of GPU work per episode. A 1-worker rerun on the same (then warm) episodes ran
+at 7.2 s/update — a confounded comparison (cache), retained as such. *Choice.*
+`dataloader_num_workers: 2`, `dataloader_prefetch_factor: 2` (≥ GAS in flight for H4 and
+H2), persistent workers, no DataLoader pinning; the cold-read 2-worker measurement is in 05.
+Cost: two worker processes (+2–3 GB each) and ≤4 staged BF16 episodes per rank
+(≤9.2 GB at the 627-frame maximum). The arena is never inherited by workers (D12). The
+repeated-fixture stress gates restart the iterator every update and cannot show overlap;
+the in-job ordinary-sampler speed gate measures it on each allocation.
+
+## D14. Independent review of the launch/recovery path (fixed before submission a3)
+An independent reviewer found no defect in attention, selector, scorer, layer-major
+forward, serving promotion or arena code, and five real defects in the unattended
+lifecycle, all fixed with regression tests (`test_episodic_job.py`,
+`test_episodic_campaign.py`):
+1. The Slurm stop-request flag was never cleared, so a resumed attempt stopped after one
+   update forever → the flag now carries the requesting job ID, is honoured only by that
+   job, and is archived before every launch.
+2. Two contenders could both take over one stale lease → takeover requires an O_EXCL
+   token keyed by the stale lease identity, re-reads the lease before archiving, archives
+   with `link` (never overwrites), and a trainer that loses its lease checkpoints and stops.
+3. Re-running a COMPLETE attempt (e.g. upload retry) would have trained epoch 2 and
+   published it as epoch 1 → an existing epoch-1 boundary checkpoint short-circuits to
+   publication; upload uses that exact checkpoint and an export stamped with its step
+   (`final/export_info.json`), else the checkpoint's own serving files.
+4. Resume did not check that the previous job was dead → standby while it is live.
+5. A FAILED owner kept the run idle for 15 min → a self-declared FAILED owner with a dead
+   job is stale immediately, unless it was ever verified (`ever_verified` is sticky;
+   such runs recover only on their own profile).
+Also: verification side effects (sibling cancellation, ablation submission) are retried
+until each succeeds; verification accepts the earliest complete recovery checkpoint ≥50
+if `checkpoint-50` was pruned.

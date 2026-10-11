@@ -116,8 +116,12 @@ class Lease:
             return None
         state = slurm_state(current.get('job_id'), self.runner)
         evidence = dict(lease=current, slurm_state=state, heartbeat_age=now() - current.get('heartbeat', 0))
-        stale = (state is not None and state.split('+')[0] not in LIVE_SLURM
-                 and evidence['heartbeat_age'] > max_age and current.get('state') not in VERIFIED)
+        dead = state is not None and state.split('+')[0] not in LIVE_SLURM
+        # Never take over an owner that was ever verified (it may hold a resumable
+        # same-profile checkpoint); a self-declared FAILED owner whose job is dead is
+        # stale immediately, otherwise the heartbeat must also be old.
+        unverified = current.get('state') not in VERIFIED and not current.get('ever_verified')
+        stale = dead and unverified and (current.get('state') == 'FAILED' or evidence['heartbeat_age'] > max_age)
         evidence['stale'] = bool(stale)
         return evidence
 
@@ -125,15 +129,26 @@ class Lease:
         evidence = self.stale_evidence(max_age)
         if not evidence or not evidence['stale']:
             return False, evidence
-        archive = self.dir / 'history' / f'LEASE.{int(now())}.{evidence["lease"].get("attempt")}.json'
-        archive.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            os.rename(self.path, archive)          # atomic; only one contender succeeds
-        except FileNotFoundError:
+        old = evidence['lease']
+        identity = f'{old.get("attempt")}.{old.get("claimed")}.{old.get("pid")}'
+        token = self.dir / f'TAKEOVER.{identity}'
+        try:  # exactly one contender may act on this particular stale lease
+            os.close(os.open(token, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644))
+        except FileExistsError:
             return False, evidence
+        if self.read() != old:                     # changed since the evidence was taken
+            return False, evidence
+        archive = self.dir / 'history' / f'LEASE.{identity}.json'
+        archive.parent.mkdir(parents=True, exist_ok=True)
+        os.link(self.path, archive)                # fails rather than overwrite an archive
+        os.unlink(self.path)
         append_jsonl(self.dir / 'events.jsonl', dict(event='stale_archived', by=attempt, evidence=evidence))
         ok, record = self.claim(attempt, job_id, profile)
         return ok, dict(evidence=evidence, claim=record)
+
+    def owned_by(self, attempt):
+        current = self.read()
+        return bool(current) and current.get('attempt') == attempt
 
 
 def ledger_jobs(campaign_root, run_id):

@@ -32,6 +32,18 @@ def host_memory_record():
     return record
 
 
+class InstallActivationArena(transformers.TrainerCallback):
+    def __init__(self, capacity):
+        self.capacity = capacity
+
+    def on_train_begin(self, args, state, control, **kwargs):
+        from qwen_vl.models.activation_offload import install_activation_arena
+
+        arena = install_activation_arena(self.capacity)
+        print("ACTIVATION_ARENA", json.dumps(dict(rank=args.process_index,
+                                                  capacity_bytes=arena.capacity)), flush=True)
+
+
 class StopAfterEpochs(transformers.TrainerCallback):
     """Stop at an epoch boundary without shortening the declared LR schedule."""
 
@@ -57,7 +69,9 @@ class CheckpointRequest(transformers.TrainerCallback):
     def on_step_end(self, args, state, control, **kwargs):
         import torch.distributed as dist
 
-        requested = torch.tensor([int(self.flag.exists())], device=args.device)
+        job = os.environ.get("SLURM_JOB_ID", "local")
+        mine = self.flag.exists() and self.flag.read_text().strip() in (job, "")
+        requested = torch.tensor([int(mine)], device=args.device)
         if dist.is_initialized():
             dist.all_reduce(requested)
         if int(requested):
@@ -372,13 +386,13 @@ def train_episode():
     if offload_backend == "pinned_arena_v1" and threshold is not None:
         longest = max(dataset.encoded_lengths)
         if longest >= threshold:
-            from qwen_vl.models.activation_offload import arena_bytes_for, install_activation_arena
+            from qwen_vl.models.activation_offload import arena_bytes_for
 
             text = model.config.text_config
             capacity = arena_bytes_for(longest, text.hidden_size, text.num_hidden_layers)
-            arena = install_activation_arena(capacity)
-            arena_record = dict(longest_tokens=longest, capacity_bytes=arena.capacity)
-            print("ACTIVATION_ARENA", json.dumps(arena_record), flush=True)
+            # Installed at on_train_begin: after DeepSpeed init and any checkpoint load,
+            # whose transient host copies would otherwise coincide with the arena.
+            arena_record = dict(longest_tokens=longest, capacity_bytes=capacity)
     data_contract = dict(
         manifest_sha256=hashlib.sha256(Path(args.manifest).read_bytes()).hexdigest(),
         episode_uids=[e["episode_uid"] for e in dataset.episodes],
@@ -471,6 +485,8 @@ def train_episode():
             flush=True,
         )
     callbacks = [MeasurementCallback(out, cfg["runtime"].get("malloc_trim_each_update", False))]
+    if arena_record is not None:
+        callbacks.insert(0, InstallActivationArena(arena_record["capacity_bytes"]))
     if not args.profile_only:
         callbacks.append(CheckpointRequest(out))
     if args.stop_after_epochs:
@@ -521,6 +537,10 @@ def train_episode():
     trainer.save_state()
     if not args.profile_only:
         trainer.save_model(str(out / "final"))
+        if training_args.process_index == 0:
+            (out / "final" / "export_info.json").write_text(json.dumps(dict(
+                global_step=trainer.state.global_step, max_steps=trainer.state.max_steps,
+                epoch=trainer.state.epoch)) + "\n")
     if training_args.process_index == 0 and not args.profile_only:
         model.eval()
         sample = {

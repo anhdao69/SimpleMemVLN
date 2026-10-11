@@ -2,9 +2,12 @@
 # ZeRO-2 with GPU optimizer state (deepspeed.json).  Engineering only.
 training:
   gradient_accumulation_steps: 2
-  dataloader_num_workers: 0
+  # Two persistent workers (prefetch 2 each) overlap cold Lustre reads + decode with
+  # compute (0 workers: loading dominated, see reports/episodic_idea 05 and 01 D13).
+  dataloader_num_workers: 2
+  dataloader_prefetch_factor: 2
   dataloader_pin_memory: false
-  dataloader_persistent_workers: false
+  dataloader_persistent_workers: true
   activation_offload_backend: pinned_arena_v1
   optimizer_group_chunks: 1   # 16 chunks cost +4.56 GiB GPU on 58K-token episodes (measured); host spike affordable at 512 GiB
 runtime:

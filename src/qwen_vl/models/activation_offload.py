@@ -8,8 +8,9 @@ Backends (engineering only; the saved values and every gradient are identical):
   cached blocks; with varying episode lengths the cache grows well beyond one
   episode's need.
 * ``pinned_arena_v1`` -- one fixed, page-locked arena per process, sized from the
-  audited corpus maximum and registered with ``cudaHostRegister`` (no
-  power-of-two rounding, no allocator cache).  A bump allocator serves all
+  audited corpus maximum, ``mmap``-allocated with ``MADV_DONTFORK`` and registered
+  with ``cudaHostRegister`` (no power-of-two rounding, no allocator cache, never
+  duplicated into forked loader workers).  A bump allocator serves all
   saved checkpoint inputs of the current episode and is rewound only after
   every packed input has been consumed by backward; exhaustion fails loudly.
 * ``pageable_v1`` -- ``save_on_cpu(pin_memory=False)``; slower synchronous copies,
@@ -27,8 +28,14 @@ class PinnedActivationArena:
     def __init__(self, capacity_bytes):
         if capacity_bytes <= 0:
             raise ValueError('Arena capacity must be positive')
+        import mmap
         self.capacity = (int(capacity_bytes) + _ALIGN - 1) // _ALIGN * _ALIGN
-        self.buffer = torch.empty(self.capacity, dtype=torch.uint8)
+        # Page-aligned anonymous mapping excluded from fork(): on this kernel a fork
+        # after cudaHostRegister eagerly copies pinned pages into the child (measured
+        # +4 GiB per 4 GiB arena), so every DataLoader worker would duplicate it.
+        self._mapping = mmap.mmap(-1, self.capacity, flags=mmap.MAP_PRIVATE | mmap.MAP_ANONYMOUS)
+        self._mapping.madvise(mmap.MADV_DONTFORK)
+        self.buffer = torch.frombuffer(self._mapping, dtype=torch.uint8)
         status = torch.cuda.cudart().cudaHostRegister(self.buffer.data_ptr(), self.capacity, 0)
         if int(status) != 0:
             raise RuntimeError(f'cudaHostRegister failed with status {status}')
@@ -55,6 +62,16 @@ class PinnedActivationArena:
                 raise RuntimeError('Arena packed tensor released twice')
             if self.live == 0:
                 self.cursor = 0     # every input of this episode has been consumed
+
+    def close(self):
+        """Unregister before unmapping; a registered range must never be unmapped."""
+        if self.buffer is not None:
+            if self.live:
+                raise RuntimeError('Cannot close an arena with live packed inputs')
+            torch.cuda.synchronize()
+            torch.cuda.cudart().cudaHostUnregister(self.buffer.data_ptr())
+            self.buffer = None
+            self._mapping.close()
 
     def stats(self):
         return dict(arena_capacity_gib=self.capacity / 2**30, arena_peak_gib=self.peak / 2**30,

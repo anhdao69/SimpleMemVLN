@@ -176,12 +176,32 @@ def verify_checkpoint(checkpoint):
     return record, hashes
 
 
+def request_stop(out, job):
+    out.mkdir(parents=True, exist_ok=True)
+    (out / 'REQUEST_CHECKPOINT_AND_STOP').write_text(str(job))
+
+
+def boundary_checkpoint(a, out):
+    """The complete epoch-boundary checkpoint this attempt is meant to publish, or None."""
+    from qwen_vl.train.recovery import completed_checkpoints
+    target = 3852 * a.manifest['epochs_to_train']   # 2-epoch schedule of 7,704 updates
+    state = out / 'trainer_state.json'
+    if state.exists():
+        target = json.loads(state.read_text())['max_steps'] // 2 * a.manifest['epochs_to_train']
+    for step, path, record in completed_checkpoints(out):
+        if record['epoch_boundary'] and step == target:
+            return path
+    return None
+
+
 class Agent(threading.Thread):
     def __init__(self, attempt, train, supervisor):
         super().__init__(daemon=True)
         self.a, self.train, self.supervisor = attempt, train, supervisor
         self.stop = threading.Event()
         self.verified = (attempt.lease.read() or {}).get('state') in VERIFIED
+        self.siblings_done = self.ablations_done = self.verified
+        self.process = None
 
     def run(self):
         while not self.stop.wait(60):
@@ -192,14 +212,24 @@ class Agent(threading.Thread):
 
     def step(self):
         a = self.a
+        if not a.lease.owned_by(a.launch['attempt']):
+            # Another attempt holds the run: never continue a duplicate trajectory.
+            append_jsonl(a.dir / 'events.jsonl', dict(event='lease_lost', lease=a.lease.read()))
+            request_stop(self.train, a.job)
+            self.stop.set()
+            return
         a.lease.update(a.launch['attempt'], heartbeat_job=a.job)
         if self.verified:
+            self.side_effects()
             return
         world = a.launch['resources']['world']
         ok, detail = healthy_updates(self.train, world, a.manifest['verify_updates'])
-        checkpoint = self.train / f'checkpoint-{a.manifest["first_recovery_save_step"]}'
-        if not ok or not (checkpoint / 'RECOVERY_COMPLETE.json').exists():
+        from qwen_vl.train.recovery import completed_checkpoints
+        complete = [p for step, p, r in completed_checkpoints(self.train)
+                    if step >= a.manifest['first_recovery_save_step']]
+        if not ok or not complete:
             return
+        checkpoint = complete[0]   # the update-50 save, or the earliest later one if pruned
         record, hashes = verify_checkpoint(checkpoint)
         memory = [json.loads(x) for x in (self.supervisor / 'host_memory.jsonl').read_text().splitlines()[-600:]]
         guard = json.loads((self.a.dir / 'preflight.json').read_text())['cgroup']['job_limit_gib']
@@ -208,11 +238,20 @@ class Agent(threading.Thread):
             a.status('CLAIMED', verification='host memory outside guard', peak_working_set_gib=peak)
             return
         self.verified = True
-        a.lease.update(a.launch['attempt'], state='TRAINING_VERIFIED')
+        a.lease.update(a.launch['attempt'], state='TRAINING_VERIFIED', ever_verified=True)
         a.status('TRAINING_VERIFIED', updates=detail, checkpoint=str(checkpoint),
                  checkpoint_files=len(hashes), recent_peak_working_set_gib=peak)
-        actions = cancel_recorded_sibling(a.campaign, a.launch['run_id'], a.launch['attempt'])
-        append_jsonl(a.dir / 'events.jsonl', dict(event='sibling_actions', actions=actions))
+        self.side_effects()
+
+    def side_effects(self):
+        a = self.a
+        if not self.siblings_done:
+            actions = cancel_recorded_sibling(a.campaign, a.launch['run_id'], a.launch['attempt'])
+            append_jsonl(a.dir / 'events.jsonl', dict(event='sibling_actions', actions=actions))
+            self.siblings_done = True
+        if self.ablations_done:
+            return
+        failures = 0
         for run in a.launch.get('submit_ablations', []):
             if Lease(a.campaign, run).read() or any(
                     json.loads(x).get('run_id') == run and json.loads(x).get('event') == 'submitted'
@@ -226,6 +265,10 @@ class Agent(threading.Thread):
             append_jsonl(a.dir / 'events.jsonl', dict(event='ablation_submitted', run=run,
                                                       returncode=result.returncode,
                                                       stdout=result.stdout[-2000:], stderr=result.stderr[-2000:]))
+            failures += result.returncode != 0
+        if failures:
+            return          # retried on the next agent step; already-submitted runs are skipped
+        self.ablations_done = True
         a.lease.update(a.launch['attempt'], state='ACTIVE')
         a.status('ACTIVE')
 
@@ -252,11 +295,17 @@ def train(a):
         supervisor = a.dir / f'supervisor-{a.job}'
         command[command.index('--out') + 1] = str(supervisor)
     agent = Agent(a, out, supervisor)
+    flag = out / 'REQUEST_CHECKPOINT_AND_STOP'
+    if flag.exists():   # a previous job's request must never stop this job
+        archived = out / f'REQUEST_CHECKPOINT_AND_STOP.{int(time.time())}.handled'
+        flag.rename(archived)
+        append_jsonl(a.dir / 'events.jsonl', dict(event='archived_stop_request', path=str(archived)))
     process = subprocess.Popen(command, cwd=ROOT)
+    agent.process = process
 
     def forward(signum, frame):
-        # Slurm warning: request a checkpoint at the next optimizer boundary.
-        (out / 'REQUEST_CHECKPOINT_AND_STOP').touch()
+        # Slurm warning: request a checkpoint at the next optimizer boundary (this job only).
+        request_stop(out, a.job)
     signal.signal(signal.SIGUSR1, forward)
     agent.start()
     code = process.wait()
@@ -265,13 +314,20 @@ def train(a):
 
 
 def upload(a, out):
-    from qwen_vl.train.recovery import completed_checkpoints
-    epoch = [p for step, p, r in completed_checkpoints(out) if r['epoch_boundary']]
-    if not epoch or not (out / 'final' / 'pytorch_model.bin').exists():
-        raise RuntimeError('No complete epoch checkpoint/export to publish')
+    checkpoint = boundary_checkpoint(a, out)
+    if checkpoint is None:
+        a.status('FAILED', stage='upload', reason='no complete epoch-boundary checkpoint')
+        return 4
+    step = int(checkpoint.name.split('-')[1])
+    info = out / 'final' / 'export_info.json'
+    export = out / 'final'
+    if not info.exists() or json.loads(info.read_text()).get('global_step') != step:
+        # The checkpoint itself is a complete serving export (weights, config,
+        # navigation contract, processor) at exactly the boundary step.
+        export = checkpoint
     command = [sys.executable, '-m', 'scripts.vln.upload_episodic', '--repo', a.manifest['hf_repo'],
-               '--folder', f'{a.launch["run_id"]}/{a.launch["attempt"]}', '--checkpoint', str(epoch[-1]),
-               '--export', str(out / 'final'), '--attempt-dir', str(a.dir)]
+               '--folder', f'{a.launch["run_id"]}/{a.launch["attempt"]}', '--checkpoint', str(checkpoint),
+               '--export', str(export), '--attempt-dir', str(a.dir)]
     return subprocess.run(command, cwd=ROOT).returncode
 
 
@@ -296,6 +352,17 @@ def main():
         return 0
     current = a.lease.read()
     resuming = current is not None and current.get('attempt') == a.launch['attempt']
+    if resuming and str(current.get('job_id')) != str(a.job):
+        previous = slurm_state(current.get('job_id'))
+        if previous and previous.split('+')[0] in LIVE_SLURM:
+            a.status('DUPLICATE_STANDBY', reason=f'previous job {current.get("job_id")} still {previous}')
+            return 0
+    if resuming and boundary_checkpoint(a, a.dir / 'train') is not None:
+        # Epoch 1 is already complete: publish it; never resume into epoch 2 here.
+        a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], republish=True)
+        code = upload(a, a.dir / 'train')
+        a.status('COMPLETE', uploaded=code == 0)
+        return code
     # A resumed attempt (same profile/source) still qualifies its new allocation.
     report = qualify(a, 'startup' if resuming else a.launch['qualification'])
     if not report.get('passed'):
@@ -314,21 +381,20 @@ def main():
         a.lease.update(a.launch['attempt'], job_id=a.job, resumed_by=a.job)
         a.status('CLAIMED', resumed=True)
     code, out = train(a)
+    ever = bool((a.lease.read() or {}).get('ever_verified'))
     if code != 0:
-        a.lease.update(a.launch['attempt'], state='FAILED')
+        a.lease.update(a.launch['attempt'], state='FAILED', ever_verified=ever)
         a.status('FAILED', stage='training', exit_code=code)
         return code
-    from qwen_vl.train.recovery import completed_checkpoints
-    state = json.loads((out / 'trainer_state.json').read_text())
-    per_epoch = state['max_steps'] // 2
-    boundary = [p for step, p, r in completed_checkpoints(out)
-                if r['epoch_boundary'] and step == per_epoch * a.manifest['epochs_to_train']]
-    if not boundary:
+    boundary = boundary_checkpoint(a, out)
+    if boundary is None:
         # e.g. Slurm pre-termination checkpoint: resumable, never published as an epoch.
+        state = json.loads((out / 'trainer_state.json').read_text())
+        a.lease.update(a.launch['attempt'], state='FAILED', ever_verified=ever)
         a.status('FAILED', stage='interrupted_before_epoch_boundary', global_step=state['global_step'])
         return 3
     a.lease.update(a.launch['attempt'], state='COMPLETE')
-    a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], checkpoint=str(boundary[-1]))
+    a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], checkpoint=str(boundary))
     code = upload(a, out)
     a.status('COMPLETE', uploaded=code == 0)
     return code

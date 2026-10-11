@@ -82,3 +82,26 @@ def test_attempt_directories_are_never_reused(tmp_path):
     (tmp_path / 'H4' / 'v0-smoke').mkdir(parents=True)
     with pytest.raises(ValueError, match='Refusing to reuse'):
         run_gate('H4', 'v0', tmp_path / 'smoke.jsonl', tmp_path, 'model', 3)
+
+
+def test_two_contenders_cannot_both_take_over_one_stale_lease(tmp_path):
+    dead = _scheduler({})
+    first = Lease(tmp_path, 'run', runner=dead)
+    assert first.claim('run-H4-a1', '101', 'H4')[0]
+    record = json.loads(first.path.read_text()); record['state'] = 'FAILED'
+    first.path.write_text(json.dumps(record))
+    a, b = Lease(tmp_path, 'run', runner=dead), Lease(tmp_path, 'run', runner=dead)
+    evidence_b = b.stale_evidence()                                  # B judges X stale ...
+    ok_a, _ = a.takeover_if_stale('run-H2-a1', '202', 'H2')          # ... A takes over first
+    assert ok_a and evidence_b['stale']
+    b.stale_evidence = lambda max_age=900: evidence_b                # B acts on outdated evidence
+    ok_b, _ = b.takeover_if_stale('run-H4-a2', '303', 'H4')
+    assert not ok_b and Lease(tmp_path, 'run').read()['attempt'] == 'run-H2-a1'
+    assert len(list((tmp_path / 'leases/run/history').glob('LEASE.*.json'))) == 1
+
+
+def test_ever_verified_owner_is_never_stale(tmp_path):
+    lease = Lease(tmp_path, 'run', runner=_scheduler({}))
+    lease.claim('run-H4-a1', '101', 'H4')
+    lease.update('run-H4-a1', state='FAILED', ever_verified=True)
+    assert not lease.stale_evidence()['stale']

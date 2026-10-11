@@ -24,6 +24,7 @@ def campaign(tmp_path, monkeypatch):
     monkeypatch.setattr(job, 'qualify', lambda a, mode: calls['qualify'].append((a.launch['attempt'], mode))
                         or dict(passed=True))
     monkeypatch.setattr(job, 'upload', lambda a, out: calls['upload'].append(a.launch['attempt']) or 0)
+    monkeypatch.setattr(job, 'slurm_state', lambda job_id: None)       # previous jobs are gone
     return tmp_path, calls
 
 
@@ -82,3 +83,48 @@ def test_interrupted_run_is_not_published_and_resume_requalifies(campaign, monke
     assert job.main() == 0
     assert calls['qualify'][-1] == ('P1-V0-s429-H4-a1', 'startup')  # new allocation still gated
     assert calls['upload'] == ['P1-V0-s429-H4-a1']
+
+
+def test_completed_attempt_rerun_publishes_without_training(campaign, monkeypatch):
+    root, calls = campaign
+    monkeypatch.setenv('SLURM_JOB_ID', '41')
+    attempt = _attempt(root, 'P1-V0-s429-H4-a1', 'H4')
+    monkeypatch.setattr(job, 'train', lambda a: (calls['train'].append(1), _fake_epoch(a.dir / 'train', 3852),
+                                                 (0, a.dir / 'train'))[2])
+    monkeypatch.setattr('sys.argv', ['x', str(attempt)])
+    assert job.main() == 0 and len(calls['train']) == 1
+    monkeypatch.setenv('SLURM_JOB_ID', '42')                         # e.g. upload retry
+    assert job.main() == 0
+    assert len(calls['train']) == 1 and calls['upload'] == ['P1-V0-s429-H4-a1'] * 2
+
+
+def test_resume_refuses_while_previous_job_is_live(campaign, monkeypatch):
+    root, calls = campaign
+    monkeypatch.setenv('SLURM_JOB_ID', '51')
+    attempt = _attempt(root, 'P1-V0-s429-H4-a1', 'H4')
+    def interrupted(a):
+        out = a.dir / 'train'; out.mkdir(exist_ok=True)
+        (out / 'trainer_state.json').write_text(json.dumps(dict(max_steps=7704, global_step=10)))
+        return 0, out
+    monkeypatch.setattr(job, 'train', interrupted)
+    monkeypatch.setattr('sys.argv', ['x', str(attempt)])
+    assert job.main() == 3
+    monkeypatch.setattr(job, 'slurm_state', lambda job_id: 'RUNNING')
+    monkeypatch.setenv('SLURM_JOB_ID', '52')
+    assert job.main() == 0
+    assert json.loads((attempt / 'status.json').read_text())['state'] == 'DUPLICATE_STANDBY'
+
+
+def test_stop_request_is_job_scoped(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    from qwen_vl.train.train_episode import CheckpointRequest
+    callback = CheckpointRequest(tmp_path)
+    job.request_stop(tmp_path, '77')
+    control = SimpleNamespace(should_save=False, should_training_stop=False)
+    args, state = SimpleNamespace(device='cpu'), SimpleNamespace(global_step=5)
+    monkeypatch.setenv('SLURM_JOB_ID', '78')
+    callback.on_step_end(args, state, control)
+    assert not control.should_training_stop                          # another job's request
+    monkeypatch.setenv('SLURM_JOB_ID', '77')
+    callback.on_step_end(args, state, control)
+    assert control.should_training_stop and control.should_save
