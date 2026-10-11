@@ -95,7 +95,7 @@ def derived_kv_guard(config, spec):
 
 def parse_episodic_spec(config, text_config=None):
     """Return the spec for ``episodic_window_v1``; ``None`` for legacy memory modes."""
-    memory = config['memory']
+    memory = config.get('memory', {})
     if memory.get('mode') != EPISODIC_MODE:
         for key in memory:
             if key.startswith('episodic_') or key == 'recent_groups_including_current':

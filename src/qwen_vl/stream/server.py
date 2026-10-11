@@ -50,6 +50,9 @@ def main():
             candidate_token_ids=metadata["candidate_token_ids"],
             feedback_token_ids=metadata["feedback_token_ids"],
         )
+    if getattr(model, "episodic_spec", None) is not None:
+        # Exported metadata drives evaluator memory behavior; record it in every journal.
+        runtime.update(episodic=model.episodic_spec.to_dict())
     if getattr(model, "step_lane_spec", None) is not None:
         runtime.update(
             step_lane=model.step_lane_spec.to_dict(),

@@ -40,7 +40,7 @@ def stage(staging, folder, checkpoint, export, attempt_dir):
     extras = [attempt_dir / n for n in ('launch_manifest.json', 'resolved_config.yaml', 'source_hashes.json',
                                         'preflight.json', 'events.jsonl')]
     extras += sorted(train.glob('*.jsonl')) + sorted(train.glob('*.json'))
-    extras += sorted((attempt_dir / 'qualification').glob('*_suite.json'))
+    extras += sorted(attempt_dir.glob('qualification-*/*_suite.json'))
     for source in extras:
         if source.is_file():
             link(source, target / 'campaign' / source.name)

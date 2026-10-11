@@ -182,6 +182,9 @@ def runtime_staging(cfg):
         value = (runtime if key == "stage_pixels_bf16" else train).get(key)
         if value is not None and type(value) is not bool:
             raise ValueError(f"{key} must be boolean")
+    chunks = train.get("optimizer_group_chunks", 1)
+    if type(chunks) is not int or not 1 <= chunks <= 256:
+        raise ValueError("optimizer_group_chunks must be an integer in [1,256]")
     backend = train.get("activation_offload_backend", "save_on_cpu_pinned")
     if backend not in ("save_on_cpu_pinned", "pinned_arena_v1", "pageable_v1"):
         raise ValueError(f"Unknown activation offload backend {backend!r}")

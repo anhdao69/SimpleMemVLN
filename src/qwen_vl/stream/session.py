@@ -15,6 +15,8 @@ from qwen_vl.stream.timing import StageTimer, timed
 
 
 class StreamSession:
+    episodic = None   # EpisodicSessionState for episodic_window_v1 checkpoints
+
     def __init__(self, model, serializer):
         self.model, self.serializer = model.eval(), serializer
         self.cfg = model.navigation_config

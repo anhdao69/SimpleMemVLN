@@ -106,6 +106,24 @@ class QwenSFTTrainer(Trainer):
                         }
                     )
 
+        chunks = getattr(self.model, "navigation_config", {}).get("training", {}).get(
+            "optimizer_group_chunks", 1)
+        if chunks > 1:
+            # ZeRO-1/2 stages every param group through host RAM (a CPU copy plus a
+            # flat CPU buffer) at init. Identical-hyperparameter chunks bound that
+            # transient; AdamW is elementwise and clipping uses the global norm.
+            total = sum(p.numel() for group in grouped_parameters for p in group["params"])
+            target, split = total / chunks, []
+            for group in grouped_parameters:
+                current = []
+                for parameter in group["params"]:
+                    current.append(parameter)
+                    if sum(p.numel() for p in current) >= target:
+                        split.append(dict(group, params=current))
+                        current = []
+                if current:
+                    split.append(dict(group, params=current))
+            grouped_parameters = split
         assigned = [
             id(parameter)
             for group in grouped_parameters

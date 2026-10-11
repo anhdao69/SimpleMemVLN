@@ -213,8 +213,13 @@ def checkpoint_gate(profile, arm, fixture, root, model_path, host_guard=None):
                        extra=('--recovery-save-steps', '1', '--resume_from_checkpoint', str(train / 'checkpoint-2')),
                        name=f'{arm}-checkpoint-resume', first_update=3)
     # The resume gate writes into a fresh dir; verify update 3 happened after the reload.
+    # Uninterrupted reference (same fixture, code and profile) when the 3-update gate ran;
+    # BF16 training is not bitwise deterministic, so this is recorded, not asserted.
+    reference = Path(root) / profile / f'{arm}-{Path(fixture).stem}' / 'gate.json'
+    uninterrupted = json.loads(reference.read_text())['training']['losses'] if reference.exists() else None
     return dict(save=first, resume=resumed, checkpoint_files=len(record['files']),
                 checkpoint_bytes=sum(record['files'].values()),
+                resumed_losses=resumed['training']['losses'], uninterrupted_losses=uninterrupted,
                 passed=first['passed'] and resumed['passed'])
 
 
@@ -225,7 +230,12 @@ def suite(args):
     results = []
     for gate in args.gates:
         for arm in args.arms:
-            if gate == 'checkpoint':
+            if gate == 'speed':
+                if not args.speed_manifest:
+                    raise SystemExit('speed gate needs --speed-manifest (the full training manifest)')
+                results.append(run_gate(args.profile, arm, args.speed_manifest, root, args.model_path,
+                                        args.speed_updates, args.host_guard, slots=8, name=f'{arm}-speed'))
+            elif gate == 'checkpoint':
                 results.append(dict(gate=f'{arm}-checkpoint', **checkpoint_gate(
                     args.profile, arm, fixtures[args.checkpoint_fixture]['path'], root, args.model_path,
                     args.host_guard)))
@@ -261,6 +271,8 @@ def main():
     q.add_argument('--gates', nargs='+', required=True)
     q.add_argument('--updates', type=int, default=3)
     q.add_argument('--checkpoint-fixture', default='longest_rxr')
+    q.add_argument('--speed-manifest', help='Full manifest for the ordinary-sampler speed gate')
+    q.add_argument('--speed-updates', type=int, default=20)
     q.add_argument('--host-guard', type=float)
     q.add_argument('--keep-going', action='store_true')
     args = p.parse_args()

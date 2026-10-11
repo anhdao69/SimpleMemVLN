@@ -52,7 +52,7 @@ class Attempt:
         atomic_write_json(self.dir / 'status.json', payload)
         append_jsonl(self.dir / 'events.jsonl', payload)
         append_jsonl(self.campaign / 'submission_ledger.jsonl', dict(
-            event='state', run_id=self.launch['run_id'], attempt=self.launch['attempt'], **payload))
+            event='state', run_id=self.launch['run_id'], **payload))
         print(f'STATE {state} {json.dumps(fields)}', flush=True)
 
 
@@ -115,19 +115,19 @@ def standby_reason(a):
     return f'lease held by {current.get("attempt")} ({current.get("state")}, job {current.get("job_id")})'
 
 
-def qualify(a):
+def qualify(a, mode):
     fixtures = a.manifest['fixtures']
-    out = a.dir / 'qualification'
+    out = a.dir / f'qualification-{a.job}'          # never reuse a previous allocation's PASS
     profile, arm = a.launch['profile'], a.launch['arm']
-    if a.launch['qualification'] == 'full':
+    if mode == 'full':
         gates = ['smoke', 'longest_r2r', 'below_offload', 'above_offload', 'longest_rxr', 'mixed_tail',
-                 'checkpoint']
+                 'checkpoint', 'speed']
         arms = ['v0', 'm2']
     else:
         gates, arms = ['longest_rxr'], [arm]
     command = [sys.executable, '-m', 'scripts.vln.profile_episodic', 'suite', '--profile', profile,
                '--fixtures', fixtures, '--out', str(out), '--model-path', a.manifest['model_path'],
-               '--gates', *gates, '--arms', *arms]
+               '--gates', *gates, '--arms', *arms, '--speed-manifest', a.manifest['manifest']]
     result = subprocess.run(command, cwd=ROOT)
     report_path = out / f'{profile}_suite.json'
     report = json.loads(report_path.read_text()) if report_path.exists() else dict(passed=False)
@@ -181,7 +181,7 @@ class Agent(threading.Thread):
         super().__init__(daemon=True)
         self.a, self.train, self.supervisor = attempt, train, supervisor
         self.stop = threading.Event()
-        self.verified = False
+        self.verified = (attempt.lease.read() or {}).get('state') in VERIFIED
 
     def run(self):
         while not self.stop.wait(60):
@@ -296,11 +296,12 @@ def main():
         return 0
     current = a.lease.read()
     resuming = current is not None and current.get('attempt') == a.launch['attempt']
+    # A resumed attempt (same profile/source) still qualifies its new allocation.
+    report = qualify(a, 'startup' if resuming else a.launch['qualification'])
+    if not report.get('passed'):
+        a.status('FAILED', stage='qualification', report=str(a.dir / f'qualification-{a.job}'))
+        return 1
     if not resuming:
-        report = qualify(a)
-        if not report.get('passed'):
-            a.status('FAILED', stage='qualification', report=str(a.dir / 'qualification'))
-            return 1
         a.status('PREFLIGHT_PASSED', qualification='passed')
         ok, record = a.lease.claim(a.launch['attempt'], a.job, a.launch['profile'])
         if not ok:
@@ -317,8 +318,17 @@ def main():
         a.lease.update(a.launch['attempt'], state='FAILED')
         a.status('FAILED', stage='training', exit_code=code)
         return code
-    a.status('COMPLETE', epochs=a.manifest['epochs_to_train'])
+    from qwen_vl.train.recovery import completed_checkpoints
+    state = json.loads((out / 'trainer_state.json').read_text())
+    per_epoch = state['max_steps'] // 2
+    boundary = [p for step, p, r in completed_checkpoints(out)
+                if r['epoch_boundary'] and step == per_epoch * a.manifest['epochs_to_train']]
+    if not boundary:
+        # e.g. Slurm pre-termination checkpoint: resumable, never published as an epoch.
+        a.status('FAILED', stage='interrupted_before_epoch_boundary', global_step=state['global_step'])
+        return 3
     a.lease.update(a.launch['attempt'], state='COMPLETE')
+    a.status('COMPLETE', epochs=a.manifest['epochs_to_train'], checkpoint=str(boundary[-1]))
     code = upload(a, out)
     a.status('COMPLETE', uploaded=code == 0)
     return code
