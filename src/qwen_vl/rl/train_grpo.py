@@ -37,7 +37,7 @@ from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
 from qwen_vl.rl.hico import (GeometricBaseline, action_terms, batch_scale, coefficients, episode_features,
-                             rloo_baselines, stop_values)
+                             grpo_stop_coefficients, rloo_baselines, stop_values)
 from qwen_vl.rl.placement import redistribute, should_offload
 from qwen_vl.rl.rollout import rollout_seed, run_episode
 from qwen_vl.rl.sampling import SamplingSession
@@ -450,9 +450,9 @@ def main():
     num_mb_global = per_step * G // mb_size
     T = cfg['rollout']['temperature']
     estimator = a.get('estimator', 'grpo')
-    if estimator not in ('grpo', 'rloo', 'rloo_stop', 'critic_stop'):
+    if estimator not in ('grpo', 'grpo_stop', 'rloo', 'rloo_stop', 'critic_stop'):
         raise ValueError(f'Unknown estimator {estimator}')
-    if estimator != 'grpo' and cfg['rollout']['dynamic_sampling']['enabled']:
+    if estimator not in ('grpo', 'grpo_stop') and cfg['rollout']['dynamic_sampling']['enabled']:
         raise ValueError('HiCo-PO estimators require unfiltered on-policy rollouts (no dynamic sampling)')
     n_star = {item['episode_id']: item['N_star'] for item in pool}
     critic = None
@@ -579,7 +579,7 @@ def main():
             dist.broadcast_object_list(payload, src=0)
             dist.broadcast_object_list(fitted, src=0)
             critic.model, critic.diagnostics = payload[0], fitted[0]
-        if estimator == 'grpo':
+        if estimator in ('grpo', 'grpo_stop'):
             # ---- advantages (each group lives on one rank) and verl weights ----
             trajectories = []
             for gi, group in enumerate(groups):
@@ -592,7 +592,17 @@ def main():
                     trajectories[k]['micro_batch'] = rank * len(trajectories) // mb_size + mb
             weights = loss_weights([e['response_tokens'] for e in trajectories],
                                    [e['micro_batch'] for e in trajectories], world, num_mb_global)
-            items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
+            if estimator == 'grpo_stop':
+                for group in groups:
+                    for e in group:
+                        c_logpi, c_sigma = grpo_stop_coefficients(
+                            e['actions'], e['reward'], stop_values(e['step_d'], cfg['reward']['success_reward_base']),
+                            [x['reward'] for x in group], a['epsilon'],
+                            a['scale_floor'] * cfg['reward']['success_reward_base'])
+                        e['_c_logpi'], e['_c_sigma'] = c_logpi.tolist(), c_sigma.tolist()
+                items = [(e, w) for e, w in zip(trajectories, weights) if any(e['_c_logpi']) or any(e['_c_sigma'])]
+            else:
+                items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
         else:
             trajectories, items, hico_stats = hico_prepare(groups, step, cfg, critic, n_star, world, device)
         placement = dict(moved=0, free_gib=[])

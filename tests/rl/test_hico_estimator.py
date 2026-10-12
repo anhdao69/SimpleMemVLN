@@ -203,3 +203,16 @@ def test_loss_gradient_matches_analytic_form():
     for dec, row in enumerate(first):
         expected[row] -= c_sigma[dec] * p[row, stop_token] * (eye[stop_token] - p[row]) / temperature
     assert torch.allclose(logits.grad, expected, atol=1e-12)
+
+
+def test_grpo_stop_coefficients_keep_grpo_moves_and_integrate_stop():
+    from qwen_vl.rl.hico import grpo_stop_coefficients
+    group = [10.0, 0.0, 5.0, 5.0]
+    mean, std = 5.0, float(np.std(group, ddof=1))
+    c_logpi, c_sigma = grpo_stop_coefficients([0, 1, 3], 10.0, [0.0, 4.0, 10.0], group)
+    a = (10.0 - mean) / (std + 1e-6)
+    assert np.allclose(c_logpi, [a, a, 0.0])                     # GRPO advantage, no log-pi at the STOP
+    assert np.allclose(c_sigma, (np.array([0.0, 4.0, 10.0]) - mean) / (std + 1e-6))
+    # zero-variance group: GRPO's moves vanish, exact STOP values still give signal (floored scale)
+    c_logpi, c_sigma = grpo_stop_coefficients([0, 0], 0.0, [6.0, 0.0], [0.0, 0.0, 0.0, 0.0], stop_scale_floor=0.75)
+    assert np.allclose(c_logpi, 0.0) and np.allclose(c_sigma, [8.0, 0.0])

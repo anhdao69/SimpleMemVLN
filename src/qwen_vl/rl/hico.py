@@ -67,6 +67,24 @@ def coefficients(actions, reward, q_stop, baseline, scale, analytic_stop):
     return c_logpi.astype(np.float64), c_sigma.astype(np.float64)
 
 
+def grpo_stop_coefficients(actions, reward, q_stop, group_rewards, epsilon=1e-6, stop_scale_floor=0.75):
+    """GRPO with the STOP branch integrated analytically (estimator ``grpo_stop``).
+
+    Movement decisions keep GRPO's group-normalised advantage (R - mean_g)/(std_g + eps) on log pi; the
+    STOP branch at every decision gets (Q_S(t) - mean_g)/max(std_g + eps, floor) on sigma_t, replacing the
+    log-pi term of a taken STOP. The floor only matters in (near) zero-variance groups, where GRPO's own
+    movement terms vanish but exact STOP values still carry signal.
+    """
+    r = np.asarray(group_rewards, dtype=np.float64)
+    mean, std = float(r.mean()), float(r.std(ddof=1)) if r.size > 1 else 0.0
+    advantage = (reward - mean) / (std + epsilon)
+    q_stop = np.asarray(q_stop, dtype=np.float64)
+    stop = np.asarray([a == STOP for a in actions])
+    c_logpi = np.where(stop, 0.0, advantage)
+    c_sigma = (q_stop - mean) / max(std + epsilon, stop_scale_floor)
+    return c_logpi, c_sigma
+
+
 def episode_features(episode):
     """Baseline features z_t (none depends on a_t), one row per decision."""
     d = np.asarray(episode['step_d'], dtype=np.float64)
