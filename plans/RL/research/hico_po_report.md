@@ -207,6 +207,27 @@ decisions with d < 3 m, for each estimator computed on the **same** logged rollo
   std normalisation critique of Dr. GRPO (Liu et al. 2025), made concrete for stopping. HiCo-PO uses one
   batch-level scale, which removes it; the v2a ablation isolates exactly this change.
 
+**Replication on a second rollout distribution, and a correction.** The probe repeated on the 4,000 logged
+GRPO+STOP rollouts (a different policy trajectory, with dynamic sampling)
+(`results/stop_credit_probe_grpo_stop_rollouts.json`, `results/stop_probe_paired_grpo_vs_rloo.json`;
+paired per-episode differences GRPO − RLOO on identical rollouts):
+
+| Rollouts | all: GRPO / RLOO sum | paired diff (t) | all-success: GRPO / RLOO sum | paired diff (t) | mixed: paired t |
+|---|---:|---:|---:|---:|---:|
+| HiCo-PO v3 run | −75.7 / −2.5 | −0.018 (**−5.6**) | −136.7 / −56.9 | −0.062 (**−8.3**) | +0.75 |
+| GRPO+STOP run | +49.9 / +97.1 | −0.012 (**−3.5**) | −42.1 / +1.5 | −0.036 (**−4.6**) | −0.38 |
+
+The *relative* finding replicates: on both rollout sets GRPO gives the near-goal STOP logit significantly
+less credit than the unbiased estimator, and the gap comes entirely from all-success groups. The *absolute*
+statement above ("GRPO's estimate is negative, the true gradient ≈ 0") does **not** generalise: on the
+GRPO+STOP rollouts the true near-goal STOP gradient is positive and GRPO's estimate is positive too, about
+half as large. So GRPO under-credits stopping rather than pushing it down.
+
+**Behavioural relevance is not established.** GRPO+STOP removes this under-crediting (its STOP branch uses
+exact values; all-success groups get the floored scale). Yet its "passed the goal, stopped outside 3 m"
+count is essentially GRPO's (136 vs 142), and it does not beat GRPO (§5.2). At this scale (1K prompts, 125
+steps) the STOP under-crediting is a real estimator property, but it is not what limits success.
+
 ## 7. Failure analysis — *pending*
 
 ## 8. Future work and publication roadmap
