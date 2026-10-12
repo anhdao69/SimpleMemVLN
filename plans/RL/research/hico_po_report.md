@@ -119,7 +119,7 @@ variance, baseline variance) are small, while it gave up two things GRPO has: dy
 more rollouts, concentrated on hard instructions; HiCo's 596 all-fail-group episodes carried almost no
 movement signal) and per-group normalisation.
 
-### 5.2 Refinement: GRPO + analytic STOP branch (`grpo_stop`) — *running*
+### 5.2 Refinement: GRPO + analytic STOP branch (`grpo_stop`)
 
 The decisive test of the core claim is whether exact STOP credit helps **on top of the stronger GRPO
 estimator**. `grpo_stop` keeps ActiveVLN GRPO exactly (group-normalised advantages, dynamic sampling,
@@ -129,6 +129,28 @@ c_logpi = A_i for non-STOP decisions (0 at a taken STOP), c_sigma(t) = (Q_S(t) �
 With the group statistics held fixed this is the expectation of GRPO's own STOP-branch term (the
 enumeration test with a constant baseline and scale covers it); it also gives exact STOP signal in
 all-fail and all-success groups, where GRPO's own terms vanish or are amplified.
+
+**Result (val_unseen, 1,839 episodes):** SR 54.98, SPL 49.71, NE 5.50, OSR 62.48, TL 10.33, 148 forced stops.
+
+| Comparison | ΔSR | 95 % CI (SR) | McNemar p | ΔSPL | ΔOSR |
+|---|---:|---:|---:|---:|---:|
+| GRPO+STOP vs SFT | +3.43 | [+1.25, +5.60] | 0.0027 | +2.06 | +3.21 |
+| GRPO+STOP vs GRPO | −1.90 | [−3.81, 0.00] | 0.058 | −0.75 | −2.39 |
+| GRPO+STOP vs HiCo-PO v3 | +0.11 | [−1.96, +2.07] | 0.96 | −0.18 | −0.22 |
+
+**GRPO+STOP does not outperform GRPO either.** Failure taxonomy vs GRPO: "passed the goal, stopped
+outside 3 m" 136 vs 142 (the targeted failure, marginally fewer), but "never within 3 m" 482 vs 466, cap
+hits 143 vs 131 and near misses 67 vs 54 — again the deficit is navigational, not STOP. During training it
+was *ahead* of GRPO on the training prompts (steps 40–84: train SR 0.640 vs 0.613, OSR 0.715 vs 0.691), so
+the val_unseen gap is not explained by slower learning.
+
+### 5.3 Is the 2-point gap a method effect? — training-seed control (*running*)
+
+Both refinements land at the same SR (54.87 / 54.98, p = 0.96 between them) and ~2 points below a single
+GRPO run, while training curves on the 1K prompts do not show them behind. The bootstrap CIs above cover
+only evaluation sampling on fixed checkpoints, not RL training-seed variance, so a ±2-point difference
+between single runs cannot yet be attributed to the estimator. A second GRPO run with only the seed
+changed (`configs/rl/activevln_grpo_r2r1k_seed2.yaml`) is running; v2a follows it.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
