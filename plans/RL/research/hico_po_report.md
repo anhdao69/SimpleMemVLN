@@ -123,6 +123,33 @@ decisions with d < 3 m, for each estimator computed on the **same** logged rollo
   return variance, but per-episode return noise (sampled movement decisions) dominates the STOP-logit
   gradient variance.
 
+### 6.2 Full run (steps 0–124, 4,000 episodes) and a GRPO normalisation bias
+
+| Estimator (same rollouts) | mean STOP-logit grad (d < 3 m) | std | |mean|/s.e. |
+|---|---:|---:|---:|
+| GRPO | **−0.0189** | 0.396 | **3.0** |
+| RLOO (v2a) | −0.0006 | 0.422 | 0.09 |
+| v2 (analytic STOP) | +0.0035 | 0.330 | 0.67 |
+| v3 (analytic STOP + geometric baseline) | +0.0086 | 0.325 | 1.68 |
+
+- HiCo lowers the STOP-logit gradient std by 22–23 % vs RLOO on identical rollouts.
+- The unbiased estimators agree that the true expected STOP gradient inside 3 m is ≈ 0, but **GRPO's
+  estimate is significantly negative** (3 standard errors). Decomposition by group type:
+
+  | Group type | Episodes | mean group reward std | GRPO STOP push (sum) | RLOO/s (unbiased) |
+  |---|---:|---:|---:|---:|
+  | mixed outcome | 2,108 | 5.64 | +61.0 | +54.4 |
+  | all success | 1,296 | 2.02 | **−136.7** | −56.9 |
+  | all fail | 596 | 0 | 0 | 0 |
+
+  **Mechanism.** GRPO divides by the *per-group* reward std. In all-success groups the only reward variation
+  is the closeness term 15·(1 − d/3), whose low spread makes the normalised advantages large, so "keep
+  approaching, do not stop yet" is amplified 2.4×. Net, GRPO pushes the STOP logit near the goal down
+  (−75.7 vs −2.5 unbiased). This matches GRPO's observed behaviour: more actions, more cap hits, an
+  unchanged "passed the goal" failure count, and the mid-training val_seen dip (§4.1). It is the per-group
+  std normalisation critique of Dr. GRPO (Liu et al. 2025), made concrete for stopping. HiCo-PO uses one
+  batch-level scale, which removes it; the v2a ablation isolates exactly this change.
+
 ## 7. Failure analysis — *pending*
 
 ## 8. Future work and publication roadmap — *pending*
