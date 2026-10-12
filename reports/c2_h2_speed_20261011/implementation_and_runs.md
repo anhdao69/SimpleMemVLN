@@ -143,3 +143,10 @@ The final short checks used the exact committed H2 runtime, two GPUs, and one co
 | M5C | PASS | 55.96 s | 30.04 | 125.92 |
 
 All three checks reported zero new OOM and OOM-kill events. Evidence: `quick-remaining.json`. The superseded extended runner/release scripts remain archived for reproducibility and are not evidence of completed tests.
+
+
+## Publication and interactive release
+
+The implementation, plans, report and measured evidence were pushed to GitHub branch `c2_h2_speed` at documentation commit `06fab900b7b738bb44066e613c4e22591a7adf16`. Production remains pinned to the validated implementation commit `e789a13f8b6ea3abc29086b82205a19024a6e7b5`; documentation-only follow-ups do not change running jobs.
+
+After verifying that push and all three short smoke results, interactive allocation 4876 was canceled as explicitly requested. Its identity was checked as the user's `train_vln` allocation on worker-1. No other interactive allocation was canceled. At the last verified scheduler poll immediately afterward, 4880 and 4878 were RUNNING and 4879 was pending priority; all production holds/dependencies had been removed. Scheduler RUNNING at this point includes the normal startup check and does not by itself establish that the full-manifest epoch has begun. Later state is recorded in each attempt's `status.json` and the campaign ledger. No epoch completion or trained-model accuracy claim is made.

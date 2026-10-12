@@ -1,0 +1,27 @@
+{
+  "training_source_commit": "e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+  "pytest_summary": "324 passed, 115 warnings in 27.12s",
+  "numerical_replays_passed": 18,
+  "ordinary_resource_gates_passed": 12,
+  "full_state_save_reload_passed": [
+    "v0"
+  ],
+  "additional_short_training_smokes_passed": [
+    "m2c",
+    "m5",
+    "m5c"
+  ],
+  "extended_checks_stopped_by_user_request": [
+    "m2 standalone reload completion",
+    "m1 standalone recovery",
+    "warm baseline comparison",
+    "additional m2c/m5/m5c long/replay repetitions"
+  ],
+  "active_jobs": {
+    "v0": 4880,
+    "m1": 4878,
+    "m2": 4879
+  },
+  "superseded_v0": 4877,
+  "interactive_cancel_requested": 4876
+}
