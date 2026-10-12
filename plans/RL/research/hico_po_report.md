@@ -93,7 +93,42 @@ step 125; HiCo-PO v3 at the same step is +6.3 SR above GRPO and +2.0 above SFT. 
 v3 run continued to step 125. (n = 300; SE ≈ 2.9 SR points — a sanity gate, not a claim.)
 Files: `plans/RL/research/results/pilot_valseen300_*.json`.
 
-## 5. Results — *pending*
+## 5. Results (R2R val_unseen, 1,839 episodes, identical protocol)
+
+### 5.1 HiCo-PO v3 (analytic STOP + geometric baseline, RLOO-family, no dynamic sampling)
+
+| Model | SR | SPL | NE (m) | OSR | TL (m) | Actions | Forced STOP | Rollouts used |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SFT epoch 2 | 51.55 | 47.64 | 5.80 | 59.27 | 9.89 | 91.3 | 114 | — |
+| ActiveVLN GRPO (1K, 125 steps) | **56.88** | **50.45** | **5.31** | **64.87** | 10.63 | 96.6 | 133 | 4,868 |
+| HiCo-PO v3 (1K, 125 steps) | 54.87 | 49.88 | 5.43 | 62.70 | 10.30 | 97.6 | 140 | 4,000 |
+
+Paired statistics (same 1,839 episodes):
+- **v3 vs SFT:** ΔSR +3.32 (95 % CI [+1.09, +5.60]), McNemar p = 0.0046; ΔSPL +2.24 (CI [+0.21, +4.28]).
+- **v3 vs GRPO:** ΔSR −2.01 (95 % CI [−4.02, 0.00]), McNemar p = 0.061 (166 gained, 203 lost); ΔSPL −0.57
+  (CI [−2.34, +1.26]).
+
+**HiCo-PO v3 does not outperform GRPO.** It improves the SFT policy significantly and is at best on par
+with GRPO, with a 2-point deficit that is borderline significant.
+
+Failure analysis vs GRPO (`results/hico_v3_step125_failure_analysis_vs_grpo.json`): the deficit is
+*navigational* — lower OSR (62.7 vs 64.9), more "far" failures among the flips (lost 89 vs gained 71),
+slightly more near misses (157 vs 140 stops at 3–5 m); STOP behaviour ("passed the goal, stopped
+outside 3 m": 141 vs 142) is unchanged. Together with §6 this indicates that the gains HiCo targets (STOP
+variance, baseline variance) are small, while it gave up two things GRPO has: dynamic sampling (22 %
+more rollouts, concentrated on hard instructions; HiCo's 596 all-fail-group episodes carried almost no
+movement signal) and per-group normalisation.
+
+### 5.2 Refinement: GRPO + analytic STOP branch (`grpo_stop`) — *running*
+
+The decisive test of the core claim is whether exact STOP credit helps **on top of the stronger GRPO
+estimator**. `grpo_stop` keeps ActiveVLN GRPO exactly (group-normalised advantages, dynamic sampling,
+micro-batch token-mean, same data and hyperparameters) and only replaces the sampled STOP branch at every
+decision by its exact value under GRPO's own group baseline and scale:
+c_logpi = A_i for non-STOP decisions (0 at a taken STOP), c_sigma(t) = (Q_S(t) − mean_g)/max(std_g + ε, 0.05·R_max).
+With the group statistics held fixed this is the expectation of GRPO's own STOP-branch term (the
+enumeration test with a constant baseline and scale covers it); it also gives exact STOP signal in
+all-fail and all-success groups, where GRPO's own terms vanish or are amplified.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
