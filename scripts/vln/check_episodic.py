@@ -31,7 +31,7 @@ HELPER_MAX_RELATIVE_ERROR = 0.01
 
 RUNTIME_PROFILE = 'configs/episodic/profile_h4.yaml'
 
-ARMS = {a: f'configs/episodic/arm_{a}.yaml' for a in ('v0', 'm1', 'm2', 'm2c')}
+ARMS = {a: f'configs/episodic/arm_{a}.yaml' for a in ('v0', 'm1', 'm2', 'm2c', 'm5', 'm5c')}
 
 
 def cfg_for(arm):
@@ -239,6 +239,7 @@ def main():
     p.add_argument('--out', required=True)
     p.add_argument('--replay-steps', type=int, nargs='+', default=[64, 128])
     p.add_argument('--arms', nargs='+', default=['v0', 'm2', 'm2c'])
+    p.add_argument('--stream-arms', nargs='+', default=['m2', 'v0'])
     args = p.parse_args()
     RUNTIME_PROFILE = args.runtime_profile
     torch.manual_seed(429)
@@ -265,7 +266,7 @@ def main():
                 print(json.dumps(replay[-1]), flush=True)
     report['C_replay'] = replay
     report['E_dry_stream'] = [gate_e(model, serializer, arm, fixture(args.manifest, 'rxrce', 40), device)
-                              for arm in ('m2', 'v0')]
+                              for arm in args.stream_arms]
     a = report['A_feature_disabled']
     report['helper_max_relative_error'] = HELPER_MAX_RELATIVE_ERROR
     helper_passed = all(r['finite'] and 0 <= r['final_state_relative_error_vs_fla'] <= HELPER_MAX_RELATIVE_ERROR

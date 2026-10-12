@@ -18,15 +18,17 @@ def test_selected_runtime_applies_to_all_arm_configs(monkeypatch):
 
 def test_submission_copies_evidence_reference_and_placement(tmp_path):
     ref = {'path': 'immutable.json', 'sha256': 'digest'}
-    manifest = dict(source_dir=str(submit.ROOT), source_commit='test', campaign_uuid='test', numerical_report=ref)
+    runtime = submit.sha256_file(submit.ROOT / submit.PROFILES['H2']['runtime'])
+    manifest = dict(source_dir=str(submit.ROOT), source_commit='test', campaign_uuid='test',
+                    numerical_reports={runtime: ref})
     (tmp_path/'campaign_manifest.json').write_text(json.dumps(manifest))
     (tmp_path/'source_hashes.json').write_text('{}')
     args = SimpleNamespace(campaign_root=str(tmp_path),run='P1-V0-s429',arm=None,
         allow_phase2=False,allow_existing_lease=False,profiles=['H2'],mem={'H2':'512G'},
-        qualify='startup',ablations=None,dry_run=True,partition='main',cpus=30,omp=8)
+        qualify='startup',ablations=None,dry_run=True,partition='main',cpus={'H2':30},omp={'H2':8})
     submit.submit(args)
     launch = json.loads(next((tmp_path/'runs').rglob('launch_manifest.json')).read_text())
-    manifest['numerical_report'] = {'path':'new.json'}
+    manifest['numerical_reports'] = {runtime: {'path':'new.json'}}
     (tmp_path/'campaign_manifest.json').write_text(json.dumps(manifest))
     assert launch['numerical_report'] == ref
     assert launch['partition'] == 'main'

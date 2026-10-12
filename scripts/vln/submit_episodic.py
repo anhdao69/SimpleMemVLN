@@ -34,6 +34,9 @@ PROFILES = {
 RUNS = {  # Phase-1 primary arms; Phase-2 arms require the documented evidence gate.
     'P1-V0-s429': 'v0', 'P1-M1-s429': 'm1', 'P1-M2-s429': 'm2', 'P1-M2c-s429': 'm2c',
 }
+PHASE2_RUNS = {  # submitted only with --allow-phase2 and a recorded --phase2-reason
+    'P2-M5-s429': 'm5', 'P2-M5c-s429': 'm5c',
+}
 
 
 def sha256_file(path):
@@ -61,6 +64,41 @@ def numerical_report_bytes(path, commit):
     return raw
 
 
+def per_profile(cast):
+    """'32' applies to every profile; 'H4=32,H2=30' sets each profile separately."""
+    def parse(text):
+        if '=' not in text:
+            return {profile: cast(text) for profile in PROFILES}
+        values = {k: cast(v) for k, v in (kv.split('=') for kv in text.split(','))}
+        if set(values) - set(PROFILES):
+            raise argparse.ArgumentTypeError(f'unknown profile in {text!r}')
+        return values
+    return parse
+
+
+def store_numerical_reports(campaign, raws):
+    """Evidence is bound to one runtime profile hash; keep one report per runtime."""
+    refs = {}
+    for raw in raws:
+        runtime = json.loads(raw)['runtime_sha256']
+        if runtime in refs:
+            raise SystemExit(f'Two numerical reports for runtime {runtime}')
+        refs[runtime] = store_numerical_report(campaign, raw)
+    return refs
+
+
+def numerical_reference(manifest, runtime_path):
+    """The stored passing report whose runtime hash equals this profile's runtime file."""
+    runtime = sha256_file(runtime_path)
+    refs = dict(manifest.get('numerical_reports') or {})
+    if not refs and manifest.get('numerical_report'):   # campaigns initialized with one report
+        ref = manifest['numerical_report']
+        refs[json.loads(Path(ref['path']).read_bytes())['runtime_sha256']] = ref
+    if runtime not in refs:
+        raise SystemExit(f'No numerical evidence for runtime {runtime_path} ({runtime})')
+    return refs[runtime]
+
+
 def store_numerical_report(campaign, raw):
     digest = hashlib.sha256(raw).hexdigest()
     path = campaign / 'numerical' / f'{digest}.json'
@@ -79,7 +117,7 @@ def init(args):
     if manifest_path.exists():
         raise SystemExit(f'Campaign already initialized: {manifest_path}')
     commit = subprocess.check_output(['git', 'rev-parse', args.source_commit], cwd=ROOT, text=True).strip()
-    numerical_raw = numerical_report_bytes(args.numerical_report, commit)
+    numerical_raws = [numerical_report_bytes(path, commit) for path in args.numerical_report]
     source = campaign / 'source' / commit
     if source.exists():
         raise SystemExit(f'Source snapshot exists: {source}')
@@ -93,8 +131,9 @@ def init(args):
     for path in source.rglob('*'):
         if path.is_file():
             path.chmod(0o444)
+    numerical_refs = store_numerical_reports(campaign, numerical_raws)
     payload = dict(
-        numerical_report=store_numerical_report(campaign, numerical_raw),
+        numerical_reports=numerical_refs, numerical_report=next(iter(numerical_refs.values())),
         campaign_uuid=str(uuid.uuid4()), created=time.strftime('%Y-%m-%dT%H:%M:%S%z'),
         plan='plans/episodic_mem.md', source_commit=commit, source_dir=str(source),
         source_tree_sha256=hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest(),
@@ -132,15 +171,17 @@ def resnapshot(args):
     campaign = Path(args.campaign_root)
     manifest = json.loads((campaign / 'campaign_manifest.json').read_text())
     commit = subprocess.check_output(['git', 'rev-parse', args.source_commit], cwd=ROOT, text=True).strip()
-    numerical_raw = numerical_report_bytes(args.numerical_report, commit)
+    numerical_raws = [numerical_report_bytes(path, commit) for path in args.numerical_report]
     source, hashes = _snapshot(campaign, commit)
     previous = dict(source_commit=manifest['source_commit'], source_dir=manifest['source_dir'],
                     source_tree_sha256=manifest['source_tree_sha256'],
-                    numerical_report=manifest.get('numerical_report'))
+                    numerical_report=manifest.get('numerical_report'),
+                    numerical_reports=manifest.get('numerical_reports'))
     shutil.copy(campaign / 'source_hashes.json', campaign / f'source_hashes.{manifest["source_commit"]}.json')
     (campaign / 'source_hashes.json').write_text(json.dumps(dict(commit=commit, files=hashes), indent=2) + '\n')
     manifest.setdefault('source_history', []).append(dict(previous, replaced=time.time(), reason=args.reason))
-    manifest.update(numerical_report=store_numerical_report(campaign, numerical_raw),
+    numerical_refs = store_numerical_reports(campaign, numerical_raws)
+    manifest.update(numerical_reports=numerical_refs, numerical_report=next(iter(numerical_refs.values())),
                     source_commit=commit, source_dir=str(source),
                     source_tree_sha256=hashlib.sha256(json.dumps(hashes, sort_keys=True).encode()).hexdigest())
     atomic_write_json(campaign / 'campaign_manifest.json', manifest)
@@ -159,7 +200,9 @@ def submit(args):
     manifest = json.loads((campaign / 'campaign_manifest.json').read_text())
     if args.run not in RUNS and not args.allow_phase2:
         raise SystemExit(f'Unknown or gated run {args.run}')
-    arm = RUNS.get(args.run, args.arm)
+    if args.run not in RUNS and not (args.phase2_reason or '').strip():
+        raise SystemExit('A gated (Phase-2) run needs --phase2-reason, recorded in the ledger')
+    arm = RUNS.get(args.run) or PHASE2_RUNS.get(args.run, args.arm)
     if args.arm and args.arm != arm:
         raise SystemExit('Arm does not match the run identity')
     lease = Lease(campaign, args.run).read()
@@ -171,14 +214,15 @@ def submit(args):
     planned = []
     for profile in args.profiles:
         spec = dict(PROFILES[profile])
-        if getattr(args, 'cpus', None) is not None:
-            spec['cpus'] = args.cpus
-        if getattr(args, 'omp', None) is not None:
-            spec['omp'] = args.omp
+        if getattr(args, 'cpus', None) and profile in args.cpus:
+            spec['cpus'] = args.cpus[profile]
+        if getattr(args, 'omp', None) and profile in args.omp:
+            spec['omp'] = args.omp[profile]
         if min(spec['cpus'], spec['omp']) < 1:
             raise SystemExit('CPU and OpenMP thread counts must be positive')
         if args.mem and profile in args.mem:
             spec['mem'] = args.mem[profile]
+        numerical = numerical_reference(manifest, source / spec['runtime'])
         run_dir = campaign / 'runs' / args.run
         attempt = f'{args.run}-{profile}-a{_next_attempt(run_dir, profile)}'
         attempt_dir = run_dir / attempt
@@ -194,7 +238,7 @@ def submit(args):
         launch = dict(
             campaign_uuid=manifest['campaign_uuid'], campaign_root=str(campaign), run_id=args.run, arm=arm,
             profile=profile, attempt=attempt, attempt_dir=str(attempt_dir), job_name=job_name,
-            numerical_report=manifest.get('numerical_report'),
+            numerical_report=numerical, phase2_reason=getattr(args, 'phase2_reason', None),
             partition=getattr(args, 'partition', 'highgpu'),
             comment=comment, source_dir=str(source), source_commit=manifest['source_commit'],
             config_sha256=hashlib.sha256(resolved.encode()).hexdigest(), resources=spec,
@@ -216,7 +260,8 @@ def submit(args):
         append_jsonl(campaign / 'submission_ledger.jsonl', dict(
             event='submitted', run_id=args.run, attempt=attempt, profile=profile, job_id=job,
             job_name=job_name, comment=comment, output_dir=str(attempt_dir),
-            source_sha=manifest['source_commit'], config_sha=launch['config_sha256']))
+            source_sha=manifest['source_commit'], config_sha=launch['config_sha256'],
+            **({'phase2_reason': args.phase2_reason} if args.run not in RUNS else {})))
         atomic_write_json(attempt_dir / 'status.json', dict(state='SUBMITTED', job_id=job, time=time.time()))
         planned[-1]['job_id'] = job
         print(f'SUBMITTED {attempt} job {job}', flush=True)
@@ -253,7 +298,8 @@ def main():
     i.add_argument('--fixtures', required=True)
     i.add_argument('--hf-repo', default='anhdao69/Streaming_episodic')
     i.add_argument('--hf-home', default=os.environ.get('HF_HOME', ''))
-    i.add_argument('--numerical-report', required=True, help='Passing numerical report with source_commit/runtime_sha256')
+    i.add_argument('--numerical-report', required=True, nargs='+',
+                   help='Passing numerical report(s) with source_commit/runtime_sha256, one per runtime profile')
     i.add_argument('--no-upload', action='store_true', help='Keep checkpoints local; do not publish to the Hub')
     i.add_argument('--disk-reservation-gib', type=float, default=400)
     s = sub.add_parser('submit')
@@ -265,16 +311,17 @@ def main():
     s.add_argument('--ablations', nargs='*', help='Runs the verified winner submits on its profile')
     s.add_argument('--mem', type=lambda x: dict(kv.split('=') for kv in x.split(',')))
     s.add_argument('--partition', default='highgpu')
-    s.add_argument('--cpus', type=int)
-    s.add_argument('--omp', type=int)
+    s.add_argument('--cpus', type=per_profile(int), help="'32' or 'H4=32,H2=30'")
+    s.add_argument('--omp', type=per_profile(int), help="'4' or 'H4=4,H2=8'")
     s.add_argument('--dry-run', action='store_true')
     s.add_argument('--allow-phase2', action='store_true')
+    s.add_argument('--phase2-reason', help='Why the Phase-2 gate is overridden (recorded verbatim)')
     s.add_argument('--allow-existing-lease', action='store_true')
     r = sub.add_parser('resnapshot')
     r.add_argument('--campaign-root', required=True)
     r.add_argument('--source-commit', required=True)
     r.add_argument('--reason', required=True)
-    r.add_argument('--numerical-report', required=True)
+    r.add_argument('--numerical-report', required=True, nargs='+')
     t = sub.add_parser('status')
     t.add_argument('--campaign-root', required=True)
     args = p.parse_args()
