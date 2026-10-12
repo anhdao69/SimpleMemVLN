@@ -235,12 +235,12 @@ steps) the STOP under-crediting is a real estimator property, but it is not what
 What the evidence so far supports, and what a CVPR/ICML submission would still need:
 
 1. **The GRPO per-group normalisation bias on STOP (§6.2)** is a measured, mechanistic finding: on
-   identical rollouts GRPO pushes the near-goal STOP logit down 30× more than the unbiased estimators,
-   driven by all-success groups. A paper would need (a) the same probe on the GRPO run's own rollouts,
-   (b) a controlled intervention (GRPO with batch-level instead of group-level std; v2a is the closest
-   existing run), and (c) a behavioural link (cap hits, episode length, overshoot) across seeds.
-2. **Exact STOP credit** is a principled, cheap variance reduction (−22 % STOP-logit gradient std), but on
-   its own (v3) it did not beat GRPO. Its value on top of GRPO is the `grpo_stop` experiment (§5.2).
+   two independent rollout sets GRPO gives the near-goal STOP logit significantly less credit than the
+   unbiased estimator (paired t −5.6 and −3.5), driven entirely by all-success groups. Removing it
+   (GRPO+STOP) did not change behaviour or SR at this scale, so on its own it is an analysis
+   observation (a concrete case of the Dr. GRPO critique), not a headline result.
+2. **Exact STOP credit** is a principled, cheap variance reduction (−22 % STOP-logit gradient std), but
+   neither on its own (v3) nor on top of GRPO (`grpo_stop`) did it beat GRPO (§5).
 3. **Navigation credit is the bottleneck.** After RL the dominant failures are "never within 3 m" (≈ 470)
    and cap hits (≈ 135), not stopping. A baseline only reduces variance; per-step credit for movement
    needs action values. The principled next step is the plan's **fork extension (HiCo-PO+F)**: snapshot the
