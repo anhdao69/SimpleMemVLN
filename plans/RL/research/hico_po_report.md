@@ -187,4 +187,31 @@ decisions with d < 3 m, for each estimator computed on the **same** logged rollo
 
 ## 7. Failure analysis — *pending*
 
-## 8. Future work and publication roadmap — *pending*
+## 8. Future work and publication roadmap
+
+What the evidence so far supports, and what a CVPR/ICML submission would still need:
+
+1. **The GRPO per-group normalisation bias on STOP (§6.2)** is a measured, mechanistic finding: on
+   identical rollouts GRPO pushes the near-goal STOP logit down 30× more than the unbiased estimators,
+   driven by all-success groups. A paper would need (a) the same probe on the GRPO run's own rollouts,
+   (b) a controlled intervention (GRPO with batch-level instead of group-level std; v2a is the closest
+   existing run), and (c) a behavioural link (cap hits, episode length, overshoot) across seeds.
+2. **Exact STOP credit** is a principled, cheap variance reduction (−22 % STOP-logit gradient std), but on
+   its own (v3) it did not beat GRPO. Its value on top of GRPO is the `grpo_stop` experiment (§5.2).
+3. **Navigation credit is the bottleneck.** After RL the dominant failures are "never within 3 m" (≈ 470)
+   and cap hits (≈ 135), not stopping. A baseline only reduces variance; per-step credit for movement
+   needs action values. The principled next step is the plan's **fork extension (HiCo-PO+F)**: snapshot the
+   simulator pose and the streaming memory (GDN state + Window8 KV, O(1) copy) at high-entropy decisions,
+   roll out the policy after each alternative action to the end of the episode, and use these unbiased
+   Monte-Carlo action values in an all-action gradient (VinePPO-style; SeekVLN/C2PO-style branching in
+   VLN-CE). Cost is extra rollouts, which can be paid for by reducing G (v4) — exactly the trade-off the
+   critic was meant to enable.
+4. **Recognition failures.** 27–34 % of "passed the goal" rollouts never put σ above 0.01 inside 3 m; no
+   estimator fixes perception. Training-time geometric auxiliary heads on on-policy states (survey §7.10,
+   P1/P2 heads with exact labels from the simulator) target this directly.
+5. **Required controls for a paper:** matched-compute continued SFT/DAgger, a second RL seed for every
+   finalist, STOP-bias calibration (B1), a supervised on-policy STOP loss (C1), and the full-backprop vs
+   readout-only memory ablation (C2) before any claim about RL through the GDN memory (LANav 2607.18794 is
+   close prior art).
+6. **Scale:** all runs here use the 1K prefix (125 steps); the full 4K / 500-step schedule is the natural
+   next scale for the best estimator.
