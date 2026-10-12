@@ -162,3 +162,30 @@ At about 60–67 s/update on the longest episodes (H4) and the other server's 22
 representative H2 rate, one epoch is roughly 24–27 h on H2. H4 should be faster, but the
 production rate is not yet measured here. Queue wait is set by the scheduler. These are
 estimates, not observations.
+
+## Update 2026-10-12 12:50 EDT — M2c moved into interactive allocation 898977
+
+At the user's request, to reduce queued submissions to three races, P1-M2c-s429 trains inside
+the user's interactive allocation 898977. That allocation is 4 × H100, 16 CPUs and 768 G on
+evc102, and ends 2026-10-13 05:55:47.
+
+* Pending 899877/899878 were cancelled after a live identity check (job name, comment, PENDING)
+  and recorded as `superseded_before_start`. They were never allocated.
+* New attempt `P1-M2c-s429-H4-a2` (H4 profile, OMP 2, 2 workers/rank, `cpus=16`, `mem=768G`)
+  was created through `submit --dry-run` and recorded in the ledger as job 898977. It runs the
+  unmodified lifecycle (`episodic_candidate.sbatch` → `episodic_job`) inside the allocation:
+  preflight PASS; startup longest-RxR gate PASS (76.34 GiB reserved, 225.7 GiB host, 0 OOM);
+  lease CLAIMED; training from base weights.
+* **Measured production rate: 23.9 s/update** (updates 5–32, rank 0). Peak reserved 66.75 GiB,
+  0 CUDA OOMs. Epoch 1 therefore needs ≈25 h, more than the allocation's remaining ≈17 h. The
+  earlier 10–13 h H4 forecast (05) was wrong for this CPU budget.
+* An interactive allocation sends no USR1. `deadline_stop.sh` therefore writes the job-scoped
+  `REQUEST_CHECKPOINT_AND_STOP` flag (content `898977`) at 05:10, unless checkpoint-3852 is
+  already complete. The run then saves full state and stops at the next optimizer boundary.
+* Continuation **899912**: same attempt directory, same H4 world size, same source, `afterany:898977`,
+  4 GPUs / 16 CPUs / 768G / 3 days. It refuses to run while 898977 is live, re-qualifies its
+  node, and resumes from the newest complete checkpoint (`--resume_from_checkpoint auto`). At the
+  epoch-1 boundary it uploads to `P1-M2c-s429/P1-M2c-s429-H4-a2/`. This is not a duplicate:
+  it is the same logical run and attempt.
+
+Remaining queued races: M1 899881/899882, M5 899883/899884, M5c 899885/899886.

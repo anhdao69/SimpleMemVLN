@@ -94,13 +94,25 @@
           "attempt": "P1-M2c-s429-H4-a1",
           "profile": "H4",
           "job": 899877,
-          "status": "submitted 2026-10-12"
+          "status": "superseded_before_start 2026-10-12 (cancelled pending; never allocated)"
         },
         {
           "attempt": "P1-M2c-s429-H2-a1",
           "profile": "H2",
           "job": 899878,
-          "status": "submitted 2026-10-12"
+          "status": "superseded_before_start 2026-10-12 (cancelled pending; never allocated)"
+        },
+        {
+          "attempt": "P1-M2c-s429-H4-a2",
+          "profile": "H4",
+          "job": 898977,
+          "status": "training in interactive allocation; checkpoint-stop at 05:10"
+        },
+        {
+          "attempt": "P1-M2c-s429-H4-a2",
+          "profile": "H4",
+          "job": 899912,
+          "status": "queued continuation afterany:898977 (same attempt)"
         }
       ],
       "status": "submitted by verified V0 winner on its profile",
