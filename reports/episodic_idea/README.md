@@ -3,7 +3,7 @@
 For the later October 11 two-H100 campaign on the `/mnt/data` cluster, see the [H2 speed, qualification and launch report](../c2_h2_speed_20261011/implementation_and_runs.md). The source IDs, job IDs and `/groups` paths below describe the earlier campaign.
 
 Plan: [`plans/episodic_mem.md`](../../plans/episodic_mem.md). Branch `c2_episodic`.
-Production source: `e28bd01f10612851cf9ef303fbddbd43c2cae58a` (immutable copy in the
+Production source: `a340e131b63c9ab7846690acdb369599462076c4` since 2026-10-12 (branch `c2_ablations`, see 09); earlier `e28bd01f10612851cf9ef303fbddbd43c2cae58a` (immutable copy in the
 campaign root). Campaign root: `/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic`.
 Hub (public): `anhdao69/Streaming_episodic`.
 
@@ -17,9 +17,10 @@ Hub (public): `anhdao69/Streaming_episodic`.
 | [05_resource_4h100.md](05_resource_4h100.md) | H4 measurements; final-snapshot interactive gates all PASS; longest-RxR/mixed/speed gates in-job | partially GPU-qualified |
 | [06_resource_2h100.md](06_resource_2h100.md) | H2 path smoke; full qualification in-job | in-job pending |
 | [07_phase1_results.md](07_phase1_results.md) | runs, jobs, Hub layout, evaluation hand-off, operating guide, lifecycle rehearsal | submitted |
-| [08_phase2_decision.md](08_phase2_decision.md) | pre-registered Phase-2 gate | closed |
+| [08_phase2_decision.md](08_phase2_decision.md) | pre-registered Phase-2 gate | closed (M5/M5c submitted by explicit user override, see 09) |
+| [09_ablation_runs.md](09_ablation_runs.md) | 2026-10-12: M1/M2c/M5/M5c H4/H2 races from latest `c2_h2_speed`; per-runtime evidence fix; numerical + resource gates | submitted |
 | [run_index.json](run_index.json) | machine-readable run/attempt/job index | submitted |
 | `r2r_val_unseen_ids*.json`, `rxr15_val_unseen_panel1000*.json` | pre-registered evaluation ID lists | frozen |
 
-Tests: `tests/vln` — 303 passed on H100 (0 skipped) at `e28bd01`.
+Tests: `tests/vln` — 330 passed on H100 (0 skipped) at `a340e13`; earlier 303 at `e28bd01`.
 No navigation (SR/SPL) result exists yet; none is implied by any file here.

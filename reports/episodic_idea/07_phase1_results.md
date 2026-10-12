@@ -18,6 +18,11 @@
 
 ## Runs
 
+**2026-10-12 update:** V0 race 898834/898835 was cancelled while pending (21:22 EDT on
+10-11, not by this campaign's tooling; no lease or training). V0/M2/M1 train on the other
+server (`c2_h2_speed`). M1 and M2c are now submitted here as H4/H2 races from source `a340e13`;
+see 09 for jobs and evidence. The table below is the 10-11 state.
+
 | Run | Arm | R | B | Policy | Submission | Status |
 |---|---|---:|---:|---|---|---|
 | `P1-V0-s429` | V0 | 8 | 0 | recent FIFO | H4 job **898834** (`…-H4-a3`), H2 job **898835** (`…-H2-a3`) — race, same logical run; earlier never-started attempts a1 (898755/898756) and a2 (898758/898759) superseded | submitted (pending) |

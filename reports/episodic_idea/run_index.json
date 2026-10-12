@@ -1,7 +1,7 @@
 {
   "campaign_uuid": "c42b737b-9519-4be5-9886-c8a2c9c2db50",
   "campaign_root": "/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
-  "source_commit": "e28bd01f10612851cf9ef303fbddbd43c2cae58a",
+  "source_commit": "a340e131b63c9ab7846690acdb369599462076c4",
   "live_status_command": "python -m scripts.vln.submit_episodic status --campaign-root /groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic",
   "hub_repo": "anhdao69/Streaming_episodic (public)",
   "runs": [
@@ -40,15 +40,16 @@
           "attempt": "P1-V0-s429-H4-a3",
           "profile": "H4",
           "job": 898834,
-          "status": "submitted"
+          "status": "cancelled while pending 2026-10-11 21:22 EDT (not by campaign tooling); never allocated"
         },
         {
           "attempt": "P1-V0-s429-H2-a3",
           "profile": "H2",
           "job": 898835,
-          "status": "submitted"
+          "status": "cancelled while pending 2026-10-11 21:22 EDT (not by campaign tooling); never allocated"
         }
-      ]
+      ],
+      "note": "V0 trains on the other server (c2_h2_speed, job 4880); not re-submitted here"
     },
     {
       "run": "P1-M1-s429",
@@ -56,8 +57,22 @@
       "R": 9,
       "B": 0,
       "score": "none",
-      "attempts": [],
-      "status": "submitted by verified V0 winner on its profile"
+      "attempts": [
+        {
+          "attempt": "P1-M1-s429-H4-a1",
+          "profile": "H4",
+          "job": 899881,
+          "status": "submitted 2026-10-12"
+        },
+        {
+          "attempt": "P1-M1-s429-H2-a1",
+          "profile": "H2",
+          "job": 899882,
+          "status": "submitted 2026-10-12"
+        }
+      ],
+      "status": "submitted by verified V0 winner on its profile",
+      "source": "a340e131b63c9ab7846690acdb369599462076c4"
     },
     {
       "run": "P1-M2-s429",
@@ -74,8 +89,68 @@
       "R": 8,
       "B": 300,
       "score": "random_hash_v1",
-      "attempts": [],
-      "status": "submitted by verified V0 winner on its profile"
+      "attempts": [
+        {
+          "attempt": "P1-M2c-s429-H4-a1",
+          "profile": "H4",
+          "job": 899877,
+          "status": "submitted 2026-10-12"
+        },
+        {
+          "attempt": "P1-M2c-s429-H2-a1",
+          "profile": "H2",
+          "job": 899878,
+          "status": "submitted 2026-10-12"
+        }
+      ],
+      "status": "submitted by verified V0 winner on its profile",
+      "source": "a340e131b63c9ab7846690acdb369599462076c4"
+    },
+    {
+      "run": "P2-M5-s429",
+      "arm": "m5",
+      "R": 4,
+      "B": 1200,
+      "score": "committed_mean_l2_v1",
+      "source": "a340e131b63c9ab7846690acdb369599462076c4",
+      "attempts": [
+        {
+          "attempt": "P2-M5-s429-H4-a1",
+          "profile": "H4",
+          "job": 899883,
+          "status": "submitted 2026-10-12"
+        },
+        {
+          "attempt": "P2-M5-s429-H2-a1",
+          "profile": "H2",
+          "job": 899884,
+          "status": "submitted 2026-10-12"
+        }
+      ],
+      "phase2_override": "explicit user choice 2026-10-12; 08 gate not satisfied"
+    },
+    {
+      "run": "P2-M5c-s429",
+      "arm": "m5c",
+      "R": 4,
+      "B": 1200,
+      "score": "random_hash_v1",
+      "source": "a340e131b63c9ab7846690acdb369599462076c4",
+      "attempts": [
+        {
+          "attempt": "P2-M5c-s429-H4-a1",
+          "profile": "H4",
+          "job": 899885,
+          "status": "submitted 2026-10-12"
+        },
+        {
+          "attempt": "P2-M5c-s429-H2-a1",
+          "profile": "H2",
+          "job": 899886,
+          "status": "submitted 2026-10-12"
+        }
+      ],
+      "phase2_override": "explicit user choice 2026-10-12; 08 gate not satisfied"
     }
   ],
   "phase2": "closed (08_phase2_decision.md)",
@@ -86,5 +161,6 @@
   "superseded_source": [
     "a7e5ae5eeb4100bd347ff9e8cfdf225a07ff6d14",
     "469b107696bde6e0565860af45d2a0e35428427e"
-  ]
+  ],
+  "source_history_note": "e28bd01 until 2026-10-12; a340e13 (c2_ablations) for M1/M2c/M5/M5c"
 }

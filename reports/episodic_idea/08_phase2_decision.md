@@ -1,6 +1,11 @@
 # 08 — Phase-2 evidence gate (frozen before any Phase-1 result)
 
-Status: **closed**. No Phase-2 run may be submitted until Phase-1 E1 evaluations of all
+Status: **closed** (gate not evaluated). 2026-10-12: the user explicitly chose to train M5/M5c
+now, before E1 evaluation; jobs 899883–899886 carry that override as `phase2_reason` (see 09).
+This does not open the gate. Outcome A–D must still be recorded from E1 results, and no
+claim may cite it as satisfied.
+
+Original text: No Phase-2 run may be submitted until Phase-1 E1 evaluations of all
 four arms (V0, M1, M2, M2c) exist on the same episode IDs, and one outcome below is
 recorded here with the evaluator journals. The thresholds are planning choices copied
 from plan §9.5, not significance claims, and are not redefined after seeing results.
