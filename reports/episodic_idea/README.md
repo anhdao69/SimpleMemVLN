@@ -1,5 +1,7 @@
 # Episodic-memory campaign — report index
 
+For the later October 11 two-H100 campaign on the `/mnt/data` cluster, see the [H2 speed, qualification and launch report](../c2_h2_speed_20261011/implementation_and_runs.md). The source IDs, job IDs and `/groups` paths below describe the earlier campaign.
+
 Plan: [`plans/episodic_mem.md`](../../plans/episodic_mem.md). Branch `c2_episodic`.
 Production source: `e28bd01f10612851cf9ef303fbddbd43c2cae58a` (immutable copy in the
 campaign root). Campaign root: `/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic`.

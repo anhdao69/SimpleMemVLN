@@ -19,3 +19,15 @@ Run the mathematical/kernel suite and real R2R/RxR train/serve replay with the s
 Close the false-success helper and recoverable-OOM guard defects with regression tests. A campaign must carry immutable, passing numerical evidence matching its source commit and runtime-profile hash; its launcher rejects absent or changed evidence. Each submitted job also repeats its own longest-episode startup gate on the actual allocated node. Preserve immutable source snapshots, separate output directories and single-writer leases.
 
 Submit only H2 V0, H2 M1 and H2 M2 on this cluster's `main` partition. Do not race H4, automatically submit further ablations, cancel existing allocations or upload weights automatically. Tune CPU requests within measured resources; retain sufficient measured host/checkpoint margin. Keep the existing recovery-save and epoch-export machinery. Report source, selected settings, measurements, known plan deviations, job IDs and scheduler states.
+
+
+## Subsequent user instructions and release gates
+
+The user additionally requested smoke debugging all six existing arms (V0, M1, M2, M2c, M5, M5c), while confirming production submission of V0 plus M1 and M2 only. Test the remaining three arms on mixed and longest-RxR episodes and both-dataset train/serve replay. Explicitly test save/fresh-process reload for each of V0, M1 and M2. Recovery uses the same immutable attempt and topology, complete distributed state, periodic saves, and an optional graceful checkpoint-stop signal; hard cancellation can lose unsaved progress.
+
+V0 4877 was submitted early at the user's request when two GPUs became free; it independently runs full qualification before training. M1 4878 and M2 4879 were submitted held with an additional dependency on interactive allocation 4876. Release them only after final checks and code publication, then cancel only interactive 4876 as specifically authorized. This supersedes the earlier general instruction not to cancel allocations; all other jobs remain protected.
+
+
+## Final user priority: start production promptly
+
+The subsequent instruction “dont over test it” supersedes the extended-test release checklist above. Preserve the completed 324-test suite, 18 numerical replays, 12 resource stress gates and V0 full-state recovery proof. Replace the remaining extended repetitions with short smoke checks for M2c/M5/M5c. Do not claim the canceled M1 recovery/warm-baseline/extra-long/replay checks passed. Release M1/M2 holds immediately; replace V0’s repeated full qualification (4877, no production updates) with the normal own-arm startup gate in job 4880/a2. All three jobs still train one epoch on the full joint R2R+RxR manifest, with complete recovery saves. Push the report/code, then release interactive 4876. No other allocation is canceled.

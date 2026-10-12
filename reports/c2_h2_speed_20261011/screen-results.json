@@ -1,0 +1,562 @@
+[
+  {
+    "name": "baseline",
+    "threads": 2,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/baseline.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.39453125,
+      "max_process_rss_gib": 43.5499382019043,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.4336458444595337,
+        0.43080994486808777
+      ],
+      "grad_norms": [
+        20.997650146484375,
+        20.995853424072266,
+        21.26091766357422,
+        20.988853454589844
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 119.61420822143555,
+      "sampled_peak_working_set_gib": 119.5015754699707,
+      "sampled_peak_anon_gib": 67.87752532958984,
+      "cgroup_recorded_peak_gib": 1.2226142883300781,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2222747802734375,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35317,
+        "1": 27137
+      },
+      "seconds": 159.36117887496948,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/baseline.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/baseline/train",
+        "--run-name",
+        "speed-baseline",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.6953125
+    },
+    "wall_seconds": 159.42620491981506,
+    "steady_intervals": [
+      25.953741312026978,
+      25.69271445274353,
+      25.66592812538147
+    ],
+    "steady_seconds": 25.77079463005066
+  },
+  {
+    "name": "threads4",
+    "threads": 4,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/threads4.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.39453125,
+      "max_process_rss_gib": 43.60042190551758,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.43042415380477905,
+        0.4313358664512634
+      ],
+      "grad_norms": [
+        21.002805709838867,
+        21.000398635864258,
+        20.92704963684082,
+        20.941835403442383
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 116.4659423828125,
+      "sampled_peak_working_set_gib": 116.35250091552734,
+      "sampled_peak_anon_gib": 64.6489372253418,
+      "cgroup_recorded_peak_gib": 1.2235984802246094,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2226676940917969,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35317,
+        "1": 27137
+      },
+      "seconds": 142.85485672950745,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/threads4.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/threads4/train",
+        "--run-name",
+        "speed-threads4",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.693359375
+    },
+    "wall_seconds": 142.92976808547974,
+    "steady_intervals": [
+      23.302327871322632,
+      23.015695333480835,
+      22.94464373588562
+    ],
+    "steady_seconds": 23.087555646896362
+  },
+  {
+    "name": "threads8",
+    "threads": 8,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/threads8.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.39453125,
+      "max_process_rss_gib": 43.63057327270508,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.43212610483169556,
+        0.43118977546691895
+      ],
+      "grad_norms": [
+        20.999792098999023,
+        20.99778938293457,
+        20.907432556152344,
+        20.96214485168457
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 115.47800064086914,
+      "sampled_peak_working_set_gib": 115.3623046875,
+      "sampled_peak_anon_gib": 63.779964447021484,
+      "cgroup_recorded_peak_gib": 1.2263259887695312,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2239875793457031,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35317,
+        "1": 27137
+      },
+      "seconds": 132.89571022987366,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/threads8.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/threads8/train",
+        "--run-name",
+        "speed-threads8",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.6923828125
+    },
+    "wall_seconds": 132.97450637817383,
+    "steady_intervals": [
+      21.408987760543823,
+      21.157063245773315,
+      21.220943689346313
+    ],
+    "steady_seconds": 21.26233156522115
+  },
+  {
+    "name": "no_trim",
+    "threads": 4,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/no_trim.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.39453125,
+      "max_process_rss_gib": 44.139923095703125,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.4319442808628082,
+        0.43250223994255066
+      ],
+      "grad_norms": [
+        20.99966049194336,
+        21.001785278320312,
+        20.997440338134766,
+        21.144014358520508
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 121.40761184692383,
+      "sampled_peak_working_set_gib": 121.28967666625977,
+      "sampled_peak_anon_gib": 69.66778945922852,
+      "cgroup_recorded_peak_gib": 1.2287712097167969,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2263870239257812,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35317,
+        "1": 27137
+      },
+      "seconds": 139.29743719100952,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/no_trim.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/no_trim/train",
+        "--run-name",
+        "speed-no_trim",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.6884765625
+    },
+    "wall_seconds": 139.35432147979736,
+    "steady_intervals": [
+      21.81232476234436,
+      22.837416410446167,
+      22.47658634185791
+    ],
+    "steady_seconds": 22.375442504882812
+  },
+  {
+    "name": "workers4",
+    "threads": 4,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/workers4.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.39453125,
+      "max_process_rss_gib": 44.30167770385742,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.431133896112442,
+        0.4308497905731201
+      ],
+      "grad_norms": [
+        20.999292373657227,
+        20.99994468688965,
+        21.07013511657715,
+        20.841148376464844
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 125.8769416809082,
+      "sampled_peak_working_set_gib": 125.75861358642578,
+      "sampled_peak_anon_gib": 74.03141784667969,
+      "cgroup_recorded_peak_gib": 1.229522705078125,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2289695739746094,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35317,
+        "1": 27137
+      },
+      "seconds": 132.2952606678009,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/workers4.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/workers4/train",
+        "--run-name",
+        "speed-workers4",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.6875
+    },
+    "wall_seconds": 132.3792724609375,
+    "steady_intervals": [
+      21.037717819213867,
+      20.884175300598145,
+      20.898279905319214
+    ],
+    "steady_seconds": 20.940057675043743
+  },
+  {
+    "name": "batch16_vision8",
+    "threads": 4,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/batch16_vision8.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.43359375,
+      "max_process_rss_gib": 44.0948486328125,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.43207430839538574,
+        0.4309569001197815
+      ],
+      "grad_norms": [
+        20.998334884643555,
+        20.99570655822754,
+        21.11403465270996,
+        20.836843490600586
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 121.33304977416992,
+      "sampled_peak_working_set_gib": 121.21348571777344,
+      "sampled_peak_anon_gib": 69.5857162475586,
+      "cgroup_recorded_peak_gib": 1.2310829162597656,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.2295417785644531,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35357,
+        "1": 27157
+      },
+      "seconds": 139.40936923027039,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/batch16_vision8.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/batch16_vision8/train",
+        "--run-name",
+        "speed-batch16_vision8",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13000.11328125
+    },
+    "wall_seconds": 139.4832625389099,
+    "steady_intervals": [
+      21.62451982498169,
+      23.475327730178833,
+      21.544443130493164
+    ],
+    "steady_seconds": 22.214763561884563
+  },
+  {
+    "name": "batch32_vision16",
+    "threads": 4,
+    "config": "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/batch32_vision16.yaml",
+    "passed": true,
+    "training": {
+      "passed": true,
+      "problems": [],
+      "peak_reserved_gib": 32.4140625,
+      "max_process_rss_gib": 44.134639739990234,
+      "losses": [
+        0.43187415599823,
+        0.43187415599823,
+        0.4320261478424072,
+        0.43288177251815796
+      ],
+      "grad_norms": [
+        20.99660873413086,
+        20.99742889404297,
+        21.119672775268555,
+        20.81941032409668
+      ]
+    },
+    "resources": {
+      "status": "PASS",
+      "exit_code": 0,
+      "host_guard_triggered": false,
+      "host_guard_gib": 680.0,
+      "job_limit_gib": 768.0,
+      "sampled_peak_job_usage_gib": 123.00023651123047,
+      "sampled_peak_working_set_gib": 122.88059997558594,
+      "sampled_peak_anon_gib": 71.26387023925781,
+      "cgroup_recorded_peak_gib": 1.241607666015625,
+      "new_oom_kill_events": 0,
+      "new_limit_events": 0,
+      "start_usage_gib": 1.230743408203125,
+      "nvidia_smi_peak_used_mib": {
+        "0": 35337,
+        "1": 27157
+      },
+      "seconds": 135.2357475757599,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=2",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/episodic/arm_v0.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/batch32_vision16.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-audit-evidence-20261011/fixtures/medium_joint.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--max-optimizer-updates",
+        "4",
+        "--debug-repeat-episodes",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/c2-speed-20261011/screen/batch32_vision16/train",
+        "--run-name",
+        "speed-batch32_vision16",
+        "--profile-only"
+      ],
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod94dd9485_3000_4cf0_aeef_c46fde504188.slice/system.slice/slurmstepd.scope/job_4876",
+      "cgroup_version": 2,
+      "free_disk_gib_at_start": 13002.9736328125
+    },
+    "wall_seconds": 135.30427360534668,
+    "steady_intervals": [
+      21.621914386749268,
+      21.07807183265686,
+      22.656623125076294
+    ],
+    "steady_seconds": 21.78553644816081
+  }
+]

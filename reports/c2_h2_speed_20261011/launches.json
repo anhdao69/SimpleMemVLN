@@ -1,0 +1,184 @@
+[
+  {
+    "run": "P1-M1-s429",
+    "attempt": "P1-M1-s429-H2-a1",
+    "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M1-s429/P1-M1-s429-H2-a1",
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--job-name=epi-P1-M1-s429-H2",
+      "--comment=fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-M1-s429/P1-M1-s429-H2-a1",
+      "--partition=main",
+      "--nodes=1",
+      "--ntasks=1",
+      "--gres=gpu:nvidia_h100_80gb_hbm3:2",
+      "--cpus-per-task=30",
+      "--mem=512G",
+      "--time=5-00:00:00",
+      "--signal=B:USR1@1800",
+      "--output=/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M1-s429/P1-M1-s429-H2-a1/slurm-%j.log",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5/train/slurm/episodic_candidate.sbatch",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M1-s429/P1-M1-s429-H2-a1"
+    ],
+    "launch": {
+      "campaign_uuid": "fddde5b1-0f38-4185-a751-f96d4a0e2975",
+      "campaign_root": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011",
+      "run_id": "P1-M1-s429",
+      "arm": "m1",
+      "profile": "H2",
+      "attempt": "P1-M1-s429-H2-a1",
+      "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M1-s429/P1-M1-s429-H2-a1",
+      "job_name": "epi-P1-M1-s429-H2",
+      "numerical_report": {
+        "path": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/numerical/f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116.json",
+        "sha256": "f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116"
+      },
+      "partition": "main",
+      "comment": "fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-M1-s429/P1-M1-s429-H2-a1",
+      "source_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "source_commit": "e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "config_sha256": "0d7b1e9cacf9df2a31412dca951b0d1c63f55ef07e218279489238b215ad40b3",
+      "resources": {
+        "world": 2,
+        "gpus": 2,
+        "cpus": 30,
+        "mem": "512G",
+        "time": "5-00:00:00",
+        "omp": 8,
+        "runtime": "configs/episodic/profile_h2.yaml",
+        "deepspeed": "configs/deepspeed_zero2_cpu_optimizer.json"
+      },
+      "qualification": "startup",
+      "race_siblings": [],
+      "submit_ablations": [],
+      "created": 1791764533.94114
+    },
+    "status": {
+      "state": "PREFLIGHT_PASSED",
+      "job_id": "4878",
+      "attempt": "P1-M1-s429-H2-a1",
+      "time": 1791767119.8714051
+    }
+  },
+  {
+    "run": "P1-M2-s429",
+    "attempt": "P1-M2-s429-H2-a1",
+    "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M2-s429/P1-M2-s429-H2-a1",
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--job-name=epi-P1-M2-s429-H2",
+      "--comment=fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-M2-s429/P1-M2-s429-H2-a1",
+      "--partition=main",
+      "--nodes=1",
+      "--ntasks=1",
+      "--gres=gpu:nvidia_h100_80gb_hbm3:2",
+      "--cpus-per-task=30",
+      "--mem=512G",
+      "--time=5-00:00:00",
+      "--signal=B:USR1@1800",
+      "--output=/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M2-s429/P1-M2-s429-H2-a1/slurm-%j.log",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5/train/slurm/episodic_candidate.sbatch",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M2-s429/P1-M2-s429-H2-a1"
+    ],
+    "launch": {
+      "campaign_uuid": "fddde5b1-0f38-4185-a751-f96d4a0e2975",
+      "campaign_root": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011",
+      "run_id": "P1-M2-s429",
+      "arm": "m2",
+      "profile": "H2",
+      "attempt": "P1-M2-s429-H2-a1",
+      "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-M2-s429/P1-M2-s429-H2-a1",
+      "job_name": "epi-P1-M2-s429-H2",
+      "numerical_report": {
+        "path": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/numerical/f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116.json",
+        "sha256": "f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116"
+      },
+      "partition": "main",
+      "comment": "fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-M2-s429/P1-M2-s429-H2-a1",
+      "source_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "source_commit": "e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "config_sha256": "1cc4a458342d25267454d2284e93be941f53e91fbe82c5aeb630117fa54c25ee",
+      "resources": {
+        "world": 2,
+        "gpus": 2,
+        "cpus": 30,
+        "mem": "512G",
+        "time": "5-00:00:00",
+        "omp": 8,
+        "runtime": "configs/episodic/profile_h2.yaml",
+        "deepspeed": "configs/deepspeed_zero2_cpu_optimizer.json"
+      },
+      "qualification": "startup",
+      "race_siblings": [],
+      "submit_ablations": [],
+      "created": 1791764541.8348594
+    },
+    "status": {
+      "state": "SUBMITTED",
+      "job_id": "4879",
+      "time": 1791764541.9127414
+    }
+  },
+  {
+    "run": "P1-V0-s429",
+    "attempt": "P1-V0-s429-H2-a2",
+    "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-V0-s429/P1-V0-s429-H2-a2",
+    "command": [
+      "sbatch",
+      "--parsable",
+      "--job-name=epi-P1-V0-s429-H2",
+      "--comment=fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-V0-s429/P1-V0-s429-H2-a2",
+      "--partition=main",
+      "--nodes=1",
+      "--ntasks=1",
+      "--gres=gpu:nvidia_h100_80gb_hbm3:2",
+      "--cpus-per-task=30",
+      "--mem=512G",
+      "--time=5-00:00:00",
+      "--signal=B:USR1@1800",
+      "--output=/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-V0-s429/P1-V0-s429-H2-a2/slurm-%j.log",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5/train/slurm/episodic_candidate.sbatch",
+      "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-V0-s429/P1-V0-s429-H2-a2"
+    ],
+    "launch": {
+      "campaign_uuid": "fddde5b1-0f38-4185-a751-f96d4a0e2975",
+      "campaign_root": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011",
+      "run_id": "P1-V0-s429",
+      "arm": "v0",
+      "profile": "H2",
+      "attempt": "P1-V0-s429-H2-a2",
+      "attempt_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/runs/P1-V0-s429/P1-V0-s429-H2-a2",
+      "job_name": "epi-P1-V0-s429-H2",
+      "numerical_report": {
+        "path": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/numerical/f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116.json",
+        "sha256": "f7f7fde4618c6ecc10d8276f050a1168196380be6a840aeeeb240e2b7166b116"
+      },
+      "partition": "main",
+      "comment": "fddde5b1-0f38-4185-a751-f96d4a0e2975/P1-V0-s429/P1-V0-s429-H2-a2",
+      "source_dir": "/mnt/data/vmo-ai-task/anhdh35/checkpoints/SimpleMemVLN-c2-h2-speed-20261011/source/e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "source_commit": "e789a13f8b6ea3abc29086b82205a19024a6e7b5",
+      "config_sha256": "105b91610fe9d2de6e4b84beec38b064e2e59abe926f7813100d6f435796263e",
+      "resources": {
+        "world": 2,
+        "gpus": 2,
+        "cpus": 30,
+        "mem": "512G",
+        "time": "5-00:00:00",
+        "omp": 8,
+        "runtime": "configs/episodic/profile_h2.yaml",
+        "deepspeed": "configs/deepspeed_zero2_cpu_optimizer.json"
+      },
+      "qualification": "startup",
+      "race_siblings": [],
+      "submit_ablations": [],
+      "created": 1791767029.4289718
+    },
+    "status": {
+      "state": "PREFLIGHT_PASSED",
+      "job_id": "4880",
+      "attempt": "P1-V0-s429-H2-a2",
+      "time": 1791767060.3710718
+    }
+  }
+]
