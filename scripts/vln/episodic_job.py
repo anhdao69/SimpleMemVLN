@@ -359,7 +359,8 @@ def upload(a, out):
     command = [sys.executable, '-m', 'scripts.vln.upload_episodic', '--repo', a.manifest['hf_repo'],
                '--folder', f'{a.launch["run_id"]}/{a.launch["attempt"]}', '--checkpoint', str(checkpoint),
                '--export', str(export), '--attempt-dir', str(a.dir)]
-    return subprocess.run(command, cwd=ROOT).returncode
+    env = {k: v for k, v in os.environ.items() if k not in ('HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE')}
+    return subprocess.run(command, cwd=ROOT, env=env).returncode
 
 
 def main():

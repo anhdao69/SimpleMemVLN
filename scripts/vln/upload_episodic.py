@@ -18,6 +18,8 @@ from pathlib import Path
 import shutil
 import time
 
+ONLINE_BLOCKERS = ('HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE')
+
 
 def stage(staging, folder, checkpoint, export, attempt_dir):
     target = staging / folder
@@ -63,7 +65,10 @@ def main():
     p.add_argument('--attempt-dir', required=True)
     p.add_argument('--private', action='store_true', default=True)
     args = p.parse_args()
-    os.environ.pop('HF_HUB_OFFLINE', None)
+    # The job wrapper exports HF_HUB_OFFLINE=1 *and* TRANSFORMERS_OFFLINE=1; huggingface_hub
+    # treats either as offline mode, so both must go before it is imported.
+    for name in ONLINE_BLOCKERS:
+        os.environ.pop(name, None)
     from huggingface_hub import HfApi
     api = HfApi()
     staging = Path(args.attempt_dir) / 'hf_staging'
