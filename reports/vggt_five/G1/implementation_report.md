@@ -209,4 +209,4 @@ RUN="$R/SimpleMemVLN-c2_vggt_omega_g1-runs/g1_omega_joint_e1_20261013"
 bash "$RUN/source/train/launch_g1_omega_joint_e1.sh" "$RUN"
 ```
 
-The launcher automatically chooses the latest **complete** recovery checkpoint. It cannot recover the unsaved updates between that checkpoint and a cancellation. The first planned recovery point is update10; subsequent saves are every100updates and at epoch end. The source and full-state checkpoints should be retained until the run is finished and any desired continuation/export is secured.
+The launcher automatically chooses the latest **complete** recovery checkpoint. It cannot recover the unsaved updates between that checkpoint and a cancellation. **Checkpoint10 has now been written and validated as complete**, with all22 inventory files, including the four-rank recovery state; see [evidence/checkpoint10.json](evidence/checkpoint10.json). Subsequent saves are every100updates and at epoch end. The source and full-state checkpoints should be retained until the run is finished and any desired continuation/export is secured.
