@@ -150,7 +150,66 @@ Both refinements land at the same SR (54.87 / 54.98, p = 0.96 between them) and 
 GRPO run, while training curves on the 1K prompts do not show them behind. The bootstrap CIs above cover
 only evaluation sampling on fixed checkpoints, not RL training-seed variance, so a ±2-point difference
 between single runs cannot yet be attributed to the estimator. A second GRPO run with only the seed
-changed (`configs/rl/activevln_grpo_r2r1k_seed2.yaml`) is running; v2a follows it.
+changed (`configs/rl/activevln_grpo_r2r1k_seed2.yaml`) is running.
+
+### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`) — *implemented, queued*
+
+**Motivation.** §7 shows the residual gap is navigation: "never within 3 m" and cap hits, with STOP
+behaviour unchanged by exact STOP credit. With a terminal-only reward, GRPO credits every decision of a
+trajectory with the same group advantage, so the credit for an individual movement decision comes only
+from averaging over trajectories. This is the plan's fork extension (+F), refined to keep GRPO intact.
+
+**Estimator.** Per main trajectory i (GRPO group g, advantage A_i, decisions 0..n−1):
+
+1. *Causal fork placement.* Before the episode, a target τ is drawn uniformly from [1, N*) with an
+   independent generator. The fork point t is the first decision in [τ, τ + 8] whose first-token
+   entropy H(π_T(·|h_t)) is at least the previous RL step's median. The rule uses only h_t and
+   pre-drawn randomness, never a_t or later events.
+2. *Forking.* The streaming memory before decision t (GDN recurrent + conv state, Window8 KV, position
+   ledger) is cloned in O(state). After the main episode, the simulator prefix a_{0:t} is replayed
+   deterministically (pose and frame verified bit-exactly) and M on-policy continuations are sampled from
+   the restored memory.
+3. *Credit.* With s_g = max(std_g + ε, 0.05·R_max):
+   - main decisions before t keep GRPO's A_i (unchanged);
+   - main decisions s ≥ t get (R_i − mean_b R_b)/s_g · 1/(1+M);
+   - branch b's own decisions get (R_b − mean of its 1+M−1 siblings incl. the main)/s_g · 1/(1+M);
+   - its prefix decisions get 0.
+
+   Branch tokens get the parent's GRPO token weight, and dynamic sampling and micro-batch weights are
+   GRPO's.
+
+**Why it is unbiased (for a fixed scale and root baseline).** Given h_t, the main suffix and the M branch
+suffixes are i.i.d. draws of the same conditional process. The sibling baseline of each is independent
+of its own actions, so each suffix term is an unbiased estimate of the suffix part of ∇J. Averaging the
+1 + M copies keeps that expectation, and only the variance changes. Without the 1/(1+M) averaging the
+estimator is biased: the subtree after a fork would be counted 1 + M times. With several fork points the
+weights multiply. `tests/rl/test_hico_estimator.py` verifies E[estimator] = ∇J by exact enumeration
+(toy POMDP, two nested forks, M ∈ {1, 2}) and shows the un-averaged variant is biased.
+`tests/rl/test_fork_rollout.py` checks three things on the production `run_episode`:
+- the main trajectory is bit-identical with and without forking;
+- branches start from the same frame and pose;
+- teacher-forcing main prefix + branch suffix through a fresh session reproduces the branch log-probs
+  exactly.
+
+**What it changes vs GRPO.** For decisions after the fork, the baseline is the value of the *same
+history* (estimated by siblings), not of the instruction. A movement choice at an uncertain decision is
+credited by what happened to an alternative continuation from the same point. In all-fail and
+all-success GRPO groups, where GRPO's own signal is zero, a sibling that succeeds or fails differently
+still provides credit.
+
+**Cost.** K = 1 fork and M = 1 branch per main trajectory. With forks spread uniformly over N*, a branch
+averages roughly the second half of an episode, i.e. about +50–70 % policy steps, plus cheap simulator
+replays and one more training sequence per branch. Branch and replay steps are logged separately
+(`sampled_branch_env_steps`, `sampled_replay_env_steps`, discarded re-rolls included). Two comparisons:
+
+- matched RL steps (125);
+- matched environment interactions: the GRPO+F checkpoint whose cumulative policy steps equal GRPO's at
+  step 125. Exports exist every 25 steps.
+
+**Queue.** After the seed-2 GRPO run releases the GPUs, `scripts/rl/smoke_then_queue.sh` runs a 2-step
+real-model smoke (`scripts/rl/check_fork_smoke.py`: finite gradients, log-prob agreement, forks present
+and recorded). Only if the smoke passes does it start the full `hico_grpo_fork_r2r1k` run, followed by
+v2a.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
