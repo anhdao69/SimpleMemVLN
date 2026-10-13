@@ -189,3 +189,36 @@ evc102, and ends 2026-10-13 05:55:47.
   it is the same logical run and attempt.
 
 Remaining queued races: M1 899881/899882, M5 899883/899884, M5c 899885/899886.
+
+## Update 2026-10-13 00:35 EDT — P1-M2c epoch 1 complete; upload bug
+
+* `P1-M2c-s429-H4-a2` (interactive 898977, H4) **completed epoch 1**: update 3,852 of the
+  7,704-update schedule, at about 00:33. There were 0 CUDA OOMs on all ranks over the run, peak
+  reserved GPU memory was 73.3 GiB, and steady throughput was 10.6–11.8 s/update. Wall time was
+  about 12 h, including a 23.9 s/update warm-up phase. The 50-update verification passed
+  (`TRAINING_VERIFIED`, recent host peak 194 GiB). `checkpoint-3852` is a complete
+  epoch-boundary state (66 GB, `RECOVERY_COMPLETE.json`) and `final/` is the export
+  (`global_step` 3852).
+* **Defect: the in-job Hub upload failed** (`OfflineModeIsEnabled`). `episodic_candidate.sbatch`
+  exports `HF_HUB_OFFLINE=1` and `TRANSFORMERS_OFFLINE=1`, `huggingface_hub` treats *either*
+  as offline mode, and `upload_episodic.py` only cleared the first. The lifecycle rehearsal
+  (07) ran the uploader without `TRANSFORMERS_OFFLINE`, so it did not catch this. Fixed in
+  `5975e8b`: both variables are cleared, the job launches the uploader without them, and
+  regression tests are in `tests/vln/test_episodic_upload_online.py`.
+* The M2c upload was run by hand with the identical arguments, from the immutable `a340e13`
+  source and without the offline variables (`upload_manual.log`, `upload_complete.json`).
+  Target: `anhdao69/Streaming_episodic/P1-M2c-s429/P1-M2c-s429-H4-a2/{export-e1,checkpoint-3852,campaign}`.
+* Continuation 899912 was no longer needed. It was cancelled while pending after an identity
+  check and recorded as `superseded_before_start`.
+* **Queued M1/M5/M5c jobs (899881–899886) keep the `a340e13` source**, by user decision to keep
+  their queue position. Their training and checkpoints are unaffected, but their automatic
+  upload will fail the same way: the attempt ends `COMPLETE` with `uploaded: false`. After each
+  completes, publish it with the following, from a node with internet:
+
+  ```bash
+  bash scripts/vln/manual_upload.sh /groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic/runs/<run>/<winning attempt>
+  ```
+
+  The script checks for a complete `checkpoint-3852` and uses `final/` as the export when its
+  `global_step` is 3852. It runs the attempt's own immutable uploader, which verifies remote
+  sizes before writing `upload_complete.json`.

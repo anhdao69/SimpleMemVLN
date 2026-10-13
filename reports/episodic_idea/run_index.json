@@ -106,17 +106,18 @@
           "attempt": "P1-M2c-s429-H4-a2",
           "profile": "H4",
           "job": 898977,
-          "status": "training in interactive allocation; checkpoint-stop at 05:10"
+          "status": "COMPLETE epoch 1 (update 3852) 2026-10-13 00:33; uploaded manually (in-job upload offline bug)"
         },
         {
           "attempt": "P1-M2c-s429-H4-a2",
           "profile": "H4",
           "job": 899912,
-          "status": "queued continuation afterany:898977 (same attempt)"
+          "status": "superseded_before_start (epoch already complete)"
         }
       ],
       "status": "submitted by verified V0 winner on its profile",
-      "source": "a340e131b63c9ab7846690acdb369599462076c4"
+      "source": "a340e131b63c9ab7846690acdb369599462076c4",
+      "hub": "anhdao69/Streaming_episodic/P1-M2c-s429/P1-M2c-s429-H4-a2/"
     },
     {
       "run": "P2-M5-s429",
