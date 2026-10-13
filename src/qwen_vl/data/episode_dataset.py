@@ -53,12 +53,22 @@ class EpisodeDataset(Dataset):
             from qwen_vl.research.vggt_sampling import sample_frames,collection_trajectory_key,sampled_visual_positions
             from qwen_vl.data.vggt_online import preprocess_teacher_images
             episode=self.episodes[index]
-            frames=sample_frames(collection_trajectory_key(episode),len(episode['steps']),
-                                 self.serializer.config['research'].get('sample_seed',429))
-            result['aux_visual_positions']=sampled_visual_positions(result['input_ids'],
-                self.serializer.image_id,result['step_plan'][1],frames)
+            spec=self.serializer.config['research']
+            if spec['run_id']=='G3':
+                from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
+                pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
+                frames=sorted({s for s,t in pairs})
+                anchors=observation_anchors(result['response_target_positions'],result['response_action_index'],result['num_actions'])
+                result['aux_anchors']=anchors[torch.tensor([t for s,t in pairs],dtype=torch.long)]
+                result['aux_lags']=torch.tensor([t-s for s,t in pairs],dtype=torch.long)
+                result['aux_source_indices']=torch.tensor([frames.index(s) for s,t in pairs],dtype=torch.long)
+                result['aux_pair_count']=len(pairs)
+            else:
+                frames=sample_frames(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
+                result['aux_visual_positions']=sampled_visual_positions(result['input_ids'],
+                    self.serializer.image_id,result['step_plan'][1],frames)
+                result['aux_frame_count']=len(frames)
             result['teacher_images']=preprocess_teacher_images([episode['steps'][i]['rgb_path'] for i in frames])
-            result['aux_frame_count']=len(frames)
         return result
 
 

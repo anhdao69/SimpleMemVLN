@@ -1,3 +1,5 @@
+> **G3 online update (2026-10-13):** `G3_native_state.md` and `G3_omega_execution.md` replace this document's offline/PCA target requirements for G3. It now uses frozen online single-view Omega, full2048-dimensional regional targets, no added positional term, and four-H100 qualification. Other unimplemented arms retain their original specifications.
+
 > **G1 update (2026-10-13):** User requests ONLINE VGGT-Omega, no pre-extraction/PCA, the SpatialForcing projector, and4H100 tests. For G1, `G1_current_alignment.md` supersedes conflicting offline/PCA/two-GPU sections below. Other arms are not implemented by this task.
 
 # Common implementation for exactly five VGGT runs

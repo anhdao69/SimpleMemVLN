@@ -18,8 +18,8 @@ class QwenSFTTrainer(Trainer):
 
     def _get_num_items_in_batch(self, batch_samples, device):
         count = torch.tensor(sum(batch.get('num_actions', batch.get('labels',torch.empty(0)).shape[0]) for batch in batch_samples), device=device)
-        if any('aux_frame_count' in batch for batch in batch_samples):
-            frames = torch.tensor(sum(batch['aux_frame_count'] for batch in batch_samples),device=device)
+        if any('aux_frame_count' in batch or 'aux_pair_count' in batch for batch in batch_samples):
+            frames = torch.tensor(sum(batch.get('aux_pair_count',batch.get('aux_frame_count',0)) for batch in batch_samples),device=device)
             global_frames = int(self.accelerator.gather(frames).sum())
             for batch in batch_samples:
                 batch['update_aux_count'] = global_frames
@@ -40,7 +40,7 @@ class QwenSFTTrainer(Trainer):
                 weight = auxiliary_weight(self.state.global_step,spec['ramp_updates'],spec['lambda_max'])
                 if aux_count is None:
                     if model.training: raise ValueError('G1 requires global update frame count')
-                    aux_count = inputs['aux_frame_count']
+                    aux_count = inputs.get('aux_pair_count',inputs.get('aux_frame_count'))
                 world = self.accelerator.num_processes if num_items_in_batch is not None else 1
                 loss = loss + normalized_aux_loss(outputs['aux_loss_sum'],aux_count,world,weight)
                 outputs['aux_weight'] = weight

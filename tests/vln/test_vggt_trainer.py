@@ -33,3 +33,11 @@ def test_aux_optimizer_lr_and_unique_parameter_coverage():
     for name,p in m.named_parameters():
         assert groups[id(p)]['lr']==(1e-4 if name.startswith('research_aux.') else 5e-6)
         assert groups[id(p)]['weight_decay']==(.01 if p.ndim>1 else 0)
+
+
+def test_global_pair_count_includes_empty_gas_and_empty_rank():
+    trainer=object.__new__(QwenSFTTrainer)
+    trainer.accelerator=SimpleNamespace(num_processes=2,gather=lambda n:torch.stack([n,n*0]))
+    batches=[{'num_actions':2,'aux_pair_count':0},{'num_actions':3,'aux_pair_count':8}]
+    count=trainer._get_num_items_in_batch(batches,torch.device('cpu'))
+    assert count==5 and all(b['update_aux_count']==8 for b in batches)

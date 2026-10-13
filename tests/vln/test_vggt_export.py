@@ -22,3 +22,27 @@ def test_export_and_resume_keep_separate_contracts(tmp_path):
     changed=json.loads(json.dumps(metadata));changed['config']['research']['teacher_identity']['weights_sha256']='different'
     with pytest.raises(ValueError): validate_resume_contract({'navigation':metadata,'data':{}},changed,{})
     with pytest.raises(FileExistsError): export_checkpoint(source,dest)
+
+
+def test_g3_export_drops_state_queries_and_decoder(tmp_path):
+    source=tmp_path/'checkpoint';source.mkdir()
+    metadata={'config':{'research':{'run_id':'G3'}}}
+    (source/'navigation.json').write_text(json.dumps(metadata))
+    torch.save({'backbone.weight':torch.ones(2),'research_aux.state_head.query.1.weight':torch.ones(2),
+                'research_aux.state_head.decoder.0.weight':torch.ones(2)},source/'pytorch_model.bin')
+    target=export_checkpoint(source,tmp_path/'serving')
+    assert list(torch.load(target/'pytorch_model.bin',weights_only=True))==['backbone.weight']
+    assert 'research' not in json.loads((target/'navigation.json').read_text())['config']
+
+
+def test_export_audit_records_bounded_policy_failure_without_hiding_runtime_errors():
+    from scripts.vln.check_vggt_export import greedy_outcome
+    class Session:
+        def reset(self,*args):pass
+        def observe(self,*args):raise ValueError('Response limit reached without assistant terminator')
+    result=greedy_outcome(Session(),'id','instruction',None)
+    assert result=={'valid_action':False,'error':'Response limit reached without assistant terminator'}
+    class Broken(Session):
+        def observe(self,*args):raise ValueError('Invalid, busy, or mismatched session')
+    with pytest.raises(ValueError,match='mismatched'):
+        greedy_outcome(Broken(),'id','instruction',None)

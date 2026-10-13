@@ -1,0 +1,9 @@
+# User-requested full one-epoch run, 2026-10-13. Merge as --policy_config.
+# Complete joint R2R + RxR manifest: ceil(30,815 / 8) = 3,852 updates.
+# Keep the 3% navigation LR warmup and cosine decay to 0.1 of peak LR.
+# The G3 auxiliary ramp remains the specified 771 updates (20% of this epoch).
+training:
+  epochs: 1
+  expected_total_steps: 3852
+  warmup_steps: 116
+  expected_warmup_steps: 116

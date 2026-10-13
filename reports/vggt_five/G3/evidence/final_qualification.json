@@ -1,0 +1,39 @@
+[
+  {
+    "name": "export-verified",
+    "returncode": 0,
+    "command": [
+      "scripts/vln/check_vggt_export.py",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/experiments/recovery-resumed/train/final",
+      "--output",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/serving-export-verified",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    ]
+  },
+  {
+    "name": "distributed-pairs",
+    "returncode": 0,
+    "command": [
+      "-m",
+      "torch.distributed.run",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "scripts.vln.check_vggt_g3_reduction"
+    ]
+  },
+  {
+    "name": "full-suite",
+    "returncode": 0,
+    "command": [
+      "-m",
+      "pytest",
+      "tests/vln",
+      "-q"
+    ]
+  }
+]

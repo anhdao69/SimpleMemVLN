@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "source": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/experiments/recovery-resumed/train/final",
+  "export": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/serving-export-verified",
+  "replay": [
+    {
+      "dataset": "r2rce",
+      "response_tokens": 50,
+      "max_abs": 0.71875,
+      "rms": 0.05630316212773323,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": false,
+        "error": "Response limit reached without assistant terminator"
+      },
+      "greedy_tokens": [
+        760,
+        5614,
+        369,
+        310,
+        708,
+        2094,
+        279,
+        1245,
+        3008,
+        314,
+        279,
+        3990,
+        4821,
+        321,
+        2842,
+        539
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    },
+    {
+      "dataset": "rxrce",
+      "response_tokens": 50,
+      "max_abs": 0.8125,
+      "rms": 0.0457611046731472,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      },
+      "greedy_tokens": [
+        15834,
+        20549,
+        248046
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    }
+  ]
+}

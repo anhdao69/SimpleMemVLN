@@ -15,6 +15,35 @@ from qwen_vl.stream.session import StreamSession
 from qwen_vl.train.vln_runtime import load_checkpoint
 
 
+def greedy_outcome(session,uid,instruction,rgb):
+    """A three-update base policy need not yet emit a valid bounded action.
+
+    Preserve this quality failure explicitly; all other runtime errors still
+    fail the audit. Equivalence must include scores/tokens and the outcome.
+    """
+    session.reset(uid,instruction)
+    try:
+        result=session.observe(uid,0,rgb)
+    except ValueError as error:
+        if str(error)!='Response limit reached without assistant terminator':raise
+        return dict(valid_action=False,error=str(error))
+    return dict(valid_action=True,response_token_ids=result['response_token_ids'],action_name=result['action_name'])
+
+
+def greedy_snapshot(model,serializer,episode,uid):
+    head=model.backbone.lm_head;original=head.forward;scores=[]
+    def capture(hidden):
+        value=original(hidden);assert torch.isfinite(value).all()
+        scores.append(value.float().cpu());return value
+    head.forward=capture
+    try:
+        session=StreamSession(model,serializer)
+        with torch.inference_mode(),Image.open(episode['steps'][0]['rgb_path']) as rgb:
+            outcome=greedy_outcome(session,uid,episode['instruction'],rgb)
+        return outcome,torch.stack(scores)
+    finally:head.forward=original
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--source',required=True)
     p.add_argument('--output',required=True);p.add_argument('--manifest',required=True)
@@ -29,11 +58,12 @@ def main():
         ep['steps']=ep['steps'][:17];ep['steps'][-1]['action_name']='STOP'
         ep['episode_uid']+=':g1-serving-audit'
     source_model,source_serializer=load_checkpoint(a.source,a.model_path);source_model.eval()
-    source_logits={}
+    source_logits={};source_greedy={}
     with torch.inference_mode():
         for dataset,ep in selected.items():
             data={k:v.cuda() if torch.is_tensor(v) else v for k,v in source_serializer.encode_episode(ep).items()}
             source_logits[dataset]=source_model(**data)['logits'].float().cpu()
+            source_greedy[dataset]=greedy_snapshot(source_model,source_serializer,ep,'source-greedy')
     del source_model,source_serializer,data
     import gc
     gc.collect();torch.cuda.empty_cache()
@@ -76,16 +106,16 @@ def main():
                 torch.testing.assert_close(streamed,offline,atol=.75,rtol=.03)
                 diff=streamed-offline;rms=float(diff.square().mean().sqrt());assert rms<=.15
                 record=dict(dataset=dataset,response_tokens=len(targets),max_abs=float(diff.abs().max()),rms=rms)
-                scores.clear();controlled[0]=False
-                with Image.open(ep['steps'][0]['rgb_path']) as rgb:
-                    session.reset('greedy',ep['instruction']);first=session.observe('greedy',0,rgb)
-                    first_scores=torch.stack(scores);scores.clear()
-                    session.reset('reset',ep['instruction']);second=session.observe('reset',0,rgb)
-                    assert first['response_token_ids']==second['response_token_ids']
-                    torch.testing.assert_close(torch.stack(scores),first_scores,atol=0,rtol=0)
-                record.update(source_export_logits_exact=True,reset_exact=True,retry_exact=True,window8_eviction=True)
-                report.append(record)
             finally:head.forward=original
+        first,first_scores=greedy_snapshot(model,serializer,ep,'greedy')
+        second,second_scores=greedy_snapshot(model,serializer,ep,'reset')
+        assert first==second==source_greedy[dataset][0]
+        torch.testing.assert_close(first_scores,second_scores,atol=0,rtol=0)
+        torch.testing.assert_close(first_scores,source_greedy[dataset][1],atol=0,rtol=0)
+        record.update(source_export_logits_exact=True,source_export_greedy_exact=True,
+            greedy_outcome=first,greedy_tokens=first_scores.argmax(-1).tolist(),
+            reset_exact=True,retry_exact=True,window8_eviction=True)
+        report.append(record)
     result=dict(passed=True,source=a.source,export=str(path),replay=report)
     (path/'g1_export_check.json').write_text(json.dumps(result,indent=2)+'\n')
     print('G1_EXPORT_REPLAY_PASS',json.dumps(result),flush=True)

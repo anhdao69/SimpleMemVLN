@@ -144,12 +144,16 @@ class EpisodeTrainer(QwenSFTTrainer):
         if images is not None:
             if not hasattr(self,'online_teacher'):
                 from qwen_vl.research.vggt_omega import OnlineOmegaTeacher
-                self.online_teacher=OnlineOmegaTeacher(self.model.navigation_config['research'],self.args.device)
+                spec=self.model.navigation_config['research']
+                if spec['run_id']=='G3':
+                    from qwen_vl.research.vggt_g3_teacher import OnlineG3Teacher
+                    self.online_teacher=OnlineG3Teacher(spec,self.args.device)
+                else:self.online_teacher=OnlineOmegaTeacher(spec,self.args.device)
             targets=self.online_teacher(images)
             self.online_teacher_seconds=self.online_teacher.last_seconds
-        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets')})
+        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets','aux_source_indices')})
         if targets is not None:
-            prepared['aux_targets']=targets
+            prepared['aux_targets']=targets[inputs['aux_source_indices'].to(targets.device)] if 'aux_source_indices' in inputs else targets
         elif 'aux_targets' in inputs:
             prepared['aux_targets']=inputs['aux_targets'].to(self.args.device,dtype=torch.float32)
         return prepared
@@ -281,7 +285,8 @@ class EpisodeTrainer(QwenSFTTrainer):
             )
             if 'aux_loss_sum' in output:
                 record.update(aux_loss_sum=float(output['aux_loss_sum'].detach()),
-                              aux_frame_count=output['aux_frame_count'],
+                              aux_support=output.get('aux_pair_count',output.get('aux_frame_count')),
+                              **({'aux_pair_count':output['aux_pair_count']} if 'aux_pair_count' in output else {'aux_frame_count':output['aux_frame_count']}),
                               update_aux_count=output['update_aux_count'],aux_weight=output['aux_weight'])
             if prediction is not None:
                 record["confusion"] = (
@@ -570,7 +575,7 @@ def train_episode():
         sample = {
             k: v.to(next(model.parameters()).device) if torch.is_tensor(v) else v
             for k, v in dataset[0].items()
-            if k not in ("teacher_images","aux_visual_positions","aux_frame_count","aux_targets")
+            if k not in ("teacher_images","aux_visual_positions","aux_frame_count","aux_targets","aux_pair_count","aux_anchors","aux_lags","aux_source_indices")
         }
         with torch.inference_mode():
             check = model(**sample)

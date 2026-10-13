@@ -6,11 +6,14 @@ import math
 def parse_g1(config):
     value=config.get('research')
     if value is None: return None
-    if value.get('run_id') != 'G1': raise ValueError('This implementation permits only G1')
+    if value.get('run_id') not in ('G1','G3'): raise ValueError('This implementation permits only G1/G3')
+    run=value['run_id']
     if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
-    if value.get('student_layer',23) != 23: raise ValueError('G1 aligns decoder23 only')
+    expected_layer=23 if run=='G1' else 24
+    if value.get('student_layer',expected_layer) != expected_layer: raise ValueError(f'{run} requires decoder{expected_layer}')
+    if config['model'].get('episodic',{}).get('enabled',False): raise ValueError('Native research forbids episodic bank')
     if value.get('sampling_identity','collected-rgb-paths-v1')!='collected-rgb-paths-v1':
         raise ValueError('Unsupported G1 trajectory sampling identity')
     for key in ('teacher_source','teacher_weights','teacher_identity'):

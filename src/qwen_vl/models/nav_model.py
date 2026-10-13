@@ -129,7 +129,14 @@ class SimpleMemVLNForNavigation(nn.Module):
             from qwen_vl.models.vggt_aux_heads import CurrentSpatialProjector
             from qwen_vl.models.episodic_forward import NATIVE_FORWARD_SHA256, check_native_source
             check_native_source(NATIVE_FORWARD_SHA256)
-            self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
+            if self.g1_spec['run_id']=='G3':
+                from qwen_vl.models.vggt_g3_heads import NativeStateHead
+                text=backbone.config.text_config
+                if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
+                    raise ValueError('G3 requires the qualified native 32x128 state heads')
+                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
+            else:
+                self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
             parameter = next(backbone.parameters())
             self.research_aux.to(device=parameter.device, dtype=parameter.dtype)
 
@@ -222,6 +229,8 @@ class SimpleMemVLNForNavigation(nn.Module):
         episodic_diagnostics=None,
         aux_visual_positions=None,
         aux_targets=None,
+        aux_anchors=None,
+        aux_lags=None,
     ):
         lane_kwargs = {}
         if getattr(self, "step_lane_spec", None) is not None:
@@ -240,6 +249,13 @@ class SimpleMemVLNForNavigation(nn.Module):
                 self.backbone.model, input_ids, mm_token_type_ids, image_grid_thw
             )
         embeddings = self.embed(input_ids, pixel_values, image_grid_thw)
+        if aux_anchors is not None:
+            if self.g1_spec is None or self.g1_spec['run_id']!='G3' or cache is not None or stream_append:
+                raise ValueError('G3 metadata requires uncached G3 research forward')
+            from qwen_vl.models.research_forward import research_text_forward
+            return research_text_forward(self.backbone.model.language_model,embeddings,position_ids,step_plan,
+                state_head=self.research_aux.state_head,anchors=aux_anchors,lags=aux_lags,targets=aux_targets,
+                window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         if aux_visual_positions is not None:
             if self.g1_spec is None or cache is not None or stream_append:
                 raise ValueError("G1 metadata is only valid in uncached research forward")
@@ -300,7 +316,10 @@ class SimpleMemVLNForNavigation(nn.Module):
         episodic_diagnostics=None,
         aux_visual_positions=None,
         aux_targets=None,
+        aux_anchors=None,
+        aux_lags=None,
         aux_frame_count=None,
+        aux_pair_count=None,
     ):
         episodic = {}
         if self.episodic_spec is not None:
@@ -310,7 +329,11 @@ class SimpleMemVLNForNavigation(nn.Module):
                             episodic_diagnostics=episodic_diagnostics)
         elif episodic_layout is not None:
             raise ValueError("Episodic layout supplied to a non-episodic model")
-        if aux_visual_positions is not None:
+        if aux_anchors is not None:
+            if aux_pair_count!=len(aux_anchors) or aux_lags is None or len(aux_lags)!=len(aux_anchors):
+                raise ValueError('Auxiliary pair support mismatch')
+            episodic.update(aux_anchors=aux_anchors,aux_lags=aux_lags,aux_targets=aux_targets)
+        elif aux_visual_positions is not None:
             if aux_frame_count != len(aux_visual_positions):
                 raise ValueError("Auxiliary frame support mismatch")
             episodic.update(aux_visual_positions=aux_visual_positions, aux_targets=aux_targets)
@@ -321,7 +344,7 @@ class SimpleMemVLNForNavigation(nn.Module):
             step_lane_roles=step_lane_roles, **episodic,
         )
         aux_sum = None
-        if aux_visual_positions is not None:
+        if aux_visual_positions is not None or aux_anchors is not None:
             hidden, aux_sum = hidden
         if self.output_mode == "candidate_logits":
             logits = self.action_logits(hidden[0, read_positions])
@@ -361,7 +384,7 @@ class SimpleMemVLNForNavigation(nn.Module):
         )
         if aux_sum is not None:
             result["aux_loss_sum"] = aux_sum
-            result["aux_frame_count"] = aux_frame_count
+            result["aux_pair_count" if aux_anchors is not None else "aux_frame_count"] = aux_pair_count if aux_anchors is not None else aux_frame_count
         if self.output_mode == "candidate_logits":
             result["unweighted_loss_sum"] = unweighted.detach().sum()
         return result

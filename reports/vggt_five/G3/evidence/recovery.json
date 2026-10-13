@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "reference": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/experiments/recovery-reference/train",
+  "resumed": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/experiments/recovery-resumed/train",
+  "weights": {
+    "relative_l2": 9.410618467569398e-09,
+    "max_abs": 1.1920928955078125e-07,
+    "changed_elements": 31247,
+    "elements": 5185491104,
+    "bitwise_equal": false
+  },
+  "head": {
+    "relative_l2": 0.0,
+    "max_abs": 0.0,
+    "changed_elements": 0,
+    "elements": 10526368,
+    "bitwise_equal": true
+  },
+  "head_update_from_step2_to3": {
+    "relative_l2": 3.0589284250342813e-06,
+    "max_abs": 1.9073486328125e-06,
+    "changed_elements": 68896,
+    "elements": 10526368,
+    "bitwise_equal": false
+  },
+  "step3_losses": [
+    0.4165976941585541,
+    0.4165976941585541
+  ],
+  "head_bias_updates": {
+    "research_aux.state_head.query.1.bias": 512,
+    "research_aux.state_head.query.3.bias": 4096,
+    "research_aux.state_head.decoder.0.bias": 1024,
+    "research_aux.state_head.decoder.2.bias": 2048
+  },
+  "recovery_world_size": 4,
+  "checkpoint_files": 22
+}
