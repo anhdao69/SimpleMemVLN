@@ -104,13 +104,13 @@ Collect extra teacher targets needed for diagnostic current/recent baselines; co
 ### G3.3: checkpointed layer24
 **Files:** `models/research_forward.py` and common loss integration.
 - [x] One native GDN call, no double decoder checkpointing, aux sums returned explicitly.
-- [x] Checkpoint on/off gradients, full episode vs streamed no-probe native outputs, loss counted once.
+- [x] Checkpoint on/off gradients and loss counted once;17-frame serving/offline replay crosses Window8 eviction on both datasets. Longest full-episode training is qualified separately; exhaustive627-step streaming parity is not claimed.
 - [x] Deleting probes restores original sequence length/positions before every upper layer.
 
 ### G3.4: production qualification
 - [x] Profile40 rows added to the longest real GDN layer, all8 pairs valid, plus dense language graph and teacher-region tensors.
 - [x] Save/reload recovery includes query/decoder; served export excludes them.
-- [ ] Launch fresh G3 after qualification; equal-progress V0/G1 navigation comparisons remain post-training scientific evaluation.
+- [x] Fresh G3 launched after G1 success from immutable2259383, step4925.33, base weights, one joint epoch. Equal-progress V0/G1 navigation comparisons remain post-training scientific evaluation.
 
 ## 8. Criteria
 

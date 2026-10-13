@@ -50,3 +50,7 @@ Probe no-write/no-decay and no conv advancement; normalization exactly once with
 
 - Task3 complete: eight4GPU diagnostic runs passed;366regressiontests passed,118warnings,48.30s,no skips. Final export/replay bothdatasets passed with unchanged tolerances; source/export/reset exact including R2R bounded policy failure. Real globalpairDDP/GAS gradientmaxerror2.3842e-7; actualOmega regionaltargets independently verified exact.
 - Final source verification:57src files match longest-episode qualified source exactly. Production launch pending.
+
+- Task4: implementation2259383 pushed to GitHub c2_vggt_omega_g3. Immutable read-only archive verified against57qualifiedsrc files and launched2026-10-13T20:21:20UTC in4925.33(worker-2), explicitly one Slurm task/four torchrun ranks. All ranks passed schedule3852/116; full30815-record manifest and originalbase initialization. Initial3updates finite/noOOM; awaitingcheckpoint10.
+
+- Task4 complete: all4production ranks completed14updates with finite aux losses/zeroCUDA OOM; checkpoint10 validated complete(world4,22files). Startup peakactiveGPU52.10GiB, workingRAM408.57GiB under691.2guard. Finalreport/evidence and revisedplans published with running source pinned2259383.

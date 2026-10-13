@@ -1,0 +1,38 @@
+....FLA_G3 {'output': 0.002869456075131893, 'state': 0.0033163235057145357, 'probe_reference': 0.0041624861769378185, 'gradients': [0.0025657189544290304, 0.0037698186933994293, 0.0045227291993796825, 0.00048541370779275894, 0.0017382034566253424]}
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+...[2026-10-13 19:41:03,230] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+..
+=============================== warnings summary ===============================
+tests/vln/test_vggt_g3_cuda.py: 14 warnings
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests/vln/test_vggt_g3_cuda.py::test_real_fla_32x128_identity_state_reads_and_gradients
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3/tests/vln/test_vggt_g3_cuda.py:14: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+    return float((actual.float()-expected.float()).norm()/expected.float().norm().clamp_min(1e-12))
+
+tests/vln/test_vggt_g3_cuda.py::test_real_fla_32x128_identity_state_reads_and_gradients
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/tilelang/cache/__init__.py:82: DeprecationWarning: `tl.disable_tma_lower` is deprecated and will be removed in v0.1.10. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    return cache.cached(
+
+tests/vln/test_vggt_g3_cuda.py::test_real_fla_32x128_identity_state_reads_and_gradients
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/tilelang/jit/kernel.py:170: DeprecationWarning: `tl.disable_tma_lower` is deprecated and will be removed in v0.1.10. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    instance = cls(
+
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+tests/vln/test_vggt_trainer.py::test_aux_optimizer_lr_and_unique_parameter_coverage
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/config_utils.py:100: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    fields = self.model_fields
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+9 passed, 25 warnings in 28.79s

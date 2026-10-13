@@ -1,0 +1,16 @@
+{
+  "checked_unix": 1791923202.1830888,
+  "slurm_step": "4925.33",
+  "updates_by_rank": [
+    14,
+    14,
+    14,
+    14
+  ],
+  "cuda_ooms": 0,
+  "peak_active_gpu_gib": 52.09652519226074,
+  "peak_working_set_gib": 408.57283782958984,
+  "auxiliary_losses_finite": true,
+  "host_guard_gib": 691.2,
+  "source_commit": "22593831c80b742ee77b478ce7cb76fb44bc328b"
+}

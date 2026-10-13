@@ -1,6 +1,6 @@
 # G3: delayed native-state supervision with online VGGT-Omega
 
-Status: implementation and qualification passed: **366 tests,118warnings,48.30seconds, no skips**; eight four-GPU training diagnostics passed, along with recovery, distributed reduction and serving export. Production launch is the next step. No navigation-quality improvement is claimed from smoke tests.
+Status: implementation and qualification passed: **366 tests,118warnings,48.30seconds, no skips**; eight four-GPU training diagnostics passed, along with recovery, distributed reduction and serving export. The full one-epoch production run is active in **Slurm4925.33 onworker-2** from immutable source22593831c80b742ee77b478ce7cb76fb44bc328b. All four ranks completed at least14updates, and checkpoint10 is validated complete with22files. No navigation-quality improvement is claimed from smoke tests.
 
 ## Scope and provenance
 
@@ -96,7 +96,7 @@ Evidence root: `/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013`. Every diagnost
 
 Recovery retains native weights, all `research_aux.state_head.*` parameters, optimizer/scheduler, all-rank RNG/sampler state and teacher/data/config contracts. The fresh-process checkpoint2-to3 comparison passed on all four ranks: auxiliary weights bitwise identical, whole-model relativeL2 9.410618e-9 and maximum difference1.192093e-7, with exact final loss0.4165976941585541. All22 checkpoint inventory files were validated. Query and decoder biases changed in all512/4096/1024/2048 elements between updates2 and3, demonstrating auxiliary learning beyond matrix weight decay. Teacher-free export/replay passed on both datasets. Source/export logits and greedy score/outcome equality are exact, reset/retry equality is exact and all17steps preserve Window8 eviction. R2R50response-token replay: maxabsolute .71875,RMS .0563032; RxR50tokens: maxabsolute .8125,RMS .0457611. Both satisfy the unchanged combined atol.75/rtol.03 and RMS.15 gates; .75 is not a standalone maximum-error cap. The three-update R2R greedy policy is not yet action-valid, as explicitly recorded below. Serving export removes exactly `research_aux.*` and the research config; no broad missing-key exemption is permitted.
 
-Production launcher: `train/launch_g3_omega_joint_e1.sh`. It uses one-epoch policy/runtime config, a per-run flock, unique restart supervisor logs, recovery every100updates and first checkpoint10. Resume selects a complete checkpoint only. An immutable source archive will be launched; live branch edits cannot change its imported code. No production launch is claimed yet.
+Production launcher: `train/launch_g3_omega_joint_e1.sh`. It uses one-epoch policy/runtime config, a per-run flock, unique restart supervisor logs, recovery every100updates and first checkpoint10. Resume selects a complete checkpoint only. An immutable source archive has been launched; live branch edits cannot change its imported code. The launch was recorded at2026-10-13T20:21:20UTC; startup and checkpoint10 verification passed as recorded below.
 
 ## Scientific limits
 
@@ -129,4 +129,33 @@ Representative estimates discard the first two updates and use rank-completion e
 
 The completed G1 joint production epoch took14.28hours, materially faster than its original short cold-data projection. Combining this actual history with G3's fixture timings gives an initial **14–18hour planning range for the joint G3 epoch**, to be revised from sustained production progress. This is a planning estimate, not a measured completed G3 epoch or confidence interval. Checkpoint-heavy recovery timings are excluded from ordinary-step speed claims.
 
-Evidence: [benchmark_summary.json](evidence/benchmark_summary.json), [recovery.json](evidence/recovery.json), [g3_export_check.json](evidence/g3_export_check.json), [full-suite.log](evidence/full-suite.log), [distributed-pairs.log](evidence/distributed-pairs.log). The failed original export attempt remains on the server; the corrected final qualification record is [final_qualification.json](evidence/final_qualification.json).
+Evidence: [benchmark_summary.json](evidence/benchmark_summary.json), [recovery.json](evidence/recovery.json), [g3_export_check.json](evidence/g3_export_check.json), [full-suite.txt](evidence/full-suite.txt), [distributed-pairs.txt](evidence/distributed-pairs.txt). The failed original export attempt remains on the server; the corrected final qualification record is [final_qualification.json](evidence/final_qualification.json).
+
+## Production launch and recovery command
+
+The run was submitted at **2026-10-13 20:21:20UTC /16:21:20America/New_York**, in allocation4925, step4925.33, onworker-2, four H100s/60CPUs/768GiB RAM. The explicit Slurm task count is1; torchrun creates4ranks. G1's successful exit and the absence of other active GPU steps were verified before launching.
+
+- Source commit: `22593831c80b742ee77b478ce7cb76fb44bc328b`.
+- Run root: `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013`.
+- Immutable source: `<run-root>/source`, archived from Git, read-only, with exact hashes in `<run-root>/source_manifest.json`.
+- Outputs: `<run-root>/train`; launch log `<run-root>/slurm-launch.log`; each restart creates its own `<run-root>/supervisor-*/command.log` and resource record.
+- Initialization is the original Qwen base. No smoke-test or G1 adaptation weights are loaded into this new run.
+
+To resume after allocation cancellation, use the same snapshot and run directory inside a new four-GPU/768GiB allocation:
+
+```bash
+R=/mnt/data/vmo-ai-task/anhdh35
+RUN="$R/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013"
+srun --jobid=<new-job-id> --overlap --ntasks=1 --gpus=4 --cpus-per-task=60 \
+  bash "$RUN/source/train/launch_g3_omega_joint_e1.sh" "$RUN"
+```
+
+The complete checkpoint includes optimizer, scheduler, all-rank RNG, sampler and auxiliary state. Unsaved updates since the latest complete checkpoint must be repeated. Serving exports intentionally lack this recovery state. Keep world size, manifest, teacher/config contract and source snapshot consistent. The launcher lock rejects duplicate starts into the same output directory.
+
+## Verified production state at handoff
+
+All four ranks completed at least **14/3852 updates**. Navigation/auxiliary losses observed at startup are finite, with zero CUDA OOMs. Peak initial active GPU allocation was52.10GiB; sampled working set408.57GiB stays below the691.2GiB supervisor guard. The longest prelaunch stress test reached67.87GiB activeGPU. Total cgroup usage can approach768GiB because it also includes hundreds of GiB of reclaimable file cache; it is not equivalent to nonreclaimable working memory.
+
+All ranks printed `SCHEDULE_GATE_PASS (3852,116)`. The trainer audited all30815 records/3128624 actions, token lengths700–199735, four ranks/GAS2/globalbatch8, and installed30.48GiB activation arenas per rank. Recovery checkpoint10 is complete with all22 inventory files and four-rank state. See [production_launch.json](evidence/production_launch.json), [initial_progress.json](evidence/initial_progress.json) and [checkpoint10.json](evidence/checkpoint10.json). Subsequent rolling recovery saves occur every100updates, retaining two rolling snapshots plus epoch checkpoints.
+
+The code and report are published on `c2_vggt_omega_g3`; the running source stays fixed at2259383 even when later documentation commits advance that branch. Updated plans and this report are also copied into the original local workspace's plans/vggt and reports/vggt_five/G3 folders. The completed G1 weights and its source snapshot are preserved.

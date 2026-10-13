@@ -1,0 +1,28 @@
+{
+  "started_utc": "2026-10-13T20:21:20.091568+00:00",
+  "source_commit": "22593831c80b742ee77b478ce7cb76fb44bc328b",
+  "run_root": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013/source",
+  "slurm_job": 4925,
+  "node": "worker-2",
+  "gpus": 4,
+  "cpus": 60,
+  "memory_gib": 768,
+  "login_launcher_pid": 2715348,
+  "command": [
+    "nohup",
+    "srun",
+    "--jobid=4925",
+    "--overlap",
+    "--ntasks=1",
+    "--gpus=4",
+    "--cpus-per-task=60",
+    "--job-name=g3_omega_e1",
+    "bash",
+    "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013/source/train/launch_g3_omega_joint_e1.sh",
+    "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g3-runs/g3_omega_joint_e1_20261013"
+  ],
+  "qualification": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/final_qualification.json",
+  "g1_completed": true,
+  "slurm_step": "4925.33"
+}
