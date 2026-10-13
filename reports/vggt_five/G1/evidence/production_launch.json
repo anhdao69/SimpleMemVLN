@@ -1,0 +1,18 @@
+{
+  "run_dir": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g1-runs/g1_omega_joint_e1_20261013",
+  "source_commit": "86d68b2eff9db7c5cffdd86f0d98ca98f7e1c93a",
+  "created_utc": "2026-10-13T05:20:56.213965+00:00",
+  "slurm_job": 4925,
+  "node": "worker-2",
+  "gpus": 4,
+  "global_batch": 8,
+  "gradient_accumulation": 2,
+  "epochs": 1,
+  "expected_updates": 3852,
+  "warmup_updates": 116,
+  "auxiliary_ramp_updates": 771,
+  "manifest": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+  "resume": "auto; complete checkpoints only",
+  "recovery_every_updates": 100,
+  "first_recovery_update": 10
+}

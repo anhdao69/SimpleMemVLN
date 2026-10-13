@@ -1,6 +1,6 @@
 # G1: online VGGT-Omega supervision on four H100 GPUs
 
-**Status: implementation, speed/resource qualification and final acceptance passed.** All 351 regression tests passed (115 warnings, 32.95 seconds), and all 23 four-GPU training diagnostics passed. The user-authorized one-epoch production launch is being recorded below; diagnostic updates are not production progress.
+**Status: implementation, speed/resource qualification and final acceptance passed.** All 351 regression tests passed (115 warnings, 32.95 seconds), and all 23 four-GPU training diagnostics passed. The user-authorized one-epoch production run is now active in Slurm step **4925.16**, worker-2, from committed source **86d68b2eff9db7c5cffdd86f0d98ca98f7e1c93a**. Diagnostic updates are not production progress.
 
 ## Scope and source isolation
 
@@ -139,9 +139,9 @@ Before the user changed the plan, an offline diagnostic extracted 608 frames and
 
 ## Files and operational recipe
 
-**User update:** after the timing tests, the user explicitly requested one complete joint R2R+RxR epoch on four H100s. The production launcher is `train/launch_g1_omega_joint_e1.sh`, with `configs/vggt/g1_joint_one_epoch.yaml`: 3,852 updates, 116 navigation LR warmup updates (3%) and cosine decay to 0.1 of peak LR. The G1 auxiliary ramp remains 771 updates, now 20% of the epoch. One final repeated episode fills the 30,816 batch slots for 30,815 manifest records. This is an explicit schedule override; no matched two-epoch scientific-quality comparison is claimed. Production will start from the original Qwen base, not smoke-test weights.
+**User update:** after the timing tests, the user explicitly requested one complete joint R2R+RxR epoch on four H100s. The production launcher is `train/launch_g1_omega_joint_e1.sh`, with `configs/vggt/g1_joint_one_epoch.yaml`: 3,852 updates, 116 navigation LR warmup updates (3%) and cosine decay to 0.1 of peak LR. The G1 auxiliary ramp remains 771 updates, now 20% of the epoch. One final repeated episode fills the 30,816 batch slots for 30,815 manifest records. This is an explicit schedule override; no matched two-epoch scientific-quality comparison is claimed. Production starts from the original Qwen base, not smoke-test weights.
 
-The launcher saves recovery state every 100 updates, first saves at update 10, retains two rolling recovery snapshots plus epoch checkpoints, and resumes only complete checkpoints. A per-run file lock rejects duplicate launches. Each restart gets its own supervisor log directory and the same 691.2 GiB host guard. Exact production paths and observed start progress will be recorded below after launch.
+The launcher saves recovery state every 100 updates, first saves at update 10, retains two rolling recovery snapshots plus epoch checkpoints, and resumes only complete checkpoints. A per-run file lock rejects duplicate launches. Each restart gets its own supervisor log directory and the same 691.2 GiB host guard. The production path and initialization evidence are recorded below.
 
 The implementation boundaries are:
 
@@ -188,3 +188,25 @@ env G1_CUDA_HOME="$R/cuda-12.9.1" OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
 ```
 
 This applies the requested one-epoch/3,852-update schedule to the full joint manifest, with eight episodes per update and base initialization. It deliberately omits the diagnostic repetition/update-limit flags. Re-running the same command resumes only a completed checkpoint; an incomplete checkpoint cannot silently be treated as a fresh start. Keep the same world size, manifest, model/data/teacher contract and optimizer implementation. The online teacher is rebuilt from the pinned assets after resume. A saved serving export intentionally lacks the training projector and optimizer, so it is not a substitute for a recovery checkpoint.
+
+## Production launch on 2026-10-13
+
+- Launch recorded at **05:20:56 UTC / 01:20:56 America/New_York**; Slurm allocation **4925**, step **4925.16**, worker-2, four H100s, 60 CPUs, 768 GiB RAM.
+- Run root: `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g1-runs/g1_omega_joint_e1_20261013`.
+- Training outputs: `<run-root>/train`. Restart logs: `<run-root>/supervisor-<UTC>-<PID>/command.log`; top-level launch log: `<run-root>/slurm-launch.log`.
+- Source snapshot: `<run-root>/source`, archived from **86d68b2eff9db7c5cffdd86f0d98ca98f7e1c93a**, with read-only permissions, exact file hashes in `<run-root>/source_manifest.json`, and commit marker in `<run-root>/source.commit`. Later changes to the branch checkout cannot alter this training source.
+- All four ranks printed **`SCHEDULE_GATE_PASS (3852, 116)`**. The trainer verified four ranks, GAS2, batch8, 30,815 unique records, 3,128,624 actions, and a 700–199,735 token range. No diagnostic repetition, episode limit or max-update override is present.
+- Every rank installed a 30.48 GiB host activation arena sized for the full corpus maximum. Teacher and optimizer settings are the qualified profile, with the guarded RAM limit at691.2GiB.
+- Initial production observation: **all four ranks completed at least update 7**, with no CUDA/cgroup OOM events; peak sampled working set 329.31 GiB. Losses observed at startup were finite. See [evidence/initial_progress.json](evidence/initial_progress.json).
+- The run is ongoing; no completed G1 epoch or navigation-quality result is claimed. Expect about30hours plus startup/checkpoint costs, with a practical30–40hour planning range until enough production updates give a firmer estimate.
+
+The exact launch record is [evidence/production_launch.json](evidence/production_launch.json). To resume after replacing a canceled allocation, run this same snapshot launcher and run directory inside the new four-GPU allocation:
+
+```bash
+R=/mnt/data/vmo-ai-task/anhdh35
+RUN="$R/SimpleMemVLN-c2_vggt_omega_g1-runs/g1_omega_joint_e1_20261013"
+# Execute from the new allocation (or prefix with srun --jobid=<new-id> ...).
+bash "$RUN/source/train/launch_g1_omega_joint_e1.sh" "$RUN"
+```
+
+The launcher automatically chooses the latest **complete** recovery checkpoint. It cannot recover the unsaved updates between that checkpoint and a cancellation. The first planned recovery point is update10; subsequent saves are every100updates and at epoch end. The source and full-state checkpoints should be retained until the run is finished and any desired continuation/export is secured.

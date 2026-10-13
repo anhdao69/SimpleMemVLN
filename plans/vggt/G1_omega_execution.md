@@ -29,3 +29,7 @@ Frozen online Omega produces independent single-view targets at up to 16 sampled
 ## Historical work
 
 An initial offline diagnostic extracted 608 frames and fitted a train-only PCA before the user changed the design. Those artifacts are not used by this implementation. The offline extraction/cache modules were removed. Their costs must not be presented as online training time or current prerequisites.
+
+## Production launch
+
+Authorized one-epoch joint run started2026-10-13T05:20:56UTC on4925.16/worker-2 from committed snapshot86d68b2. Runroot `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-c2_vggt_omega_g1-runs/g1_omega_joint_e1_20261013`. Allranks verified schedule(3852,116),30815uniqueepisodes andglobalbatch8. See the implementation report for source hashes, evidence, timing uncertainty and the exact resume command. No epoch completion or quality result is claimed.
