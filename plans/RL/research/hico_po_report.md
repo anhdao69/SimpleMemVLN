@@ -170,7 +170,7 @@ of GRPO) does not help and slightly hurts navigation. The training curves agree:
 two GRPO seeds track each other within 1.3 points in every phase, while GRPO+STOP falls behind in the last
 40 steps (train SR 0.623 vs 0.647 / 0.650).
 
-### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`) — *implemented, queued*
+### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`) — *training*
 
 **Motivation.** §7 shows the residual gap is navigation: "never within 3 m" and cap hits, with STOP
 behaviour unchanged by exact STOP credit. With a terminal-only reward, GRPO credits every decision of a
@@ -228,6 +228,20 @@ replays and one more training sequence per branch. Branch and replay steps are l
 real-model smoke (`scripts/rl/check_fork_smoke.py`: finite gradients, log-prob agreement, forks present
 and recorded). Only if the smoke passes does it start the full `hico_grpo_fork_r2r1k` run, followed by
 v2a.
+
+**Real-model smoke (2 steps, 4 prompts × G = 2, budget 60) passed:**
+- 10 branches;
+- trainer/rollout log-prob mismatch 0.0048 / 0.0031 (GRPO+STOP smoke: 0.0042);
+- finite gradients (3.98 / 2.21);
+- simulator replays bit-exact.
+
+The full run `hico_grpo_fork_r2r1k` started 2026-10-13 11:26 UTC. Step 0:
+- 0.94 forks per main trajectory;
+- 73 % of branches carry a nonzero sibling advantage;
+- the branch's first action equals the main's in 77 % of forks;
+- branch policy steps +59 % over main steps;
+- step time ≈ 400 s vs ≈ 300 s for GRPO;
+- host peak 15.5 GB (cap 32 GB).
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
