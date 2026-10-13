@@ -165,6 +165,8 @@ def validate_config(cfg, world_size=None):
     parse_step_lane_spec(cfg)
     if memory != EPISODIC_MODE:
         parse_episodic_spec(cfg)  # rejects stray episodic keys in legacy modes
+    from qwen_vl.research.vggt_g1 import parse_g1
+    parse_g1(cfg)
     runtime_staging(cfg)
     return cfg
 

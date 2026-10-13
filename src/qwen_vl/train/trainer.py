@@ -18,6 +18,11 @@ class QwenSFTTrainer(Trainer):
 
     def _get_num_items_in_batch(self, batch_samples, device):
         count = torch.tensor(sum(batch.get('num_actions', batch.get('labels',torch.empty(0)).shape[0]) for batch in batch_samples), device=device)
+        if any('aux_frame_count' in batch for batch in batch_samples):
+            frames = torch.tensor(sum(batch['aux_frame_count'] for batch in batch_samples),device=device)
+            global_frames = int(self.accelerator.gather(frames).sum())
+            for batch in batch_samples:
+                batch['update_aux_count'] = global_frames
         return self.accelerator.gather(count).sum()
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
@@ -25,9 +30,21 @@ class QwenSFTTrainer(Trainer):
         if 'num_actions' in inputs:
             if model.training and (num_items_in_batch is None or num_items_in_batch <= 0):
                 raise ValueError('Training requires a positive global update action count')
+            aux_count = inputs.pop('update_aux_count', None)
             outputs = model(**inputs)
             loss = outputs['loss_sum'] / inputs['num_actions'] if num_items_in_batch is None else (
                 outputs['loss_sum'] * self.accelerator.num_processes / num_items_in_batch)
+            if 'aux_loss_sum' in outputs:
+                from qwen_vl.research.vggt_g1 import auxiliary_weight, normalized_aux_loss
+                spec = self.model.navigation_config['research']
+                weight = auxiliary_weight(self.state.global_step,spec['ramp_updates'],spec['lambda_max'])
+                if aux_count is None:
+                    if model.training: raise ValueError('G1 requires global update frame count')
+                    aux_count = inputs['aux_frame_count']
+                world = self.accelerator.num_processes if num_items_in_batch is not None else 1
+                loss = loss + normalized_aux_loss(outputs['aux_loss_sum'],aux_count,world,weight)
+                outputs['aux_weight'] = weight
+                outputs['update_aux_count'] = aux_count
             if not torch.isfinite(loss):
                 raise FloatingPointError('Nonfinite episode loss; abort distributed update')
             return (loss, outputs) if return_outputs else loss
@@ -78,11 +95,15 @@ class QwenSFTTrainer(Trainer):
         )
         if lane_names and (not __import__("math").isfinite(lane_lr) or lane_lr <= 0):
             raise ValueError("step_lane_lr must be finite and positive")
+        aux_names = {name for name,p in self.model.named_parameters()
+                     if p.requires_grad and name.startswith('research_aux.')}
+        aux_lr = getattr(self.model,'navigation_config',{}).get('research',{}).get('head_lr',1e-4)
         grouped_parameters = []
         for kind, learning_rate in (
             ("backbone", self.args.learning_rate),
             ("merger", self.args.mm_projector_lr),
             ("lane", lane_lr),
+            ("aux", aux_lr),
         ):
             for use_decay in (True, False):
                 parameters = [
@@ -90,6 +111,7 @@ class QwenSFTTrainer(Trainer):
                     for name, parameter in self.model.named_parameters()
                     if parameter.requires_grad
                     and (
+                        "aux" if name in aux_names else
                         "lane" if name in lane_names else
                         "merger" if name in merger_names else "backbone"
                     ) == kind

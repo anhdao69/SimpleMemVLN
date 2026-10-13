@@ -136,6 +136,24 @@ class EpisodeTrainer(QwenSFTTrainer):
         finally:
             self.accelerator.device_placement = placement
 
+    def _prepare_inputs(self, inputs):
+        # Consume raw teacher pixels before Trainer/DeepSpeed can BF16-cast them.
+        images=inputs.get('teacher_images')
+        targets=None
+        self.online_teacher_seconds=0.
+        if images is not None:
+            if not hasattr(self,'online_teacher'):
+                from qwen_vl.research.vggt_omega import OnlineOmegaTeacher
+                self.online_teacher=OnlineOmegaTeacher(self.model.navigation_config['research'],self.args.device)
+            targets=self.online_teacher(images)
+            self.online_teacher_seconds=self.online_teacher.last_seconds
+        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets')})
+        if targets is not None:
+            prepared['aux_targets']=targets
+        elif 'aux_targets' in inputs:
+            prepared['aux_targets']=inputs['aux_targets'].to(self.args.device,dtype=torch.float32)
+        return prepared
+
     def _get_train_sampler(self, train_dataset=None):
         sampler = super()._get_train_sampler(train_dataset)
         self._episode_sampler = sampler
@@ -191,6 +209,7 @@ class EpisodeTrainer(QwenSFTTrainer):
                 update=self.state.global_step + 1,
                 episode_uid=inputs["episode_uid"],
                 forward_seconds=self.last_forward_seconds,
+                online_teacher_seconds=getattr(self,"online_teacher_seconds",0.),
                 backward_and_step_overhead_seconds=elapsed - self.last_forward_seconds,
             )
             with (
@@ -259,6 +278,10 @@ class EpisodeTrainer(QwenSFTTrainer):
                 loss_sum=float(output["loss_sum"].detach()),
                 update_global_actions=int(num_items_in_batch),
             )
+            if 'aux_loss_sum' in output:
+                record.update(aux_loss_sum=float(output['aux_loss_sum'].detach()),
+                              aux_frame_count=output['aux_frame_count'],
+                              update_aux_count=output['update_aux_count'],aux_weight=output['aux_weight'])
             if prediction is not None:
                 record["confusion"] = (
                     torch.bincount(truth * 4 + prediction, minlength=16)
@@ -546,6 +569,7 @@ def train_episode():
         sample = {
             k: v.to(next(model.parameters()).device) if torch.is_tensor(v) else v
             for k, v in dataset[0].items()
+            if k not in ("teacher_images","aux_visual_positions","aux_frame_count","aux_targets")
         }
         with torch.inference_mode():
             check = model(**sample)

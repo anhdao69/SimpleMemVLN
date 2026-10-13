@@ -49,6 +49,16 @@ class EpisodeDataset(Dataset):
             # Trainer/DeepSpeed casts floating inputs to BF16 on transfer anyway;
             # round-to-nearest-even here is bitwise identical and halves staging RAM.
             result["pixel_values"] = result["pixel_values"].to(torch.bfloat16)
+        if self.serializer.config.get('research'):
+            from qwen_vl.research.vggt_sampling import sample_frames,physical_trajectory_key,sampled_visual_positions
+            from qwen_vl.data.vggt_online import preprocess_teacher_images
+            episode=self.episodes[index]
+            frames=sample_frames(physical_trajectory_key(episode),len(episode['steps']),
+                                 self.serializer.config['research'].get('sample_seed',429))
+            result['aux_visual_positions']=sampled_visual_positions(result['input_ids'],
+                self.serializer.image_id,result['step_plan'][1],frames)
+            result['teacher_images']=preprocess_teacher_images([episode['steps'][i]['rgb_path'] for i in frames])
+            result['aux_frame_count']=len(frames)
         return result
 
 

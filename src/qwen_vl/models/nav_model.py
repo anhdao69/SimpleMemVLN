@@ -123,6 +123,16 @@ class SimpleMemVLNForNavigation(nn.Module):
                 init_seed=navigation_config["model"]["step_lane"].get("init_seed", 429),
             )
 
+        from qwen_vl.research.vggt_g1 import parse_g1
+        self.g1_spec = parse_g1(navigation_config)
+        if self.g1_spec is not None:
+            from qwen_vl.models.vggt_aux_heads import CurrentSpatialProjector
+            from qwen_vl.models.episodic_forward import NATIVE_FORWARD_SHA256, check_native_source
+            check_native_source(NATIVE_FORWARD_SHA256)
+            self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
+            parameter = next(backbone.parameters())
+            self.research_aux.to(device=parameter.device, dtype=parameter.dtype)
+
     def train(self, mode=True):
         super().train(mode)
         self.backbone.model.visual.eval()
@@ -210,6 +220,8 @@ class SimpleMemVLNForNavigation(nn.Module):
         episode_uid=None,
         episodic_serving=None,
         episodic_diagnostics=None,
+        aux_visual_positions=None,
+        aux_targets=None,
     ):
         lane_kwargs = {}
         if getattr(self, "step_lane_spec", None) is not None:
@@ -228,6 +240,15 @@ class SimpleMemVLNForNavigation(nn.Module):
                 self.backbone.model, input_ids, mm_token_type_ids, image_grid_thw
             )
         embeddings = self.embed(input_ids, pixel_values, image_grid_thw)
+        if aux_visual_positions is not None:
+            if self.g1_spec is None or cache is not None or stream_append:
+                raise ValueError("G1 metadata is only valid in uncached research forward")
+            from qwen_vl.models.research_forward import research_text_forward
+            return research_text_forward(
+                self.backbone.model.language_model, embeddings, position_ids, step_plan,
+                projector=self.research_aux.current_projector,
+                visual_positions=aux_visual_positions, targets=aux_targets,
+                window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         stage = (
             "streaming_language_model_append"
             if pixel_values is not None
@@ -277,6 +298,9 @@ class SimpleMemVLNForNavigation(nn.Module):
         step_lane_roles=None,
         episodic_layout=None,
         episodic_diagnostics=None,
+        aux_visual_positions=None,
+        aux_targets=None,
+        aux_frame_count=None,
     ):
         episodic = {}
         if self.episodic_spec is not None:
@@ -286,10 +310,19 @@ class SimpleMemVLNForNavigation(nn.Module):
                             episodic_diagnostics=episodic_diagnostics)
         elif episodic_layout is not None:
             raise ValueError("Episodic layout supplied to a non-episodic model")
+        if aux_visual_positions is not None:
+            if aux_frame_count != len(aux_visual_positions):
+                raise ValueError("Auxiliary frame support mismatch")
+            episodic.update(aux_visual_positions=aux_visual_positions, aux_targets=aux_targets)
+        elif self.training and self.g1_spec is not None:
+            raise ValueError("G1 training requires explicit detached teacher targets")
         hidden = self.hidden(
             input_ids, mm_token_type_ids, pixel_values, image_grid_thw, step_plan,
             step_lane_roles=step_lane_roles, **episodic,
         )
+        aux_sum = None
+        if aux_visual_positions is not None:
+            hidden, aux_sum = hidden
         if self.output_mode == "candidate_logits":
             logits = self.action_logits(hidden[0, read_positions])
             from qwen_vl.models.action_loss import action_losses
@@ -326,6 +359,9 @@ class SimpleMemVLNForNavigation(nn.Module):
             predictions=predictions,
             action_losses=losses.detach(),
         )
+        if aux_sum is not None:
+            result["aux_loss_sum"] = aux_sum
+            result["aux_frame_count"] = aux_frame_count
         if self.output_mode == "candidate_logits":
             result["unweighted_loss_sum"] = unweighted.detach().sum()
         return result
