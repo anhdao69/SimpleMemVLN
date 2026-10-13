@@ -388,9 +388,35 @@ comparable across runs because the GPUs were shared with other users' jobs.
 
 ### 7.5 Memory behaviour
 
-Not analysed in this round. All estimators train the same streaming-memory policy (full backprop through
-the Gated DeltaNet state and Window8 KV), so memory is not a variable between them. The readout-only vs
-full-backprop ablation (C2 in §8) is the experiment that would isolate it.
+All estimators train the same streaming-memory policy (full backprop through the Gated DeltaNet state and
+Window8 KV), so memory is not a variable between them. What can be measured without new GPU runs is how
+the trained policies *use* memory, from the recorded agent positions in the evaluator journals
+(`scripts/rl/analyze_memory.py`, `results/memory_analysis_step125.json`). A **beyond-window revisit**
+means the agent returns within 0.5 m of a place it visited more than 8 decisions earlier, after moving
+≥ 2 m away. Those observations have left the Window8 KV, so only the recurrent state can tell the agent
+it has been there.
+
+| Policy | SR | revisit episodes | SR \| revisit | SR \| no revisit | revisit steps / 100 fwd | never ≤ 3 m | … of which revisit | failures with revisit |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SFT | 51.55 | 6.8 % | 21.6 | 53.7 | 1.89 | 40.7 % | 11.6 % | 11.0 % |
+| GRPO s1 | 56.88 | 7.7 % | 27.7 | 59.3 | 2.21 | 35.1 % | 14.1 % | 12.9 % |
+| GRPO s2 | 57.37 | 8.7 % | 19.4 | 61.0 | 2.92 | 35.8 % | 17.6 % | 16.5 % |
+| HiCo v3 | 54.87 | 6.7 % | 21.0 | 57.3 | 1.80 | 37.3 % | 12.8 % | 11.8 % |
+| GRPO+STOP | 54.98 | 7.3 % | 20.7 | 57.7 | 2.21 | 37.5 % | 13.6 % | 12.9 % |
+
+- **Looping is real but minor.** An episode that revisits an out-of-window place succeeds 19–28 % of the
+  time, against 54–61 % without. Such episodes are only 7–9 % of the total and 11–17 % of failures.
+- **Most navigation failures are wrong-route commitments, not memory loops.** Of the episodes that never
+  get within 3 m, only 12–18 % ever revisit; the rest walk a plausible but wrong route without returning.
+  Full 360° spins (≥ 24 consecutive turns) and immediate L/R reversals essentially never happen (≤ 0.05 %).
+- **RL does not improve memory use.** Both GRPO seeds revisit slightly *more* than SFT (7.7 / 8.7 % vs
+  6.8 %), as do the HiCo variants at about the same rate. RL's gains come from reaching the goal region
+  more often (OSR), not from avoiding loops. Among SFT→GRPO gained episodes, only 11–13 % had a revisit
+  under SFT.
+- Consequence for method design: a memory-specific objective (e.g. penalising revisits) could address at
+  most ≈ 15 % of failures. The fork estimator (§5.4) instead targets which branch to take at decision
+  points, the dominant "never within 3 m" mode. The revisit rate is reported for GRPO+F below as a
+  side-effect check.
 
 ## 8. Future work and publication roadmap
 
