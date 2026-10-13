@@ -144,13 +144,31 @@ hits 143 vs 131 and near misses 67 vs 54 — again the deficit is navigational, 
 was *ahead* of GRPO on the training prompts (steps 40–84: train SR 0.640 vs 0.613, OSR 0.715 vs 0.691), so
 the val_unseen gap is not explained by slower learning.
 
-### 5.3 Is the 2-point gap a method effect? — training-seed control (*running*)
+### 5.3 Is the 2-point gap a method effect? — training-seed control
 
-Both refinements land at the same SR (54.87 / 54.98, p = 0.96 between them) and ~2 points below a single
-GRPO run, while training curves on the 1K prompts do not show them behind. The bootstrap CIs above cover
-only evaluation sampling on fixed checkpoints, not RL training-seed variance, so a ±2-point difference
-between single runs cannot yet be attributed to the estimator. A second GRPO run with only the seed
-changed (`configs/rl/activevln_grpo_r2r1k_seed2.yaml`) is running.
+A second GRPO run differs from the first only in the seed (`configs/rl/activevln_grpo_r2r1k_seed2.yaml`;
+same data order, checkpoint and hyperparameters).
+
+| Model (val_unseen, 1,839) | SR | SPL | NE | OSR | forced STOP |
+|---|---:|---:|---:|---:|---:|
+| GRPO seed 1 | 56.88 | 50.45 | 5.31 | 64.87 | 133 |
+| GRPO seed 2 | 57.37 | 51.82 | 5.30 | 64.22 | 86 |
+| GRPO mean of 2 seeds | 57.13 | 51.14 | 5.31 | 64.55 | — |
+
+Paired against GRPO seed 2:
+
+| Model | ΔSR | 95 % CI | McNemar p | ΔSPL | ΔOSR |
+|---|---:|---:|---:|---:|---:|
+| GRPO seed 1 | −0.49 | [−2.56, +1.52] | 0.68 | −1.37 | +0.65 |
+| HiCo-PO v3 | −2.50 | [−4.57, −0.38] | **0.023** | −1.94 | −1.52 |
+| GRPO+STOP | −2.39 | [−4.40, −0.38] | **0.024** | −2.11 | −1.74 |
+
+(Seed 2 vs SFT: +5.82 SR, p = 1e-7.) **GRPO is reproducible across training seeds, within half a point
+of SR.** Both STOP-credit variants are about 2.4 points below each GRPO seed, and significantly so against
+seed 2. The deficit is a method effect, not seed noise: at this scale, exact STOP credit (alone or on top
+of GRPO) does not help and slightly hurts navigation. The training curves agree: on identical prompts the
+two GRPO seeds track each other within 1.3 points in every phase, while GRPO+STOP falls behind in the last
+40 steps (train SR 0.623 vs 0.647 / 0.650).
 
 ### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`) — *implemented, queued*
 
