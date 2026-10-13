@@ -228,7 +228,78 @@ exact values; all-success groups get the floored scale). Yet its "passed the goa
 count is essentially GRPO's (136 vs 142), and it does not beat GRPO (§5.2). At this scale (1K prompts, 125
 steps) the STOP under-crediting is a real estimator property, but it is not what limits success.
 
-## 7. Failure analysis — *pending*
+## 7. Failure analysis, cost and stability
+
+All numbers on R2R val_unseen (1,839 episodes); files `results/*_failure_analysis_*.json`.
+
+### 7.1 Outcome taxonomy
+
+| Policy | SR | OSR | median NE (m) | actions | cap hits | stop at 3–5 m | stop at ≥ 5 m | STOP share |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| SFT | 51.55 | 59.27 | 2.75 | 91.3 | 114 | 167 | 614 | 13.0 % |
+| GRPO | 56.88 | 64.87 | 2.10 | 96.6 | 133 | 140 | 522 | 9.5 % |
+| HiCo-PO v3 | 54.87 | 62.70 | 2.33 | 97.6 | 140 | 157 | 539 | 9.3 % |
+| GRPO+STOP | 54.98 | 62.48 | 2.32 | 98.2 | 148 | 150 | 535 | 8.6 % |
+
+- **What RL fixes (SFT → GRPO, 275 gained / 177 lost):** mostly premature stops far from the goal
+  (614 → 522 stops at ≥ 5 m; 145 of the gains were "far" failures under SFT). OSR rises by 5.6 points,
+  so RL mainly makes the agent *reach* the goal region more often. "Passed the goal" failures barely move.
+- **All three RL policies share the same failure mix.** Each RL run takes slightly longer episodes and
+  hits the cap more often than SFT. The two HiCo-family policies trail GRPO on OSR (−2.2 / −2.4), which is
+  the whole SR gap: their lost episodes vs GRPO are mostly "far" (89 / 83) rather than "passed the goal"
+  (63 / 55).
+- **Per-episode churn is large.** Between any two RL policies about 320–370 of 1,839 episodes flip
+  (GRPO vs v3: 166 gained / 203 lost; v3 vs GRPO+STOP: 177 / 179). Net differences of ±35 episodes
+  (≈ 2 SR) are therefore small relative to the churn, which is why the training-seed control (§5.3) is
+  needed before attributing them to the estimator.
+
+### 7.2 By difficulty (SR, %)
+
+| Reference length (actions) | n | SFT | GRPO | v3 | GRPO+STOP |
+|---|---:|---:|---:|---:|---:|
+| < 40 | 216 | 62.0 | 66.2 | 63.4 | 63.0 |
+| 40–59 | 891 | 56.0 | 63.5 | 60.2 | 60.5 |
+| 60–79 | 597 | 45.6 | 48.2 | 48.7 | 47.2 |
+| ≥ 80 | 135 | 31.9 | 36.3 | 33.3 | 40.0 |
+
+| Geodesic start–goal (m) | n | SFT | GRPO | v3 | GRPO+STOP |
+|---|---:|---:|---:|---:|---:|
+| < 7 | 477 | 55.4 | 61.6 | 60.0 | 56.6 |
+| 7–10 | 816 | 53.1 | 59.1 | 55.9 | 59.0 |
+| 10–13 | 378 | 48.9 | 51.1 | 51.1 | 49.2 |
+| ≥ 13 | 168 | 39.3 | 45.8 | 44.0 | 44.0 |
+
+GRPO's advantage is concentrated in short/medium episodes (40–59 actions: +3.0 to +3.3 over both
+variants). On the longest episodes GRPO+STOP is best (40.0 vs 36.3, n = 135, not significant). No bin
+shows a consistent, interpretable gain from exact STOP credit.
+
+### 7.3 Credit assignment and STOP calibration
+
+On training rollouts, successful episodes put a median max σ of 0.61–0.65 on STOP inside 3 m. For
+"passed the goal" failures the median is 0.024–0.045, and 34–42 % never exceed 0.01 (§6.1, §6.2). These
+episodes are not near-misses of a well-calibrated stop rule: the policy hardly considers stopping where
+it should. A better-weighted STOP gradient cannot fix this, since it scales a probability that is
+already ≈ 0. This is consistent with the null effect of both STOP-credit variants on this failure mode
+(GRPO 142, v3 141, GRPO+STOP 136).
+
+### 7.4 Cost and stability (125 RL steps, 8 prompts × G = 4)
+
+| Run | rollouts sampled | discarded (dynamic sampling) | env steps (kept) | grad-norm mean / max | restarts |
+|---|---:|---:|---:|---:|---:|
+| GRPO | 4,868 | 868 | 262.7 k | 2.36 / 3.62 | — |
+| HiCo-PO v3 | 4,000 | 0 | 262.7 k | 6.67 / 10.34 | — |
+| GRPO+STOP | 4,988 | 988 | 269.8 k | 2.36 / 3.42 | 2 (host OOM, exact resume) |
+
+HiCo-PO v3 used 18 % fewer rollouts (no dynamic sampling) and the critic adds < 10 s per step on CPU.
+Its larger gradient norm reflects the batch-level scale (per-group normalisation in GRPO shrinks the
+loss), not instability: clipping at 1.0 is active in all runs and no run diverged. Wall-clock is not
+comparable across runs because the GPUs were shared with other users' jobs.
+
+### 7.5 Memory behaviour
+
+Not analysed in this round. All estimators train the same streaming-memory policy (full backprop through
+the Gated DeltaNet state and Window8 KV), so memory is not a variable between them. The readout-only vs
+full-backprop ablation (C2 in §8) is the experiment that would isolate it.
 
 ## 8. Future work and publication roadmap
 
