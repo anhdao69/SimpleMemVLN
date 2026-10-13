@@ -288,7 +288,7 @@ already ≈ 0. This is consistent with the null effect of both STOP-credit varia
 |---|---:|---:|---:|---:|---:|
 | GRPO | 4,868 | 868 | 262.7 k | 2.36 / 3.62 | — |
 | HiCo-PO v3 | 4,000 | 0 | 262.7 k | 6.67 / 10.34 | — |
-| GRPO+STOP | 4,988 | 988 | 269.8 k | 2.36 / 3.42 | 2 (host OOM, exact resume) |
+| GRPO+STOP | 4,988 | 988 | 269.8 k | 2.36 / 3.42 | 2 (one manual for a helper change, one unit OOM; exact resume from step 20 / 30) |
 
 HiCo-PO v3 used 18 % fewer rollouts (no dynamic sampling) and the critic adds < 10 s per step on CPU.
 Its larger gradient norm reflects the batch-level scale (per-group normalisation in GRPO shrinks the
