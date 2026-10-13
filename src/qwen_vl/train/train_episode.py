@@ -210,7 +210,8 @@ class EpisodeTrainer(QwenSFTTrainer):
                 episode_uid=inputs["episode_uid"],
                 forward_seconds=self.last_forward_seconds,
                 online_teacher_seconds=getattr(self,"online_teacher_seconds",0.),
-                backward_and_step_overhead_seconds=elapsed - self.last_forward_seconds,
+                backward_and_step_overhead_seconds=(elapsed - self.last_forward_seconds
+                    - getattr(self,"online_teacher_seconds",0.)),
             )
             with (
                 Path(self.args.output_dir)

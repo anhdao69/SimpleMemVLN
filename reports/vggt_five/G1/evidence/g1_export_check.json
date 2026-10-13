@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "source": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/experiments/online-h4-recovery-resumed/train/final",
+  "export": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/serving-export-verified",
+  "replay": [
+    {
+      "dataset": "r2rce",
+      "response_tokens": 50,
+      "max_abs": 0.75,
+      "rms": 0.061505019664764404,
+      "source_export_logits_exact": true,
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    },
+    {
+      "dataset": "rxrce",
+      "response_tokens": 50,
+      "max_abs": 0.5,
+      "rms": 0.04835066199302673,
+      "source_export_logits_exact": true,
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    }
+  ]
+}

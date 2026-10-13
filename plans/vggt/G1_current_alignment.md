@@ -4,11 +4,15 @@
 
 ## Architecture
 
-Base c2_h2_speed@2430fd2, native Window8 canonical-text policy, no lane or episodic bank, frozen student visual tower/merger, trainable native decoder with full-episode BPTT. At <=16 fixed stratified current frames per trajectory, align complete zero-based decoder23 output visual rows. Original image-token order, MRoPE, action targets and sequence lengths are unchanged.
+Base c2_h2_speed@2430fd2, native Window8 canonical-text policy, no lane or episodic bank, frozen student visual tower/merger, trainable native decoder with full-episode BPTT. At <=16 fixed stratified current frames per collected trajectory, align complete zero-based decoder23 output visual rows. Original image-token order, MRoPE, action targets and sequence lengths are unchanged.
 
 Frozen official VGGT-Omega-1B-512 sourcead02778c and weights SHA256c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934 run ONLINE per rank. Every teacher call is [B,1,3,448,592], single view; only aggregator23 cached.17 special tokens,28x37 patches,2048channels. Heads disabled. Teacher preprocessing follows official balanced512 exactly. CPU loader stages sampled RGB tensors; trainer computes detached targets before student forward. Teacher is never registered in the student optimizer/DDP/checkpoint. Resume binds actual source/weight/preprocessing/dtype hashes.
 
 Teacher features: adaptive average pool grid to15x20; FP32 no-affine LayerNorm2048 eps1e-6. No PCA, no feature cache and no trainable teacher-side compressor. Position term is .5*E0 at width2048, where E0 follows the original G1 normalized-center sin/cos rule, now512frequencies/axis and globalRMS1. Teacher LN makes target RMS approximately1 without fitting a dataset statistic. Position formula is versioned in resume provenance.
+
+### Sampling identity and declared deviation
+
+The audited manifest contains scene, episode ID and ordered RGB paths but no verified cross-instruction physical-trajectory map. G1 therefore defines a collected trajectory by dataset, scene and ordered RGB paths, normalized below `trajectory_data/`. Sampling ignores instruction text and UID, is fixed across epochs, and keeps every navigation episode/action. Identical path references share samples; identical physical paths copied into different episode folders are not merged. This is an explicit adaptation of the original physical-trajectory sampling requirement. It avoids inventing physical aliases from a shared reference path. A future cross-arm comparison that requires aliases must first build and verify a metadata/pose or RGB identity registry; no teacher feature pre-extraction is required for that registry.
 
 ## Student dimension conversion — exact SpatialForcing architecture
 
@@ -33,4 +37,4 @@ Recovery includes student+projector, optimizer/scheduler/RNG/sampler and exact t
 
 ## Scope and status
 
-Implement G1 and diagnostic speed/resource/recovery runs only. No other full scientific arm, no baseline retraining. A full production launch requires matched baseline/schedule provenance and completed qualification; diagnostic steps are not production progress. Report measured R2R/RxR timing and uncertainty separately. Existing M2job4879 and all existing weights remain untouched.
+User update on 2026-10-13 explicitly authorizes one full joint R2R+RxR production epoch on four H100s after qualification. Start from Qwen base, not a diagnostic checkpoint. Use the selected resident FP32 Omega / DeepSpeed CPU AdamW runtime. The one-epoch overlay sets epochs1, total3852 and LR warmup116 (3%), with cosine decay to0.1; preserve G1 auxiliary ramp771 (20% of this epoch). Effective batch remains8. The30815records require one final repeated exposure to fill30816slots. This one-epoch schedule is a declared user override, so do not present it as a matched two-epoch quality comparison. Keep periodic100-update checkpoints, an early step10 checkpoint and the epoch-end checkpoint. Launch from a committed source snapshot and retain exact config/teacher/manifest/world/GAS contracts for resume. Diagnostic steps are not production progress. Existing M2job4879 and all existing weights remain untouched.

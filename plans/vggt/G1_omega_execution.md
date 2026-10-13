@@ -1,59 +1,31 @@
-# G1 Online Omega execution update
+# G1 online Omega execution plan
 
-User changes supersede the initial execution plan below: ONLINE teacher, no pre-extraction/PCA, SpatialForcing2560->4096->2048 affine-LN projector, 4H100allocation4925. Authoritative revised spec: G1_current_alignment.md.
+Active revision: 2026-10-13. The user's online-teacher, SpatialForcing-projector and four-H100 instructions supersede the initial offline/PCA execution plan. The authoritative scientific specification is [G1_current_alignment.md](G1_current_alignment.md).
 
-- [ ] Online teacher preprocessing/provenance/runtime tests; CPU-local projectorRNG.
-- [ ] Functional layer23 checkpointed loss and globalGAS/rank reduction; no native path changes.
-- [ ] Actual4GPU smoke with residentteacher/GPUoptimizer; longest627frameRxR and R2R, mixedthreshold,save/resume.
-- [ ] Same-exposure runtime alternatives, teacher timings included, dataset-specific timings.
-- [ ] Strict serving export/replay, fullregression, source/provenance/report finalization.
+## Constraints
 
-## Superseded initial offline plan (historical work record, not executable)
+Start from c2_h2_speed commit 2430fd2 in the isolated c2_vggt_omega_g1 branch. Preserve native Window8 text, canonical action history, full episodes and full BPTT. Do not modify existing training jobs or their source snapshots. Use allocation 4925 on worker-2: four H100 80GB, 60 CPUs and 768 GiB RAM. Global batch remains eight episodes: one episode per rank and two accumulation slots.
 
-# G1 VGGT-Omega Implementation Plan
+Frozen online Omega produces independent single-view targets at up to 16 sampled frames per collected image sequence. Keep the full 2048-dimensional teacher target. Follow SpatialForcing's affine LayerNorm(2560), Linear(2560,4096), GELU, Linear(4096,2048). No feature pre-extraction, PCA or trainable teacher-side compressor.
 
-> **For agentic workers:** use superpowers:executing-plans, task by task, with tests before implementation.
+## Implementation and acceptance sequence
 
-**Goal:** implement and qualify G1 single-view Omega supervision and measure complete R2R/RxR training throughput on interactive 4924 (2 H100, 768 GiB).
-**Architecture:** offline aggregator23 targets, fixed train-only PCA256 and position term; a checkpoint-local projector on decoder23 visual outputs; native Window8 serving.
-**Tech Stack:** existing locked student environment, separate external Omega source, no dependency upgrades.
-**Spec:** G1_current_alignment.md, teacher_single_view.md, common_infrastructure.md, resources_and_evaluation.md.
+1. Teacher and sampling contracts: deterministic frame sampling, exact official image preprocessing, correct special-token removal and spatial order, detached FP32 targets, source/weight/adapter/preprocessing/position hashes. Keep teacher ownership outside student/DDP/checkpoints.
+2. Student integration: decoder 23 after the full residual block; checkpoint-local scalar auxiliary loss; global frame normalization over ranks and accumulation slots; separate navigation and auxiliary logs; dedicated head learning rate. Verify zero-weight native gradients and auxiliary-only gradient reach.
+3. Four-GPU resource qualification: three optimizer updates on the complete longest RxR episode (627 frames / 199,735 tokens), longest R2R (183 frames / 58,290 tokens), and mixed lengths across the 65,536-token activation-offload threshold. Include lazy Adam allocation. No truncation or TBPTT.
+4. Memory/speed tradeoff: compare resident teacher/GPU optimizer, teacher CPU offload between episodes, and CPU optimizer. A no-OOM test with almost no free device memory is insufficient for the recommended profile. Prefer measured headroom, then tune teacher batch, attention batch, vision batch, loader workers and CPU threads without changing samples or loss.
+5. Correctness and recovery: full regression suite in the pinned environment; actual four-rank unequal/empty-support reduction; complete recovery checkpoint, fresh-process continuation and comparison to uninterrupted training. Verify head weights change at nonzero auxiliary weight. Strict teacher-free export and native response replay, eviction, retry and reset on both datasets.
+6. Dataset timing: representative complete-episode R2R and RxR fixtures, multiple warm updates, end-to-end update intervals including teacher/loader costs. Report sampling uncertainty and checkpoint/startup overhead separately. These are diagnostics, not epoch-completion or navigation-quality claims.
+7. Finalize the source commit, runtime recommendation, revised plans and detailed evidence report. The user subsequently authorized a full one-epoch joint production run; launch it after these checks from an immutable source snapshot, with the separate one-epoch overlay (3,852 updates / 116 LR warmup; original auxiliary ramp 771).
 
-## Global constraints
+## Evidence so far
 
-Base 2430fd2. Only G1 implementation and diagnostic runs in this request. No V0/R0 training or modifications to existing jobs. Original native Window8, canonical action-text history, full BPTT, full episodes. Projector 2560->2048->256 with no-affine LN eps1e-6, GELU, Normal(.02), isolated seed429. Frame-mean cosine FP32 eps1e-6; global rank/GAS frame denominator; lambda .2 ramp771 updates. Base Qwen revision851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a, nominal global8, two-epoch schedule7704/232. Production launch remains conditional on complete cache and baseline binding; never pass partial-cache smoke evidence as production qualification.
+- Online teacher/head/trainer/export targeted suite: 21 passed; actual processor/merger spatial-order test additionally passed.
+- Regression after restoring Git metadata and enabling real processor tests: 350 passed, one CPU AdamW compiler mismatch. The matching isolated compiler was then installed; both CPU AdamW tests passed, including numerical and serialized-state continuation checks.
+- Four-GPU mixed fixture: three updates passed, 17.78 s/update after startup, 56.64 GiB maximum reserved GPU memory, 76.44 GiB peak job RAM.
+- Four-GPU longest RxR: three updates passed, 90.30 s/update, 76.85 GiB maximum reserved GPU memory, 225.18 GiB peak job RAM. Device usage reached 81,073 MiB; this profile has insufficient practical headroom for recommendation.
+- Actual four-rank reduction passed unequal, empty and equal frame support with two accumulation slots (maximum gradient error 2.98e-8). CPU optimizer offload passed the longest RxR test with about 62 GiB active GPU allocation. All 23 four-GPU training diagnostics now passed. The selected resident teacher / CPUAdam profile uses teacher16, attention32, vision8, threads4, workers8; longestRxR peak active61.79GiB. Full-state fresh-process recovery passed (head exact, whole-state relativeL2 9.45e-9), both-dataset export/replay passed, and the final suite passed351 tests without skips. Joint warm timing27.54s/update projects29.46h per epoch, with planning uncertainty and checkpoint overhead. The authorized one-epoch production launcher uses a committed source snapshot and periodic recovery.
 
-## Resolved design substitutions
+## Historical work
 
-User explicitly requests Omega instead of VGGT. Use existing official Omega source ad02778c052e636a623ef425377f342ee41c4fa6 and local vggt_omega_1b_512.pt (hash measured before extraction). Use official balanced512 preprocessing: for640x480,448x592, patch16,28x37 grid,17 specials,2048 channels. Assert actual outputs; slice returned offset. Independent B batches with S=1. Only cache layer23. No geometry heads or teacher resident in student jobs. Existing SpatialForcing wrapper uses images[None] and would mix views: do not reuse that batching for this single-view design.
-
-Resolve physical trajectory via dataset, scene and ordered RGB path identities (root-normalized); actual RGB hashes deduplicate extraction. Repeated instructions sharing the physical image sequence share sampling. Record identity limitations for differently named duplicate trajectories. G1 extracts its sampled frames only; no G3/A1 union is necessary in this scope.
-
-## Review focus
-
-- Missing/corrupt/wrong-provenance cache records must fail, including on resume.
-- Checkpoint recomputation must return a scalar aux loss exactly once; no hidden-state hooks or graph lists.
-- Unequal rank/GAS support and zero counts must match a single global reference.
-- Export strips exactly research_aux parameters and research config; recovery retains both.
-- Full 199K-token episode must preserve gradients and fit; no truncation to improve timing.
-
-### Task 1: teacher contract and cache
-Files: research/vggt_sampling.py, data/vggt_targets.py, research/vggt_omega.py, scripts/vln/extract_vggt_single_view.py, tests/vln/test_vggt_targets.py.
-Interfaces: sample_frames(key,T,seed)->tuple; physical_trajectory_key(ep)->str; TeacherCache.load(paths)->Tensor[F,300,256]; extraction manifest binds weight/source/preprocessing/PCA/hash.
-- [ ] Write and run failing sampling, grid/order, cache corruption/provenance, PCA and detached-target tests.
-- [ ] Implement deterministic sampling, strict bounded binary shards and Omega aggregator-only extraction; fit FP64 covariance from100000 train tokens over up to2000 trajectories.
-- [ ] Run tests and actual teacher batch-isolation, preprocessing, throughput QC. Commit.
-
-### Task 2: G1 functional forward and loss
-Files: models/vggt_aux_heads.py, models/research_forward.py, research/vggt_g1.py, models/nav_model.py, data/episode_dataset.py, train/trainer.py.
-Interfaces: CurrentSpatialProjector.forward(hidden,target)->frame-loss sum; research_text_forward(...)->(hidden,aux_sum); batches carry sampled visual positions, detached targets, frame count. Counts computed across ranks and GAS before forward.
-- [ ] Write and run failing projector gradient/reduction/RNG, native-off forward, checkpoint gradient, zero/unequal-support tests.
-- [ ] Add G1-only validation and native functional decoder loop; compute head inside selected layer checkpoint; use one explicit hidden tensor per checkpoint.
-- [ ] Add CPU cache loading and parameter grouping at1e-4; log nav/aux separately. Run tests and commit.
-
-### Task 3: recovery/export and real qualification
-Files: train/train_episode.py, scripts/vln/export_vggt_g1.py, scripts/vln/profile_vggt_g1.py, configs/vggt/g1.yaml, tests/vln/test_vggt_export.py.
-- [ ] Tests for exact namespace stripping, strict reload, target/config resume mismatch; implement minimal changes.
-- [ ] Run full regression suite in existing environment and real R2R/RxR complete-episode tests; benchmark alternatives with same exposures and warmed cache.
-- [ ] Qualify longest R2R/RxR, threshold boundaries, changing lengths, optimizer states and same-topology save/new-process resume. Export/replay.
-- [ ] Report measured per-dataset times, uncertainty, extraction cost, memory, source/cache hashes and all incomplete gates. Fresh whole-branch review and fixes, commit.
+An initial offline diagnostic extracted 608 frames and fitted a train-only PCA before the user changed the design. Those artifacts are not used by this implementation. The offline extraction/cache modules were removed. Their costs must not be presented as online training time or current prerequisites.

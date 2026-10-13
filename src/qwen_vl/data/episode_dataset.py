@@ -50,10 +50,10 @@ class EpisodeDataset(Dataset):
             # round-to-nearest-even here is bitwise identical and halves staging RAM.
             result["pixel_values"] = result["pixel_values"].to(torch.bfloat16)
         if self.serializer.config.get('research'):
-            from qwen_vl.research.vggt_sampling import sample_frames,physical_trajectory_key,sampled_visual_positions
+            from qwen_vl.research.vggt_sampling import sample_frames,collection_trajectory_key,sampled_visual_positions
             from qwen_vl.data.vggt_online import preprocess_teacher_images
             episode=self.episodes[index]
-            frames=sample_frames(physical_trajectory_key(episode),len(episode['steps']),
+            frames=sample_frames(collection_trajectory_key(episode),len(episode['steps']),
                                  self.serializer.config['research'].get('sample_seed',429))
             result['aux_visual_positions']=sampled_visual_positions(result['input_ids'],
                 self.serializer.image_id,result['step_plan'][1],frames)

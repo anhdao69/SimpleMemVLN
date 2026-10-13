@@ -1,0 +1,18 @@
+{
+  "candidates": [
+    {
+      "label": "optimizer-cpu",
+      "options": [
+        "--cpu-optimizer"
+      ],
+      "seconds": 20.69344687461853
+    }
+  ],
+  "best": {
+    "label": "optimizer-cpu",
+    "options": [
+      "--cpu-optimizer"
+    ],
+    "seconds": 20.69344687461853
+  }
+}

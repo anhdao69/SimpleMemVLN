@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "reference": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/experiments/online-h4-recovery-reference/train",
+  "resumed": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/experiments/online-h4-recovery-resumed/train",
+  "weights": {
+    "relative_l2": 9.449612243647445e-09,
+    "max_abs": 1.1920928955078125e-07,
+    "changed_elements": 31439,
+    "elements": 5193850368,
+    "bitwise_equal": false
+  },
+  "head": {
+    "relative_l2": 0.0,
+    "max_abs": 0.0,
+    "changed_elements": 0,
+    "elements": 18885632,
+    "bitwise_equal": true
+  },
+  "head_update_from_step2_to3": {
+    "relative_l2": 2.5637017519132872e-06,
+    "max_abs": 1.9073486328125e-06,
+    "changed_elements": 126650,
+    "elements": 18885632,
+    "bitwise_equal": false
+  },
+  "step3_losses": [
+    0.41682443022727966,
+    0.41682443022727966
+  ],
+  "head_bias_updates": {
+    "research_aux.current_projector.norm.bias": 2559,
+    "research_aux.current_projector.fc1.bias": 4096,
+    "research_aux.current_projector.fc2.bias": 2048
+  },
+  "recovery_world_size": 4,
+  "checkpoint_files": 22
+}

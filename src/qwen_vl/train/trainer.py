@@ -159,6 +159,25 @@ class QwenSFTTrainer(Trainer):
         if len(assigned) != len(set(assigned)) or set(assigned) != expected:
             raise RuntimeError("Optimizer groups do not exactly cover trainable parameters")
 
+        implementation = getattr(self.model, "navigation_config", {}).get(
+            "training", {}).get("cpu_optimizer_impl", "torch")
+        if implementation not in ("torch", "deepspeed_cpu_adam"):
+            raise ValueError("Unsupported CPU optimizer implementation")
+        if implementation == "deepspeed_cpu_adam":
+            import json
+            from pathlib import Path
+            ds = self.args.deepspeed
+            if isinstance(ds, str):
+                ds = json.loads(Path(ds).read_text())
+            if not isinstance(ds, dict) or ds.get("zero_optimization", {}).get(
+                    "offload_optimizer", {}).get("device") != "cpu":
+                raise ValueError("DeepSpeedCPUAdam requires explicit optimizer CPU offload")
+            from deepspeed.ops.adam import DeepSpeedCPUAdam
+            self.optimizer = DeepSpeedCPUAdam(grouped_parameters,
+                lr=self.args.learning_rate, betas=(self.args.adam_beta1,self.args.adam_beta2),
+                eps=self.args.adam_epsilon, adamw_mode=True, fp32_optimizer_states=True)
+            return self.optimizer
+
         optimizer_class, optimizer_kwargs = self.get_optimizer_cls_and_kwargs(
             self.args
         )

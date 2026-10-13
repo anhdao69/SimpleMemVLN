@@ -23,6 +23,8 @@ def teacher_identity(source,weights):
         source_sha256=stable_hash([(str(f.relative_to(source)),file_hash(f))
                                   for f in sorted((source/'vggt_omega').rglob('*.py'))]),
         preprocessing=PREPROCESS_VERSION,position=POSITION_VERSION,
+        adapter_sha256=file_hash(__file__),
+        preprocessing_code_sha256=file_hash(Path(__file__).parents[1]/'data/vggt_online.py'),
         teacher_layer=23,patch_offset=17,teacher_dim=2048,
         compute_dtype='float32',pooling='adaptive-average-15x20-LN2048-eps1e-6',
         position_sha256=hashlib.sha256(positional_grid().numpy().tobytes()).hexdigest())

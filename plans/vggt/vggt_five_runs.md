@@ -1,3 +1,5 @@
+> Production steering (2026-10-13): the user authorized G1 on joint R2R+RxR for **one epoch** on four H100s after qualification. Use `G1_current_alignment.md` and `G1_omega_execution.md` for the active online-Omega design, selected runtime and declared one-epoch schedule override. Other proposed arms remain unchanged.
+
 > **G1 update (2026-10-13):** User requests ONLINE VGGT-Omega, no pre-extraction/PCA, the SpatialForcing projector, and4H100 tests. For G1, `G1_current_alignment.md` supersedes conflicting offline/PCA/two-GPU sections below. Other arms are not implemented by this task.
 
 # VGGT five-run campaign: design specification and master plan

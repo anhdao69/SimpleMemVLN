@@ -11,6 +11,8 @@ def parse_g1(config):
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
     if value.get('student_layer',23) != 23: raise ValueError('G1 aligns decoder23 only')
+    if value.get('sampling_identity','collected-rgb-paths-v1')!='collected-rgb-paths-v1':
+        raise ValueError('Unsupported G1 trajectory sampling identity')
     for key in ('teacher_source','teacher_weights','teacher_identity'):
         if not value.get(key): raise ValueError(f'G1 requires {key}')
     for key in ('lambda_max','head_lr'):

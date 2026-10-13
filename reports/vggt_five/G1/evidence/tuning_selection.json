@@ -1,0 +1,120 @@
+{
+  "candidates": [
+    {
+      "label": "cpu-adam-fast",
+      "options": [
+        "--cpu-adam",
+        "--teacher-batch",
+        "16",
+        "--attention-batch",
+        "32",
+        "--vision-batch",
+        "8",
+        "--threads",
+        "4",
+        "--workers",
+        "8"
+      ],
+      "seconds": 18.08654820919037
+    },
+    {
+      "label": "cpu-adam",
+      "options": [
+        "--cpu-adam"
+      ],
+      "seconds": 18.17103385925293
+    },
+    {
+      "label": "teacher4",
+      "options": [
+        "--cpu-optimizer",
+        "--teacher-batch",
+        "4"
+      ],
+      "seconds": 19.887502431869507
+    },
+    {
+      "label": "vision8",
+      "options": [
+        "--cpu-optimizer",
+        "--vision-batch",
+        "8"
+      ],
+      "seconds": 20.056070923805237
+    },
+    {
+      "label": "optimizer-cpu-fast",
+      "options": [
+        "--cpu-optimizer",
+        "--teacher-batch",
+        "16",
+        "--attention-batch",
+        "32",
+        "--vision-batch",
+        "8",
+        "--threads",
+        "4",
+        "--workers",
+        "8"
+      ],
+      "seconds": 20.25168776512146
+    },
+    {
+      "label": "teacher16-attention16",
+      "options": [
+        "--cpu-optimizer",
+        "--teacher-batch",
+        "16",
+        "--attention-batch",
+        "16"
+      ],
+      "seconds": 20.418700575828552
+    },
+    {
+      "label": "threads4-workers2",
+      "options": [
+        "--cpu-optimizer",
+        "--threads",
+        "4",
+        "--workers",
+        "2"
+      ],
+      "seconds": 20.692406177520752
+    },
+    {
+      "label": "base",
+      "options": [
+        "--cpu-optimizer"
+      ],
+      "seconds": 20.69344687461853
+    },
+    {
+      "label": "threads4-workers8",
+      "options": [
+        "--cpu-optimizer",
+        "--threads",
+        "4",
+        "--workers",
+        "8"
+      ],
+      "seconds": 20.88923990726471
+    }
+  ],
+  "best": {
+    "label": "cpu-adam-fast",
+    "options": [
+      "--cpu-adam",
+      "--teacher-batch",
+      "16",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--threads",
+      "4",
+      "--workers",
+      "8"
+    ],
+    "seconds": 18.08654820919037
+  }
+}

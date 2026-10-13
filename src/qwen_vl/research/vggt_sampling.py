@@ -8,8 +8,9 @@ def stable_hash(value):
     return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
 
 
-def physical_trajectory_key(episode):
-    # Ignore instruction/episode ID. Preserve ordered physical view identities.
+def collection_trajectory_key(episode):
+    # Collection identity: ignore instruction text/UID, preserve ordered image paths.
+    # Distinct episode folders are not claimed to be physical-trajectory aliases.
     paths = [s['rgb_path'].split('/trajectory_data/')[-1] for s in episode['steps']]
     return stable_hash([episode['dataset'], episode['scene_id'], paths])
 
