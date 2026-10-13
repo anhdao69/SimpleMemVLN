@@ -37,6 +37,7 @@ from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
 from qwen_vl.rl.hico import (GeometricBaseline, action_terms, batch_scale, coefficients, episode_features,
+                             fork_coefficients,
                              grpo_stop_coefficients, rloo_baselines, stop_values)
 from qwen_vl.rl.placement import redistribute, should_offload
 from qwen_vl.rl.rollout import rollout_seed, run_episode
@@ -224,7 +225,7 @@ class RolloutWorker:
         self.session = SamplingSession(model, serializer)
         self.stream = torch.cuda.Stream(device)
 
-    def run(self, item, *, step, attempt, sample_idx, budget, cfg):
+    def run(self, item, *, step, attempt, sample_idx, budget, cfg, fork=None):
         r = cfg['rollout']
         seed = rollout_seed(cfg['run']['seed'], step, item['episode_id'], attempt, sample_idx)
         for _ in range(3):
@@ -232,7 +233,7 @@ class RolloutWorker:
                 with torch.cuda.stream(self.stream):
                     episode = run_episode(self.session, self.env, item, temperature=r['temperature'],
                                           budget=budget, seed=seed, sample_idx=sample_idx,
-                                          reward_cfg=cfg['reward'], device=self.device)
+                                          reward_cfg=cfg['reward'], device=self.device, fork=fork)
                 self.stream.synchronize()
                 episode.update(attempt=attempt, budget=budget)
                 return episode
@@ -249,7 +250,7 @@ class RolloutWorker:
         self.env.close()
 
 
-def rollout_rank(workers, items, step, cfg):
+def rollout_rank(workers, items, step, cfg, fork=None):
     """All groups of this rank, G samples each, ActiveVLN dynamic sampling, K threads.
 
     Seeds depend only on (step, episode, attempt, sample), so results do not depend on
@@ -268,7 +269,7 @@ def rollout_rank(workers, items, step, cfg):
         worker = free.get()
         try:
             return worker.run(item, step=step, attempt=attempt, sample_idx=sample_idx,
-                              budget=budget, cfg=cfg)
+                              budget=budget, cfg=cfg, fork=fork)
         finally:
             free.put(worker)
 
@@ -286,15 +287,15 @@ def rollout_rank(workers, items, step, cfg):
             for i in [i for i, (_, fs) in pending.items() if all(f.done() for f in fs)]:
                 attempt, futures = pending.pop(i)
                 group = [f.result() for f in futures]
-                history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
-                                   for e in group])
+                history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'],
+                                        branch_steps=branch_steps(e)) for e in group])
                 groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)
                 if not any(e['success'] for e in group) and attempt + 1 < attempts:
                     pending[i] = submit(i, attempt + 1)
     return groups, history
 
 
-def rollout_rank_pool(pool, items, step, cfg):
+def rollout_rank_pool(pool, items, step, cfg, fork=None):
     """rollout_rank for multi-process IPC helpers (rl/rollout_pool.py); same scheduling."""
     r = cfg['rollout']
     attempts = 1 + (r['dynamic_sampling']['max_sample_attempts'] if r['dynamic_sampling']['enabled'] else 0)
@@ -309,7 +310,7 @@ def rollout_rank_pool(pool, items, step, cfg):
         for k in range(G):
             pool.submit((i, attempt, k), items[i], temperature=r['temperature'], budget=budgets[i],
                         seed=rollout_seed(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k),
-                        sample_idx=k, reward_cfg=cfg['reward'])
+                        sample_idx=k, reward_cfg=cfg['reward'], fork=fork)
         pending[i] = (attempt, {})
 
     for i in range(len(items)):
@@ -323,12 +324,103 @@ def rollout_rank_pool(pool, items, step, cfg):
         if len(pending[i][1]) == G:
             finished = pending.pop(i)[1]
             group = [finished[j] for j in range(G)]
-            history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'])
-                               for e in group])
+            history[i].append([dict(success=e['success'], reward=e['reward'], num_steps=e['num_steps'],
+                                    branch_steps=branch_steps(e)) for e in group])
             groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)
             if not any(e['success'] for e in group) and attempt + 1 < attempts:
                 submit(i, attempt + 1)
     return groups, history
+
+
+def branch_steps(episode):
+    """(branch decisions, replayed prefix decisions) of a grpo_fork main trajectory."""
+    branches = episode.get('_branches') or []
+    return [sum(b['num_steps'] for b in branches), sum(b['fork_t'] for b in branches)]
+
+
+def fork_threshold(out, step, fork_cfg):
+    """Entropy threshold for this step's fork points: a quantile of the previous step's first-token
+    entropies (main trajectories, all ranks). It never depends on this step's samples."""
+    values = []
+    for path in sorted((out / 'rollouts').glob(f'step_{step - 1:04d}_rank*.jsonl')):
+        for line in path.read_text().splitlines():
+            values += [v for v in json.loads(line).get('step_entropy') or [] if v is not None]
+    if not values:
+        return float(fork_cfg['initial_min_entropy'])
+    return float(np.quantile(values, fork_cfg['entropy_quantile']))
+
+
+def fork_prepare(groups, weights_by_uid, cfg):
+    """grpo_fork: GRPO root advantages before the first fork, sibling-baselined credit after it.
+
+    Expands every forked branch into a full training record (main prefix + branch suffix) whose
+    prefix decisions carry no coefficient. Branch tokens get their parent's GRPO token weight.
+    """
+    a = cfg['algorithm']
+    floor = a['scale_floor'] * cfg['reward']['success_reward_base']
+    items, stats = [], dict(forks=0, branches=0, branch_success=0, branch_same_first=0, local_nonzero=0,
+                            branch_decisions=0, replay_decisions=0, mains=0, main_success=0,
+                            branch_minus_main_at_fork=0.0)
+    for group in groups:
+        rewards = np.asarray([e['reward'] for e in group], dtype=np.float64)
+        std = float(rewards.std(ddof=1)) if rewards.size > 1 else 0.0
+        scale = max(std + a['epsilon'], floor)
+        for e in group:
+            w = weights_by_uid[e['uid']]
+            branches = e.pop('_branches', [])
+            points = e.get('fork_points', [])
+            by_fork = [[b for b in branches if b['fork_t'] == t] for t in points]
+            stats['mains'] += 1
+            if points:
+                main_c, branch_c = fork_coefficients(e['num_steps'], points, e['reward'],
+                                                     [[b['reward'] for b in bs] for bs in by_fork],
+                                                     e['advantage'], scale)
+            else:
+                main_c, branch_c = np.full(e['num_steps'], e['advantage']), []
+            e['_c_logpi'], e['_c_sigma'] = main_c.tolist(), [0.0] * e['num_steps']
+            e['fork_summary'] = [dict(fork_t=b['fork_t'], branch=b['branch'], reward=b['reward'],
+                                      success=b['success'], num_steps=b['num_steps'],
+                                      same_first_action=b['same_first_action'], coefficient=c)
+                                 for bs, cs in zip(by_fork, branch_c) for b, c in zip(bs, cs)]
+            if any(e['_c_logpi']):
+                items.append((e, w))
+            stats['forks'] += len(points)
+            for bs, cs in zip(by_fork, branch_c):
+                for b, c in zip(bs, cs):
+                    t = b['fork_t']
+                    prefix_tokens = sum(len(r['tokens']) for r in e['_responses'][:t])
+                    full = dict(
+                        uid=f"{e['uid']}:fork{t}:{b['branch']}", episode_id=e['episode_id'],
+                        instruction=e['instruction'], is_branch=True,
+                        _frames=e['_frames'][:t] + b['_frames'], _responses=e['_responses'][:t] + b['_responses'],
+                        rollout_logps=e['rollout_logps'][:prefix_tokens] + b['rollout_logps'],
+                        step_stop_logp=e['step_stop_logp'][:t] + b['step_stop_logp'],
+                        response_tokens=prefix_tokens + b['response_tokens'],
+                        _c_logpi=[0.0] * t + [c] * b['num_steps'], _c_sigma=[0.0] * (t + b['num_steps']))
+                    if c != 0.0:
+                        items.append((full, w))
+                        stats['local_nonzero'] += 1
+                    stats['branches'] += 1
+                    stats['branch_success'] += int(b['success'])
+                    stats['branch_same_first'] += int(b['same_first_action'])
+                    stats['branch_decisions'] += b['num_steps']
+                    stats['replay_decisions'] += t
+                    stats['branch_minus_main_at_fork'] += b['reward'] - e['reward']
+            stats['main_success'] += int(e['success'])
+    return items, stats
+
+
+def fork_metrics(gathered, threshold):
+    if not gathered[0].get('fork'):
+        return {}
+    total = lambda k: sum(g['fork'][k] for g in gathered)
+    branches = max(1, total('branches'))
+    return dict(fork_min_entropy=threshold, forks_per_main=total('forks') / max(1, total('mains')),
+                branches=total('branches'), branch_success_rate=total('branch_success') / branches,
+                branch_same_first_action=total('branch_same_first') / branches,
+                branch_nonzero_fraction=total('local_nonzero') / branches,
+                branch_minus_main_reward=total('branch_minus_main_at_fork') / branches,
+                branch_env_steps=total('branch_decisions'), replay_env_steps=total('replay_decisions'))
 
 
 def hico_metrics(gathered, critic):
@@ -450,9 +542,9 @@ def main():
     num_mb_global = per_step * G // mb_size
     T = cfg['rollout']['temperature']
     estimator = a.get('estimator', 'grpo')
-    if estimator not in ('grpo', 'grpo_stop', 'rloo', 'rloo_stop', 'critic_stop'):
+    if estimator not in ('grpo', 'grpo_stop', 'grpo_fork', 'rloo', 'rloo_stop', 'critic_stop'):
         raise ValueError(f'Unknown estimator {estimator}')
-    if estimator not in ('grpo', 'grpo_stop') and cfg['rollout']['dynamic_sampling']['enabled']:
+    if estimator not in ('grpo', 'grpo_stop', 'grpo_fork') and cfg['rollout']['dynamic_sampling']['enabled']:
         raise ValueError('HiCo-PO estimators require unfiltered on-policy rollouts (no dynamic sampling)')
     n_star = {item['episode_id']: item['N_star'] for item in pool}
     critic = None
@@ -559,12 +651,18 @@ def main():
         model.eval()
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
+        fork, threshold = None, None
+        if estimator == 'grpo_fork':
+            f = a['fork']
+            threshold = fork_threshold(out, step, f)
+            fork = dict(max_forks=f['max_forks'], branches=f['branches'], min_entropy=threshold,
+                        window=f['window'])
         if helpers is not None:
             torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
             helpers.check_storage()
-            groups, reroll = rollout_rank_pool(helpers, local, step, cfg)
+            groups, reroll = rollout_rank_pool(helpers, local, step, cfg, fork)
         else:
-            groups, reroll = rollout_rank(workers, local, step, cfg)
+            groups, reroll = rollout_rank(workers, local, step, cfg, fork)
         torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
@@ -579,7 +677,8 @@ def main():
             dist.broadcast_object_list(payload, src=0)
             dist.broadcast_object_list(fitted, src=0)
             critic.model, critic.diagnostics = payload[0], fitted[0]
-        if estimator in ('grpo', 'grpo_stop'):
+        fork_stats = {}
+        if estimator in ('grpo', 'grpo_stop', 'grpo_fork'):
             # ---- advantages (each group lives on one rank) and verl weights ----
             trajectories = []
             for gi, group in enumerate(groups):
@@ -601,6 +700,8 @@ def main():
                             a['scale_floor'] * cfg['reward']['success_reward_base'])
                         e['_c_logpi'], e['_c_sigma'] = c_logpi.tolist(), c_sigma.tolist()
                 items = [(e, w) for e, w in zip(trajectories, weights) if any(e['_c_logpi']) or any(e['_c_sigma'])]
+            elif estimator == 'grpo_fork':
+                items, fork_stats = fork_prepare(groups, {e['uid']: w for e, w in zip(trajectories, weights)}, cfg)
             else:
                 items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
         else:
@@ -690,7 +791,11 @@ def main():
             'attempt', 'model_seconds', 'env_seconds')} for r in records],
             groups=[[e['success'] for e in g] for g in groups],
             rerolls=[len(h) - 1 for h in reroll], discarded=sum(len(h[:-1]) * G for h in reroll),
-            stats=stats, items=len(items), placement=placement, hico=hico_stats, rollout_seconds=rollout_seconds, train_seconds=train_seconds,
+            stats=stats, items=len(items), placement=placement, hico=hico_stats, fork=fork_stats,
+            # all sampled attempts, including groups later discarded by dynamic sampling
+            sampled_branch_steps=[sum(x['branch_steps'][j] for h in reroll for grp in h for x in grp)
+                                  for j in (0, 1)],
+            rollout_seconds=rollout_seconds, train_seconds=train_seconds,
             rollout_peak=rollout_peak, train_peak=train_peak))
         if rank == 0:
             recs = [r for g in gathered for r in g['records']]
@@ -715,6 +820,9 @@ def main():
                 free_gib_before_update=gathered[0]['placement']['free_gib'],
                 offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
                 **hico_metrics(gathered, critic),
+                **fork_metrics(gathered, threshold),
+                sampled_branch_env_steps=sum(g['sampled_branch_steps'][0] for g in gathered),
+                sampled_replay_env_steps=sum(g['sampled_branch_steps'][1] for g in gathered),
                 pg_loss=sum(g['stats']['pg_loss'] for g in gathered) / world,
                 clipfrac=sum(g['stats']['clipfrac'] for g in gathered) / max(1, tok),
                 logp_mismatch_mean=sum(g['stats']['mismatch_abs'] for g in gathered) / max(1, tok),

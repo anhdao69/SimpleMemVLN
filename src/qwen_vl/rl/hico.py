@@ -85,6 +85,41 @@ def grpo_stop_coefficients(actions, reward, q_stop, group_rewards, epsilon=1e-6,
     return c_logpi, c_sigma
 
 
+def fork_coefficients(num_decisions, fork_points, main_reward, branch_rewards, root_advantage, scale):
+    """Per-decision (coefficient * weight) for a main trajectory and its forked branches (``grpo_fork``).
+
+    ``fork_points`` are increasing decision indices t_1 < ... < t_K of the main trajectory, chosen by a
+    causal rule (only information available before a_t); ``branch_rewards[k]`` holds the returns of the
+    M_k continuations sampled from the same history h_{t_k}. With terminal-only reward:
+
+      * main decisions s < t_1 keep the root (GRPO) advantage, weight 1;
+      * main decisions s in [t_k, t_{k+1}) get (R_main - mean(branch_rewards[k])) / scale;
+      * branch b at t_k gets (R_b - mean(the other members of {main} + branches at t_k)) / scale on its
+        own decisions s >= t_k (its prefix is the main's and is not trained here);
+      * every decision at or after t_k carries the weight prod_{j <= k} 1 / (1 + M_j).
+
+    The 1 + M_k suffixes from h_{t_k} are i.i.d. samples of the same conditional suffix gradient, so
+    averaging them keeps E[estimator] equal to the policy gradient (the root part's baseline aside),
+    while the sibling baseline is conditioned on the state h_{t_k} (tests/rl/test_hico_estimator.py).
+    Returns (main coefficients, [[branch coefficient per suffix decision] per branch] per fork).
+    """
+    if list(fork_points) != sorted(set(fork_points)) or any(not 0 <= t < num_decisions for t in fork_points):
+        raise ValueError('Fork points must be increasing decisions of the main trajectory')
+    if len(branch_rewards) != len(fork_points) or any(len(b) == 0 for b in branch_rewards):
+        raise ValueError('Every fork point needs at least one branch')
+    if not scale > 0:
+        raise ValueError('Scale must be positive')
+    main = np.full(num_decisions, float(root_advantage))
+    branches, weight = [], 1.0
+    for k, (t, rewards) in enumerate(zip(fork_points, branch_rewards)):
+        weight /= 1 + len(rewards)
+        end = fork_points[k + 1] if k + 1 < len(fork_points) else num_decisions
+        main[t:end] = weight * (main_reward - float(np.mean(rewards))) / scale
+        members = [main_reward] + list(rewards)
+        branches.append([weight * (r - (sum(members) - r) / (len(members) - 1)) / scale for r in rewards])
+    return main, branches
+
+
 def episode_features(episode):
     """Baseline features z_t (none depends on a_t), one row per decision."""
     d = np.asarray(episode['step_d'], dtype=np.float64)

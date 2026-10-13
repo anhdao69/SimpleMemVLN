@@ -216,3 +216,112 @@ def test_grpo_stop_coefficients_keep_grpo_moves_and_integrate_stop():
     # zero-variance group: GRPO's moves vanish, exact STOP values still give signal (floored scale)
     c_logpi, c_sigma = grpo_stop_coefficients([0, 0], 0.0, [6.0, 0.0], [0.0, 0.0, 0.0, 0.0], stop_scale_floor=0.75)
     assert np.allclose(c_logpi, 0.0) and np.allclose(c_sigma, [8.0, 0.0])
+
+
+def subtrees(theta, t0, x0, first_hist):
+    """All continuations from history (t0, x0): [(prob, suffix decisions, terminal reward)]."""
+    out = []
+
+    def rec(t, x, p, hist):
+        if t == H:
+            out.append((p, hist, 0.0))
+            return
+        probs = pi(theta, t, x)
+        for a in (F, B, S):
+            if a == S:
+                out.append((p * probs[S], hist + [(t, x, S)], q_stop(x)))
+            else:
+                rec(t + 1, move(x, a), p * probs[a], hist + [(t, x, a)])
+
+    rec(t0, x0, 1.0, list(first_hist))
+    return out
+
+
+def fork_rule(hist):
+    """Causal fork rule: decisions whose state alone qualifies (x in {1, 3}, t >= 1), at most two."""
+    return [k for k, (t, x, _) in enumerate(hist) if t >= 1 and x in (1, 3)][:2]
+
+
+@pytest.mark.parametrize('branches', [1, 2])
+def test_fork_estimator_is_unbiased(problem, branches):
+    """grpo_fork with a fixed root baseline and scale: E over main and all branches equals the gradient.
+
+    Given the main trajectory, branches are independent of it and of each other, and every coefficient
+    is affine in each sibling's reward. So E over branches is exact when (a) in the main's terms each
+    branch reward is replaced by V(h_t), and (b) each branch's own term is enumerated over its subtree
+    with the other siblings at V(h_t) (their deviation multiplies E[score] = 0).
+    """
+    from qwen_vl.rl.hico import fork_coefficients
+    theta, truth = problem
+    eye = np.eye(3)
+
+    def score(t, x, a):
+        return eye[a] - pi(theta, t, x)
+
+    value = {}
+    total = np.zeros_like(theta)
+    for p_main, hist, reward in trajectories(theta):
+        forks = fork_rule(hist)
+        trees = []
+        for k in forks:
+            key = hist[k][:2]
+            if key not in value:
+                tree = subtrees(theta, *key, [])
+                value[key] = (tree, sum(q * r for q, _, r in tree))
+            trees.append(value[key])
+        v = [[tree_v] * branches for _, tree_v in trees]
+        if forks:
+            main_c, _ = fork_coefficients(len(hist), forks, reward, v, root_advantage=reward - 0.3, scale=1.0)
+        else:
+            main_c = np.full(len(hist), reward - 0.3)
+        g = np.zeros_like(theta)
+        for c, (t, x, a) in zip(main_c, hist):
+            g[t, x] += c * score(t, x, a)
+        for i, (tree, _) in enumerate(trees):
+            for m in range(branches):
+                for q, suffix, r_b in tree:
+                    rewards = [list(row) for row in v]
+                    rewards[i][m] = r_b
+                    _, branch_c = fork_coefficients(len(hist), forks, reward, rewards, reward - 0.3, 1.0)
+                    for t, x, a in suffix:
+                        g[t, x] += q * branch_c[i][m] * score(t, x, a)
+        total += p_main * g
+    assert relative_error(total, truth) < 1e-6
+
+
+def test_fork_estimator_without_averaging_is_biased(problem):
+    """Power check: crediting branches with full weight (no 1/(1+M)) changes the expected gradient."""
+    from qwen_vl.rl.hico import fork_coefficients
+    theta, truth = problem
+    eye = np.eye(3)
+    total = np.zeros_like(theta)
+    for p_main, hist, reward in trajectories(theta):
+        forks = fork_rule(hist)[:1]
+        g = np.zeros_like(theta)
+        if not forks:
+            for t, x, a in hist:
+                g[t, x] += (reward - 0.3) * (eye[a] - pi(theta, t, x))
+        else:
+            tree = subtrees(theta, *hist[forks[0]][:2], [])
+            v = sum(q * r for q, _, r in tree)
+            main_c, _ = fork_coefficients(len(hist), forks, reward, [[v]], reward - 0.3, 1.0)
+            main_c[forks[0]:] *= 2                       # undo the averaging weight
+            for c, (t, x, a) in zip(main_c, hist):
+                g[t, x] += c * (eye[a] - pi(theta, t, x))
+            for q, suffix, r_b in tree:
+                for t, x, a in suffix:
+                    g[t, x] += q * (r_b - reward) * (eye[a] - pi(theta, t, x))
+        total += p_main * g
+    assert relative_error(total, truth) > 1e-2
+
+
+def test_fork_coefficients_values():
+    from qwen_vl.rl.hico import fork_coefficients
+    main, branches = fork_coefficients(6, [2], main_reward=10.0, branch_rewards=[[4.0]], root_advantage=0.5, scale=2.0)
+    assert main.tolist() == [0.5, 0.5, 1.5, 1.5, 1.5, 1.5]          # (10 - 4) / 2 / 2
+    assert branches == [[-1.5]]                                     # (4 - 10) / 2 / 2
+    main, branches = fork_coefficients(5, [1, 3], 6.0, [[0.0, 3.0], [9.0]], root_advantage=-1.0, scale=1.0)
+    assert np.allclose(main, [-1.0, (6 - 1.5) / 3, (6 - 1.5) / 3, (6 - 9) / 6, (6 - 9) / 6])
+    assert np.allclose(branches[0], [(0 - 4.5) / 3, (3 - 3) / 3]) and np.allclose(branches[1], [(9 - 6) / 6])
+    with pytest.raises(ValueError):
+        fork_coefficients(4, [3, 1], 0.0, [[1.0], [1.0]], 0.0, 1.0)

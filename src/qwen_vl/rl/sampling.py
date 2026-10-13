@@ -7,6 +7,7 @@ Validity follows the evaluator: a response must end with ``<|im_end|>`` within
 16 tokens, contain no other special token, and decode to one canonical action.
 An invalid response is a format error (ActiveVLN ends the episode with reward 0).
 """
+import copy
 import threading
 from collections import deque
 
@@ -21,6 +22,21 @@ MAX_RESPONSE_TOKENS = 16
 # The HF processor/fast tokenizer is shared by all rollout threads of a rank and is not
 # safe under concurrent calls ("Already borrowed"); every serializer call takes this lock.
 SERIALIZER_LOCK = threading.Lock()
+
+
+def clone_cache(cache):
+    """Independent copy of a stream cache: every tensor attribute of every layer is cloned."""
+    out = copy.copy(cache)
+    out.layers = []
+    for layer in cache.layers:
+        twin = copy.copy(layer)
+        for name, value in vars(layer).items():
+            if torch.is_tensor(value):
+                setattr(twin, name, value.clone())
+            elif isinstance(value, (list, tuple)) and any(torch.is_tensor(v) for v in value):
+                setattr(twin, name, type(value)(v.clone() if torch.is_tensor(v) else v for v in value))
+        out.layers.append(twin)
+    return out
 
 
 def tempered_token(logits, temperature, generator, probe=None):
@@ -59,6 +75,30 @@ class SamplingSession(StreamSession):
         self.step_lane_cache = None
         self._append_with_role(prefix, 0)
         self.prefix_length = self.positions.logical_token_count
+        self.valid = True
+
+    @torch.inference_mode()
+    def snapshot(self):
+        """Clone of the complete streaming state before the next observation (GDN + Window8 KV).
+
+        A branch restored from it continues exactly as this session would; the memory is copied
+        in O(state size), without re-encoding the history.
+        """
+        if not self.valid or self.step_lane_cache is not None:
+            raise ValueError('Snapshot needs a valid text-policy session')
+        return dict(cache=clone_cache(self.cache), positions=copy.copy(self.positions),
+                    resident=deque(self.resident), next_step=self.next_step,
+                    prefix_length=self.prefix_length, episode_uid=self.episode_uid)
+
+    @torch.inference_mode()
+    def restore(self, snapshot, episode_uid=None):
+        """Continue from ``snapshot``; the snapshot itself stays reusable for further branches."""
+        self.cache = clone_cache(snapshot['cache'])
+        self.positions = copy.copy(snapshot['positions'])
+        self.resident = deque(snapshot['resident'])
+        self.next_step, self.prefix_length = snapshot['next_step'], snapshot['prefix_length']
+        self.episode_uid = episode_uid or snapshot['episode_uid']
+        self.last_result, self.busy, self.step_lane_cache = None, False, None
         self.valid = True
 
     @torch.inference_mode()
