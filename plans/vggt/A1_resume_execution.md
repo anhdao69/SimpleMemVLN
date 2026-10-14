@@ -22,17 +22,17 @@ Architecture: retain the implemented scientific objective and A0-matched one-epo
 ### Task 1: Arm-specific qualification and launch gate
 Files: `scripts/vln/qualify_geoaddress.py`, `scripts/vln/queue_geoaddress.py`, `train/launch_a_omega_joint_e1.sh`, `tests/vln/test_geoaddress_queue.py`.
 Interfaces: `check_qualification(source, record, arm=None)`; `write_qualification_seal(source,path,records,expected,arms)`; selected qualification arms.
-- [ ] Add failing tests rejecting A0-only seals for A1, missing required gates, failed records, duplicate arm requests, and accepting a complete A1 seal.
-- [ ] Run `PYTHONPATH=src python -m pytest tests/vln/test_geoaddress_queue.py -q`; expected new regressions fail on missing validation.
-- [ ] Implement explicit qualified arms and required gate names; launch supplies its requested arm. Qualification can run A1 alone without repeating A0.
-- [ ] Run targeted suite; expected pass. Commit code and tests.
+- [x] Add failing tests rejecting A0-only seals for A1, missing required gates, failed records, duplicate arm requests, and accepting a complete A1 seal.
+- [x] Run `PYTHONPATH=src python -m pytest tests/vln/test_geoaddress_queue.py -q`; expected new regressions fail on missing validation.
+- [x] Implement explicit qualified arms and required gate names; launch supplies its requested arm. Qualification can run A1 alone without repeating A0.
+- [x] Run targeted suite; expected pass. Commit code and tests.
 
 ### Task 2: Durable A1-only continuation
 Files: `scripts/vln/queue_geoaddress.py`, `tests/vln/test_geoaddress_queue.py`.
 Interfaces: selected `--arms A1` and `--predecessor <existing A0 run>`; queue uses Task1 seals, existing predecessor validator and allocation guard.
-- [ ] Add failing tests for A1-only sequence selection, no A0 replay, fresh qualification selection, failed predecessor, and duplicate launch prevention where applicable.
-- [ ] Implement arm selection and clear phase state; keep existing whole-sequence default compatible.
-- [ ] Run targeted suite and whole available CPU suite; distinguish environment skips/failures from regressions. Commit.
+- [x] Add failing tests for A1-only sequence selection, no A0 replay, fresh qualification selection, failed predecessor, and duplicate launch prevention where applicable.
+- [x] Implement arm selection and clear phase state; keep existing whole-sequence default compatible.
+- [x] Run targeted suite and whole available CPU suite; distinguish environment skips/failures from regressions. Commit.
 
 ### Task 3: Qualification, review and deployment
 Files: plans and `reports/vggt_five/A0_A1/` continuation report/evidence; immutable server snapshot and persistent queue.

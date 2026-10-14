@@ -1,4 +1,4 @@
-> **Latest user scope (2026-10-14): finish A0 qualification only, resume G3, then run A0 immediately after G3. A1 is deferred and must not be queued.**
+> **Latest user scope (2026-10-14, continuation): finish A1 debugging and queue it after A0, on worker-2 only. See `A1_resume_execution.md`. The earlier A1 deferral below is historical.**
 
 # A0/A1 online Omega implementation plan
 

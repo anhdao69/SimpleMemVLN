@@ -1,8 +1,8 @@
-> **Latest scope:** A0 only for qualification/queue; A1 implementation retained but deferred at the user’s request. Earlier two-arm plans below are historical and superseded.
+> **Historical A0 qualification report.** The user subsequently resumed A1 implementation and requested it after A0. See `A1_CONTINUATION_2026-10-14.md` for current qualification and queue status. The A1 deferral recorded below applies to the earlier session.
 
 # A0/A1 online Omega implementation and qualification ledger
 
-Current status: A0 is qualified on worker-2 and queued after G3. A1 is implemented but deferred and not queued. G3 resumed as Slurm step4925.40 and all four ranks reached update2508 with zero CUDA OOMs. The chronological ledger below preserves failed attempts and their fixes.
+Status at the original report cutoff: A0 is qualified on worker-2 and queued after G3. A1 is implemented but deferred and not queued. G3 resumed as Slurm step4925.40 and all four ranks reached update2508 with zero CUDA OOMs. The chronological ledger below preserves failed attempts and their fixes.
 
 ## Scope and decisions
 

@@ -117,7 +117,7 @@ def test_a1_only_queue_qualifies_then_trains_without_replaying_a0(tmp_path,monke
     a0=tmp_path/'existing_a0';a1=root/'a1_joint_e1'
     states={a0:'complete'};calls=[]
     monkeypatch.setattr(queue,'predecessor_status',lambda p,n:states.get(p,'waiting'))
-    def run_step(name,command):
+    def run_step(name,command,completed_run=None):
         calls.append((name,command))
         if name=='address-qualification':
             assert command[-2:]==['--arms','A1']
@@ -125,6 +125,7 @@ def test_a1_only_queue_qualifies_then_trains_without_replaying_a0(tmp_path,monke
             write_qualification_seal(source,seal,qualification_records('A1'),queue.source_files(source),arms=['A1'])
         else:
             assert name=='a1-joint-e1'
+            assert completed_run==a1
             assert command[-4:]==['A1',str(a1),str(seal),str(a0)]
             states[a1]='complete'
     queue.execute_sequence(['A1'],source,root,a0,3852,seal,run_step)
@@ -162,3 +163,33 @@ def test_allocation_is_busy_until_previous_gpu_step_exits(monkeypatch):
     assert not queue.allocation_idle('4925')
     rows='4925.0|train_vln\n4925.extern|extern\n'
     assert queue.allocation_idle('4925')
+
+
+def test_restart_skips_orphan_that_completes_while_waiting_for_idle(tmp_path,monkeypatch):
+    from scripts.vln import queue_geoaddress as queue
+    run=tmp_path/'a1_joint_e1';events=[];idle=iter([False,True])
+    monkeypatch.setattr(queue,'allocation_ready',lambda allocation:None)
+    monkeypatch.setattr(queue,'allocation_idle',lambda allocation:next(idle))
+    monkeypatch.setattr(queue.time,'sleep',lambda seconds:None)
+    monkeypatch.setattr(queue,'predecessor_status',lambda p,n:'complete')
+    def forbidden(*args,**kwargs):raise AssertionError('Completed orphan must not launch twice')
+    monkeypatch.setattr(queue.subprocess,'run',forbidden)
+    queue.run_allocation_step('4925',tmp_path,'a1-joint-e1',['bash','launcher'],
+        tmp_path,lambda status,**kw:events.append((status,kw)),completed_run=run)
+    assert [status for status,kw in events]==['waiting','skipped']
+
+
+def test_restart_resumes_incomplete_run_after_allocation_idle(tmp_path,monkeypatch):
+    from scripts.vln import queue_geoaddress as queue
+    import subprocess
+    calls=[];idle=iter([False,True])
+    monkeypatch.setattr(queue,'allocation_ready',lambda allocation:None)
+    monkeypatch.setattr(queue,'allocation_idle',lambda allocation:next(idle))
+    monkeypatch.setattr(queue.time,'sleep',lambda seconds:None)
+    monkeypatch.setattr(queue,'predecessor_status',lambda p,n:'failed')
+    def launch(cmd,**kwargs):
+        calls.append(cmd);return subprocess.CompletedProcess(cmd,0)
+    monkeypatch.setattr(queue.subprocess,'run',launch)
+    queue.run_allocation_step('4925',tmp_path,'a1-joint-e1',['bash','launcher'],
+        tmp_path,lambda *args,**kw:None,completed_run=tmp_path/'a1_joint_e1')
+    assert len(calls)==1 and calls[0][-2:]==['bash','launcher']

@@ -100,6 +100,23 @@ def allocation_idle(allocation):
     return all(row.split('|',1)[0] in shell_steps for row in result.stdout.splitlines() if row.strip())
 
 
+def run_allocation_step(allocation,source,name,command,root,record,completed_run=None,steps=3852):
+    allocation_ready(allocation)
+    while not allocation_idle(allocation):
+        record('waiting',stage='allocation-idle',next_stage=name)
+        time.sleep(15)
+        allocation_ready(allocation)
+    # A surviving step can finish while a restarted watcher waits above.
+    if completed_run is not None and predecessor_status(completed_run,steps)=='complete':
+        record('skipped',stage=name,reason='run already completed while waiting')
+        return
+    record('running',stage=name)
+    cmd=step_command(allocation,source,name,command)
+    with (root/(name+'-'+str(time.time_ns())+'.log')).open('x') as log:
+        result=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT)
+    if result.returncode:raise RuntimeError(f'{name} failed with exit {result.returncode}; remaining runs are blocked')
+
+
 def execute_sequence(arms,source,root,predecessor,steps,seal,run_step):
     arms=selected_arms(arms)
     if predecessor_status(predecessor,steps)!='complete':
@@ -118,7 +135,7 @@ def execute_sequence(arms,source,root,predecessor,steps,seal,run_step):
                 raise RuntimeError('Required predecessor incomplete')
             check_qualification(source,seal,arm=arm)
             run_step(arm.lower()+'-joint-e1',['bash',str(source/'train/launch_a_omega_joint_e1.sh'),
-                     arm,str(run),str(seal),str(previous)])
+                     arm,str(run),str(seal),str(previous)],completed_run=run)
             if predecessor_status(run,steps)!='complete':
                 raise RuntimeError(f'{arm} exited without complete epoch checkpoint')
         previous=run
@@ -144,17 +161,9 @@ def main():
         item=dict(status=status,updated_unix=time.time(),allocation=a.allocation,node='worker-2',source=str(source),arms=arms,**kw)
         temp=state.with_suffix('.tmp');temp.write_text(json.dumps(item,indent=2));temp.replace(state)
         print(json.dumps(item),flush=True)
-    def run_step(name,command):
-        allocation_ready(a.allocation)
-        while not allocation_idle(a.allocation):
-            record('waiting',stage='allocation-idle',next_stage=name)
-            time.sleep(15)
-            allocation_ready(a.allocation)
-        record('running',stage=name)
-        cmd=step_command(a.allocation,source,name,command)
-        with (root/(name+'-'+str(time.time_ns())+'.log')).open('x') as log:
-            result=subprocess.run(cmd,stdout=log,stderr=subprocess.STDOUT)
-        if result.returncode:raise RuntimeError(f'{name} failed with exit {result.returncode}; remaining runs are blocked')
+    def run_step(name,command,completed_run=None):
+        return run_allocation_step(a.allocation,source,name,command,root,record,
+                                   completed_run=completed_run,steps=a.steps)
     with (root/'queue.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         try:
