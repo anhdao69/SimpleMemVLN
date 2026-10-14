@@ -246,8 +246,10 @@ def main():
     model.eval()
     device = next(model.parameters()).device
     root = Path(__file__).resolve().parents[2]
-    report = dict(source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip(),
-                  source_dirty=bool(subprocess.check_output(['git', 'diff', 'HEAD', '--', '.'], cwd=root)),
+    snapshot=root/'source.commit'
+    revision=snapshot.read_text().strip() if snapshot.exists() else subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
+    dirty=None if snapshot.exists() else bool(subprocess.check_output(['git','diff','HEAD','--','.'],cwd=root))
+    report = dict(source_commit=revision,source_dirty=dirty,source_archive=snapshot.exists(),
                   runtime_profile=RUNTIME_PROFILE,
                   runtime_sha256=hashlib.sha256(Path(RUNTIME_PROFILE).read_bytes()).hexdigest(), note='Fixed expert observations and forced canonical responses; no navigation-quality claim.')
     short = fixture(args.manifest, 'r2rce', 24)
