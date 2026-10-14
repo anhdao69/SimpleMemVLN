@@ -1,4 +1,4 @@
-"""Durable worker-2-only sequence: G3 -> qualification -> A0 -> A1.
+"""Durable worker-2-only sequence: predecessor -> qualification -> selected arms.
 
 Runs GPU steps inside the existing allocation only after the predecessor has
 completed successfully. Every launch verifies qualification and source hashes.
@@ -91,10 +91,44 @@ def allocation_ready(allocation):
         raise RuntimeError('Required worker-2 allocation is not running; no fallback to other workers')
 
 
+def allocation_idle(allocation):
+    result=subprocess.run(['squeue','--steps','-h','-j',str(allocation),'-o','%i|%j'],
+                          capture_output=True,text=True,check=True)
+    # The interactive shell owns step0; --overlap is necessary to run inside it.
+    # Every additional step must finish before another four-GPU process starts.
+    shell_steps={str(allocation)+suffix for suffix in ('.0','.extern','.batch')}
+    return all(row.split('|',1)[0] in shell_steps for row in result.stdout.splitlines() if row.strip())
+
+
+def execute_sequence(arms,source,root,predecessor,steps,seal,run_step):
+    arms=selected_arms(arms)
+    if predecessor_status(predecessor,steps)!='complete':
+        raise RuntimeError('Required predecessor incomplete or failed')
+    if not seal.exists():
+        run_step('address-qualification',['python','-m','scripts.vln.qualify_geoaddress',
+                 '--root',str(seal.parent),'--arms',*arms])
+    for arm in arms:check_qualification(source,seal,arm=arm)
+    previous=Path(predecessor)
+    for arm in arms:
+        run=root/(arm.lower()+'_joint_e1')
+        # Completed runs are never trained twice. Interrupted training retains
+        # its output directory and restores full optimizer/RNG/sampler state.
+        if predecessor_status(run,steps)!='complete':
+            if predecessor_status(previous,steps)!='complete':
+                raise RuntimeError('Required predecessor incomplete')
+            check_qualification(source,seal,arm=arm)
+            run_step(arm.lower()+'-joint-e1',['bash',str(source/'train/launch_a_omega_joint_e1.sh'),
+                     arm,str(run),str(seal),str(previous)])
+            if predecessor_status(run,steps)!='complete':
+                raise RuntimeError(f'{arm} exited without complete epoch checkpoint')
+        previous=run
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--predecessor',required=True);p.add_argument('--steps',type=int,default=3852)
     p.add_argument('--source',required=True);p.add_argument('--qualification');p.add_argument('--check-only',action='store_true')
     p.add_argument('--arm',choices=['A0','A1'],help='Required arm for a production launch check')
+    p.add_argument('--arms',nargs='+',choices=['A0','A1'],default=['A0','A1'])
     p.add_argument('--allocation');p.add_argument('--root');a=p.parse_args()
     if a.check_only:
         if not a.arm:p.error('--arm required with --check-only')
@@ -102,15 +136,20 @@ def main():
         if predecessor_status(a.predecessor,a.steps)!='complete':raise RuntimeError('Predecessor not successfully complete')
         print('ADDRESS_LAUNCH_PREREQUISITES_PASS');return
     if not a.allocation or not a.root:p.error('--allocation and --root required for queue')
+    arms=selected_arms(a.arms)
     root=Path(a.root).resolve();root.mkdir(parents=True,exist_ok=True)
     source=Path(a.source).resolve();seal=root/'qualification'/'qualification_pass.json'
     state=root/'queue_state.json'
     def record(status,**kw):
-        item=dict(status=status,updated_unix=time.time(),allocation=a.allocation,node='worker-2',source=str(source),**kw)
+        item=dict(status=status,updated_unix=time.time(),allocation=a.allocation,node='worker-2',source=str(source),arms=arms,**kw)
         temp=state.with_suffix('.tmp');temp.write_text(json.dumps(item,indent=2));temp.replace(state)
         print(json.dumps(item),flush=True)
     def run_step(name,command):
         allocation_ready(a.allocation)
+        while not allocation_idle(a.allocation):
+            record('waiting',stage='allocation-idle',next_stage=name)
+            time.sleep(15)
+            allocation_ready(a.allocation)
         record('running',stage=name)
         cmd=step_command(a.allocation,source,name,command)
         with (root/(name+'-'+str(time.time_ns())+'.log')).open('x') as log:
@@ -122,26 +161,12 @@ def main():
             while True:
                 allocation_ready(a.allocation)
                 status=predecessor_status(a.predecessor,a.steps)
-                if status=='failed':raise RuntimeError('G3 predecessor failed; no new runs launched')
+                if status=='failed':raise RuntimeError('Predecessor failed; no new runs launched')
                 if status=='complete':break
-                record('waiting',stage='G3',predecessor=str(a.predecessor))
+                record('waiting',stage='predecessor',predecessor=str(a.predecessor))
                 time.sleep(30)
-            if not seal.exists():
-                run_step('a01-qualification',['python','-m','scripts.vln.qualify_geoaddress','--root',str(root/'qualification')])
-            check_qualification(source,seal)
-            previous=Path(a.predecessor)
-            for arm in ('A0','A1'):
-                run=root/(arm.lower()+'_joint_e1')
-                # Completed runs are not trained twice. Interrupted training resumes
-                # in the same output directory with optimizer/RNG/sampler state.
-                status=predecessor_status(run,a.steps)
-                if status!='complete':
-                    if predecessor_status(previous,a.steps)!='complete':raise RuntimeError('Required predecessor incomplete')
-                    check_qualification(source,seal,arm=arm)
-                    run_step(arm.lower()+'-joint-e1',['bash',str(source/'train/launch_a_omega_joint_e1.sh'),arm,str(run),str(seal),str(previous)])
-                    if predecessor_status(run,a.steps)!='complete':raise RuntimeError(f'{arm} exited without complete epoch checkpoint')
-                previous=run
-            record('complete',stage='A0+A1')
+            execute_sequence(arms,source,root,Path(a.predecessor),a.steps,seal,run_step)
+            record('complete',stage='+'.join(arms))
         except BaseException as error:
             record('blocked',error=repr(error))
             raise

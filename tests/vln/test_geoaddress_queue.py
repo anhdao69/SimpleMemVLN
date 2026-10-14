@@ -107,3 +107,58 @@ def test_clean_partial_checkpoint_waits(tmp_path,monkeypatch):
     checkpoint=tmp_path/'train/checkpoint-2500';checkpoint.mkdir(parents=True)
     monkeypatch.setattr(recovery,'validate_complete',lambda p:dict(step=2500,world_size=4))
     assert predecessor_status(tmp_path,3852)=='waiting'
+
+
+def test_a1_only_queue_qualifies_then_trains_without_replaying_a0(tmp_path,monkeypatch):
+    from scripts.vln import queue_geoaddress as queue
+    from scripts.vln.qualify_geoaddress import write_qualification_seal
+    source=tmp_path/'source';(source/'src').mkdir(parents=True);(source/'src/x.py').write_text('x=1')
+    root=tmp_path/'continuation';root.mkdir();seal=root/'qualification/qualification_pass.json'
+    a0=tmp_path/'existing_a0';a1=root/'a1_joint_e1'
+    states={a0:'complete'};calls=[]
+    monkeypatch.setattr(queue,'predecessor_status',lambda p,n:states.get(p,'waiting'))
+    def run_step(name,command):
+        calls.append((name,command))
+        if name=='address-qualification':
+            assert command[-2:]==['--arms','A1']
+            seal.parent.mkdir()
+            write_qualification_seal(source,seal,qualification_records('A1'),queue.source_files(source),arms=['A1'])
+        else:
+            assert name=='a1-joint-e1'
+            assert command[-4:]==['A1',str(a1),str(seal),str(a0)]
+            states[a1]='complete'
+    queue.execute_sequence(['A1'],source,root,a0,3852,seal,run_step)
+    assert [name for name,cmd in calls]==['address-qualification','a1-joint-e1']
+    queue.execute_sequence(['A1'],source,root,a0,3852,seal,run_step)
+    assert len(calls)==2  # Restart does not replay qualification or completed training.
+
+
+@pytest.mark.parametrize('status',['waiting','failed'])
+def test_a1_sequence_never_uses_gpus_before_successful_a0(tmp_path,monkeypatch,status):
+    from scripts.vln import queue_geoaddress as queue
+    monkeypatch.setattr(queue,'predecessor_status',lambda p,n:status)
+    def forbidden(*args):raise AssertionError('GPU step must not launch')
+    with pytest.raises(RuntimeError,match='predecessor'):
+        queue.execute_sequence(['A1'],tmp_path,tmp_path,tmp_path/'a0',3852,tmp_path/'seal.json',forbidden)
+
+
+def test_failed_qualification_cannot_launch_training(tmp_path,monkeypatch):
+    from scripts.vln import queue_geoaddress as queue
+    monkeypatch.setattr(queue,'predecessor_status',lambda p,n:'complete')
+    calls=[]
+    def fail(name,command):
+        calls.append(name);raise RuntimeError('Qualification failed')
+    with pytest.raises(RuntimeError,match='Qualification failed'):
+        queue.execute_sequence(['A1'],tmp_path,tmp_path,tmp_path/'a0',3852,tmp_path/'seal.json',fail)
+    assert calls==['address-qualification']
+
+
+def test_allocation_is_busy_until_previous_gpu_step_exits(monkeypatch):
+    from scripts.vln import queue_geoaddress as queue
+    import subprocess
+    rows='4925.0|train_vln\n4925.41|a0-joint-e1\n'
+    def listing(cmd,**kwargs):return subprocess.CompletedProcess(cmd,0,stdout=rows)
+    monkeypatch.setattr(queue.subprocess,'run',listing)
+    assert not queue.allocation_idle('4925')
+    rows='4925.0|train_vln\n4925.extern|extern\n'
+    assert queue.allocation_idle('4925')
