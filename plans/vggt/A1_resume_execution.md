@@ -36,12 +36,14 @@ Interfaces: selected `--arms A1` and `--predecessor <existing A0 run>`; queue us
 
 ### Task 3: Qualification, review and deployment
 Files: plans and `reports/vggt_five/A0_A1/` continuation report/evidence; immutable server snapshot and persistent queue.
-- [ ] Run existing scientific CPU tests; inspect loss/indexing/normalization, online targets and recovery/export paths without rewriting passed implementation.
-- [ ] Obtain fresh independent review of continuation changes and remaining A1 runtime risks; fix important findings with regressions.
-- [ ] Deploy a committed source snapshot. Start persistent worker-2 watcher for A0 -> A1 qualification -> A1 production, with source/arm checks, no premature GPU use and no fallback node.
+- [x] Run existing scientific CPU tests; inspect loss/indexing/normalization, online targets and recovery/export paths without rewriting passed implementation.
+- [x] Obtain fresh independent review of continuation changes and remaining A1 runtime risks; fix important findings with regressions.
+- [x] Deploy a committed source snapshot. Start persistent worker-2 watcher for A0 -> A1 qualification -> A1 production, with source/arm checks, no premature GPU use and no fallback node.
 - [ ] H100 gates: full regression, teacher QC, mixed+empty support, longest RxR/R2R, threshold/mixed extremes, fresh-process resume, trained export, distributed denominator, representative timing, final regression. Record PASS only after actual results.
-- [ ] Report exact queue state and which GPU gates are completed versus pending; update the historical deferral notice. Preserve failed evidence.
+- [x] Report exact queue state and which GPU gates are completed versus pending; update the historical deferral notice. Preserve failed evidence.
 
 ## Pre-flight
 Task1 seal schema is consumed by Task2 queue and launcher. Explicit arm validation must be applied at both boundaries. GPU gates require A0 completion; CPU work and source deployment do not.
 Ruling: do not pause A0 or use other workers. Queue the H100 qualification immediately after A0 completion, followed by A1 only on PASS. This preserves current training at the cost of qualification time between runs.
+
+Deployment: runtime70455f0, campaign `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation`, detached watcher3361209, allocation4925 on worker-2. CPU scientific/queue39passed; server queue21passed; full local369passed/35skipped/4environmentfailures. Fresh review restart-race fix verified. H100 gates remain pending A0; do not mark Task3 hardware qualification complete until the source-bound A1 seal exists.

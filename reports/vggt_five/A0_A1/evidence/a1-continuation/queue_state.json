@@ -1,0 +1,12 @@
+{
+  "status": "waiting",
+  "updated_unix": 1792005938.6097052,
+  "allocation": "4925",
+  "node": "worker-2",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation/source-70455f0",
+  "arms": [
+    "A1"
+  ],
+  "stage": "predecessor",
+  "predecessor": "/mnt/data/vmo-ai-task/anhdh35/a01-omega-worker2-20261014-retry/a0_joint_e1"
+}

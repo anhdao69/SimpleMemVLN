@@ -1,0 +1,23 @@
+{
+  "pid": 3361209,
+  "command": [
+    "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/bin/python",
+    "-u",
+    "-m",
+    "scripts.vln.queue_geoaddress",
+    "--predecessor",
+    "/mnt/data/vmo-ai-task/anhdh35/a01-omega-worker2-20261014-retry/a0_joint_e1",
+    "--steps",
+    "3852",
+    "--source",
+    "/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation/source-70455f0",
+    "--allocation",
+    "4925",
+    "--root",
+    "/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation",
+    "--arms",
+    "A1"
+  ],
+  "source_commit": "70455f07dd5dc4f65f808212e744e7745625b759",
+  "launched_unix": 1792005878.5191946
+}

@@ -1,6 +1,6 @@
 # A1 continuation after A0 — 2026-10-14
 
-Status before deployment: implementation and CPU review complete; worker-2 H100 qualification is pending A0 completion. This report supersedes the earlier A1 deferral. No production A1 success or memory qualification is claimed here.
+Status after deployment: implementation and CPU review complete; persistent watcher3361209 is waiting for A0. Worker-2 H100 qualification is pending A0 completion. This report supersedes the earlier A1 deferral. No production A1 success or memory qualification is claimed here.
 
 ## Scientific setup retained
 
@@ -23,7 +23,7 @@ CPUAdam/ZeRO2, pinned activation arena, four CPU math threads, eight loader work
 ## Validation evidence
 
 - Targeted scientific, runtime, export/finalization, QC and queue tests:39 passed after the review fix.
-- Full local suite before review fix:367 passed,35 skipped,4 environment failures. The failures require cluster `squeue`, DeepSpeedCPUAdam, the VGGT-Omega package and `VLN_MODEL_PATH`, respectively. These are not counted as passes; a full server suite is mandatory before production.
+- Full local suite after review fix:369 passed,35 skipped,4 environment failures (before the fix:367 passed). The failures require cluster `squeue`, DeepSpeedCPUAdam, the VGGT-Omega package and `VLN_MODEL_PATH`, respectively. These are not counted as passes; a full server suite is mandatory before production.
 - Production launcher shell syntax passed.
 - Independent fresh-context review found the restart race above and no other concrete inspected launch/scientific blocker. GPU memory, distributed execution and navigation quality were not certified by that review.
 
@@ -47,4 +47,18 @@ No reliable full-epoch A1 ETA is available until the representative worker-2 mea
 - Verify remote process state and artifact hashes separately from the read-only reviewer.
 - Leave downstream navigation performance to evaluation; successful training alone does not establish improvement.
 
-Operational source identity, watcher PID and live state will be appended after verified deployment.
+## Verified deployment
+
+- Committed runtime source: `70455f07dd5dc4f65f808212e744e7745625b759` on `v2_vggt_omega_a1`.
+- Archive SHA256: `bf4216ed40fc829cef4e0e0378c7e8225e46ba6db9ec47f35be99a3b6e51db60`.
+- Campaign: `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation`.
+- Immutable source: campaign `source-70455f0`; all175 runtime file hashes matched the local source after extraction.
+- Server CPU queue suite:21 passed in4.82s. This is deployment verification, not H100 qualification.
+- Detached login watcher PID3361209; launch metadata in `watcher_launch.json`, state in `queue_state.json`, console log in `watcher.log`. It holds `queue.lock`.
+- Verified initial state: `waiting`, stage `predecessor`, arms `[A1]`, allocation4925, worker-2. No A1 GPU step launched while A0 was active.
+- Predecessor: `/mnt/data/vmo-ai-task/anhdh35/a01-omega-worker2-20261014-retry/a0_joint_e1`.
+- Future A1 output: campaign `a1_joint_e1/train`. Qualification evidence: campaign `qualification`; production cannot start without `qualification_pass.json` for A1.
+
+A1 hardware gates remain pending. Preserve this distinction when inspecting the queue later; a running watcher is not a passing GPU test or a running training process.
+
+Verification on a new SSH connection at2026-10-14 19:25:24UTC: watcher3361209 remained alive with parentPID1; queue state continued refreshing as waiting; Slurm contained only shell4925.0 and A0 step4925.41. A0 advanced to2904/3852 with zero recorded CUDA/host OOMs. Captured queue and launch metadata are in `evidence/a1-continuation/`.
