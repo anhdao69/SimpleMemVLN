@@ -1,0 +1,5 @@
+{"stage": "export-regression", "time": 1791956009.3977654, "qualified_arms": [], "deferred_arms": ["A1"]}
+{"stage": "A0-export", "time": 1791956017.7373421, "qualified_arms": [], "deferred_arms": ["A1"]}
+{"stage": "A0-qualified", "time": 1791956070.7416863, "qualified_arms": ["A0"], "deferred_arms": ["A1"]}
+{"stage": "G3-resume-submitted", "time": 1791956070.7663643, "qualified_arms": ["A0"], "deferred_arms": ["A1"], "pid": 2775816}
+{"stage": "A0-queued-after-G3", "time": 1791956072.770468, "qualified_arms": ["A0"], "deferred_arms": ["A1"]}
