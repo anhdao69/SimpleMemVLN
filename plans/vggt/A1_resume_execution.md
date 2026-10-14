@@ -39,14 +39,14 @@ Files: plans and `reports/vggt_five/A0_A1/` continuation report/evidence; immuta
 - [x] Run existing scientific CPU tests; inspect loss/indexing/normalization, online targets and recovery/export paths without rewriting passed implementation.
 - [x] Obtain fresh independent review of continuation changes and remaining A1 runtime risks; fix important findings with regressions.
 - [x] Deploy a committed source snapshot. Start persistent worker-2 watcher for A0 -> A1 qualification -> A1 production, with source/arm checks, no premature GPU use and no fallback node.
-- [ ] H100 gates: full regression, teacher QC, mixed+empty support, longest RxR/R2R, threshold/mixed extremes, fresh-process resume, trained export, distributed denominator, representative timing, final regression. Record PASS only after actual results.
+- [x] H100 gates: full regression, teacher QC, mixed+empty support, longest RxR/R2R, threshold/mixed extremes, fresh-process resume, trained export, distributed denominator, representative timing, final regression. Record PASS only after actual results.
 - [x] Report exact queue state and which GPU gates are completed versus pending; update the historical deferral notice. Preserve failed evidence.
 
 ## Pre-flight
 Task1 seal schema is consumed by Task2 queue and launcher. Explicit arm validation must be applied at both boundaries. GPU gates require A0 completion; CPU work and source deployment do not.
 Ruling: do not pause A0 or use other workers. Queue the H100 qualification immediately after A0 completion, followed by A1 only on PASS. This preserves current training at the cost of qualification time between runs.
 
-Deployment: runtime70455f0, campaign `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation`, detached watcher3361209, allocation4925 on worker-2. CPU scientific/queue39passed; server queue21passed; full local369passed/35skipped/4environmentfailures. Fresh review restart-race fix verified. H100 gates remain pending A0; do not mark Task3 hardware qualification complete until the source-bound A1 seal exists.
+Historical deployment before repair: runtime70455f0, campaign `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation`, detached watcher3361209, allocation4925 on worker-2. CPU scientific/queue39passed; server queue21passed; full local369passed/35skipped/4environmentfailures. Fresh review restart-race fix verified. H100 gates remain pending A0; do not mark Task3 hardware qualification complete until the source-bound A1 seal exists.
 
 ## Repair continuation after initial hardware failure
 
@@ -54,3 +54,10 @@ Deployment: runtime70455f0, campaign `/mnt/data/vmo-ai-task/anhdh35/a1-omega-wor
 - Remove A1's dependency on unused positional-grid numeric hashes while preserving every used teacher component and strict validation. No PCA, cached targets, or MLP; frozen online Omega and direct native Q/K unchanged.
 - Verify regression RED->GREEN, deploy new immutable source, rerun the mandatory H100 gates in a new campaign path. Do not overwrite failed evidence or replay A0.
 - Start A1 only after a complete arm/source-bound PASS seal. Observe real optimizer progress and full recovery checkpoint before reporting running successfully.
+
+
+## Completed repair qualification and production start
+
+Verified2026-10-14 23:29:24UTC: runtime6e71778 deployed as an immutable source and pushed to `v2_vggt_omega_a1`. All16 A1 gates passed on worker-2, including411 tests in both initial/final server suites, longest episodes, distributed normalization, export and fresh-process recovery. Qualification step4925.49 exited successfully; persistent watcher3370976 launched production4925.50 in the same four-H100 allocation4925.
+
+Production confirms one joint R2R/EnglishRxR15 epoch from the pinned original base, global batch8,3852updates,warmup116, Window8 and native Q/K relation supervision from online frozen resident FP32 VGGT-Omega. No PCA, feature pre-extraction or dimension-conversion MLP. All ranks reached update12, finite action/auxiliary losses, zero CUDA OOM. Full22-file checkpoint10 passed `validate_complete`; training continued after the save. This completes implementation, qualification and launch, not the epoch itself. See the current continuation report and `evidence/a1-repair/verified_production.json` for measured results and exact deployment paths.

@@ -1,6 +1,6 @@
 # A1 continuation after A0 — 2026-10-14
 
-Status after deployment: implementation and CPU review complete; persistent watcher3361209 is waiting for A0. Worker-2 H100 qualification is pending A0 completion. This report supersedes the earlier A1 deferral. No production A1 success or memory qualification is claimed here.
+Current status, verified 2026-10-14 23:29:24 UTC: A1 production is running on worker-2, four H100s, Slurm step4925.50 inside allocation4925. All16 mandatory qualification gates passed, including411 tests in both server regression runs. All four ranks reached update12/3852; checkpoint10 is complete and validated. Online VGGT-Omega supervision is active, with finite nonzero auxiliary losses; no PCA, pre-extraction or dimension-conversion MLP is used. The epoch is still running. The deployment and pending-gate sections below preserve the earlier history; the final section records the repaired run.
 
 ## Scientific setup retained
 
@@ -27,7 +27,7 @@ CPUAdam/ZeRO2, pinned activation arena, four CPU math threads, eight loader work
 - Production launcher shell syntax passed.
 - Independent fresh-context review found the restart race above and no other concrete inspected launch/scientific blocker. GPU memory, distributed execution and navigation quality were not certified by that review.
 
-## Pending H100 gates and scheduling
+## Historical pending H100 gates and scheduling
 
 Worker-2 allocation4925 has four H100s,60 CPUs and768GiB RAM. Existing A0 step4925.41 remains untouched. Worker-2's other GPUs were allocated when this continuation was prepared; tests must wait for A0.
 
@@ -47,7 +47,7 @@ No reliable full-epoch A1 ETA is available until the representative worker-2 mea
 - Verify remote process state and artifact hashes separately from the read-only reviewer.
 - Leave downstream navigation performance to evaluation; successful training alone does not establish improvement.
 
-## Verified deployment
+## Historical deployment before the identity repair
 
 - Committed runtime source: `70455f07dd5dc4f65f808212e744e7745625b759` on `v2_vggt_omega_a1`.
 - Archive SHA256: `bf4216ed40fc829cef4e0e0378c7e8225e46ba6db9ec47f35be99a3b6e51db60`.
@@ -72,3 +72,42 @@ Diagnostics found a concrete portability defect in the identity: it included the
 The repair removes only unused `position` and `position_sha256` fields from A1's persisted teacher identity. It retains weight, external-source, preprocessing-code, base-adapter, A1-adapter, target, layer, dimensions and pooling checks. The unchanged parent constructor still validates its complete locally computed identity. A1 still replaces the parent grid with literal zero; descriptor computation and direct-Q/K relation loss are unchanged. G1 and G3 code/contracts are unchanged. Production A1 config records the new A1 source hash.
 
 Regressions first reproduced the false rejection when only unused positional bytes changed (2failed/1passed), then passed after repair. They also verify that changing teacher weights is still rejected and that strict parent validation plus zero-position initialization remain intact. A fresh immutable snapshot and full worker-2 qualification are required before any production start; previous failed evidence is preserved.
+
+
+## Repaired qualification and production — verified 2026-10-14 23:29:24 UTC
+
+Runtime commit `6e717787313b2218cd2fd40b059f2942fee1820f` is pushed to GitHub branch `v2_vggt_omega_a1`. The immutable server source is `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-repair/source-6e71778`; archive SHA256 is `8443b5f1c474b01e320856e54e31868436b71def6b3bdd5c3aab329786e07d87`. All175 runtime-file hashes matched the deployed source. The repaired A1 identity also validates on the login CPU. G1/G3 and completed A0 sources and artifacts were not modified.
+
+The detached watcher3370976 completed qualification in step4925.49 and launched production step4925.50 at approximately23:24:34UTC. Source-bound `check_qualification(..., arm='A1')` was independently rerun successfully after launch. Its seal contains all16 required gates with returncode0:
+
+- Initial full regression:411 passed in48.30s; final full regression:411 passed in46.51s.
+- Online teacher QC; mixed episodes and mixed empty support.
+- Longest RxR and R2R; offload threshold; mixed extreme lengths.
+- Uninterrupted recovery reference, fresh-process resume and numerical comparison.
+- Trained serving export/replay on both datasets.
+- Representative R2R and RxR timings; distributed pair normalization.
+
+The longest RxR fixture (627frames,199,735tokens) completed three updates with peak allocated61.729GiB and peak reserved76.463GiB. The mixed extreme test completed three updates with peak allocated61.729GiB and reserved69.002GiB. No new CUDA/host OOM was recorded in the qualification runs. These are measured cases, not a guarantee against every future resource failure. The production RAM working-set guard remains691.2GiB within the768GiB allocation, with CPUAdam/ZeRO2 and pinned activation offload enabled. Total cgroup usage can approach its limit because it includes reclaimable clean filesystem cache; the working-set metric and actual OOM events are recorded separately.
+
+Fresh-process recovery passed numerical comparison: whole-model relative L2 difference9.43e-9, adapter relative L2 difference5.23e-8, maximum absolute parameter difference1.40e-7, and matching compared losses0.416747719. This is numerical agreement, not bitwise equality. All native Q/K up projections changed during the continued update, and the exported serving model retained its45,056 adapter parameters.
+
+| Representative four-H100 fixture | Steady seconds per optimizer update | Episode exposures |
+|---|---:|---:|
+| R2R | 9.73 | 64 |
+| English RxR15 | 19.31 | 64 |
+
+These timings exclude initialization and the first interval. They use short repeated representative fixtures; they are not measured full-epoch durations. Production has variable episode lengths, global batch8, and periodic full-state checkpoint I/O. No new speed change was introduced after qualification.
+
+### Production configuration and recovery proof
+
+The actual resolved configuration and emitted training contract confirm original Qwen3.5-4B revision `851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`,30,815 joint episodes, one epoch,3,852 updates,116 LR warmup updates, microbatch1 per rank and accumulation2 across four ranks. All four ranks emitted `SCHEDULE_GATE_PASS (3852, 116)`. Window8, canonical text action history, full episode BPTT, backboneLR5e-6 and GeoAddress adapterLR5e-5 are retained. The run starts independently from base; it does not adapt A0/G3 weights.
+
+The actual teacher configuration names `VGGT-Omega-1B-512`, frozen resident FP32 online evaluation and `direct-native-qk-cosine-v1`. It uses the Omega source and weights under `third_party/vggt-omega` and `models/vggt-omega/vggt_omega_1b_512.pt`. There is no PCA, pre-extracted feature bank or dimension-conversion MLP. Teacher2048-dimensional and student128-dimensional features form relations over the same image patches; matching those relation distributions does not require matching feature widths. This preserves the user's selected direct native Q/K objective.
+
+At23:29:24UTC, all four production profiles showed update12/3852 with zero CUDA OOMs. Observed production peaks through that point were47.762GiB allocated and52.029GiB reserved. All recorded action and auxiliary losses were finite. Each rank had nonempty supervised pairs with positive auxiliary weight. For example, rank0 update12 had8 pairs, global update denominator64, auxiliary loss sum3.982134 and ramp weight0.00155642. Thus the online teacher loss is being computed and included in training.
+
+`validate_complete(train/checkpoint-10)` passed: step10, world size4,22 nonempty files with the recorded sizes, including model, distributed optimizer/scheduler, RNG states and resume contract. The total checkpoint size is70,588,068,573bytes. Training advanced beyond the save. The launcher keeps full-state automatic resume in the same run directory, saves first at10 and every100 updates thereafter, and preserves epoch-boundary recovery. If the allocation is cancelled, restart still requires a suitable worker-2 allocation; this is not an automatic replacement allocation.
+
+Production directory: `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-repair/a1_joint_e1/train`. Watcher state and supervisor logs remain in the parent campaign. The initial failed campaign is preserved separately. Detailed captured source seal, all experiment results, recovery comparison, resolved config, four-rank progress, auxiliary records and checkpoint inventory are in [verified_production.json](evidence/a1-repair/verified_production.json).
+
+The final independent review found no Critical/Important findings and independently passed the three identity regressions. The full epoch and navigation evaluation remain pending; successful qualification and early training do not establish downstream navigation quality.
