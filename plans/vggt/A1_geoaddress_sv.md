@@ -1,10 +1,12 @@
+> **Online Omega revision, 2026-10-14:** User explicitly chose direct native Q/K relation loss after clarification. Use frozen online VGGT-Omega descriptors at full width2048, without PCA, added positional terms or a dimension-conversion MLP. A1 compares 32x300 relation distributions; student/teacher feature widths need not match. A0/A1 use independent identical base initialization and one joint epoch (3852updates), matching G3's current exposure budget. See `A_omega_execution.md` for qualification/queue details.
+
 # A1 — GeoAddress-SV: single-view descriptor relations on actual native Q/K
 
 > **For agentic workers:** this is an extension of A0's CONFIGURATION, not training from A0's finished checkpoint. Keep A0/A1 runtime modules identical.
 
 **Goal:** test whether geometry-informed teacher descriptor relations improve learned native memory addressing under the user's single-view restriction.
 **Architecture:** exactly A0 at layer24; a training-only relation objective on selected native visual Q/K.
-**Tech stack:** shared offline single-view VGGT cache plus native differentiable policy.
+**Tech stack:** shared online single-view VGGT-Omega inference plus native differentiable policy.
 **Spec:** master, teacher and A0 plans.
 
 ## Global constraints
@@ -15,7 +17,7 @@ Same one-layer/rank/head adapter as A0. No simultaneous-view VGGT call, new pose
 
 - A1 is descriptor-relational GeoAddress, NOT certified place correspondence.
 - Student old key is the causal key computed at its own source position, not re-encoded with current/future observations.
-- Teacher similarity uses unpositioned PCA descriptors; do not use G1's added sin/cos targets.
+- Teacher similarity uses unpositioned LN2048 descriptors; do not use G1's added sin/cos targets.
 - No source key or selected adapter gradient is detached inadvertently.
 - Pair/read positions must map to visual tokens, not the action cue or same grid offsets in packed storage.
 
@@ -23,11 +25,11 @@ Same one-layer/rank/head adapter as A0. No simultaneous-view VGGT call, new pose
 
 Full physical GeoAddress would need reliable geometric cross-view labels. The user excluded multiview extraction now. Silently using same-pixel coordinates or nearest descriptors as ground-truth same-place labels would be wrong.
 
-A1 therefore transfers a SOFT distribution of teacher descriptor similarity. It is implementable with the exact shared single-view cache and does not invent correspondences. It tests fusion at the address operator, with a narrower interpretation. A failure does not settle whether a true geometry-correspondence version would work; success does not prove metric spatial keys.
+A1 therefore transfers a SOFT distribution of teacher descriptor similarity. It is implementable with the exact shared single-view online teacher and does not invent correspondences. It tests fusion at the address operator, with a narrower interpretation. A failure does not settle whether a true geometry-correspondence version would work; success does not prove metric spatial keys.
 
 ## 2. Teacher distribution
 
-For each common delayed pair `(tau,t)`, independently cached descriptors Z_tau,Z_t have shape[300,256]. Choose32 current image query indices by the shared 4x8-rectangle spatial selector. All300 source cells remain candidates.
+For each common delayed pair `(tau,t)`, independently computed online descriptors Z_tau,Z_t have shape[300,2048]. Choose32 current image query indices by the shared 4x8-rectangle spatial selector. All300 source cells remain candidates.
 
 `P_T[i,j]=softmax_j(cos(Z_t[i],Z_tau[j])/T_T)` with `T_T=0.1`.
 

@@ -1,0 +1,35 @@
+research:
+  head_lr: 0.0001
+  lambda_max: 0.0
+  ramp_updates: 771
+  run_id: A0
+  sample_seed: 429
+  sampling_identity: collected-rgb-paths-v1
+  student_layer: 24
+  adapter_lr: 5.0e-05
+runtime:
+  episodic_diagnostics: false
+  malloc_trim_each_update: false
+  stage_pixels_bf16: true
+  vision_microbatch_images: 8
+  window_attention_batch_steps: 32
+training:
+  activation_offload_backend: pinned_arena_v1
+  cpu_optimizer_impl: deepspeed_cpu_adam
+  dataloader_num_workers: 8
+  dataloader_persistent_workers: true
+  dataloader_pin_memory: false
+  dataloader_prefetch_factor: 2
+  gradient_accumulation_steps: 2
+  optimizer_group_chunks: 1
+model:
+  geoaddress:
+    version: geoaddress_v1
+    layer: 24
+    rank: 8
+    heads:
+    - 0
+    - 1
+    init_seed: 429
+observations:
+  serializer_version: vln_append_only_chat_geoaddress_v1

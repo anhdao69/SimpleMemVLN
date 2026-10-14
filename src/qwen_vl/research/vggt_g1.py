@@ -6,8 +6,18 @@ import math
 def parse_g1(config):
     value=config.get('research')
     if value is None: return None
-    if value.get('run_id') not in ('G1','G3'): raise ValueError('This implementation permits only G1/G3')
+    if value.get('run_id') not in ('G1','G3','A0','A1'): raise ValueError('This implementation permits only G1/G3/A0/A1')
     run=value['run_id']
+    from qwen_vl.research.geoaddress_contract import parse_geoaddress
+    address = parse_geoaddress(config)
+    if (run in ('A0','A1')) != (address is not None):
+        raise ValueError('A0/A1 require runtime GeoAddress; G1/G3 forbid it')
+    if run in ('A0','A1') and value.get('adapter_lr') != 5e-5:
+        raise ValueError('A0/A1 adapter LR must be 5e-5')
+    if run=='A1' and value.get('relation_projection')!='direct-native-qk-cosine-v1':
+        raise ValueError('A1 requires the declared direct native Q/K objective')
+    if run == 'A0' and value.get('lambda_max') != 0:
+        raise ValueError('A0 is navigation-only')
     if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
@@ -16,7 +26,7 @@ def parse_g1(config):
     if config['model'].get('episodic',{}).get('enabled',False): raise ValueError('Native research forbids episodic bank')
     if value.get('sampling_identity','collected-rgb-paths-v1')!='collected-rgb-paths-v1':
         raise ValueError('Unsupported G1 trajectory sampling identity')
-    for key in ('teacher_source','teacher_weights','teacher_identity'):
+    for key in (() if run=='A0' else ('teacher_source','teacher_weights','teacher_identity')):
         if not value.get(key): raise ValueError(f'G1 requires {key}')
     for key in ('lambda_max','head_lr'):
         v=value[key]
@@ -44,3 +54,10 @@ def serving_state_dict(state):
 
 def serving_config(config):
     result=copy.deepcopy(config); result.pop('research',None); return result
+
+
+def inference_sample(sample,device):
+    """Strip all research-only batch fields before teacher-free final/reference inference."""
+    import torch
+    return {k:v.to(device) if torch.is_tensor(v) else v for k,v in sample.items()
+            if not k.startswith('aux_') and k not in ('teacher_images','update_aux_count')}

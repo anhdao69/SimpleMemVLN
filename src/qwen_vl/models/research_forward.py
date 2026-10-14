@@ -10,7 +10,7 @@ from transformers.masking_utils import create_causal_mask
 def research_text_forward(text_model, embeddings, position_ids, step_plan, *,
                           projector=None, visual_positions=None, targets=None,
                           alignment_layer=23, window_attention_batch_steps=1,
-                          state_head=None,anchors=None,lags=None):
+                          state_head=None,anchors=None,lags=None, image_mask=None,address_relation=None):
     if embeddings.shape[0] != 1 or position_ids.shape[0] != 4:
         raise ValueError('Research forward needs one unpadded episode with 4-axis positions')
     if projector is not None and not 0 <= alignment_layer < len(text_model.layers):
@@ -29,7 +29,11 @@ def research_text_forward(text_model, embeddings, position_ids, step_plan, *,
             stream_append=False,window_attention_batch_steps=window_attention_batch_steps)
         selected = projector is not None and index == alignment_layer
         selected_state = state_head is not None and index==24
-        def run(x, layer=layer, kwargs=kwargs, selected=selected, selected_state=selected_state):
+        selected_address = image_mask is not None and index == text_model._geoaddress_spec[0]
+        def run(x, layer=layer, kwargs=kwargs, selected=selected, selected_state=selected_state, selected_address=selected_address):
+            if selected_address:
+                from qwen_vl.models.geoaddress_runtime import geoaddress_decoder
+                return geoaddress_decoder(layer,x,image_mask,address_relation)
             if selected_state:
                 from qwen_vl.models.vggt_g3_forward import native_state_decoder
                 return native_state_decoder(layer,x,state_head,anchors,lags,targets)

@@ -123,6 +123,12 @@ class SimpleMemVLNForNavigation(nn.Module):
                 init_seed=navigation_config["model"]["step_lane"].get("init_seed", 429),
             )
 
+        from qwen_vl.research.geoaddress_contract import parse_geoaddress
+        self.geoaddress_spec = parse_geoaddress(navigation_config)
+        if self.geoaddress_spec is not None:
+            from qwen_vl.models.geoaddress_runtime import install_geoaddress
+            install_geoaddress(backbone.model.language_model, seed=self.geoaddress_spec['init_seed'])
+
         from qwen_vl.research.vggt_g1 import parse_g1
         self.g1_spec = parse_g1(navigation_config)
         if self.g1_spec is not None:
@@ -135,8 +141,10 @@ class SimpleMemVLNForNavigation(nn.Module):
                 if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
                     raise ValueError('G3 requires the qualified native 32x128 state heads')
                 self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
-            else:
+            elif self.g1_spec['run_id']=='G1':
                 self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
+            else:
+                self.research_aux = nn.ModuleDict()
             parameter = next(backbone.parameters())
             self.research_aux.to(device=parameter.device, dtype=parameter.dtype)
 
@@ -231,6 +239,8 @@ class SimpleMemVLNForNavigation(nn.Module):
         aux_targets=None,
         aux_anchors=None,
         aux_lags=None,
+        aux_query_positions=None,
+        aux_key_positions=None,
     ):
         lane_kwargs = {}
         if getattr(self, "step_lane_spec", None) is not None:
@@ -249,6 +259,35 @@ class SimpleMemVLNForNavigation(nn.Module):
                 self.backbone.model, input_ids, mm_token_type_ids, image_grid_thw
             )
         embeddings = self.embed(input_ids, pixel_values, image_grid_thw)
+        image_mask = input_ids.eq(self.config.image_token_id) if self.geoaddress_spec is not None else None
+        if image_mask is not None:
+            lane_kwargs['geoaddress_image_mask'] = image_mask
+        if aux_query_positions is not None:
+            if self.g1_spec is None or self.g1_spec['run_id'] not in ('A0','A1') or cache is not None or stream_append:
+                raise ValueError('Address auxiliary metadata requires uncached A0/A1 research forward')
+            from qwen_vl.models.research_forward import research_text_forward
+            if (aux_query_positions.shape!=(len(aux_query_positions),32)
+                    or aux_key_positions.shape!=(len(aux_query_positions),300)):
+                raise ValueError('Address visual metadata shape mismatch')
+            for positions in (aux_query_positions,aux_key_positions):
+                if positions.dtype!=torch.long or ((positions<0)|(positions>=input_ids.shape[1])).any():
+                    raise ValueError('Address positions outside original sequence')
+                if not image_mask[0,positions].all():
+                    raise ValueError('Address positions must be actual image tokens')
+            if len(aux_query_positions) and not (aux_key_positions.max(-1).values<aux_query_positions.min(-1).values).all():
+                raise ValueError('Address source must precede current query')
+            relation=None
+            if self.g1_spec['run_id']=='A1':
+                if aux_targets is None or aux_targets.shape!=(len(aux_query_positions),32,300):
+                    raise ValueError('A1 requires detached teacher relation distributions')
+                from qwen_vl.models.geoaddress_loss import address_relation_loss
+                def relation(q,k):
+                    return address_relation_loss(q[0,aux_query_positions,:2],k[0,aux_key_positions,:2],aux_targets)
+            elif len(aux_query_positions):
+                raise ValueError('A0 cannot have teacher pairs')
+            return research_text_forward(self.backbone.model.language_model, embeddings, position_ids, step_plan,
+                image_mask=image_mask, address_relation=relation,
+                window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         if aux_anchors is not None:
             if self.g1_spec is None or self.g1_spec['run_id']!='G3' or cache is not None or stream_append:
                 raise ValueError('G3 metadata requires uncached G3 research forward')
@@ -318,6 +357,8 @@ class SimpleMemVLNForNavigation(nn.Module):
         aux_targets=None,
         aux_anchors=None,
         aux_lags=None,
+        aux_query_positions=None,
+        aux_key_positions=None,
         aux_frame_count=None,
         aux_pair_count=None,
     ):
@@ -329,7 +370,11 @@ class SimpleMemVLNForNavigation(nn.Module):
                             episodic_diagnostics=episodic_diagnostics)
         elif episodic_layout is not None:
             raise ValueError("Episodic layout supplied to a non-episodic model")
-        if aux_anchors is not None:
+        if aux_query_positions is not None:
+            if aux_pair_count != len(aux_query_positions) or aux_key_positions is None or len(aux_key_positions) != aux_pair_count:
+                raise ValueError('Address pair support mismatch')
+            episodic.update(aux_query_positions=aux_query_positions,aux_key_positions=aux_key_positions,aux_targets=aux_targets)
+        elif aux_anchors is not None:
             if aux_pair_count!=len(aux_anchors) or aux_lags is None or len(aux_lags)!=len(aux_anchors):
                 raise ValueError('Auxiliary pair support mismatch')
             episodic.update(aux_anchors=aux_anchors,aux_lags=aux_lags,aux_targets=aux_targets)
@@ -344,7 +389,7 @@ class SimpleMemVLNForNavigation(nn.Module):
             step_lane_roles=step_lane_roles, **episodic,
         )
         aux_sum = None
-        if aux_visual_positions is not None or aux_anchors is not None:
+        if aux_visual_positions is not None or aux_anchors is not None or aux_query_positions is not None:
             hidden, aux_sum = hidden
         if self.output_mode == "candidate_logits":
             logits = self.action_logits(hidden[0, read_positions])
@@ -384,7 +429,7 @@ class SimpleMemVLNForNavigation(nn.Module):
         )
         if aux_sum is not None:
             result["aux_loss_sum"] = aux_sum
-            result["aux_pair_count" if aux_anchors is not None else "aux_frame_count"] = aux_pair_count if aux_anchors is not None else aux_frame_count
+            result["aux_pair_count" if aux_anchors is not None or aux_query_positions is not None else "aux_frame_count"] = aux_pair_count if aux_anchors is not None or aux_query_positions is not None else aux_frame_count
         if self.output_mode == "candidate_logits":
             result["unweighted_loss_sum"] = unweighted.detach().sum()
         return result

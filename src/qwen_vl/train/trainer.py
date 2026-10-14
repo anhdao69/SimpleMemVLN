@@ -98,12 +98,16 @@ class QwenSFTTrainer(Trainer):
         aux_names = {name for name,p in self.model.named_parameters()
                      if p.requires_grad and name.startswith('research_aux.')}
         aux_lr = getattr(self.model,'navigation_config',{}).get('research',{}).get('head_lr',1e-4)
+        address_names = {name for name,p in self.model.named_parameters()
+                         if p.requires_grad and '.geoaddress.' in name}
+        address_lr = getattr(self.model,'navigation_config',{}).get('research',{}).get('adapter_lr',5e-5)
         grouped_parameters = []
         for kind, learning_rate in (
             ("backbone", self.args.learning_rate),
             ("merger", self.args.mm_projector_lr),
             ("lane", lane_lr),
             ("aux", aux_lr),
+            ("address", address_lr),
         ):
             for use_decay in (True, False):
                 parameters = [
@@ -111,6 +115,7 @@ class QwenSFTTrainer(Trainer):
                     for name, parameter in self.model.named_parameters()
                     if parameter.requires_grad
                     and (
+                        "address" if name in address_names else
                         "aux" if name in aux_names else
                         "lane" if name in lane_names else
                         "merger" if name in merger_names else "backbone"

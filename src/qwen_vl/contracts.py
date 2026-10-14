@@ -17,6 +17,10 @@ SERIALIZERS = {
 def serializer_version(config):
     """History ablations must never silently inherit a history checkpoint contract."""
     mode = config["model"]["output_mode"]
+    if config["model"].get("geoaddress") is not None:
+        from qwen_vl.research.geoaddress_contract import parse_geoaddress
+        parse_geoaddress(config)
+        return "vln_append_only_chat_geoaddress_v1"
     if mode == "candidate_logits" and config["observations"].get("feedback_format") == "none":
         return "vln_candidate_logits_no_action_history_v1"
     return SERIALIZERS[mode]
@@ -167,6 +171,8 @@ def validate_config(cfg, world_size=None):
         parse_episodic_spec(cfg)  # rejects stray episodic keys in legacy modes
     from qwen_vl.research.vggt_g1 import parse_g1
     parse_g1(cfg)
+    from qwen_vl.research.geoaddress_contract import parse_geoaddress
+    parse_geoaddress(cfg)
     runtime_staging(cfg)
     return cfg
 

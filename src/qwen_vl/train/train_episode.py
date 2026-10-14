@@ -148,11 +148,21 @@ class EpisodeTrainer(QwenSFTTrainer):
                 if spec['run_id']=='G3':
                     from qwen_vl.research.vggt_g3_teacher import OnlineG3Teacher
                     self.online_teacher=OnlineG3Teacher(spec,self.args.device)
+                elif spec['run_id']=='A1':
+                    from qwen_vl.research.geoaddress_teacher import OnlineAddressTeacher
+                    self.online_teacher=OnlineAddressTeacher(spec,self.args.device)
                 else:self.online_teacher=OnlineOmegaTeacher(spec,self.args.device)
             targets=self.online_teacher(images)
             self.online_teacher_seconds=self.online_teacher.last_seconds
-        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets','aux_source_indices')})
-        if targets is not None:
+        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets','aux_source_indices','aux_teacher_sources','aux_teacher_reads','aux_query_cells')})
+        if targets is not None and 'aux_teacher_sources' in inputs:
+            from qwen_vl.models.geoaddress_loss import teacher_relations
+            source=targets[inputs['aux_teacher_sources'].to(targets.device)]
+            current=targets[inputs['aux_teacher_reads'].to(targets.device)]
+            cells=inputs['aux_query_cells'].to(targets.device)
+            current=current.gather(1,cells[:,:,None].expand(-1,-1,targets.shape[-1]))
+            prepared['aux_targets']=teacher_relations(current,source)
+        elif targets is not None:
             prepared['aux_targets']=targets[inputs['aux_source_indices'].to(targets.device)] if 'aux_source_indices' in inputs else targets
         elif 'aux_targets' in inputs:
             prepared['aux_targets']=inputs['aux_targets'].to(self.args.device,dtype=torch.float32)
@@ -572,11 +582,8 @@ def train_episode():
                 epoch=trainer.state.epoch)) + "\n")
     if training_args.process_index == 0 and not args.profile_only:
         model.eval()
-        sample = {
-            k: v.to(next(model.parameters()).device) if torch.is_tensor(v) else v
-            for k, v in dataset[0].items()
-            if k not in ("teacher_images","aux_visual_positions","aux_frame_count","aux_targets","aux_pair_count","aux_anchors","aux_lags","aux_source_indices")
-        }
+        from qwen_vl.research.vggt_g1 import inference_sample
+        sample = inference_sample(dataset[0],next(model.parameters()).device)
         with torch.inference_mode():
             check = model(**sample)
         (out / "final" / "reload_reference.json").write_text(

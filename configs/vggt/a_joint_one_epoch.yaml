@@ -1,0 +1,6 @@
+# A0 and A1 independently start from the same original base for one full joint pass.
+training:
+  epochs: 1
+  expected_total_steps: 3852
+  warmup_steps: 116
+  expected_warmup_steps: 116

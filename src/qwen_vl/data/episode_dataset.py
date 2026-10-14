@@ -54,7 +54,13 @@ class EpisodeDataset(Dataset):
             from qwen_vl.data.vggt_online import preprocess_teacher_images
             episode=self.episodes[index]
             spec=self.serializer.config['research']
-            if spec['run_id']=='G3':
+            if spec['run_id'] in ('A0','A1'):
+                from qwen_vl.research.geoaddress_sampling import address_metadata
+                metadata,frames=address_metadata(episode,result,self.serializer.image_id,spec['run_id'],spec.get('sample_seed',429))
+                result.update(metadata)
+                if spec['run_id']=='A0':
+                    return result
+            elif spec['run_id']=='G3':
                 from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
                 pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
                 frames=sorted({s for s,t in pairs})
