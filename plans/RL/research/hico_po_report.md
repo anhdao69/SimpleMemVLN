@@ -170,7 +170,7 @@ of GRPO) does not help and slightly hurts navigation. The training curves agree:
 two GRPO seeds track each other within 1.3 points in every phase, while GRPO+STOP falls behind in the last
 40 steps (train SR 0.623 vs 0.647 / 0.650).
 
-### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`) — *training*
+### 5.4 Second refinement: GRPO + forked sibling credit (GRPO+F, `grpo_fork`)
 
 **Motivation.** §7 shows the residual gap is navigation: "never within 3 m" and cap hits, with STOP
 behaviour unchanged by exact STOP credit. With a terminal-only reward, GRPO credits every decision of a
@@ -242,6 +242,101 @@ The full run `hico_grpo_fork_r2r1k` started 2026-10-13 11:26 UTC. Step 0:
 - branch policy steps +59 % over main steps;
 - step time ≈ 400 s vs ≈ 300 s for GRPO;
 - host peak 15.5 GB (cap 32 GB).
+
+**Training (125 steps, completed 2026-10-14 07:16 UTC).**
+- One restart: at step 59 another user's vLLM job took about 30–40 GB on GPU 1, and our rank 1 hit CUDA
+  OOM in backward. The supervisor resumed exactly from the step-50 checkpoint, and steps 51–58 were
+  re-run.
+- 4,000 main rollouts plus 1,020 discarded by dynamic sampling (GRPO: 868 / 912). 6,161 training
+  sequences, against GRPO's 3,796.
+- Environment steps: 261 k main + 173 k branch + 135 k replay = **570 k, 2.2× GRPO**. Replays are
+  simulator-only (no policy forward), so policy forward steps are 434 k (1.66×).
+- Step time 485 s vs 272–289 s for GRPO. Part of the difference is the external GPU contention after
+  step 59.
+- Gradient norm (pre-clip) mean 3.77, max 16.1 (GRPO 2.36–2.59 / 3.5–3.6). Clipping at 1.0 bounds the
+  update; there was no divergence.
+- Across training, forks per main trajectory were 0.88–0.91 and branch success 0.59–0.66. The share of
+  branches whose first action equals the main's rose from 0.61 to 0.77 as the policy sharpened.
+
+**Results at step 125 (R2R val_unseen, 1,839 episodes):**
+
+| Policy | SR | SPL | NE | OSR | cap hits | never ≤ 3 m | passed goal |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| GRPO s1 | 56.88 | 50.45 | 5.31 | 64.87 | 131 | 466 | 142 |
+| GRPO s2 | 57.37 | 51.82 | 5.30 | 64.22 | 84 | 495 | 125 |
+| GRPO+STOP | 54.98 | 49.71 | 5.50 | 62.48 | 143 | 482 | 136 |
+| **GRPO+F** | **55.57** | **50.59** | **5.35** | **62.37** | 122 | 497 | 122 |
+
+Paired tests (`results/grpo_fork_step125_vs_*_comparison.json`):
+
+| GRPO+F vs | ΔSR | 95 % CI | McNemar p |
+|---|---:|---|---:|
+| GRPO s1 | −1.3 | [−3.3, +0.7] | 0.22 |
+| GRPO s2 | −1.8 | [−3.8, +0.2] | 0.087 |
+| GRPO+STOP | +0.6 | [−1.4, +2.6] | 0.59 |
+| SFT | +4.0 | [+2.0, +6.1] | 0.0002 |
+
+**GRPO+F does not beat GRPO.** It is numerically 1.3–1.8 SR below both GRPO seeds (not significant) at
+2.2× the environment steps. The step-50 checkpoint (≈ 237 k env steps, matched to GRPO's 261 k) is
+evaluated separately (§5.5).
+
+**Where it differs** (vs GRPO s2, `results/grpo_fork_step125_failure_analysis_vs_grpo_s2.json`):
+
+| Reference length (actions) | n | GRPO s2 | GRPO+F |
+|---|---:|---:|---:|
+| < 40 | 216 | 67.6 | 64.4 |
+| 40–59 | 891 | 64.4 | 59.9 |
+| 60–79 | 597 | 48.2 | 50.1 |
+| ≥ 80 | 135 | 34.8 | 37.0 |
+
+GRPO+F gains on long episodes (60+ actions: +1.9 / +2.2; ≥ 10 m geodesic: +0.5 / +1.8) and loses on
+short and medium ones (−3.2 / −4.5). The long-horizon gain is in the direction the per-decision credit
+argument predicts, but no bin is significant on its own. The "never within 3 m" count, the failure
+mode GRPO+F was meant to reduce, is unchanged (497 vs 466 / 495). Its beyond-window revisit rate is the
+lowest of all policies (6.4 %, §7.5).
+
+**Diagnosis: group-std amplification of sibling contrasts.** Replaying the saved coefficients of all
+125 steps (1,000 groups):
+
+| Group type | groups | mean \|branch coef.\| | root gradient mass | fork gradient mass |
+|---|---:|---:|---:|---:|
+| mixed | 613 | 0.28 | 65 k | 54 k |
+| all-success | 330 | 0.81 | 29 k | **63 k** |
+| all-fail (after 2 re-rolls) | 57 | 0.38 | 0 | 9 k |
+
+(Gradient mass = Σ |coefficient| × decisions.)
+
+- In mixed groups the fork terms behave as intended. The main suffix's credit has the opposite sign to
+  its GRPO advantage in 32 % of forks, so credit is genuinely reassigned within the trajectory.
+- In all-success groups the reward differences are small final-distance differences (R = 15(1 − d/3)).
+  Divided by the small group std, they become the largest coefficients in the batch. The fork terms
+  then carry 2.2× the root gradient mass there and are the source of the gradient-norm spikes (two of
+  the three largest, 16.1 and 11.9, occur at steps where half the groups are all-success).
+- The net effect is that GRPO+F spends a large share of each update on fine-tuning final distance on
+  easy instructions. This coincides with its losses on short episodes.
+
+The estimator stays unbiased for any fixed positive scale. The issue is the per-group scale: it weights
+easy groups' tiny reward differences as heavily as success/failure contrasts (the Dr. GRPO critique,
+amplified by forking).
+
+### 5.5 Third refinement: batch-scaled sibling credit (GRPO+F-B) — *queued*
+
+The only change from GRPO+F is `fork_scale: batch`: sibling contrasts (main suffix and branches) are
+divided by one scale per RL step, s = max(std of all main rewards of the step, 0.05·R_max), instead of
+s_g. Root (pre-fork) decisions keep GRPO's A_i exactly. Unbiasedness is unchanged, since s is a common
+positive step size.
+
+Replaying the saved GRPO+F coefficients with this scale (mean s = 5.7, range 4.1–6.6):
+- all-success fork mass 63 k → 17 k;
+- mixed 54 k → 50 k;
+- all-fail 9 k → 1 k.
+
+So the change removes the amplification and keeps the intended credit. Code:
+`train_grpo.fork_prepare(step_scale=…)`. Test: `tests/rl/test_fork_rollout.py::test_fork_prepare_batch_scale`.
+Config: `configs/rl/hico_grpo_fork_bs_r2r1k.yaml`, same seed as GRPO s1.
+
+It runs after the GRPO+F step-50 (matched env steps) evaluation: a 2-step smoke, 125 steps and
+val_unseen evaluation. The GRPO+F step-75 (matched wall-clock) evaluation and v2a follow.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
@@ -403,6 +498,7 @@ it has been there.
 | GRPO s2 | 57.37 | 8.7 % | 19.4 | 61.0 | 2.92 | 35.8 % | 17.6 % | 16.5 % |
 | HiCo v3 | 54.87 | 6.7 % | 21.0 | 57.3 | 1.80 | 37.3 % | 12.8 % | 11.8 % |
 | GRPO+STOP | 54.98 | 7.3 % | 20.7 | 57.7 | 2.21 | 37.5 % | 13.6 % | 12.9 % |
+| GRPO+F | 55.57 | 6.4 % | 19.7 | 58.0 | 1.93 | 37.6 % | 12.1 % | 11.5 % |
 
 - **Looping is real but minor.** An episode that revisits an out-of-window place succeeds 19–28 % of the
   time, against 54–61 % without. Such episodes are only 7–9 % of the total and 11–17 % of failures.
@@ -415,8 +511,8 @@ it has been there.
   under SFT.
 - Consequence for method design: a memory-specific objective (e.g. penalising revisits) could address at
   most ≈ 15 % of failures. The fork estimator (§5.4) instead targets which branch to take at decision
-  points, the dominant "never within 3 m" mode. The revisit rate is reported for GRPO+F below as a
-  side-effect check.
+  points, the dominant "never within 3 m" mode. As a side-effect check, GRPO+F has the lowest
+  revisit rate (6.4 %) but the same "never within 3 m" rate as the other RL variants.
 
 ## 8. Future work and publication roadmap
 
