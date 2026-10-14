@@ -30,7 +30,17 @@ def predecessor_status(root,steps):
     if resources.get('status')!='PASS':
         return 'failed'
     from qwen_vl.train.recovery import validate_complete
-    record=validate_complete(root/'train'/f'checkpoint-{steps}')
+    final=root/'train'/f'checkpoint-{steps}'
+    if not final.exists():
+        partials=[p for p in (root/'train').glob('checkpoint-*') if p.name.split('-')[-1].isdigit()]
+        if partials:
+            latest=max(partials,key=lambda p:int(p.name.split('-')[-1]))
+            partial=validate_complete(latest)
+            if partial['world_size']!=4 or not 0<partial['step']<steps:
+                raise ValueError('Invalid partial predecessor checkpoint')
+            return 'waiting'
+        raise ValueError('Successful supervisor without a recovery checkpoint')
+    record=validate_complete(final)
     if record['step']!=steps or record['world_size']!=4:
         raise ValueError('Predecessor checkpoint has wrong update count/topology')
     state=json.loads((root/'train'/f'checkpoint-{steps}'/'trainer_state.json').read_text())
