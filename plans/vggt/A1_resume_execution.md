@@ -47,3 +47,10 @@ Task1 seal schema is consumed by Task2 queue and launcher. Explicit arm validati
 Ruling: do not pause A0 or use other workers. Queue the H100 qualification immediately after A0 completion, followed by A1 only on PASS. This preserves current training at the cost of qualification time between runs.
 
 Deployment: runtime70455f0, campaign `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-continuation`, detached watcher3361209, allocation4925 on worker-2. CPU scientific/queue39passed; server queue21passed; full local369passed/35skipped/4environmentfailures. Fresh review restart-race fix verified. H100 gates remain pending A0; do not mark Task3 hardware qualification complete until the source-bound A1 seal exists.
+
+## Repair continuation after initial hardware failure
+
+- Original worker-2 qualification:408server tests and teacherQC passed; mixed initialization failed on teacher identity, zero updates/OOMs.
+- Remove A1's dependency on unused positional-grid numeric hashes while preserving every used teacher component and strict validation. No PCA, cached targets, or MLP; frozen online Omega and direct native Q/K unchanged.
+- Verify regression RED->GREEN, deploy new immutable source, rerun the mandatory H100 gates in a new campaign path. Do not overwrite failed evidence or replay A0.
+- Start A1 only after a complete arm/source-bound PASS seal. Observe real optimizer progress and full recovery checkpoint before reporting running successfully.

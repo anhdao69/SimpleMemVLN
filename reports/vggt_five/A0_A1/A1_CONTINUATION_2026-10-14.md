@@ -62,3 +62,13 @@ No reliable full-epoch A1 ETA is available until the representative worker-2 mea
 A1 hardware gates remain pending. Preserve this distinction when inspecting the queue later; a running watcher is not a passing GPU test or a running training process.
 
 Verification on a new SSH connection at2026-10-14 19:25:24UTC: watcher3361209 remained alive with parentPID1; queue state continued refreshing as waiting; Slurm contained only shell4925.0 and A0 step4925.41. A0 advanced to2904/3852 with zero recorded CUDA/host OOMs. Captured queue and launch metadata are in `evidence/a1-continuation/`.
+
+## Teacher-identity repair after the first qualification attempt
+
+A0 subsequently finished all3,852 updates with supervisorPASS and zero new OOMs. A1 automatically entered worker-2 step4925.44. The initial server suite passed408tests and teacher QC passed; the first mixed training smoke then rejected the configured A1 teacher identity before update1. The queue correctly blocked production.
+
+Diagnostics found a concrete portability defect in the identity: it included the parent G1 positional grid's exact floating-point bytes, although A1 replaces that grid with literal zero before producing any target. The same source generated position hashes `dfee8e96...` on worker-2 and `4faa61e...` on the login node. Two instrumented training reruns did not reproduce the original mismatch, so the exact field differing in the original rank remains unrecorded; this report does not claim that the intermittent original failure was conclusively traced to that field.
+
+The repair removes only unused `position` and `position_sha256` fields from A1's persisted teacher identity. It retains weight, external-source, preprocessing-code, base-adapter, A1-adapter, target, layer, dimensions and pooling checks. The unchanged parent constructor still validates its complete locally computed identity. A1 still replaces the parent grid with literal zero; descriptor computation and direct-Q/K relation loss are unchanged. G1 and G3 code/contracts are unchanged. Production A1 config records the new A1 source hash.
+
+Regressions first reproduced the false rejection when only unused positional bytes changed (2failed/1passed), then passed after repair. They also verify that changing teacher weights is still rejected and that strict parent validation plus zero-position initialization remain intact. A fresh immutable snapshot and full worker-2 qualification are required before any production start; previous failed evidence is preserved.
