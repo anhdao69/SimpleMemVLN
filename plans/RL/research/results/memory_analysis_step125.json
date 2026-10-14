@@ -141,6 +141,33 @@
    "reversal_rate": 0.0,
    "never_within_3m_rate": 0.3752,
    "never_within_3m_with_revisit": 0.1362
+  },
+  "grpo_fork": {
+   "n": 1839,
+   "sr": 0.5557,
+   "osr": 0.6237,
+   "mean_steps": 94.7,
+   "revisit_rate": 0.0636,
+   "sr_given_revisit": 0.1966,
+   "sr_given_no_revisit": 0.5801,
+   "spin_rate": 0.0,
+   "sr_given_spin": null,
+   "sr_given_no_spin": 0.5557,
+   "cap_rate": 0.0669,
+   "sr_given_cap": 0.0081,
+   "sr_given_no_cap": 0.595,
+   "passed_goal_rate": 0.068,
+   "sr_given_passed_goal": 0.0,
+   "sr_given_no_passed_goal": 0.5963,
+   "failures": 817,
+   "share_of_failures_with_revisit": 0.1151,
+   "share_of_failures_with_spin": 0.0,
+   "share_of_failures_with_cap": 0.1493,
+   "share_of_failures_with_passed_goal": 0.153,
+   "revisit_steps_per_100_forward": 1.93,
+   "reversal_rate": 0.0,
+   "never_within_3m_rate": 0.3763,
+   "never_within_3m_with_revisit": 0.1214
   }
  },
  "paired": {
@@ -196,6 +223,19 @@
    "revisit_a": 0.068,
    "revisit_b": 0.0734
   },
+  "sft->grpo_fork": {
+   "n": 1839,
+   "gained": 232,
+   "lost": 158,
+   "gained_revisit_in_a": 0.1078,
+   "gained_spin_in_a": 0.0,
+   "gained_passed_goal_in_a": 0.2672,
+   "lost_revisit_in_b": 0.0886,
+   "lost_spin_in_b": 0.0,
+   "lost_passed_goal_in_b": 0.2848,
+   "revisit_a": 0.068,
+   "revisit_b": 0.0636
+  },
   "grpo_s1->grpo_s2": {
    "n": 1839,
    "gained": 196,
@@ -235,6 +275,19 @@
    "revisit_a": 0.0767,
    "revisit_b": 0.0734
   },
+  "grpo_s1->grpo_fork": {
+   "n": 1839,
+   "gained": 166,
+   "lost": 190,
+   "gained_revisit_in_a": 0.1205,
+   "gained_spin_in_a": 0.0,
+   "gained_passed_goal_in_a": 0.3735,
+   "lost_revisit_in_b": 0.1579,
+   "lost_spin_in_b": 0.0,
+   "lost_passed_goal_in_b": 0.2684,
+   "revisit_a": 0.0767,
+   "revisit_b": 0.0636
+  },
   "grpo_s2->hico_v3": {
    "n": 1839,
    "gained": 173,
@@ -261,6 +314,19 @@
    "revisit_a": 0.087,
    "revisit_b": 0.0734
   },
+  "grpo_s2->grpo_fork": {
+   "n": 1839,
+   "gained": 159,
+   "lost": 192,
+   "gained_revisit_in_a": 0.2013,
+   "gained_spin_in_a": 0.0063,
+   "gained_passed_goal_in_a": 0.2956,
+   "lost_revisit_in_b": 0.0885,
+   "lost_spin_in_b": 0.0,
+   "lost_passed_goal_in_b": 0.2135,
+   "revisit_a": 0.087,
+   "revisit_b": 0.0636
+  },
   "hico_v3->grpo_stop": {
    "n": 1839,
    "gained": 179,
@@ -273,6 +339,32 @@
    "lost_passed_goal_in_b": 0.3107,
    "revisit_a": 0.0674,
    "revisit_b": 0.0734
+  },
+  "hico_v3->grpo_fork": {
+   "n": 1839,
+   "gained": 191,
+   "lost": 178,
+   "gained_revisit_in_a": 0.1361,
+   "gained_spin_in_a": 0.0,
+   "gained_passed_goal_in_a": 0.3351,
+   "lost_revisit_in_b": 0.1348,
+   "lost_spin_in_b": 0.0,
+   "lost_passed_goal_in_b": 0.2191,
+   "revisit_a": 0.0674,
+   "revisit_b": 0.0636
+  },
+  "grpo_stop->grpo_fork": {
+   "n": 1839,
+   "gained": 178,
+   "lost": 167,
+   "gained_revisit_in_a": 0.1629,
+   "gained_spin_in_a": 0.0,
+   "gained_passed_goal_in_a": 0.2978,
+   "lost_revisit_in_b": 0.1497,
+   "lost_spin_in_b": 0.0,
+   "lost_passed_goal_in_b": 0.2515,
+   "revisit_a": 0.0734,
+   "revisit_b": 0.0636
   }
  }
 }

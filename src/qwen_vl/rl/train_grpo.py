@@ -350,21 +350,27 @@ def fork_threshold(out, step, fork_cfg):
     return float(np.quantile(values, fork_cfg['entropy_quantile']))
 
 
-def fork_prepare(groups, weights_by_uid, cfg):
+def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
     """grpo_fork: GRPO root advantages before the first fork, sibling-baselined credit after it.
 
     Expands every forked branch into a full training record (main prefix + branch suffix) whose
     prefix decisions carry no coefficient. Branch tokens get their parent's GRPO token weight.
+    Sibling contrasts are divided by the group's reward std (``fork_scale: group``) or, with
+    ``fork_scale: batch``, by ``step_scale``: one std of all main rewards of the RL step, so that
+    near-zero-variance groups (all successes) do not amplify small final-distance differences.
     """
     a = cfg['algorithm']
     floor = a['scale_floor'] * cfg['reward']['success_reward_base']
+    by_batch = a.get('fork_scale', 'group') == 'batch'
+    if by_batch and not (step_scale is not None and step_scale > 0):
+        raise ValueError('fork_scale: batch needs a positive step scale')
     items, stats = [], dict(forks=0, branches=0, branch_success=0, branch_same_first=0, local_nonzero=0,
                             branch_decisions=0, replay_decisions=0, mains=0, main_success=0,
-                            branch_minus_main_at_fork=0.0)
+                            branch_minus_main_at_fork=0.0, branch_c_abs=0.0)
     for group in groups:
         rewards = np.asarray([e['reward'] for e in group], dtype=np.float64)
         std = float(rewards.std(ddof=1)) if rewards.size > 1 else 0.0
-        scale = max(std + a['epsilon'], floor)
+        scale = step_scale if by_batch else max(std + a['epsilon'], floor)
         for e in group:
             w = weights_by_uid[e['uid']]
             branches = e.pop('_branches', [])
@@ -406,6 +412,7 @@ def fork_prepare(groups, weights_by_uid, cfg):
                     stats['branch_decisions'] += b['num_steps']
                     stats['replay_decisions'] += t
                     stats['branch_minus_main_at_fork'] += b['reward'] - e['reward']
+                    stats['branch_c_abs'] += abs(c)
             stats['main_success'] += int(e['success'])
     return items, stats
 
@@ -420,7 +427,9 @@ def fork_metrics(gathered, threshold):
                 branch_same_first_action=total('branch_same_first') / branches,
                 branch_nonzero_fraction=total('local_nonzero') / branches,
                 branch_minus_main_reward=total('branch_minus_main_at_fork') / branches,
-                branch_env_steps=total('branch_decisions'), replay_env_steps=total('replay_decisions'))
+                branch_env_steps=total('branch_decisions'), replay_env_steps=total('replay_decisions'),
+                branch_coefficient_abs=sum(g['fork'].get('branch_c_abs', 0.0) for g in gathered) / branches,
+                fork_scale=gathered[0]['fork'].get('scale', 0.0))
 
 
 def hico_metrics(gathered, critic):
@@ -701,7 +710,13 @@ def main():
                         e['_c_logpi'], e['_c_sigma'] = c_logpi.tolist(), c_sigma.tolist()
                 items = [(e, w) for e, w in zip(trajectories, weights) if any(e['_c_logpi']) or any(e['_c_sigma'])]
             elif estimator == 'grpo_fork':
-                items, fork_stats = fork_prepare(groups, {e['uid']: w for e, w in zip(trajectories, weights)}, cfg)
+                step_scale = None
+                if a.get('fork_scale', 'group') == 'batch':
+                    all_rewards = [r for g in gather_objects([e['reward'] for e in trajectories]) for r in g]
+                    step_scale = batch_scale(all_rewards, floor=a['scale_floor'] * cfg['reward']['success_reward_base'])
+                items, fork_stats = fork_prepare(groups, {e['uid']: w for e, w in zip(trajectories, weights)}, cfg,
+                                                 step_scale)
+                fork_stats['scale'] = step_scale or 0.0
             else:
                 items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
         else:

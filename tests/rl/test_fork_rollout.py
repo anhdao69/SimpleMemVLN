@@ -166,3 +166,25 @@ def test_fork_prepare_builds_full_branch_records():
             points = record['fork_points']
             if points:
                 assert record['_c_logpi'][:points[0]] == [record['advantage']] * points[0]
+
+
+def test_fork_prepare_batch_scale():
+    """fork_scale: batch divides sibling contrasts by the step scale instead of the group std."""
+    from qwen_vl.rl.train_grpo import fork_prepare
+    group = [episode(dict(FORK, max_forks=1, branches=1), seed=s) for s in range(6)]
+    for i, e in enumerate(group):
+        e['uid'], e['advantage'] = f'u{i}', 0.0
+    cfg = dict(algorithm=dict(scale_floor=0.05, epsilon=1e-6), reward=REWARD)
+    group_items, _ = fork_prepare([copy.deepcopy(group)], {e['uid']: 1.0 for e in group}, cfg)
+    batch_items, _ = fork_prepare([copy.deepcopy(group)], {e['uid']: 1.0 for e in group},
+                                  dict(cfg, algorithm=dict(cfg['algorithm'], fork_scale='batch')), step_scale=4.0)
+    rewards = np.asarray([e['reward'] for e in group])
+    group_scale = max(rewards.std(ddof=1) + 1e-6, 0.75)
+    pairs = [(g, b) for (g, _), (b, _) in zip(group_items, batch_items)]
+    assert pairs and len(group_items) == len(batch_items)
+    for g, b in pairs:
+        if g.get('is_branch') or g.get('fork_points'):
+            np.testing.assert_allclose(np.asarray(b['_c_logpi'][-1]) * 4.0, np.asarray(g['_c_logpi'][-1]) * group_scale)
+    with pytest.raises(ValueError, match='step scale'):
+        fork_prepare([copy.deepcopy(group)], {e['uid']: 1.0 for e in group},
+                     dict(cfg, algorithm=dict(cfg['algorithm'], fork_scale='batch')))
