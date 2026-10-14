@@ -46,3 +46,24 @@ def test_export_audit_records_bounded_policy_failure_without_hiding_runtime_erro
         def observe(self,*args):raise ValueError('Invalid, busy, or mismatched session')
     with pytest.raises(ValueError,match='mismatched'):
         greedy_outcome(Broken(),'id','instruction',None)
+
+
+@pytest.mark.parametrize('arm',['A0','A1'])
+def test_address_export_preserves_runtime_without_auxiliary_head(tmp_path,arm):
+    source=tmp_path/'source';source.mkdir()
+    config={'research':{'run_id':arm},'memory':{'mode':'window8'},'model':{'output_mode':'qwen_text',
+        'geoaddress':dict(version='geoaddress_v1',layer=24,rank=8,heads=[0,1],init_seed=429)}}
+    (source/'navigation.json').write_text(json.dumps({'config':config}))
+    prefix='backbone.model.language_model.layers.24.linear_attn.geoaddress.'
+    state={'backbone.weight':torch.ones(2)}
+    for name,shape in [('q_down',(8,2560)),('k_down',(8,2560)),('q_up',(256,8)),('k_up',(256,8))]:
+        state[prefix+name+'.weight']=torch.randn(shape)
+    torch.save(state,source/'pytorch_model.bin')
+    target=export_checkpoint(source,tmp_path/'serving')
+    exported=torch.load(target/'pytorch_model.bin',weights_only=True)
+    assert exported.keys()==state.keys()
+    for key in state:assert torch.equal(exported[key],state[key])
+    saved=json.loads((target/'navigation.json').read_text())['config']
+    assert 'research' not in saved and saved['model']['geoaddress']==config['model']['geoaddress']
+    del state[prefix+'q_up.weight'];torch.save(state,source/'pytorch_model.bin')
+    with pytest.raises(ValueError,match='GeoAddress'):export_checkpoint(source,tmp_path/'broken')

@@ -13,11 +13,23 @@ def export_checkpoint(source, destination):
     if destination.exists(): raise FileExistsError(destination)
     metadata=json.loads((source/'navigation.json').read_text())
     research=metadata['config'].get('research')
-    if not research or research['run_id'] not in ('G1','G3'): raise ValueError('Expected a G1/G3 training checkpoint')
-    head='current_projector' if research['run_id']=='G1' else 'state_head'
+    if not research or research['run_id'] not in ('G1','G3','A0','A1'):
+        raise ValueError('Expected a G1/G3/A0/A1 training checkpoint')
     state=torch.load(source/'pytorch_model.bin',map_location='cpu',weights_only=True,mmap=True)
-    if not any(k.startswith(f'research_aux.{head}.') for k in state):
-        raise ValueError('Checkpoint missing training head')
+    if research['run_id'] in ('A0','A1'):
+        from qwen_vl.research.geoaddress_contract import parse_geoaddress
+        if parse_geoaddress(metadata['config']) is None:
+            raise ValueError('Checkpoint missing GeoAddress runtime contract')
+        prefix='backbone.model.language_model.layers.24.linear_attn.geoaddress.'
+        expected={prefix+n+'.weight':shape for n,shape in
+                  [('q_down',(8,2560)),('k_down',(8,2560)),('q_up',(256,8)),('k_up',(256,8))]}
+        actual={k:tuple(v.shape) for k,v in state.items() if '.geoaddress.' in k}
+        if actual!=expected or any(k.startswith('research_aux.') for k in state):
+            raise ValueError('Invalid GeoAddress weights or unexpected training head')
+    else:
+        head='current_projector' if research['run_id']=='G1' else 'state_head'
+        if not any(k.startswith(f'research_aux.{head}.') for k in state):
+            raise ValueError('Checkpoint missing training head')
     destination.mkdir(parents=True)
     torch.save(serving_state_dict(state),destination/'pytorch_model.bin')
     metadata['config']=serving_config(metadata['config'])
