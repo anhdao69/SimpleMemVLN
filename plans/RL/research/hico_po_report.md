@@ -277,8 +277,16 @@ Paired tests (`results/grpo_fork_step125_vs_*_comparison.json`):
 | SFT | +4.0 | [+2.0, +6.1] | 0.0002 |
 
 **GRPO+F does not beat GRPO.** It is numerically 1.3–1.8 SR below both GRPO seeds (not significant) at
-2.2× the environment steps. The step-50 checkpoint (≈ 237 k env steps, matched to GRPO's 261 k) is
-evaluated separately (§5.5).
+2.2× the environment steps.
+
+**Matched environment steps.** The GRPO+F step-50 checkpoint (≈ 237 k env steps incl. branches and
+replays, vs GRPO's 261 k at step 125) reaches SR 50.19, SPL 45.54, NE 6.23, OSR 60.09.
+- vs GRPO s1 / s2 at step 125: −6.7 / −7.2 SR (p < 1e-8).
+- vs SFT: −1.4 SR (95 % CI [−3.5, +0.7], p = 0.23).
+
+So at matched simulator interaction GRPO+F is clearly worse. Part of this is a mid-training dip that
+GRPO shares: on the val_seen-300 pilot, GRPO went 56.3 (SFT) → 52.0 (step 50) → 63.7 (step 125). A
+GRPO s1 step-50 val_unseen evaluation is queued for a matched-RL-step comparison.
 
 **Where it differs** (vs GRPO s2, `results/grpo_fork_step125_failure_analysis_vs_grpo_s2.json`):
 
