@@ -1,0 +1,57 @@
+{
+  "passed": true,
+  "source": "/mnt/data/vmo-ai-task/anhdh35/a01-omega-worker2-20261014-retry/qualification-attempt-1/experiments/A0-recovery-resumed/train/final",
+  "export": "/mnt/data/vmo-ai-task/anhdh35/a01-omega-worker2-20261014-retry/A0-serving-export-final",
+  "replay": [
+    {
+      "dataset": "r2rce",
+      "response_tokens": 50,
+      "max_abs": 0.53125,
+      "rms": 0.06045646220445633,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      },
+      "greedy_tokens": [
+        15834,
+        20549,
+        248046
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    },
+    {
+      "dataset": "rxrce",
+      "response_tokens": 50,
+      "max_abs": 0.5625,
+      "rms": 0.050189677625894547,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      },
+      "greedy_tokens": [
+        15834,
+        20549,
+        248046
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    }
+  ]
+}

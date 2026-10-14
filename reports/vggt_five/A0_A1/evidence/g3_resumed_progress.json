@@ -1,0 +1,63 @@
+{
+  "checked_unix": 1791956307.0614364,
+  "queue": {
+    "stage": "A0-queued-after-G3",
+    "time": 1791956072.770468,
+    "qualified_arms": [
+      "A0"
+    ],
+    "deferred_arms": [
+      "A1"
+    ]
+  },
+  "resume": {
+    "pid": 2775816,
+    "time": 1791956070.7644901,
+    "controller": "A0-only"
+  },
+  "ranks": [
+    {
+      "rank": "profile_rank0",
+      "update": 2508,
+      "unix_end": 1791956300.52004,
+      "seconds": 9.005230117123574,
+      "cuda_ooms": 0,
+      "working_set_gib": 483.83251190185547,
+      "peak_allocated_gib": 23.375246047973633,
+      "peak_reserved_gib": 53.205078125
+    },
+    {
+      "rank": "profile_rank1",
+      "update": 2508,
+      "unix_end": 1791956300.519461,
+      "seconds": 9.014673792058602,
+      "cuda_ooms": 0,
+      "working_set_gib": 483.83251571655273,
+      "peak_allocated_gib": 23.969730377197266,
+      "peak_reserved_gib": 60.01953125
+    },
+    {
+      "rank": "profile_rank2",
+      "update": 2508,
+      "unix_end": 1791956300.5196774,
+      "seconds": 9.069447951857,
+      "cuda_ooms": 0,
+      "working_set_gib": 483.83251190185547,
+      "peak_allocated_gib": 23.61760139465332,
+      "peak_reserved_gib": 62.974609375
+    },
+    {
+      "rank": "profile_rank3",
+      "update": 2508,
+      "unix_end": 1791956300.5202084,
+      "seconds": 9.012792949099094,
+      "cuda_ooms": 0,
+      "working_set_gib": 483.83251190185547,
+      "peak_allocated_gib": 23.111244678497314,
+      "peak_reserved_gib": 42.08984375
+    }
+  ],
+  "resumed_progress_verified": true,
+  "controller_alive": true,
+  "steps": "4925.0|train_vln|1-02:08:41\n4925.40|g3_omega_resume|3:57\n"
+}

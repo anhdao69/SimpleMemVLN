@@ -1,0 +1,36 @@
+{
+  "passed": true,
+  "weights": {
+    "relative_l2": 9.431103631039307e-09,
+    "max_abs": 1.1920928955078125e-07,
+    "changed_elements": 31462,
+    "elements": 5175009792,
+    "bitwise_equal": false
+  },
+  "adapters": {
+    "relative_l2": 3.7286121042935004e-08,
+    "max_abs": 5.587935447692871e-08,
+    "changed_elements": 303,
+    "elements": 45056,
+    "bitwise_equal": false
+  },
+  "movement": {
+    "relative_l2": 6.740978357834165e-06,
+    "max_abs": 4.76837158203125e-07,
+    "changed_elements": 4182,
+    "elements": 45056,
+    "bitwise_equal": false
+  },
+  "changes": {
+    "backbone.model.language_model.layers.24.linear_attn.geoaddress.q_down.weight": 29,
+    "backbone.model.language_model.layers.24.linear_attn.geoaddress.q_up.weight": 2048,
+    "backbone.model.language_model.layers.24.linear_attn.geoaddress.k_down.weight": 57,
+    "backbone.model.language_model.layers.24.linear_attn.geoaddress.k_up.weight": 2048
+  },
+  "losses": [
+    0.4155527353286743,
+    0.4155527353286743
+  ],
+  "checkpoint_files": 22,
+  "world_size": 4
+}

@@ -1,0 +1,10 @@
+{
+  "stage": "A0-queued-after-G3",
+  "time": 1791956072.770468,
+  "qualified_arms": [
+    "A0"
+  ],
+  "deferred_arms": [
+    "A1"
+  ]
+}

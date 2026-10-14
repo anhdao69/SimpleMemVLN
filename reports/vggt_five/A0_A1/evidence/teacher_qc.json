@@ -1,0 +1,310 @@
+{
+  "passed": true,
+  "teacher_identity": {
+    "base": {
+      "weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "source_sha256": "b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb",
+      "preprocessing": "omega-balanced512-rgb640x480-bicubic448x592-v1",
+      "position": "g1-center-sincos2048-rms1-scale0.5-v1",
+      "adapter_sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+      "preprocessing_code_sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+      "teacher_layer": 23,
+      "patch_offset": 17,
+      "teacher_dim": 2048,
+      "compute_dtype": "float32",
+      "pooling": "adaptive-average-15x20-LN2048-eps1e-6",
+      "position_sha256": "dfee8e96d744f224ab3e8032096a468146a6df91b0d4397c2d30112a272c2ea7"
+    },
+    "target": "a1-unpositioned-LN2048-soft-relations-v1",
+    "adapter_sha256": "c12c69db63dc0d48bbea26cec9428783ed9032d58f8a5ea0f2ece184d0a0da7e"
+  },
+  "single_view_shape": "[B,1,3,448,592]",
+  "target_dim": 2048,
+  "no_pca": true,
+  "no_position": true,
+  "no_dimension_converter": true,
+  "panels": [
+    {
+      "panel": "train_calibration",
+      "dataset": "r2rce",
+      "episode_uid": "r2rce:train:mp3d/cV4RVeZvu5T/cV4RVeZvu5T.glb:5593:5593",
+      "scene_id": "mp3d/cV4RVeZvu5T/cV4RVeZvu5T.glb",
+      "trajectory_key": "0007f63f739d4a4b33d58f8bc97b0527279d402f0ca29e9b54293a04588b91f7",
+      "pairs": [
+        [
+          1,
+          19
+        ],
+        [
+          9,
+          27
+        ],
+        [
+          1,
+          33
+        ],
+        [
+          13,
+          33
+        ],
+        [
+          22,
+          34
+        ],
+        [
+          9,
+          38
+        ],
+        [
+          26,
+          40
+        ],
+        [
+          30,
+          42
+        ]
+      ],
+      "frames": [
+        1,
+        9,
+        13,
+        19,
+        22,
+        26,
+        27,
+        30,
+        33,
+        34,
+        38,
+        40,
+        42
+      ],
+      "entropy_mean": 5.311515808105469,
+      "entropy_min": 3.962222099304199,
+      "uniform_entropy": 5.703782474656201,
+      "probability_std_mean": 0.0028101219795644283,
+      "maximum_probability": 0.07366792857646942,
+      "uniform_rows": 0,
+      "rows": 256,
+      "same_frame_self_probability": 0.015360691584646702,
+      "batch_independence": {
+        "same_batch_exact": true,
+        "batch_size_max_abs": 0.00017452239990234375,
+        "batch_size_relative_l2": 1.6262360986729618e-06,
+        "batch_size_relation_max_abs": 9.685754776000977e-08
+      },
+      "permutation_pass": true
+    },
+    {
+      "panel": "heldout_diagnostic_within_train",
+      "dataset": "r2rce",
+      "episode_uid": "r2rce:train:mp3d/sKLMLpTHeUy/sKLMLpTHeUy.glb:425:425",
+      "scene_id": "mp3d/sKLMLpTHeUy/sKLMLpTHeUy.glb",
+      "trajectory_key": "001bf6e587f83b6eef12e5677703c89501ab64281df974f56d8f1648b80683da",
+      "pairs": [
+        [
+          21,
+          33
+        ],
+        [
+          8,
+          37
+        ],
+        [
+          21,
+          37
+        ],
+        [
+          21,
+          38
+        ],
+        [
+          21,
+          43
+        ],
+        [
+          39,
+          48
+        ],
+        [
+          39,
+          49
+        ],
+        [
+          24,
+          54
+        ]
+      ],
+      "frames": [
+        8,
+        21,
+        24,
+        33,
+        37,
+        38,
+        39,
+        43,
+        48,
+        49,
+        54
+      ],
+      "entropy_mean": 5.339194297790527,
+      "entropy_min": 4.282249450683594,
+      "uniform_entropy": 5.703782474656201,
+      "probability_std_mean": 0.002662047278136015,
+      "maximum_probability": 0.04141101613640785,
+      "uniform_rows": 0,
+      "rows": 256,
+      "same_frame_self_probability": 0.013952518813312054,
+      "batch_independence": {
+        "same_batch_exact": true,
+        "batch_size_max_abs": 0.0001583099365234375,
+        "batch_size_relative_l2": 2.1523985651583644e-06,
+        "batch_size_relation_max_abs": 7.35744833946228e-08
+      },
+      "permutation_pass": true
+    },
+    {
+      "panel": "train_calibration",
+      "dataset": "rxrce",
+      "episode_uid": "rxrce:train:mp3d/82sE5b5pLXE/82sE5b5pLXE.glb:6591:50665",
+      "scene_id": "mp3d/82sE5b5pLXE/82sE5b5pLXE.glb",
+      "trajectory_key": "00055c53aa77bf21c48aacfd7d31cbee7270659ec5017f5ba3a69ec125413b64",
+      "pairs": [
+        [
+          3,
+          29
+        ],
+        [
+          22,
+          40
+        ],
+        [
+          42,
+          54
+        ],
+        [
+          65,
+          77
+        ],
+        [
+          65,
+          85
+        ],
+        [
+          104,
+          114
+        ],
+        [
+          121,
+          140
+        ],
+        [
+          140,
+          167
+        ]
+      ],
+      "frames": [
+        3,
+        22,
+        29,
+        40,
+        42,
+        54,
+        65,
+        77,
+        85,
+        104,
+        114,
+        121,
+        140,
+        167
+      ],
+      "entropy_mean": 5.392427444458008,
+      "entropy_min": 4.321194171905518,
+      "uniform_entropy": 5.703782474656201,
+      "probability_std_mean": 0.00243378640152514,
+      "maximum_probability": 0.038206711411476135,
+      "uniform_rows": 0,
+      "rows": 256,
+      "same_frame_self_probability": 0.0135275200009346,
+      "batch_independence": {
+        "same_batch_exact": true,
+        "batch_size_max_abs": 6.914138793945312e-05,
+        "batch_size_relative_l2": 9.380145797877049e-07,
+        "batch_size_relation_max_abs": 6.146728992462158e-08
+      },
+      "permutation_pass": true
+    },
+    {
+      "panel": "heldout_diagnostic_within_train",
+      "dataset": "rxrce",
+      "episode_uid": "rxrce:train:mp3d/VzqfbhrpDEA/VzqfbhrpDEA.glb:13666:8553",
+      "scene_id": "mp3d/VzqfbhrpDEA/VzqfbhrpDEA.glb",
+      "trajectory_key": "0005e4225cbf840d5046923cb84b44c0ef65a8e079ded0461ac02ee39330b26c",
+      "pairs": [
+        [
+          4,
+          25
+        ],
+        [
+          13,
+          27
+        ],
+        [
+          17,
+          32
+        ],
+        [
+          13,
+          34
+        ],
+        [
+          17,
+          35
+        ],
+        [
+          6,
+          38
+        ],
+        [
+          13,
+          38
+        ],
+        [
+          30,
+          38
+        ]
+      ],
+      "frames": [
+        4,
+        6,
+        13,
+        17,
+        25,
+        27,
+        30,
+        32,
+        34,
+        35,
+        38
+      ],
+      "entropy_mean": 5.329598426818848,
+      "entropy_min": 4.234563827514648,
+      "uniform_entropy": 5.703782474656201,
+      "probability_std_mean": 0.002714415779337287,
+      "maximum_probability": 0.04186966270208359,
+      "uniform_rows": 0,
+      "rows": 256,
+      "same_frame_self_probability": 0.010550837963819504,
+      "batch_independence": {
+        "same_batch_exact": true,
+        "batch_size_max_abs": 0.0001819133758544922,
+        "batch_size_relative_l2": 1.3706037407246185e-06,
+        "batch_size_relation_max_abs": 7.497146725654602e-08
+      },
+      "permutation_pass": true
+    }
+  ],
+  "limitation": "Held-out diagnostic scenes are disjoint from calibration but drawn from TRAIN; not validation navigation evaluation."
+}
