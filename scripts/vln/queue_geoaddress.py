@@ -15,10 +15,38 @@ def source_files(source):
             if p.is_file() and p.suffix in ('.py','.yaml','.json','.sh')}
 
 
-def check_qualification(source,record):
+def selected_arms(arms):
+    arms=list(arms)
+    if not arms or len(set(arms))!=len(arms) or any(arm not in ('A0','A1') for arm in arms):
+        raise ValueError('Select distinct A0/A1 arms')
+    if arms==['A1','A0']:
+        raise ValueError('A0 must precede A1 when both arms are selected')
+    return arms
+
+
+def validate_qualification_records(records,arms):
+    arms=selected_arms(arms)
+    required={'full-suite-initial','teacher-qc','distributed-pair-normalization','full-suite-final'}
+    for arm in arms:
+        required.update(arm+'-'+gate for gate in (
+            'mixed','rxrce_longest','r2rce_longest','threshold','mixed_extreme',
+            'recovery-reference','recovery-resumed','recovery-compare','export',
+            'r2rce-timing','rxrce-timing'))
+        if arm=='A1':required.add('A1-mixed-empty')
+    names=[r.get('name') for r in records]
+    if (not records or len(set(names))!=len(names) or not required.issubset(names)
+            or any(r.get('returncode')!=0 for r in records)):
+        raise ValueError('Missing, duplicate, or failed qualification gates: '+str(sorted(required-set(names))))
+
+
+def check_qualification(source,record,arm=None):
     data=json.loads(Path(record).read_text())
     if data.get('passed') is not True or not data.get('source_files') or data['source_files']!=source_files(source):
         raise ValueError('Missing, failed, or source-mismatched A0/A1 qualification')
+    arms=selected_arms(data.get('qualified_arms',[]))
+    if arm is not None and arm not in arms:
+        raise ValueError(f'{arm} has not passed qualification')
+    validate_qualification_records(data.get('records',[]),arms)
     return data
 
 
@@ -66,9 +94,11 @@ def allocation_ready(allocation):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--predecessor',required=True);p.add_argument('--steps',type=int,default=3852)
     p.add_argument('--source',required=True);p.add_argument('--qualification');p.add_argument('--check-only',action='store_true')
+    p.add_argument('--arm',choices=['A0','A1'],help='Required arm for a production launch check')
     p.add_argument('--allocation');p.add_argument('--root');a=p.parse_args()
     if a.check_only:
-        check_qualification(a.source,a.qualification)
+        if not a.arm:p.error('--arm required with --check-only')
+        check_qualification(a.source,a.qualification,arm=a.arm)
         if predecessor_status(a.predecessor,a.steps)!='complete':raise RuntimeError('Predecessor not successfully complete')
         print('ADDRESS_LAUNCH_PREREQUISITES_PASS');return
     if not a.allocation or not a.root:p.error('--allocation and --root required for queue')
@@ -107,7 +137,7 @@ def main():
                 status=predecessor_status(run,a.steps)
                 if status!='complete':
                     if predecessor_status(previous,a.steps)!='complete':raise RuntimeError('Required predecessor incomplete')
-                    check_qualification(source,seal)
+                    check_qualification(source,seal,arm=arm)
                     run_step(arm.lower()+'-joint-e1',['bash',str(source/'train/launch_a_omega_joint_e1.sh'),arm,str(run),str(seal),str(previous)])
                     if predecessor_status(run,a.steps)!='complete':raise RuntimeError(f'{arm} exited without complete epoch checkpoint')
                 previous=run

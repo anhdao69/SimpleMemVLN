@@ -2,6 +2,15 @@ import json
 import pytest
 
 
+def qualification_records(arm):
+    common=['full-suite-initial','teacher-qc','distributed-pair-normalization','full-suite-final']
+    gates=['mixed','rxrce_longest','r2rce_longest','threshold','mixed_extreme',
+           'recovery-reference','recovery-resumed','recovery-compare','export',
+           'r2rce-timing','rxrce-timing']
+    if arm=='A1':gates.append('mixed-empty')
+    return [dict(name=name,returncode=0) for name in common+[arm+'-'+g for g in gates]]
+
+
 def test_predecessor_does_not_pass_running_or_failed_supervisor(tmp_path):
     from scripts.vln.queue_geoaddress import predecessor_status
     assert predecessor_status(tmp_path,3852)=='waiting'
@@ -25,7 +34,7 @@ def test_qualification_record_roundtrip_and_modified_source_rejected(tmp_path):
     from scripts.vln.qualify_geoaddress import write_qualification_seal
     source=tmp_path/'source';(source/'src').mkdir(parents=True);(source/'src'/'x.py').write_text('a=1\n')
     record=tmp_path/'seal.json'
-    write_qualification_seal(source,record,[{'returncode':0}],source_files(source))
+    write_qualification_seal(source,record,qualification_records('A1'),source_files(source),arms=['A1'])
     assert check_qualification(source,record)['passed']
     (source/'src'/'x.py').write_text('a=2\n')
     with pytest.raises(ValueError):check_qualification(source,record)
@@ -44,7 +53,50 @@ def test_source_changed_during_qualification_rejected(tmp_path):
     (tmp_path/'src').mkdir();p=tmp_path/'src/x.py';p.write_text('a=1')
     initial=source_files(tmp_path);p.write_text('a=2')
     with pytest.raises(ValueError,match='changed'):
-        write_qualification_seal(tmp_path,tmp_path/'seal.json',[{'returncode':0}],initial)
+        write_qualification_seal(tmp_path,tmp_path/'seal.json',qualification_records('A1'),initial,arms=['A1'])
+
+
+def test_a0_qualification_cannot_authorize_a1(tmp_path):
+    from scripts.vln.queue_geoaddress import check_qualification,source_files
+    from scripts.vln.qualify_geoaddress import write_qualification_seal
+    (tmp_path/'src').mkdir();(tmp_path/'src/x.py').write_text('x=1')
+    seal=tmp_path/'seal.json'
+    write_qualification_seal(tmp_path,seal,qualification_records('A0'),source_files(tmp_path),arms=['A0'])
+    assert check_qualification(tmp_path,seal,arm='A0')['qualified_arms']==['A0']
+    with pytest.raises(ValueError,match='A1'):
+        check_qualification(tmp_path,seal,arm='A1')
+
+
+@pytest.mark.parametrize('mutation',['missing-longest','failed-recovery','duplicate-gate'])
+def test_incomplete_or_failed_arm_evidence_cannot_be_sealed(tmp_path,mutation):
+    from scripts.vln.queue_geoaddress import source_files
+    from scripts.vln.qualify_geoaddress import write_qualification_seal
+    (tmp_path/'src').mkdir();(tmp_path/'src/x.py').write_text('x=1')
+    records=qualification_records('A1')
+    if mutation=='missing-longest':records=[r for r in records if r['name']!='A1-rxrce_longest']
+    elif mutation=='failed-recovery':
+        next(r for r in records if r['name']=='A1-recovery-compare')['returncode']=1
+    else:records.append(records[-1].copy())
+    with pytest.raises(ValueError):
+        write_qualification_seal(tmp_path,tmp_path/'seal.json',records,source_files(tmp_path),arms=['A1'])
+
+
+def test_launch_rechecks_arm_evidence_not_just_pass_boolean(tmp_path):
+    from scripts.vln.queue_geoaddress import check_qualification,source_files
+    (tmp_path/'src').mkdir();(tmp_path/'src/x.py').write_text('x=1')
+    seal=tmp_path/'seal.json'
+    seal.write_text(json.dumps(dict(passed=True,qualified_arms=['A1'],source_files=source_files(tmp_path),
+                                   records=[dict(name='A1-mixed',returncode=0)])))
+    with pytest.raises(ValueError):check_qualification(tmp_path,seal,arm='A1')
+
+
+@pytest.mark.parametrize('arms',[[],['A1','A1'],['A2']])
+def test_invalid_qualification_arm_selection_rejected(tmp_path,arms):
+    from scripts.vln.queue_geoaddress import source_files
+    from scripts.vln.qualify_geoaddress import write_qualification_seal
+    (tmp_path/'src').mkdir();(tmp_path/'src/x.py').write_text('x=1')
+    with pytest.raises(ValueError):
+        write_qualification_seal(tmp_path,tmp_path/'seal.json',qualification_records('A1'),source_files(tmp_path),arms=arms)
 
 
 def test_clean_partial_checkpoint_waits(tmp_path,monkeypatch):

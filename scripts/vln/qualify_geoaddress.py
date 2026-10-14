@@ -9,18 +9,22 @@ def verify_source(source,expected):
         raise ValueError("Qualification source changed during testing")
 
 
-def write_qualification_seal(source,path,records,expected):
-    from scripts.vln.queue_geoaddress import source_files
-    if not records or any(r['returncode']!=0 for r in records):
-        raise ValueError('Cannot seal failed/incomplete qualification')
+def write_qualification_seal(source,path,records,expected,arms=('A0','A1')):
+    from scripts.vln.queue_geoaddress import selected_arms,validate_qualification_records
+    arms=selected_arms(arms)
+    validate_qualification_records(records,arms)
     verify_source(source,expected)
-    Path(path).write_text(json.dumps(dict(passed=True,records=records,source_files=expected),indent=2))
+    path=Path(path);temp=path.with_suffix('.tmp')
+    temp.write_text(json.dumps(dict(passed=True,qualified_arms=arms,records=records,source_files=expected),indent=2))
+    temp.replace(path)
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--root',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--root',required=True)
+    p.add_argument('--arms',nargs='+',choices=['A0','A1'],default=['A0','A1']);a=p.parse_args()
     root=Path(a.root);root.mkdir(parents=True,exist_ok=True);fixtures=Path('/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures');records=[]
-    from scripts.vln.queue_geoaddress import source_files
+    from scripts.vln.queue_geoaddress import source_files,selected_arms
+    arms=selected_arms(a.arms)
     source=Path.cwd();initial=source_files(source)
     (root/'source_start.json').write_text(json.dumps(initial,indent=2))
     def task(name,cmd):
@@ -44,7 +48,7 @@ def main():
     task('full-suite-initial',['-m','pytest','tests/vln','-q'])
     task('teacher-qc',['-m','scripts.vln.check_geoaddress_teacher','--manifest',
         '/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl','--out',str(root/'teacher-qc')])
-    for arm in ('A0','A1'):
+    for arm in arms:
         profile(arm,'mixed',fixtures/'mixed_tail.jsonl')
         if arm=='A1':profile(arm,'mixed-empty',Path('/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/mixed_empty.jsonl'))
         for name in ('rxrce_longest','r2rce_longest','threshold','mixed_extreme'):
@@ -59,7 +63,7 @@ def main():
             profile(arm,dataset+'-timing',fixtures/(dataset+'_representative.jsonl'),updates=8)
     task('distributed-pair-normalization',['-m','torch.distributed.run','--standalone','--nproc_per_node=4','-m','scripts.vln.check_vggt_g3_reduction'])
     task('full-suite-final',['-m','pytest','tests/vln','-q'])
-    write_qualification_seal(Path.cwd(),root/'qualification_pass.json',records,initial)
+    write_qualification_seal(Path.cwd(),root/'qualification_pass.json',records,initial,arms=arms)
     print('GEOADDRESS_QUALIFICATION_PASS',flush=True)
 
 if __name__=='__main__':main()

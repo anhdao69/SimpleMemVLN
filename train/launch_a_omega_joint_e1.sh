@@ -11,7 +11,7 @@ export G1_CODE_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 export G1_CUDA_HOME="$A_ROOT/cuda-12.9.1" OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 MAX_JOBS=2
 [[ "${SLURMD_NODENAME:-}" == worker-2 ]] || { echo 'Worker-2 required' >&2; exit 2; }
 bash "$G1_CODE_DIR/train/g1_omega_env.sh" python -m scripts.vln.queue_geoaddress \
- --check-only --source "$G1_CODE_DIR" --qualification "$A_QUALIFICATION" --predecessor "$A_PREDECESSOR"
+ --check-only --arm "$A_ARM" --source "$G1_CODE_DIR" --qualification "$A_QUALIFICATION" --predecessor "$A_PREDECESSOR"
 mkdir -p "$A_RUN_DIR"
 A_SUPERVISOR="$A_RUN_DIR/supervisor-$(date -u +%Y%m%dT%H%M%S)-$$"
 exec flock -n "$A_RUN_DIR/launcher.lock" \
