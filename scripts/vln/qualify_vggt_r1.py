@@ -34,7 +34,8 @@ def main():
         '--model-path',os.environ['VLN_MODEL_PATH'],'--manifest',str(manifest),'--out',str(root/'baseline-load.json')])
     profile('mixed',fixtures/'mixed_tail.jsonl')
     profile('mixed-empty',base/'g3-omega-20261013/mixed_empty.jsonl')
-    for name in ('rxrce_longest','r2rce_longest','threshold','mixed_extreme'):profile(name,fixtures/(name+'.jsonl'))
+    for name in ('rxrce_longest','r2rce_longest','threshold','mixed_extreme'):
+        profile(name,fixtures/(name+'.jsonl'),extra=['--save'] if name.endswith('_longest') else [])
     profile('recovery-reference',fixtures/'mixed_tail.jsonl',extra=['--save'])
     ref=root/'experiments/recovery-reference/train';res=root/'experiments/recovery-resumed/train'
     profile('recovery-resumed',fixtures/'mixed_tail.jsonl',extra=['--save','--resume',str(ref/'checkpoint-2'),'--first-update','3'])

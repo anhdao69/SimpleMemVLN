@@ -1,5 +1,5 @@
-# User-requested full one-epoch run, 2026-10-13. Merge as --policy_config.
-# Complete joint R2R + RxR manifest: ceil(30,815 / 8) = 3,852 updates.
+# User-requested full one-epoch run, 2026-10-15. Merge as --policy_config.
+# Complete joint R2R + English RxR15 manifest: ceil(30,815 / 8) = 3,852 updates.
 # Keep the 3% navigation LR warmup and cosine decay to 0.1 of peak LR.
 # The R1 auxiliary ramp remains the specified 771 updates (20% of this epoch).
 training:

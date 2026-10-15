@@ -39,6 +39,9 @@ def check_baseline(config):
         if digest.hexdigest()!=record[key]:raise ValueError('R0 baseline artifact changed: '+name)
     if json.loads((root/'navigation.json').read_text())!=record['metadata']:
         raise ValueError('R0 baseline metadata differs from registry')
+    manifest=Path(record['manifest'])
+    if hashlib.sha256(manifest.read_bytes()).hexdigest()!=record['manifest_sha256']:
+        raise ValueError('R1 joint R2R + RxR15 manifest changed')
 
 
 def main():
