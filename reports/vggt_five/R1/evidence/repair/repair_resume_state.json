@@ -1,0 +1,12 @@
+{
+  "status": "passed-full-training-running",
+  "unix": 1792082378.4989374,
+  "checkpoint": 24,
+  "queue_pid": 3636489,
+  "rank_updates": [
+    26,
+    26,
+    26,
+    26
+  ]
+}

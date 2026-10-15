@@ -1,0 +1,52 @@
+{
+  "old_module_sha256": "376627007604bad544399d8f94a4aec0b7294669420097ba83955001c400eaa5",
+  "new_module_sha256": "853af8ddf838bed3483e9a81cc92a1da3d89a5021ccab9e177eeb72c99510471",
+  "harness_sha256": "d25301ee2aeda5d7c69fcebef991ac37d4c160d64f54cd519640d2cf7c617266",
+  "parity_sha256": "5d9e5b873347dfa9100739b83bc2e6f3a8550251b552a32ae8e154dd0c39c502",
+  "parity_script_sha256": "9b03edbe06cad711e47fdf3b5ac2465f507d80a098f1c261832be489c7f4979a",
+  "prior_seal_sha256": "26ab068f587d8f883d8090afe470b9acc7405eb38f17c579cf913bf78d798765",
+  "replay_script_sha256": "4c4ec436b0efd57a200318928a8a321192ef54510aea75138b2b653dd613a695",
+  "replays": [
+    {
+      "name": "empty-repro-fixed-verified",
+      "identical_collective_sequences": true,
+      "buckets_per_rank": 328,
+      "updates": 2,
+      "fixture_sha256": "51d5da79ec79ad9a1e8d6244e3e0d1490f402d2856c0f4181a6fcb0391e8a6cb",
+      "log_sha256": "3af3af233c393d4f92d0ee8f3c713530784db5ebdcf593223e15dced2deb049b",
+      "bucket_sha256": [
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea"
+      ],
+      "execution_identity_sha256": [
+        "32eae633a0143cb22c378a2fea193c17dc37a81686249dfd02bda6a55fc49250",
+        "32eae633a0143cb22c378a2fea193c17dc37a81686249dfd02bda6a55fc49250",
+        "32eae633a0143cb22c378a2fea193c17dc37a81686249dfd02bda6a55fc49250",
+        "32eae633a0143cb22c378a2fea193c17dc37a81686249dfd02bda6a55fc49250"
+      ]
+    },
+    {
+      "name": "empty-repro-reversed-verified",
+      "identical_collective_sequences": true,
+      "buckets_per_rank": 328,
+      "updates": 2,
+      "fixture_sha256": "b003bed864c6eea04fe3049cf701e8c5fd279afa78b2a6c45968c55b437d5e3e",
+      "log_sha256": "815c14fdb1c73c502b8a91792d2fdede5c7da27706dbc72ff2f4fcad583bbabb",
+      "bucket_sha256": [
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea",
+        "7d29bda1a29f64e936c42e82e348ad9d7c2b5b4a64c05507f84738f3b54a9dea"
+      ],
+      "execution_identity_sha256": [
+        "7a5962454063b69d017211e79c657ba2420e86852d4fcf5cf07fbf26fe12f75d",
+        "7a5962454063b69d017211e79c657ba2420e86852d4fcf5cf07fbf26fe12f75d",
+        "7a5962454063b69d017211e79c657ba2420e86852d4fcf5cf07fbf26fe12f75d",
+        "7a5962454063b69d017211e79c657ba2420e86852d4fcf5cf07fbf26fe12f75d"
+      ]
+    }
+  ],
+  "original_failure_log_sha256": "e04915b37017c06f1e6632e54ae32792952379a8590803555018c5bfedc2f3a4"
+}

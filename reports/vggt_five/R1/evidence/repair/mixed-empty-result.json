@@ -1,0 +1,120 @@
+{
+  "arm": "R1",
+  "name": "mixed-empty",
+  "passed": true,
+  "check": {
+    "passed": true,
+    "problems": [],
+    "peak_reserved_gib": 50.396484375,
+    "max_process_rss_gib": 37.34117126464844,
+    "losses": [
+      0.42381593585014343,
+      0.4239498972892761,
+      0.4222497045993805
+    ],
+    "grad_norms": [
+      37.922210693359375,
+      37.92512893676758,
+      37.69482421875
+    ],
+    "peak_allocated_gib": 40.10969686508179
+  },
+  "resources": {
+    "status": "PASS",
+    "exit_code": 0,
+    "host_guard_triggered": false,
+    "host_guard_gib": 691.2,
+    "job_limit_gib": 768.0,
+    "sampled_peak_job_usage_gib": 601.5348358154297,
+    "sampled_peak_working_set_gib": 290.8232841491699,
+    "sampled_peak_anon_gib": 104.86273574829102,
+    "cgroup_recorded_peak_gib": 443.7706985473633,
+    "new_oom_events": 0,
+    "new_oom_kill_events": 0,
+    "new_limit_events": 0,
+    "start_usage_gib": 443.76697158813477,
+    "nvidia_smi_peak_used_mib": {
+      "0": 53853,
+      "1": 45593,
+      "2": 37031,
+      "3": 23271
+    },
+    "seconds": 116.87109637260437,
+    "command": [
+      "torchrun",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "qwen_vl.train.train_qwen",
+      "--vln_config",
+      "configs/episodic/science_common.yaml",
+      "--output_config",
+      "configs/vln_empty.yaml",
+      "--memory_config",
+      "configs/vln_memory_window8.yaml",
+      "--runtime_profile",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/experiments/mixed-empty/runtime.yaml",
+      "--deepspeed",
+      "configs/deepspeed_zero2_cpu_optimizer.json",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/mixed_empty.jsonl",
+      "--model_name_or_path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "--max-optimizer-updates",
+      "3",
+      "--debug-repeat-episodes",
+      "--output_dir",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/experiments/mixed-empty/train",
+      "--run-name",
+      "r1-diagnostic-mixed-empty",
+      "--profile-only"
+    ],
+    "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podf16b1000_b339_46e0_b01c_db5bc40a1e72.slice/system.slice/slurmstepd.scope/job_4925",
+    "cgroup_version": 2,
+    "free_disk_gib_at_start": 8953.486328125
+  },
+  "steady_seconds": 15.807894587516785,
+  "intervals": [
+    16.145662546157837,
+    15.470126628875732
+  ],
+  "wall_seconds": 116.93583917617798,
+  "threads": 4,
+  "workers": 8,
+  "attention_batch": 32,
+  "vision_batch": 8,
+  "fixture": "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/mixed_empty.jsonl",
+  "complete_episode_exposures": 24,
+  "aux_frames": 0,
+  "aux_pairs": 96,
+  "teacher_batch": 8,
+  "teacher_residency": "resident",
+  "cpu_optimizer": true,
+  "cpu_adam": true,
+  "cuda_toolkit": "/mnt/data/vmo-ai-task/anhdh35/cuda-12.9.1",
+  "source_commit": "bcb14ea7a26df0ae266dcf0c3b8813dce5d97a6c",
+  "source_status": "immutable-source-archive",
+  "source_tree_sha256": "226e018b8dde533879c4770db1a0318263e4b27addeb96b820db0a263331f13f",
+  "teacher_identity": {
+    "descriptors": {
+      "base": {
+        "weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+        "source_sha256": "b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb",
+        "preprocessing": "omega-balanced512-rgb640x480-bicubic448x592-v1",
+        "adapter_sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+        "preprocessing_code_sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+        "teacher_layer": 23,
+        "patch_offset": 17,
+        "teacher_dim": 2048,
+        "compute_dtype": "float32",
+        "pooling": "adaptive-average-15x20-LN2048-eps1e-6"
+      },
+      "target": "a1-unpositioned-LN2048-soft-relations-v1",
+      "adapter_sha256": "841c6f5b163007208a1d8d734a59cf0315d4d00a51de0c511c30901c0e7f6016"
+    },
+    "target": "r1-unpositioned-LN2048-regions-v1",
+    "adapter_sha256": "77cf0feafdafd6e901012aa53d4e9a47bea1c9eb57cb465f13fb0b4033da465f",
+    "regions_sha256": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839"
+  },
+  "fixture_sha256": "d673f760fc7301d0697c9c044a13b3f4ca5693ba7e8809b629f2b7b46432a3a6"
+}

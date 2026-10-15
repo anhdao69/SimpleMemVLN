@@ -1,0 +1,725 @@
+[
+  {
+    "name": "full-suite-initial",
+    "command": [
+      "-m",
+      "pytest",
+      "tests/vln",
+      "-q"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "baseline-load",
+    "command": [
+      "-m",
+      "scripts.vln.check_text_export",
+      "--checkpoint",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--out",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/baseline-load.json"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "baseline-serving",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_export",
+      "--baseline-serving",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852",
+      "--output",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/baseline-serving",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "mixed",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "mixed",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "dac03963817f928d18c65296da1031bd1c54396de27bc5f1f0f77446a18da309"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "9dcc232838b7d13f90e94e8d1a40d2a691e40efba1686b441354927fadec49f6",
+        "48289b97b9f57411c392320c8b71ac7d1c4a7d4b26a0ec4146422a7b4edd301a",
+        "faac3ea2650d395820d85abb9846ba4566800b36e77e0df24ae09ea960ad7379",
+        "83ccde8d28e3bc6d659fad700847fc462d1713d27ccbab30270e172cb7d8ac5a"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "d23a5642099bdacb9afaa63169e5944e5ca59c269618852bd7f51083c82d17a0",
+      "fixture_sha256": "c59e915e0790139f1d33636cbe8b409c1d0c8703ad4129e4aaec6edeeb3ee87f",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "mixed-empty",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification",
+      "--name",
+      "mixed-empty",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/mixed_empty.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "rxrce_longest",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "rxrce_longest",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_longest.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "4542a1fd36d7549957e12f42441b6a3fb582186ab299903f8d74980e556b1149"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "37bc19f14f138f6c0710786745315b4c426e5dad61d385fd057373701aa20f7d",
+        "37bc19f14f138f6c0710786745315b4c426e5dad61d385fd057373701aa20f7d",
+        "37bc19f14f138f6c0710786745315b4c426e5dad61d385fd057373701aa20f7d",
+        "37bc19f14f138f6c0710786745315b4c426e5dad61d385fd057373701aa20f7d"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "071000e09048336fae6b2134a1d81253b00dc1f664eedff766d30ec3ed7e7269",
+      "fixture_sha256": "9f469d65fca4a82d3e0b14385aac7bfed12fb79c98e11a2a6db2073823cd5c86",
+      "full_checkpoint_inventories": [
+        {
+          "path": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/rxrce_longest/train/checkpoint-3",
+          "marker_sha256": "919ea02736a182077b9068425b967a077d97007d65022d11c651288976b6128b"
+        }
+      ]
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "r2rce_longest",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "r2rce_longest",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/r2rce_longest.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "06b0152cf20df2363ddccb8e4aa90d6ea40ffddaccf0f70ef9c292ebc50174a9"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "4b36d473aa73c68c0e40f5190a0483d99e3759b8e37ce30ba42b092e1c70dbba",
+        "4b36d473aa73c68c0e40f5190a0483d99e3759b8e37ce30ba42b092e1c70dbba",
+        "4b36d473aa73c68c0e40f5190a0483d99e3759b8e37ce30ba42b092e1c70dbba",
+        "4b36d473aa73c68c0e40f5190a0483d99e3759b8e37ce30ba42b092e1c70dbba"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "1938f7866842c222d73c862dad014a383c2923416618592ce3219b4c6b6a0b97",
+      "fixture_sha256": "69d914bd57c874cac5ccba95b0e6e18e09347eab840ab6b37cd82943b7d3cd85",
+      "full_checkpoint_inventories": [
+        {
+          "path": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/r2rce_longest/train/checkpoint-3",
+          "marker_sha256": "f2d62b3f1c4242d3e073e2fa7cbc47ba0dcdc10e76ce16c2a8cea2d8f8ca5e81"
+        }
+      ]
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "threshold",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "threshold",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/threshold.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "85df9686f3bebf291344421b60fd18be27328095957ed4918a5548838bee3345"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "38a5242dbdf7f12022792f3dd12af07ebcc02c0c83a951a8c9a436a0aacd8665",
+        "38a5242dbdf7f12022792f3dd12af07ebcc02c0c83a951a8c9a436a0aacd8665",
+        "38a5242dbdf7f12022792f3dd12af07ebcc02c0c83a951a8c9a436a0aacd8665",
+        "38a5242dbdf7f12022792f3dd12af07ebcc02c0c83a951a8c9a436a0aacd8665"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "0ee83d3864f754fd65f4c143f2a67d0494c434ad15c044bf0368a5044ca10817",
+      "fixture_sha256": "eecf3588124f82ace23c7418b06d94c601dca72d04ce9f491c450edf9c62c45f",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "mixed_extreme",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "mixed_extreme",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_extreme.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "a717f0df5fabacc4fb90cc2d710d1eecb7df0e263af657357f27ab489f69f1b9"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "aa8f34411c0250aacc4d26acdfd209bc29e57b2d53783d4045ac925cbcaeab92",
+        "12f53f8c13bb85c9fc42a8e0a5514d2a641f675e95fe0efb57312f5c27f25816",
+        "1b79e80f230360d7a7f4386909c4ef585e57c8529baa32c36957cb355d36ad7e",
+        "0baa0c0652c47463ad7b660e1a7ac517deb4046e22be88b14a03a7c7c49e6157"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "74da5586d809d5ada72473f85dcf37462fd88656afd41a232083651b4bd70dc2",
+      "fixture_sha256": "64f737eb23838ff55f541f6422dd1fd5bcd302af48fa210fd959ca4cb7ebf301",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "recovery-reference",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "recovery-reference",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "bd38e6f46f71b7e00d34f41edd401ddd65a387bed7d0d8a2227ffbd6937508c8"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "d0a33c3a0dc3c16be0cf824d3929ae881ecbb5981f60466aa7524b489336fff5",
+        "acf6f7c8861ebfcc90906b25966371e5166c639ced81216932cd9d4db243490b",
+        "0803fcfd3d5f27a816eff5086153187f7b2d8af49ad86d53f731834f3522d16f",
+        "4e341c76cc663db3bbe5d165a6088fbd87242945e29183e382ad282f8df102e4"
+      ],
+      "micro_counts": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "68c2687d285a25900ffb09ae05f008e7e66a11b9176f0f04e424b775f239ff3c",
+      "fixture_sha256": "c59e915e0790139f1d33636cbe8b409c1d0c8703ad4129e4aaec6edeeb3ee87f",
+      "full_checkpoint_inventories": [
+        {
+          "path": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train/checkpoint-3",
+          "marker_sha256": "4f03b96abadc2b590e0ab1ab098d5a12726b5be3f3dcf59be83e4038f1e8cfe5"
+        }
+      ]
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "recovery-resumed",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "recovery-resumed",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save",
+      "--resume",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train/checkpoint-2",
+      "--first-update",
+      "3"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "38ebcd23bac0bd239c6d138e97e9c831610e227b07341b82785827562af2b399"
+    },
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "exposure_sha256": [
+        "3476fccfe3191fb24445d8357ff9b37e408b94d593def8a90573ec2142d319d9",
+        "a0151025b495688fd84c6a3bebe09bdacb0f1051e2d6a375c40a528f2a3ff1b6",
+        "7cdfba3193a47644b678be03aefe585111a9d00b3aff50765edaf2f5d3378c68",
+        "7d303d849636172bbde3ced53c062742d66aa2a6e1febedbf009e490370bd5c3"
+      ],
+      "micro_counts": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "result_sha256": "95bc44c4c3759f3cda4dc00c71bf6382bc4093cc1f84c4e3288979fb96635d79",
+      "fixture_sha256": "c59e915e0790139f1d33636cbe8b409c1d0c8703ad4129e4aaec6edeeb3ee87f",
+      "full_checkpoint_inventories": [
+        {
+          "path": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train/checkpoint-3",
+          "marker_sha256": "78341c179a9631baed1e54099f55ad205714072de3685706d283fd0c6d6e1cf9"
+        }
+      ]
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "recovery-compare",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_recovery",
+      "--reference",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train",
+      "--resumed",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train",
+      "--out",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/recovery.json"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "export",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_export",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train/final",
+      "--output",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/serving-export",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "r2rce-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "r2rce-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/r2rce_representative.jsonl",
+      "--updates",
+      "8",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "exposure_sha256": [
+        "525a52025ac52597d0806b240b5eaa2bdeed9a813e09f6a98c27ebcfda3daf51",
+        "fa4d51794ef08c52308d377f7a510702b7a751ff3af844455380e1771eb3d40f",
+        "5f07898b69a2d66430cad5eda04e16b6ec52de390ee6d9e15a6aeda2583ff775",
+        "7fe9ed911df44164a402d17887fb8b69c15f2e21309a22c01d297fa6a25be051"
+      ],
+      "micro_counts": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "source_manifest_sha256": "36bb91da1946d40703b136d859de33c04bdc8ceaf2c3965cd020702d57b9c122",
+      "result_sha256": "b6c29e6aec5d62cb94a488a27f9cb28fcd24c529cc2a5f1f12c1b7d27d0847fe",
+      "fixture_sha256": "4190882d8b66943320d1c191fd04732e6739e8770e6ccd295bab580b1a544d82",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "rxrce-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "rxrce-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_representative.jsonl",
+      "--updates",
+      "8",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "exposure_sha256": [
+        "4da89edac81102ee7ca9667b1098a9a5ff8b53d0425af6d1f104cc964ec03db4",
+        "1a22d2cb0bcc4e4b89c434e122b7c197548160da722f67df54adf88a3170f2e3",
+        "04dbfca4cc66a15882b238913e421513c342d107014a75b75dfdca14e48f7294",
+        "61f8307c6e69f4ebc4d7019fa88904b20be2f1778df978c3e84a22c84a0d773c"
+      ],
+      "micro_counts": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "source_manifest_sha256": "36bb91da1946d40703b136d859de33c04bdc8ceaf2c3965cd020702d57b9c122",
+      "result_sha256": "4ffd7bd267d83ef152a5549521d5297b5d7317e784f24ce0e6286ca7a1721d8e",
+      "fixture_sha256": "50b3bef4a688f819b8fd31afc2513cc66ea9e77b4b7df0907da05a090161012f",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "joint-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "joint-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--updates",
+      "12",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "repair_carry": {
+      "reason": "all observed micros have support; exact old/new real-FLA outputs and all gradients",
+      "original_root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "exposure_sha256": [
+        "f0112f58bc4d42136cc7371541027cb1842d64edb383514a92b498d0b4e74e14",
+        "10b2b13d9f0bb3a2550a1dfaf508a0ace284d511b482426bbdf2566735094229",
+        "76472150561d3aca1070a15712aff06c1b4b0228107110ad054b73ffe4cc0b21",
+        "8f3eb092f17e50df8d4d3fc071accf02ff9f4247fcfc9193d9c300a89dec16b0"
+      ],
+      "micro_counts": [
+        24,
+        24,
+        24,
+        24
+      ],
+      "source_manifest_sha256": "36bb91da1946d40703b136d859de33c04bdc8ceaf2c3965cd020702d57b9c122",
+      "result_sha256": "a9b6e8e0c4caf00affb6ff2254d4e421ed2b83d3678a6f7a52a958d6cba61771",
+      "fixture_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+      "full_checkpoint_inventories": []
+    },
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "distributed-pair-normalization",
+    "command": [
+      "-m",
+      "torch.distributed.run",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "scripts.vln.check_vggt_g3_reduction"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  },
+  {
+    "name": "full-suite-final",
+    "command": [
+      "-m",
+      "pytest",
+      "tests/vln",
+      "-q"
+    ],
+    "returncode": 0,
+    "repair_proof_sha256": "b43e8ca39257d28577ab78b1eb673d22df8fe90aa35d8aaa841cc449fd67c0cd"
+  }
+]

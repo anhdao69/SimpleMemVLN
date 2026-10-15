@@ -1,5 +1,7 @@
 > **Authorized online implementation update (2026-10-15):** use frozen resident FP32 single-view VGGT-Omega-1B-512 online, no feature pre-extraction/PCA, the same unpositioned LN2048 regional targets as implemented G3. The lane-read decoder outputs2048, not256. User selected one joint R2R+EnglishRxR15 epoch from original Qwen base:3852updates,warmup116,cosine minimum0.1; global8 on worker-2 fourH100. R0 is the verified completed text-dual run in the registry (four lanes16/20/24/28). R0's E1 was halfway through a two-epoch schedule: this LR mismatch is explicit, not a controlled auxiliary-only comparison. `R1_omega_execution.md` records the implementation and qualification gates.
 
+> **Distributed empty-support requirement:** production uses ZeRO2 with two accumulation slots. Empty support must follow the same zero-sized query/probe/decoder graph as positive support, inserting no extra sequence rows. A standalone zero-loss shortcut changes gradient readiness order and can deadlock the reducer despite every parameter receiving a gradient. Require matching four-rank bucket sequences and recovery past the actual failed batch; the implementation report preserves the initial update19 failure and repair evidence.
+
 # R1 — Delayed VGGT supervision of the existing second memory bank
 
 > **For agentic workers:** reuse the user's completed R0 as a comparison artifact and its ARCHITECTURE/INITIALIZATION SPEC as the recipe. Never submit a new R0, and never silently train a new one-lane architecture against a four-lane baseline.

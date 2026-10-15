@@ -1,0 +1,20 @@
+{
+  "source_commit": "bcb14ea7a26df0ae266dcf0c3b8813dce5d97a6c",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-bcb14ea",
+  "allocation": "4925",
+  "node": "worker-2",
+  "queue": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3",
+  "actual_run": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1",
+  "supervisor_log": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1/supervisor-20261015T163724-789574/command.log",
+  "captured_unix": 1792082436.3660944,
+  "schedule_gates": [
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)"
+  ],
+  "training_contract": [
+    "TRAINING_CONTRACT {\"world_size\": 4, \"microbatch\": 1, \"accumulation\": 2, \"global_episode_batch\": 8, \"episode_records\": 30815, \"unique_episodes\": 30815, \"action_exposures_per_dataset_pass\": 3128624, \"min_tokens\": 700, \"max_tokens\": 199735}"
+  ],
+  "resume_lines": []
+}

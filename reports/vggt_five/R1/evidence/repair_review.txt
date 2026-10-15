@@ -1,0 +1,26 @@
+Independent review: /root/r1_review, 2026-10-15
+
+The reviewer confirmed that identical parameter-gradient presence was insufficient:
+the old empty path changed gradient readiness order under checkpointed backward.
+The deterministic original ZeRO2 collective-size mismatch and identical fixed
+bucket sequences directly address that failure mechanism.
+
+Reviewed artifacts: bcb14ea runtime fix and CPU regressions;
+repair_supported_parity.py; repro_empty.py; qualify_empty_repair.py;
+resume_repair_pilot.py.
+
+Findings addressed before completion:
+- Bind actual imported module path/hash, fixture bytes, full runtime manifest,
+  launch argv and successful completion at replay execution time.
+- Validate production DeepSpeed/runtime/accumulation configuration in recorded argv.
+- Bind the repair-proof hash into every qualification record/seal.
+- Restrict carried profiles to exact reviewed old/new module hashes, all-positive
+  observed support, identical remaining runtime, fixtures and complete inventories.
+- Require latest complete checkpoint10 before the first auto resume, and require
+  the saved trainer global_step to match the checkpoint after the controlled stop.
+
+Final code-review disposition: approved; no blocking control-flow or runtime-code
+findings. Numerical comparison permits the explicitly recorded BF16-zero to
+FP32-zero empty-loss dtype change while requiring exact scalar values, outputs
+and all gradients. Runtime recovery is established separately by the collected
+production update19 replay, checkpoint inventory and post-restart progress.

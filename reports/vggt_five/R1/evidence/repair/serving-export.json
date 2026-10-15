@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train/final",
+  "export": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt3/qualification/serving-export",
+  "baseline_serving": false,
+  "replay": [
+    {
+      "dataset": "r2rce",
+      "response_tokens": 50,
+      "optimized_vs_canonical": {
+        "passed": true,
+        "max_abs": 0.46875,
+        "rms": 0.04694462567567825,
+        "violations": 0,
+        "max_excess": -0.2832421660423279,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "streaming_vs_canonical": {
+        "passed": true,
+        "max_abs": 0.6875,
+        "rms": 0.06258776783943176,
+        "violations": 0,
+        "max_excess": -0.15113282203674316,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "legacy_direct_streaming_vs_optimized": {
+        "passed": false,
+        "max_abs": 0.8125,
+        "rms": 0.05879683047533035,
+        "violations": 1,
+        "max_excess": 0.008125007152557373,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "source_export_forced_streaming_exact": true,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": false,
+        "error": "Response limit reached without assistant terminator"
+      },
+      "greedy_tokens": [
+        760,
+        5614,
+        369,
+        310,
+        708,
+        2094,
+        279,
+        1245,
+        3008,
+        314,
+        279,
+        3990,
+        4821,
+        321,
+        2842,
+        539
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    },
+    {
+      "dataset": "rxrce",
+      "response_tokens": 50,
+      "optimized_vs_canonical": {
+        "passed": true,
+        "max_abs": 0.46875,
+        "rms": 0.0404229573905468,
+        "violations": 0,
+        "max_excess": -0.3318750262260437,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "streaming_vs_canonical": {
+        "passed": true,
+        "max_abs": 0.578125,
+        "rms": 0.0518815740942955,
+        "violations": 0,
+        "max_excess": -0.2574999928474426,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "legacy_direct_streaming_vs_optimized": {
+        "passed": true,
+        "max_abs": 0.4375,
+        "rms": 0.04799047112464905,
+        "violations": 0,
+        "max_excess": -0.3805859088897705,
+        "atol": 0.75,
+        "rtol": 0.03,
+        "rms_limit": 0.15
+      },
+      "source_export_forced_streaming_exact": true,
+      "source_export_logits_exact": true,
+      "source_export_greedy_exact": true,
+      "greedy_outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      },
+      "greedy_tokens": [
+        15834,
+        20549,
+        248046
+      ],
+      "reset_exact": true,
+      "retry_exact": true,
+      "window8_eviction": true
+    }
+  ]
+}

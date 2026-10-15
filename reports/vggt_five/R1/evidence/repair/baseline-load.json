@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "lane_parameters_exact": 21054000,
+  "trained_out_proj_norms": {
+    "backbone.model.language_model.layers.16.linear_attn.step_lane.out_proj.weight": 5.301425457000732,
+    "backbone.model.language_model.layers.20.linear_attn.step_lane.out_proj.weight": 4.879888534545898,
+    "backbone.model.language_model.layers.24.linear_attn.step_lane.out_proj.weight": 3.381570339202881,
+    "backbone.model.language_model.layers.28.linear_attn.step_lane.out_proj.weight": 1.2982081174850464
+  },
+  "multistep_loss_sums": {
+    "r2rce": 1.3788368701934814,
+    "rxrce": 1.2861483097076416
+  }
+}

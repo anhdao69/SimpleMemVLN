@@ -1,0 +1,118 @@
+{
+  "update": 19,
+  "exposure_index": 18,
+  "ranks": {
+    "0": [
+      {
+        "update": 18,
+        "episode_uid": "r2rce:train:mp3d/ur6pFq6Qu1A/ur6pFq6Qu1A.glb:9393:9393",
+        "actions": 34,
+        "tokens": 10882,
+        "loss_sum": 8.666251182556152,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.6474103927612305,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      },
+      {
+        "update": 18,
+        "episode_uid": "rxrce:train:mp3d/Uxmj2M2itWa/Uxmj2M2itWa.glb:52288:110157",
+        "actions": 20,
+        "tokens": 6428,
+        "loss_sum": 4.647549629211426,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.64976167678833,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      }
+    ],
+    "1": [
+      {
+        "update": 18,
+        "episode_uid": "r2rce:train:mp3d/29hnd4uzFmX/29hnd4uzFmX.glb:1042:1042",
+        "actions": 30,
+        "tokens": 9605,
+        "loss_sum": 9.112141609191895,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.545310020446777,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      },
+      {
+        "update": 18,
+        "episode_uid": "r2rce:train:mp3d/sT4fr6TAbpF/sT4fr6TAbpF.glb:2930:2930",
+        "actions": 30,
+        "tokens": 9593,
+        "loss_sum": 8.229978561401367,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.596055030822754,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      }
+    ],
+    "2": [
+      {
+        "update": 18,
+        "episode_uid": "rxrce:train:mp3d/17DRP5sb8fy/17DRP5sb8fy.glb:48157:45537",
+        "actions": 42,
+        "tokens": 13461,
+        "loss_sum": 11.393096923828125,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.561562538146973,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      },
+      {
+        "update": 18,
+        "episode_uid": "rxrce:train:mp3d/1pXnuDYAj8r/1pXnuDYAj8r.glb:51316:53296",
+        "actions": 8,
+        "tokens": 2615,
+        "loss_sum": 5.177493095397949,
+        "update_global_actions": 221,
+        "aux_loss_sum": 0.0,
+        "aux_support": 0,
+        "aux_pair_count": 0,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      }
+    ],
+    "3": [
+      {
+        "update": 18,
+        "episode_uid": "rxrce:train:mp3d/ZMojNkEp431/ZMojNkEp431.glb:16744:52831",
+        "actions": 31,
+        "tokens": 9950,
+        "loss_sum": 8.057966232299805,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.55517578125,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      },
+      {
+        "update": 18,
+        "episode_uid": "rxrce:train:mp3d/VzqfbhrpDEA/VzqfbhrpDEA.glb:44729:38896",
+        "actions": 26,
+        "tokens": 8357,
+        "loss_sum": 10.093538284301758,
+        "update_global_actions": 221,
+        "aux_loss_sum": 7.607792854309082,
+        "aux_support": 8,
+        "aux_pair_count": 8,
+        "update_aux_count": 56,
+        "aux_weight": 0.0023346303501945525
+      }
+    ]
+  }
+}

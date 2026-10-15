@@ -2,9 +2,9 @@
 
 ## Status and scope
 
-**Post-launch issue under repair:** update19 stalled during backward when rank2 had zero recall pairs in the second accumulation slot and other ranks had support. Training step4925.62 was stopped; allocation4925 and complete checkpoint10 are intact. The initial launch evidence below is a historical snapshot, not a current healthy-run claim. A uniform empty-support autograd graph is being qualified before resuming.
+**Implemented, qualified, repaired and running:** at2026-10-15T16:40:36Z, all four ranks had completed **32/3,852 updates** in Slurm step **4925.78**, worker-2. The uniform empty-support autograd repair passed all18 revised qualification gates. Production resumed checkpoint10, passed the exact previously failing update19, saved complete checkpoint24, then resumed again and advanced normally. Checkpoint24 has22files/71,004,558,611bytes and the correct one-epoch optimizer/scheduler/RNG state. The full epoch is still training; it is not a completed model. The initial launch evidence below is a historical snapshot.
 
-Implementation, independent review and all18 H100 qualification gates passed. Production started on worker-2 in Slurm step4925.62 at2026-10-15T15:44:30Z. At2026-10-15T15:50:21Z, all four ranks had completed16updates. Checkpoint10 passed the production recovery validator:4ranks,22files,71,004,556,006bytes, correct one-epoch trainer state. Training continued after the save. The epoch itself remains running.
+Implementation, independent review and the initial18 H100 qualification gates passed before the original production launch in step4925.62 at2026-10-15T15:44:30Z. At2026-10-15T15:50:21Z, all four ranks had completed16updates. Checkpoint10 passed the production recovery validator:4ranks,22files,71,004,556,006bytes, correct one-epoch trainer state. The later update19 stall and the stricter repair qualification are documented below.
 
 Branch: `v2_vggt_omega_r1`, based on completed A1 code `4f772d3`. Work is isolated from the original checkout and all completed models. The authorized run is one joint R2R + English RxR **15-degree** epoch from original Qwen3.5-4B weights, on four H100 GPUs in allocation4925, **worker-2 only**. R0, G1, G3, A0 and A1 are not retrained or overwritten.
 
@@ -36,7 +36,7 @@ Only the final existing separator token of a completed observation/action group 
 
 At most eight source/read pairs are selected per episode, with five regions per pair (at most40 read rows). R1 inserts probe rows after lane QKV/SiLU/head repetition and effective write gating. Probe k is a fixed unit vector, v is zero, and effective g/beta are zero. Probes enter the lane kernel only; they do not enter native convolution, native GDN, token positions, attention, or the original role sequence. Probe reads bypass lane RMSNorm, z gate and output projection. Original rows retain their original postprocessing.
 
-Native layer24 preparation/kernel executes once. The lane24 kernel executes once. The layer preserves the original BF16 residual grouping `hidden + (native + lane)`, followed by the original MLP/residual. Other installed lanes use the original wrappers. Empty-support episodes execute the original lane path and retain zero participation for every auxiliary parameter. Decoder checkpoint closures bind layer-specific arguments; full BPTT remains enabled.
+Native layer24 preparation/kernel executes once. The lane24 kernel executes once. The layer preserves the original BF16 residual grouping `hidden + (native + lane)`, followed by the original MLP/residual. Other installed lanes use the original wrappers. Empty-support episodes execute the same query/probe/decoder autograd graph using zero-sized tensors, with no additional sequence rows or synthetic targets. Every auxiliary gradient is present and exactly zero. This is necessary for consistent ZeRO2 gradient-reduction order across ranks. Decoder checkpoint closures bind layer-specific arguments; full BPTT remains enabled.
 
 Direct recall loss can train earlier lane writer parameters even while the lane output projection is zero. Tests demonstrate nonzero earlier writer/input gradients, and no future-input or detached native-query/teacher-target gradients. This does not imply only lane24 changes: shared writer inputs let gradients reach earlier native layers and earlier lanes. All language/lane weights remain trainable; the existing frozen vision setup is unchanged.
 
@@ -114,6 +114,28 @@ Final qualification uses immutable audit revision `dca86b64742f779d6f4b5ebdb50e2
 
 A staging launch exited before Python because the source archive transfer was incomplete; no training ran in that attempt. Before retrying, all274 tracked runtime/test files were checked against local SHA-256 values. The failed staging log is preserved separately from the successful verified-source qualification log.
 
+## Empty-support ZeRO2 repair
+
+The initial full run stalled in the second accumulation slot of update19. Rank2's episode had eight actions and no eligible recall pairs; the other ranks had support. All eight forward exposures completed. GPU utilization at100% reflected a stalled collective, not useful training. The initial mixed-empty qualification had not exercised this exact ordering, and the separate pair-normalization test uses DDP rather than the production ZeRO2 reducer.
+
+The original empty-support shortcut returned the ordinary lane forward plus a standalone auxiliary zero. Every parameter had a gradient, but checkpointed backward made auxiliary gradients ready in a different order from supported episodes. Replaying the exact eight update19 episodes with `TORCH_DISTRIBUTED_DEBUG=DETAIL` proved a collective mismatch: rank2 reduced49,813,504 BF16 elements while the other ranks reduced48,501,376 at sequence868. This is a distributed graph-order defect, not an OOM or a reason to request more RAM.
+
+Runtime revision `bcb14ea7a26df0ae266dcf0c3b8813dce5d97a6c` removes the shortcut. The R1-specific zero-support insertion path uses zero-sized query and index-copy operations, then the same lane kernel and decoder. It inserts zero probe rows and creates no fake observations or targets. The shared G3 helper remains unchanged so teacher identities and previous model compatibility are preserved. There is no objective, schedule, parameter, teacher or serving change.
+
+The CPU regression first failed on the old graph and then passed: supported and empty episodes must have identical gradient-hook readiness order. A second test requires exact original lane outputs and gradients with a nonzero output projection, unchanged sequence length, and zero auxiliary gradients. Real-H100 BF16 FLA parity independently verifies exact outputs, scalar loss values and all19 input/parameter gradient tensors for both supported and empty cases. Empty loss now has FP32 dtype (as supported losses already do), whereas the old empty scalar was BF16; its value and gradients are exactly zero in both versions.
+
+The first fixed four-H100 ZeRO2 replay completed two updates, and all328 ordered gradient-bucket records matched across all four ranks. Both execution-time source/fixture-bound replays also passed two updates, with328 identical ordered bucket records on every rank: the original accumulation order and the reversed order. Their identities record the actual imported module, all runtime hashes, fixture bytes, argv, Slurm allocation/node and successful completion. The campaign-specific harness in `evidence/qualify_empty_repair.py` accepts only this exact old/new module SHA pair, verifies all other runtime files unchanged, and binds every sealed record to its repair proof. It is not a general permission to carry evidence over arbitrary runtime changes.
+
+Only profiles whose complete four-rank exposure logs show positive support on every microbatch can be carried under the exact supported-path parity proof. Their fixture bytes, source manifests, results, original logs, and complete longest/recovery checkpoint inventories are revalidated. Mixed-empty, both full suites, baseline serving/loading, serving export, recovery comparison, and distributed pair normalization run again. The failed original export and failed original collective replay remain preserved. Checkpoint10 contains only80 positive-support microepisodes and predates this defect; continuation must pass update19 and write a new complete checkpoint before the repaired production run is called healthy.
+
+The repair qualification passed all18 gates: ten positive-support profiles carried with explicit provenance, and eight gates freshly executed. The two fresh server suites each passed434tests/118warnings/no skips, taking65.27s and66.17s. The fresh mixed-empty profile completed three optimizer updates on all four ranks. The independent reviewer approved the graph repair, strict evidence binding and recovery-pilot control flow. This proves the exercised numerical/distributed contracts; it does not establish navigation accuracy or rule out every future runtime failure.
+
+The production recovery pilot then passed. It first required checkpoint10 to be the latest complete checkpoint. After resume, update19 replayed the same episode UIDs, action/token lengths and pair counts on every rank, including rank2's empty second slot, and completed in5.0601seconds. All ranks passed20; the filesystem stop request was honored at24. The complete checkpoint24 inventory has22files totaling71,004,558,611bytes, world4, global_step24, max_steps3852, num_train_epochs1 and epoch0.00623053. Its supervisor exitedPASS, with no GPU/hostOOM or OOM-kill events and no RAM-guard trigger. Peak sampled host working set during continuation/save was528.886GiB against the691.2GiB guard. Total cgroup usage reached768GiB including reclaimable file cache; that is distinct from the nonreclaimable working-set measure.
+
+The stop request was archived, the durable queue restarted from24, and all four ranks passed26 before the pilot reported success. The later evidence snapshot at16:40:36UTC shows32completedupdates and an active production step4925.78. Across recorded production updates the maximum allocated/reserved GPU memory was53.0165/66.7461GiB, with zero OOM counters; these observed batches do not replace the separately documented longest-episode stress test. All four resumed schedule gates again confirmed3852/116 and the30815-episode/global8 contract. The current queue PID was3636489 at capture. No training stop request remains.
+
+Repaired qualification, raw four-rank bucket/profile/exposure logs, execution identities, the exact production update19 replay, checkpoint inventory/trainer state, supervisor resources and continued progress are in `evidence/repair/`. `resume_repair_pilot.py` performs the controlled save/restart only once; it is an audit helper, not the routine resume command below. The normal durable queue now owns training and survives an SSH/VPN disconnect. Allow approximately14–18hours remaining from this early snapshot, roughly02:40–06:40America/New_York on2026-10-16; this range remains a short-sample planning estimate, not a guaranteed finish time.
+
 ## Deployment and limits
 
 Serving export strips only `research_aux`; it keeps all four lanes and exact lane metadata. Total lane parameters are21,054,000. The four FP32 recurrent lane matrices occupy1,048,576bytes (1MiB) per episode, excluding temporary working buffers. R1's training-only head and Omega teacher add no deployed modules relative to R0. R0 itself remains more expensive than native V0.
@@ -134,7 +156,7 @@ The same four-H100 production profile completed eight-update representative test
 
 These are small fixed representative fixtures, not completed standalone epochs. The actual mixed campaign can incur different rank imbalance and episode-length distributions; separate dataset estimates should not simply be added as its ETA. The joint trial covers96 complete episode exposures and11 endpoint intervals. Its13.17-hour compute extrapolation, with checkpoint overhead and substantial episode-length uncertainty, supports an initial planning range of14–18hours after launch; it is not a full-epoch measurement. A full checkpoint after every100updates adds I/O; the longest/save stress-test timings are deliberately excluded from steady training estimates.
 
-## Final runtime, launch evidence and resume command
+## Initial launch evidence and current resume command
 
 Verified launch evidence is in `evidence/production_launch.json`, `initial_progress.json`, `checkpoint10.json`, and `checkpoint10_trainer_state.json`. At2026-10-15T15:50:21Z (11:50:21America/New_York):
 
@@ -144,18 +166,18 @@ Verified launch evidence is in `evidence/production_launch.json`, `initial_progr
 - Checkpoint10 is complete:22listed files,71,004,556,006bytes. The shared production recovery validator passed. Trainer state records global_step10, max_steps3852, num_train_epochs1, epoch0.002596054.
 - Step10 loss0.3360443 and gradient norm19.77109 are finite. Per-rank auxiliary exposure losses are finite and positive when support exists; the ramp is active after step0.
 - Across the first16updates, maximum observed GPU allocation/reservation was50.5731/54.7754GiB. All rank GPU OOM counters and host OOM/kill counters remained zero. The production host has substantial reclaimable filesystem cache; total cgroup usage must not be mistaken for nonreclaimable working memory.
-- Initial finish range:14–18hours after launch, roughly2026-10-16 01:45–05:45America/New_York. This is a short-sample estimate, not a guarantee; update from a longer production window later.
+- The initial compute budget was14–18hours. The later repair pause shifts the wall-clock finish estimate; use the current repaired-launch evidence below rather than the original launch timestamp.
 
-No model weights are published as a completed R1 epoch yet. The training process is independent of this SSH session and remains active.
+No model weights are published as a completed R1 epoch yet. The initial step above later stalled at update19; it was stopped, and its complete checkpoint10 is the repair's recovery point. The active launch is recorded in the repair evidence, separately from this historical snapshot.
 
-The queue is `/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015`. Its immutable runtime source is `source-dca86b6`, full commit `dca86b64742f779d6f4b5ebdb50e21dd1a5e7d3b`. The final queue/output root is its `attempt2` subdirectory; original qualification and diagnostics are preserved at the campaign root. Qualification artifacts are in `qualification`; production output will be `r1_joint_e1/train`. The successful qualification/queue log is `attempt2/queue-launch-verified.log`, state is `queue_state.json`, and every training restart has a separate `r1_joint_e1/supervisor-*/command.log`.
+The campaign root is `/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015`. The repaired immutable runtime is `source-bcb14ea`, full commit `bcb14ea7a26df0ae266dcf0c3b8813dce5d97a6c`. Its queue and strict repaired qualification seal live under `attempt3`. `attempt3/r1_joint_e1` is a deliberate symlink to the original `attempt2/r1_joint_e1` output directory, preserving model/optimizer/scheduler/RNG/sampling recovery and the complete run history. The individual checkpoint directories are real directories, never symlinks. The old watcher has exited; the queue and launcher locks prevent duplicate writers. Every restart has a separate `r1_joint_e1/supervisor-*/command.log`. The original sources, failed collective/export logs and initial qualification remain preserved.
 
 After a cancellation, first obtain a new four-H100/60CPU/768GiB interactive allocation on worker-2. Then restart the same durable queue from the login node (substitute its actual allocation ID):
 
 ```bash
 R1_ROOT=/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015
-R1_SOURCE="$R1_ROOT/source-dca86b6"
-R1_RUN_ROOT="$R1_ROOT/attempt2"
+R1_SOURCE="$R1_ROOT/source-bcb14ea"
+R1_RUN_ROOT="$R1_ROOT/attempt3"
 nohup env G1_CODE_DIR="$R1_SOURCE" \
   bash "$R1_SOURCE/train/g1_omega_env.sh" \
   python -m scripts.vln.queue_vggt_r1 \
