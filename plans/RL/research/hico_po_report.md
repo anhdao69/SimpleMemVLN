@@ -495,6 +495,34 @@ Its larger gradient norm reflects the batch-level scale (per-group normalisation
 loss), not instability: clipping at 1.0 is active in all runs and no run diverged. Wall-clock is not
 comparable across runs because the GPUs were shared with other users' jobs.
 
+**Gradient clipping is always active.** In every run, all 125 updates have a pre-clip gradient norm
+above the clip threshold of 1.0:
+
+| Run | min | median |
+|---|---:|---:|
+| GRPO s1 | 1.60 | 2.33 |
+| GRPO s2 | 1.77 | 2.58 |
+| GRPO+STOP | 1.55 | 2.35 |
+| HiCo v3 | 3.95 | 6.58 |
+| GRPO+F | 1.64 | 3.07 |
+| GRPO+F-B (steps 0–76) | 1.28 | 2.02 |
+
+Every update is therefore g/‖g‖ before AdamW. This has two consequences for interpreting §5:
+
+1. Unbiasedness of the raw estimator does not carry over to the applied update. Dividing by a random
+   norm already biases it, and AdamW's elementwise normalisation removes the global scale. What
+   matters is the *direction* quality of g/‖g‖.
+2. Adding terms (the STOP branch, fork siblings) cannot add learning signal at a fixed learning rate. It
+   only re-allocates a fixed per-step budget. For GRPO+F, fork terms carried 45 % of the gradient mass,
+   so the GRPO component of each update was roughly halved relative to GRPO. An extra term helps only
+   if it improves the direction more than it dilutes the GRPO signal.
+
+This applies equally to every variant here, and plausibly explains why three different unbiased
+additions all landed 1.3–2.5 SR *below* GRPO rather than at it. It also points to the right control for
+future estimators: either compare at matched *GRPO-component* step size (e.g. scale the learning rate
+by ‖g‖/‖g_GRPO‖), or measure direction quality directly (cosine to a large-batch reference gradient on
+held-out training prompts).
+
 ### 7.5 Memory behaviour
 
 All estimators train the same streaming-memory policy (full backprop through the Gated DeltaNet state and
