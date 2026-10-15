@@ -30,6 +30,11 @@ def main():
         folder=root/'experiments'/name;result=json.loads((folder/'result.json').read_text())
         if json.loads((folder/'source_manifest.json').read_text())!=expected:raise ValueError('Profile source mismatch')
         if not result['passed'] or result['check']['peak_allocated_gib']>72:raise ValueError('R1 resource qualification failed: '+name)
+        if '--save' in extra:
+            from qwen_vl.train.recovery import validate_complete
+            saved=validate_complete(folder/'train'/f'checkpoint-{updates}')
+            if saved['world_size']!=4 or saved['step']!=updates:
+                raise ValueError('R1 full checkpoint topology/update mismatch: '+name)
     task('full-suite-initial',['-m','pytest','tests/vln','-q'])
     task('baseline-load',['-m','scripts.vln.check_text_export','--checkpoint',cfg['research']['baseline']['artifact'],
         '--model-path',os.environ['VLN_MODEL_PATH'],'--manifest',str(manifest),'--out',str(root/'baseline-load.json')])
