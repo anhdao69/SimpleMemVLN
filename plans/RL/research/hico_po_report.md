@@ -513,8 +513,8 @@ Every update is therefore g/‖g‖ before AdamW. This has two consequences for 
    norm already biases it, and AdamW's elementwise normalisation removes the global scale. What
    matters is the *direction* quality of g/‖g‖.
 2. Adding terms (the STOP branch, fork siblings) cannot add learning signal at a fixed learning rate. It
-   only re-allocates a fixed per-step budget. For GRPO+F, fork terms carried 45 % of the gradient mass,
-   so the GRPO component of each update was roughly halved relative to GRPO. An extra term helps only
+   only re-allocates a fixed per-step budget. For GRPO+F, fork terms carried 57 % of the gradient mass (126 k of 220 k, §5.4),
+   so the GRPO component got less than half of each update. An extra term helps only
    if it improves the direction more than it dilutes the GRPO signal.
 
 This applies equally to every variant here, and plausibly explains why three different unbiased
