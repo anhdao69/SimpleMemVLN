@@ -135,12 +135,13 @@ class SimpleMemVLNForNavigation(nn.Module):
             from qwen_vl.models.vggt_aux_heads import CurrentSpatialProjector
             from qwen_vl.models.episodic_forward import NATIVE_FORWARD_SHA256, check_native_source
             check_native_source(NATIVE_FORWARD_SHA256)
-            if self.g1_spec['run_id']=='G3':
+            if self.g1_spec['run_id'] in ('G3','R1'):
                 from qwen_vl.models.vggt_g3_heads import NativeStateHead
                 text=backbone.config.text_config
                 if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
                     raise ValueError('G3 requires the qualified native 32x128 state heads')
-                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
+                heads=spec.num_value_heads if self.g1_spec['run_id']=='R1' else 32
+                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead(heads=heads,context_heads=32)})
             elif self.g1_spec['run_id']=='G1':
                 self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
             else:
@@ -289,11 +290,12 @@ class SimpleMemVLNForNavigation(nn.Module):
                 image_mask=image_mask, address_relation=relation,
                 window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         if aux_anchors is not None:
-            if self.g1_spec is None or self.g1_spec['run_id']!='G3' or cache is not None or stream_append:
-                raise ValueError('G3 metadata requires uncached G3 research forward')
+            if self.g1_spec is None or self.g1_spec['run_id'] not in ('G3','R1') or cache is not None or stream_append:
+                raise ValueError('State metadata requires uncached G3/R1 research forward')
             from qwen_vl.models.research_forward import research_text_forward
             return research_text_forward(self.backbone.model.language_model,embeddings,position_ids,step_plan,
                 state_head=self.research_aux.state_head,anchors=aux_anchors,lags=aux_lags,targets=aux_targets,
+                lane_roles=step_lane_roles if self.g1_spec['run_id']=='R1' else None,
                 window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         if aux_visual_positions is not None:
             if self.g1_spec is None or cache is not None or stream_append:

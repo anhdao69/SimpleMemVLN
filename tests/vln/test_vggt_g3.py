@@ -108,7 +108,8 @@ def test_invalid_probe_anchor_rejected():
         with pytest.raises(ValueError):insert_probes((q,q,q,g,g),torch.tensor(anchors),torch.zeros(len(anchors),1,2))
 
 
-def test_dataset_maps_online_source_frames_to_pairs_without_target_leakage(monkeypatch):
+@pytest.mark.parametrize('run_id',['G3','R1'])
+def test_dataset_maps_online_source_frames_to_pairs_without_target_leakage(monkeypatch,run_id):
     from types import SimpleNamespace
     from qwen_vl.data.episode_dataset import EpisodeDataset
     from qwen_vl.research.vggt_sampling import collection_trajectory_key
@@ -118,7 +119,7 @@ def test_dataset_maps_online_source_frames_to_pairs_without_target_leakage(monke
     encoded={'input_ids':torch.zeros(1,160,dtype=torch.long),'response_target_positions':positions,
              'response_action_index':torch.arange(40),'num_actions':40}
     dataset=object.__new__(EpisodeDataset);dataset.episodes=[episode];dataset.encoded_lengths=[160]
-    dataset.serializer=SimpleNamespace(config={'runtime':{},'research':{'run_id':'G3'}},
+    dataset.serializer=SimpleNamespace(config={'runtime':{},'research':{'run_id':run_id}},
         encode_episode=lambda ep:dict(encoded))
     captured=[]
     def images(paths):

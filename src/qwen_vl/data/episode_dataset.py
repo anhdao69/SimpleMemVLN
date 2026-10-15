@@ -60,7 +60,7 @@ class EpisodeDataset(Dataset):
                 result.update(metadata)
                 if spec['run_id']=='A0':
                     return result
-            elif spec['run_id']=='G3':
+            elif spec['run_id'] in ('G3','R1'):
                 from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
                 pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
                 frames=sorted({s for s,t in pairs})

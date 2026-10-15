@@ -1,0 +1,200 @@
+research:
+  head_lr: 0.0001
+  lambda_max: 0.1
+  ramp_updates: 771
+  run_id: R1
+  sample_seed: 429
+  sampling_identity: collected-rgb-paths-v1
+  student_layer: 24
+  teacher: VGGT-Omega-1B-512
+  teacher_batch_size: 8
+  teacher_identity:
+    descriptors:
+      base:
+        adapter_sha256: 86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60
+        compute_dtype: float32
+        patch_offset: 17
+        pooling: adaptive-average-15x20-LN2048-eps1e-6
+        preprocessing: omega-balanced512-rgb640x480-bicubic448x592-v1
+        preprocessing_code_sha256: f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6
+        source_sha256: b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb
+        teacher_dim: 2048
+        teacher_layer: 23
+        weights_sha256: c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934
+      target: a1-unpositioned-LN2048-soft-relations-v1
+      adapter_sha256: 841c6f5b163007208a1d8d734a59cf0315d4d00a51de0c511c30901c0e7f6016
+    target: r1-unpositioned-LN2048-regions-v1
+    adapter_sha256: 77cf0feafdafd6e901012aa53d4e9a47bea1c9eb57cb465f13fb0b4033da465f
+    regions_sha256: 09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839
+  teacher_residency: resident
+  teacher_source: /mnt/data/vmo-ai-task/anhdh35/third_party/vggt-omega
+  teacher_weights: /mnt/data/vmo-ai-task/anhdh35/models/vggt-omega/vggt_omega_1b_512.pt
+  baseline:
+    artifact: /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852
+    weights_sha256: cd7b36d160c19ebbb8fbdc92e3ce451f08a2a566a9a3507b382dd828b06ea6d4
+    navigation_sha256: a57a137bc41a595ce07fbb8132e3ac317689f1c9b023e4295dbb098dcc8e2d6f
+    source_commit: a7e442cbd3c43cf3ec238eaa527e9c67f5ce2408
+    source_files:
+      src/qwen_vl/models/parallel_step_lane.py: 58e2e4ec29974715ba18b211285f57016bdc94798ae7f60590bfe16aeb21e494
+      src/qwen_vl/models/install_step_lane.py: 4fd58fe4920e995f88d333c2dcb7bfffe4a2e34ec4dd4d26fcbfd0d751086145
+      src/qwen_vl/research/lane_contract.py: 2aef55eec7cf74b2ea1347f929da3dae1c7f2b49c4ebd056f84b9cd04f57f27c
+    metadata:
+      serializer: vln_append_only_chat_v1
+      template_sha256: fb79cf3922f74475e9a5faaac8c08d2f79a3ca7bef5dbf434f3f7726119229b8
+      actions:
+      - MOVE_FORWARD
+      - TURN_LEFT
+      - TURN_RIGHT
+      - STOP
+      habitat_ids:
+      - 1
+      - 2
+      - 3
+      - 0
+      action_token_ids:
+      - - 28164
+        - 61846
+        - 248046
+      - - 15834
+        - 18440
+        - 248046
+      - - 15834
+        - 20549
+        - 248046
+      - - 48964
+        - 248046
+      eos: 248046
+      separator_ids:
+      - 198
+      rgb_shape:
+      - 480
+      - 640
+      - 3
+      position_convention: logical_text_plus_native_mrope_v1
+      rotary_precision: fp32_preserved_across_module_casts_v1
+      config:
+        generation:
+          fixed_separator: '
+
+            '
+          max_response_tokens_including_eos: 16
+        memory:
+          evict_before_new_step: true
+          kv_guard_tokens: 5120
+          kv_window_steps_including_current: 8
+          mode: window8
+        model:
+          backbone: Qwen/Qwen3.5-4B
+          output_mode: qwen_text
+          revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+          step_lane: &id001
+            enabled: true
+            version: parallel_step_lane_v1
+            layers:
+            - 16
+            - 20
+            - 24
+            - 28
+            init_seed: 429
+            clock_mode: step_end
+        observations:
+          append_action_tokens: true
+          expected_rgb_shape:
+          - 480
+          - 640
+          - 3
+          expected_visual_tokens: 300
+          max_prefix_tokens: 2048
+          max_step_group_tokens: 384
+          serializer_version: vln_append_only_chat_v1
+        runtime:
+          action_diagnostics: false
+          max_logical_context_tokens: 262144
+          profile_components: false
+          window_attention_batch_steps: 16
+          text_attention: simplememvln_step_attention
+          vision_attention: flash_attention_2
+          vision_microbatch_images: 4
+        training:
+          activation_offload_min_tokens: 65536
+          backbone_lr: 5.0e-06
+          checkpoint_decoder_layers: true
+          class_weighting: none
+          classifier_lr: 5.0e-06
+          dataloader_num_workers: 4
+          effective_number_beta: 0.9999
+          epochs: 2
+          expected_total_steps: 7704
+          expected_warmup_steps: 232
+          gradient_accumulation_steps: 2
+          length_bucket_pool_episodes: 64
+          microbatch_episodes_per_rank: 1
+          model_max_length: 262144
+          nominal_episodes_per_update: 8
+          save_strategy: epoch
+          save_total_limit: null
+          seed: 429
+          supervise_assistant_terminator: true
+          tail_policy: accelerate_repeat
+          use_cache: false
+          warmup_steps: 232
+          weight_decay: 0.01
+          step_lane_lr: 0.0001
+      step_lane:
+        version: parallel_step_lane_v1
+        layers:
+        - 16
+        - 20
+        - 24
+        - 28
+        num_key_heads: 2
+        num_value_heads: 4
+        key_dim: 128
+        value_dim: 128
+        clock_mode: step_end
+        prefix_mode: read_only_zero
+        half_lives_steps:
+        - 8.0
+        - 24.0
+        - 64.0
+        - 192.0
+        beta_init: 0.1
+        token_rate_reference: null
+        projection_init_std: 0.02
+        eps: 1.0e-06
+    schedule:
+      global_step: 3852
+      epoch: 1.0
+      max_steps: 7704
+      num_train_epochs: 2
+    initialization: original pinned Qwen base; fresh lanes, seed429+layer
+    manifest: /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl
+    manifest_sha256: 5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933
+    topology:
+      world_size: 4
+      accumulation: 2
+      global_batch: 8
+    available_epoch_checkpoints:
+    - /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852
+    - /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-7704
+    audited_utc: '2026-10-15T14:02:54.145384+00:00'
+runtime:
+  episodic_diagnostics: false
+  malloc_trim_each_update: false
+  stage_pixels_bf16: true
+  vision_microbatch_images: 8
+  window_attention_batch_steps: 32
+training:
+  activation_offload_backend: pinned_arena_v1
+  cpu_optimizer_impl: deepspeed_cpu_adam
+  dataloader_num_workers: 8
+  dataloader_persistent_workers: true
+  dataloader_pin_memory: false
+  dataloader_prefetch_factor: 2
+  gradient_accumulation_steps: 2
+  optimizer_group_chunks: 1
+  step_lane_lr: 0.0001
+model:
+  step_lane: *id001
+memory:
+  kv_guard_tokens: 5120

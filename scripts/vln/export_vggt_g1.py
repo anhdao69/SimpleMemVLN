@@ -13,7 +13,7 @@ def export_checkpoint(source, destination):
     if destination.exists(): raise FileExistsError(destination)
     metadata=json.loads((source/'navigation.json').read_text())
     research=metadata['config'].get('research')
-    if not research or research['run_id'] not in ('G1','G3','A0','A1'):
+    if not research or research['run_id'] not in ('G1','G3','A0','A1','R1'):
         raise ValueError('Expected a G1/G3/A0/A1 training checkpoint')
     state=torch.load(source/'pytorch_model.bin',map_location='cpu',weights_only=True,mmap=True)
     if research['run_id'] in ('A0','A1'):
@@ -30,6 +30,11 @@ def export_checkpoint(source, destination):
         head='current_projector' if research['run_id']=='G1' else 'state_head'
         if not any(k.startswith(f'research_aux.{head}.') for k in state):
             raise ValueError('Checkpoint missing training head')
+        if research['run_id']=='R1':
+            from qwen_vl.research.vggt_r1 import validate_r1
+            spec=validate_r1(metadata['config'])
+            installed={int(k.split('.layers.')[1].split('.')[0]) for k in state if '.step_lane.' in k}
+            if installed!=set(spec.layers):raise ValueError('R1 export missing or unexpected installed lane')
     destination.mkdir(parents=True)
     torch.save(serving_state_dict(state),destination/'pytorch_model.bin')
     metadata['config']=serving_config(metadata['config'])

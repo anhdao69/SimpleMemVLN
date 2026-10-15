@@ -59,6 +59,7 @@ def main():
         ep['episode_uid']+=':g1-serving-audit'
     source_model,source_serializer=load_checkpoint(a.source,a.model_path);source_model.eval()
     source_logits={};source_greedy={}
+    source_lane_spec=getattr(source_model,'step_lane_spec',None)
     with torch.inference_mode():
         for dataset,ep in selected.items():
             data={k:v.cuda() if torch.is_tensor(v) else v for k,v in source_serializer.encode_episode(ep).items()}
@@ -69,7 +70,7 @@ def main():
     gc.collect();torch.cuda.empty_cache()
     path=export_checkpoint(a.source,a.output)
     model,serializer=load_checkpoint(path,a.model_path);model.eval()
-    assert not hasattr(model,'research_aux') and getattr(model,'step_lane_spec',None) is None
+    assert not hasattr(model,'research_aux') and getattr(model,'step_lane_spec',None)==source_lane_spec
     assert 'research' not in model.navigation_config
     report=[];head=model.backbone.lm_head;original=head.forward
     for dataset,source in selected.items():

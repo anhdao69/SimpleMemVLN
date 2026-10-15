@@ -14,7 +14,7 @@ def source_revision(root=None):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--arm',choices=['G1','G3','A0','A1'],default='G1');p.add_argument('--root',required=True);p.add_argument('--name',required=True)
+    p=argparse.ArgumentParser();p.add_argument('--arm',choices=['G1','G3','A0','A1','R1'],default='G1');p.add_argument('--root',required=True);p.add_argument('--name',required=True)
     p.add_argument('--fixture',required=True);p.add_argument('--updates',type=int,default=3)
     p.add_argument('--threads',type=int,default=8);p.add_argument('--workers',type=int,default=4)
     p.add_argument('--attention-batch',type=int,default=8);p.add_argument('--vision-batch',type=int,default=4)
@@ -46,6 +46,8 @@ def main():
             from qwen_vl.research.geoaddress_teacher import a1_teacher_identity as teacher_identity
         if a.arm=='G3':
             from qwen_vl.research.vggt_g3_teacher import g3_teacher_identity as teacher_identity
+        if a.arm=='R1':
+            from qwen_vl.research.vggt_r1_teacher import r1_teacher_identity as teacher_identity
         source='/mnt/data/vmo-ai-task/anhdh35/third_party/vggt-omega'
         weights='/mnt/data/vmo-ai-task/anhdh35/models/vggt-omega/vggt_omega_1b_512.pt'
         config['research']=dict(run_id=a.arm,teacher='VGGT-Omega-1B-512',student_layer=23 if a.arm=='G1' else 24,
@@ -53,6 +55,12 @@ def main():
             teacher_batch_size=a.teacher_batch,teacher_residency=a.teacher_residency,sample_seed=429,
             sampling_identity='collected-rgb-paths-v1',
             head_lr=1e-4,lambda_max=.2 if a.arm=='G1' else .1,ramp_updates=771)
+        if a.arm=='R1':
+            production=yaml.safe_load(Path('configs/vggt/r1_omega_h4.yaml').read_text())
+            config['model']=production['model']
+            config['memory']=production['memory']
+            config['training']['step_lane_lr']=production['training']['step_lane_lr']
+            config['research']['baseline']=production['research']['baseline']
         if a.arm in ('A0','A1'):
             config['model']={'geoaddress':dict(version='geoaddress_v1',layer=24,rank=8,heads=[0,1],init_seed=429)}
             config['observations']={'serializer_version':'vln_append_only_chat_geoaddress_v1'}
