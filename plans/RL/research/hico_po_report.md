@@ -346,6 +346,12 @@ Config: `configs/rl/hico_grpo_fork_bs_r2r1k.yaml`, same seed as GRPO s1.
 It runs after the GRPO+F step-50 (matched env steps) evaluation: a 2-step smoke, 125 steps and
 val_unseen evaluation. The GRPO+F step-75 (matched wall-clock) evaluation and v2a follow.
 
+**In training (steps 0–74, measured on the saved rollouts):** all-success fork mass 35.1 k (GRPO+F) →
+9.3 k (GRPO+F-B); mixed 30.8 k → 29.8 k; all-fail 8.2 k → 0.2 k. Root GRPO mass is unchanged
+(56 k vs 56 k). Gradient norm (pre-clip) over steps 0–50 is 1.97 mean / 3.37 max, against GRPO+F's
+3.39 / 10.4 and GRPO's 2.4 / 3.6. Training-rollout success over steps 0–50 is identical to GRPO+F
+(0.621). There is no val_unseen result yet.
+
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
 ### 6.1 Estimator probe on identical rollouts (HiCo v3 run, steps 0–49, 1,600 episodes)
