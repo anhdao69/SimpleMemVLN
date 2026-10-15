@@ -35,7 +35,7 @@ for d in grpo_r2r1k-step0050:grpo_s1_step50 grpo_r2r1k-step0125:grpo_s1 grpo_r2r
          hico_grpo_fork_r2r1k-step0050:grpo_fork_step50 hico_grpo_fork_r2r1k-step0075:grpo_fork_step75 \
          hico_grpo_fork_r2r1k-step0125:grpo_fork hico_grpo_fork_bs_r2r1k-step0050:grpo_fork_bs_step50 hico_grpo_fork_bs_r2r1k-step0125:grpo_fork_bs \
          hico_grpo_fork_bs_r2r1k_seed2-step0125:grpo_fork_bs_s2 \
-         hico_v2a_r2r1k-step0125:hico_v2a; do
+         grpo_g8_r2r1k-step0125:grpo_g8 hico_v2a_r2r1k-step0125:hico_v2a; do
   [ -f "$E/${d%%:*}/val_unseen/summary.json" ] && args+=("${d##*:}=$E/${d%%:*}/val_unseen")
 done
 .venv/bin/python scripts/rl/analyze_memory.py "$OUT/memory_analysis_all.json" "${args[@]}" >> "$log" 2>&1

@@ -411,6 +411,20 @@ Paired tests on the same episodes (`results/grpo_fork_bs_step125_vs_*_comparison
   was the cause of GRPO+F's deficit (§5.4 diagnosis), and the fork credit itself is useful once it is
   scaled correctly.
 
+**Against the GRPO two-seed mean** (`scripts/rl/pooled_compare.py`,
+`results/pooled_grpo2seeds_vs_grpo_fork_bs_s1.json`). Per-episode outcomes are averaged over the GRPO
+seeds. The test is a paired bootstrap / sign-flip over episodes:
+
+| Metric | GRPO (2 seeds) | GRPO+F-B (seed 1) | Δ | 95 % CI | p |
+|---|---:|---:|---:|---|---:|
+| SR | 57.12 | 58.40 | +1.28 | [−0.4, +3.1] | 0.16 |
+| SPL | 51.14 | 52.99 | **+1.85** | **[+0.3, +3.5]** | **0.020** |
+| OSR | 64.55 | 65.42 | +0.87 | [−0.7, +2.5] | 0.29 |
+| NE (m) | 5.30 | 5.06 | **−0.24** | **[−0.43, −0.05]** | **0.012** |
+
+SPL and NE improve significantly over episodes; SR does not. This test covers episode sampling only, not
+training-seed variance, which needs the second GRPO+F-B seed.
+
 **Where the gain comes from** (vs GRPO s2, `results/grpo_fork_bs_step125_failure_analysis_vs_grpo_s2.json`):
 
 | Reference length (actions) | n | GRPO s2 | GRPO+F | GRPO+F-B |
@@ -441,7 +455,12 @@ Paired tests on the same episodes (`results/grpo_fork_bs_step125_vs_*_comparison
 **Matched compute.** GRPO+F-B used 2.1× GRPO's environment steps (1.6× policy forward steps), so the
 matched-RL-step comparison above is not matched-interaction.
 - The step-50 export (223 k env steps incl. branches and replays, vs GRPO's 261 k at step 125) is being
-  evaluated: queue `rl-queue-fork5`, after the GRPO s1 step-50 evaluation.
+  evaluated: queue `rl-queue-fork6`, after the GRPO s1 step-50 evaluation.
+- **GRPO G = 8** (`configs/rl/activevln_grpo_g8_r2r1k.yaml`) is queued as the matched-interaction
+  control. It differs from GRPO only in group size (G = 8 instead of 4), giving about 2× the rollouts:
+  ≈ 520 k policy steps against GRPO+F-B's 428 k policy and 561 k simulator steps, a slightly generous
+  budget for GRPO. It answers whether the extra interaction would be better spent on more root samples
+  than on forked siblings.
 - For GRPO+F (s_g), the equivalent check was strongly negative (§5.4: 50.2 SR).
 
 **Seed control.** A second GRPO+F-B training seed (`configs/rl/hico_grpo_fork_bs_r2r1k_seed2.yaml`, seed
