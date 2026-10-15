@@ -1,6 +1,6 @@
 # A1 continuation after A0 — 2026-10-14
 
-Current status, verified 2026-10-14 23:29:24 UTC: A1 production is running on worker-2, four H100s, Slurm step4925.50 inside allocation4925. All16 mandatory qualification gates passed, including411 tests in both server regression runs. All four ranks reached update12/3852; checkpoint10 is complete and validated. Online VGGT-Omega supervision is active, with finite nonzero auxiliary losses; no PCA, pre-extraction or dimension-conversion MLP is used. The epoch is still running. The deployment and pending-gate sections below preserve the earlier history; the final section records the repaired run.
+Current status: A1 completed all3,852 updates (epoch1.0) successfully on2026-10-15 at13:19:30UTC /20:19:30Vietnam time. SupervisorPASS, exit0, zero GPU/host OOMs. The verified serving model is published at [anhdao69/Streaming_VGGT/A1/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/A1/epoch-1), Hub revision `37f877aceed4dfd5b22fca9508150ff693b169b2`. Earlier progress sections below are historical; the final section records completion and publication.
 
 ## Scientific setup retained
 
@@ -111,3 +111,21 @@ At23:29:24UTC, all four production profiles showed update12/3852 with zero CUDA 
 Production directory: `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-repair/a1_joint_e1/train`. Watcher state and supervisor logs remain in the parent campaign. The initial failed campaign is preserved separately. Detailed captured source seal, all experiment results, recovery comparison, resolved config, four-rank progress, auxiliary records and checkpoint inventory are in [verified_production.json](evidence/a1-repair/verified_production.json).
 
 The final independent review found no Critical/Important findings and independently passed the three identity regressions. The full epoch and navigation evaluation remain pending; successful qualification and early training do not establish downstream navigation quality.
+
+
+## Completed epoch and verified Hugging Face publication — 2026-10-15
+
+A1 finished3852/3852 updates, epoch1.0, and the queue recorded complete at13:19:30UTC (20:19:30Vietnam,09:19:30New York). The supervisor returnedPASS/exit0 after50,095.94seconds, approximately13h55m including startup/finalization. Mean update wall time was12.9686seconds. The action-weighted epoch loss was0.124885; this is distinct from the combined navigation-plus-auxiliary Trainer loss. No navigation-quality evaluation is implied.
+
+All four ranks completed the run. No new host OOM or OOM-kill events occurred, and recorded CUDA OOM counts were zero. Peak allocated GPU memory was61.729GiB, peak reserved72.057GiB, and sampled peak RAM working set475.655GiB within the768GiB allocation. Clean filesystem cache is recorded separately from working memory. The final complete recovery checkpoint3852 retains22 files, including distributed optimizer/scheduler and per-rank RNG state, on the cluster.
+
+Publication validated all728 final model tensors: each is finite, has the same shape/dtype and is bitwise equal to the corresponding tensor in complete checkpoint3852. The four GeoAddress Q/K adapter tensors have the expected shapes and45,056 parameters, with nonzero trained up projections. The serving weight file was hardlinked unchanged; only research configuration was removed from serving navigation metadata. Native Window8, text action history and GeoAddress runtime adapters remain required. Frozen online Omega was training-only. No PCA, pre-extracted feature bank or dimension-conversion MLP was introduced.
+
+Model folder: [A1/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/A1/epoch-1).
+Immutable published revision: `37f877aceed4dfd5b22fca9508150ff693b169b2`.
+
+The atomic Hub commit adds the A1 model/provenance and updates README/checksums while preserving existing G1/G3/A0 files. All23 files totaling10,371,469,392bytes were verified at that exact revision: large files by Hub LFS SHA256 and byte size, small files by downloaded-content SHA256 and byte size. Authentication used the existing cluster credential without embedding credentials in scripts or reports. The upload ran as a detached login-node CPU process; it did not start another GPU job or cancel allocation4925.
+
+The model requires the GeoAddress-capable SimpleMemVLN runtime, training source `6e717787313b2218cd2fd40b059f2942fee1820f`, and original pinned Qwen3.5-4B base. VGGT-Omega is not required for serving. The published folder contains serving weights and provenance; full optimizer/RNG recovery checkpoints remain in `/mnt/data/vmo-ai-task/anhdh35/a1-omega-worker2-20261014-repair/a1_joint_e1/train`.
+
+Evidence: [completed run and verified upload](evidence/a1-publication/verified_completion_upload.json); [publication script](evidence/a1-publication/publish_a1_epoch1_20261015.py). The script's existing-folder assertion intentionally prevents silently overwriting A1 if rerun. Remote publication evidence is under `a1_joint_e1/publication-a1-e1/UPLOAD_VERIFIED.json`.

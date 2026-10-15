@@ -61,3 +61,8 @@ Historical deployment before repair: runtime70455f0, campaign `/mnt/data/vmo-ai-
 Verified2026-10-14 23:29:24UTC: runtime6e71778 deployed as an immutable source and pushed to `v2_vggt_omega_a1`. All16 A1 gates passed on worker-2, including411 tests in both initial/final server suites, longest episodes, distributed normalization, export and fresh-process recovery. Qualification step4925.49 exited successfully; persistent watcher3370976 launched production4925.50 in the same four-H100 allocation4925.
 
 Production confirms one joint R2R/EnglishRxR15 epoch from the pinned original base, global batch8,3852updates,warmup116, Window8 and native Q/K relation supervision from online frozen resident FP32 VGGT-Omega. No PCA, feature pre-extraction or dimension-conversion MLP. All ranks reached update12, finite action/auxiliary losses, zero CUDA OOM. Full22-file checkpoint10 passed `validate_complete`; training continued after the save. This completes implementation, qualification and launch, not the epoch itself. See the current continuation report and `evidence/a1-repair/verified_production.json` for measured results and exact deployment paths.
+
+
+## Completed production and publication
+
+2026-10-15: A1 completed3852/3852 updates, epoch1.0, supervisorPASS, no GPU/host OOM. Full checkpoint3852 validated; all728 final tensors finite and equal to that checkpoint. Serving upload verified at `anhdao69/Streaming_VGGT/A1/epoch-1`, revision `37f877aceed4dfd5b22fca9508150ff693b169b2`; all23 published files passed byte-size and SHA256 verification. The original online Omega/no-PCA/direct-native-QK objective and runtime adapters are preserved. Epoch completion and requested publication are now complete; navigation evaluation is separate.
