@@ -2,6 +2,8 @@
 
 ## Status and scope
 
+**Post-launch issue under repair:** update19 stalled during backward when rank2 had zero recall pairs in the second accumulation slot and other ranks had support. Training step4925.62 was stopped; allocation4925 and complete checkpoint10 are intact. The initial launch evidence below is a historical snapshot, not a current healthy-run claim. A uniform empty-support autograd graph is being qualified before resuming.
+
 Implementation, independent review and all18 H100 qualification gates passed. Production started on worker-2 in Slurm step4925.62 at2026-10-15T15:44:30Z. At2026-10-15T15:50:21Z, all four ranks had completed16updates. Checkpoint10 passed the production recovery validator:4ranks,22files,71,004,556,006bytes, correct one-epoch trainer state. Training continued after the save. The epoch itself remains running.
 
 Branch: `v2_vggt_omega_r1`, based on completed A1 code `4f772d3`. Work is isolated from the original checkout and all completed models. The authorized run is one joint R2R + English RxR **15-degree** epoch from original Qwen3.5-4B weights, on four H100 GPUs in allocation4925, **worker-2 only**. R0, G1, G3, A0 and A1 are not retrained or overwritten.
