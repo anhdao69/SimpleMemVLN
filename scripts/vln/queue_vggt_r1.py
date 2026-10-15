@@ -3,7 +3,7 @@ import argparse,fcntl,hashlib,json,time
 from pathlib import Path
 from scripts.vln.queue_geoaddress import source_files,run_allocation_step,predecessor_status
 
-REQUIRED_GATES=('full-suite-initial','baseline-load','mixed','mixed-empty','rxrce_longest',
+REQUIRED_GATES=('full-suite-initial','baseline-load','baseline-serving','mixed','mixed-empty','rxrce_longest',
     'r2rce_longest','threshold','mixed_extreme','recovery-reference','recovery-resumed',
     'recovery-compare','export','r2rce-timing','rxrce-timing','joint-timing',
     'distributed-pair-normalization','full-suite-final')
@@ -30,7 +30,7 @@ def check_qualification(source,path):
     validate_records(data.get('records',[]));return data
 
 
-def check_baseline(config):
+def check_baseline(config,manifest_path=None):
     record=config['research']['baseline'];root=Path(record['artifact'])
     for name,key in (('navigation.json','navigation_sha256'),('pytorch_model.bin','weights_sha256')):
         digest=hashlib.sha256()
@@ -40,6 +40,8 @@ def check_baseline(config):
     if json.loads((root/'navigation.json').read_text())!=record['metadata']:
         raise ValueError('R0 baseline metadata differs from registry')
     manifest=Path(record['manifest'])
+    if manifest_path is not None and manifest.resolve()!=Path(manifest_path).resolve():
+        raise ValueError('R1 launch manifest path differs from registry')
     if hashlib.sha256(manifest.read_bytes()).hexdigest()!=record['manifest_sha256']:
         raise ValueError('R1 joint R2R + RxR15 manifest changed')
 
@@ -50,8 +52,9 @@ def main():
     a=p.parse_args();source=Path(a.source).resolve()
     import yaml
     config=yaml.safe_load((source/'configs/vggt/r1_omega_h4.yaml').read_text())
+    manifest='/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl'
     if a.check_only:
-        check_qualification(source,a.seal);check_baseline(config);print('R1_LAUNCH_CHECK_PASS');return
+        check_qualification(source,a.seal);check_baseline(config,manifest);print('R1_LAUNCH_CHECK_PASS');return
     if not a.root or not a.allocation:p.error('--root and --allocation required')
     root=Path(a.root).resolve();root.mkdir(parents=True,exist_ok=True)
     def record(status,**fields):
@@ -63,7 +66,7 @@ def main():
     with (root/'queue.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
         try:
-            check_baseline(config)
+            check_baseline(config,manifest)
             seal=root/'qualification/qualification_pass.json'
             if not seal.exists():step('r1-qualification',['python','-m','scripts.vln.qualify_vggt_r1','--root',str(root/'qualification')])
             check_qualification(source,seal)

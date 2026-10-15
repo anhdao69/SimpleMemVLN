@@ -47,7 +47,10 @@ def greedy_snapshot(model,serializer,episode,uid):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--source',required=True)
     p.add_argument('--output',required=True);p.add_argument('--manifest',required=True)
-    p.add_argument('--model-path',required=True);a=p.parse_args()
+    p.add_argument('--model-path',required=True)
+    p.add_argument('--baseline-serving',action='store_true',
+                   help='Read-only trained baseline replay audit; no research export or weight writes')
+    a=p.parse_args()
     selected={}
     for line in Path(a.manifest).open():
         ep=json.loads(line)
@@ -68,8 +71,12 @@ def main():
     del source_model,source_serializer,data
     import gc
     gc.collect();torch.cuda.empty_cache()
-    path=export_checkpoint(a.source,a.output)
-    model,serializer=load_checkpoint(path,a.model_path);model.eval()
+    if a.baseline_serving:
+        path=Path(a.output);path.mkdir(parents=True,exist_ok=False)
+        checkpoint=a.source
+    else:
+        path=export_checkpoint(a.source,a.output);checkpoint=path
+    model,serializer=load_checkpoint(checkpoint,a.model_path);model.eval()
     assert not hasattr(model,'research_aux') and getattr(model,'step_lane_spec',None)==source_lane_spec
     assert 'research' not in model.navigation_config
     report=[];head=model.backbone.lm_head;original=head.forward
@@ -117,7 +124,8 @@ def main():
             greedy_outcome=first,greedy_tokens=first_scores.argmax(-1).tolist(),
             reset_exact=True,retry_exact=True,window8_eviction=True)
         report.append(record)
-    result=dict(passed=True,source=a.source,export=str(path),replay=report)
+    result=dict(passed=True,source=a.source,export=None if a.baseline_serving else str(path),
+                baseline_serving=a.baseline_serving,replay=report)
     (path/'g1_export_check.json').write_text(json.dumps(result,indent=2)+'\n')
     print('G1_EXPORT_REPLAY_PASS',json.dumps(result),flush=True)
 

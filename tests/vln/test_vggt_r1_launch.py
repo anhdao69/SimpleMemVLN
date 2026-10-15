@@ -31,6 +31,8 @@ def test_registry_gate_rejects_changed_baseline_artifact(tmp_path):
     record['manifest']=str(manifest)
     record['manifest_sha256']=hashlib.sha256(manifest.read_bytes()).hexdigest()
     check_baseline(cfg)
+    check_baseline(cfg,manifest)
+    with pytest.raises(ValueError,match='manifest path'):check_baseline(cfg,tmp_path/'other.jsonl')
     manifest.write_text('wrong data\n')
     with pytest.raises(ValueError,match='manifest'):check_baseline(cfg)
     manifest.write_text('rxr15\n')

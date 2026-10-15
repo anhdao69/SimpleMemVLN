@@ -12,6 +12,7 @@ def main():
     cfg=yaml.safe_load(Path('configs/vggt/r1_omega_h4.yaml').read_text());check_baseline(cfg)
     base=Path('/mnt/data/vmo-ai-task/anhdh35');fixtures=base/'g1-omega-20261013/fixtures'
     manifest=base/'SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl'
+    check_baseline(cfg,manifest)
     def task(name,args):
         if source_files(source)!=expected:raise ValueError('Source changed during qualification')
         print('START',name,flush=True)
@@ -32,6 +33,9 @@ def main():
     task('full-suite-initial',['-m','pytest','tests/vln','-q'])
     task('baseline-load',['-m','scripts.vln.check_text_export','--checkpoint',cfg['research']['baseline']['artifact'],
         '--model-path',os.environ['VLN_MODEL_PATH'],'--manifest',str(manifest),'--out',str(root/'baseline-load.json')])
+    task('baseline-serving',['-m','scripts.vln.check_vggt_export','--baseline-serving',
+        '--source',cfg['research']['baseline']['artifact'],'--output',str(root/'baseline-serving'),
+        '--manifest',str(manifest),'--model-path',os.environ['VLN_MODEL_PATH']])
     profile('mixed',fixtures/'mixed_tail.jsonl')
     profile('mixed-empty',base/'g3-omega-20261013/mixed_empty.jsonl')
     for name in ('rxrce_longest','r2rce_longest','threshold','mixed_extreme'):
