@@ -1,0 +1,8 @@
+{
+  "status": "running",
+  "updated_unix": 1792079070.3552642,
+  "allocation": "4925",
+  "node": "worker-2",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6",
+  "stage": "r1-joint-e1"
+}

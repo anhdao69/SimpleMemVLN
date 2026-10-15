@@ -25,27 +25,29 @@ Spec: R1_lane_state.md, updated online requirements, G3_native_state.md and the 
 ### Task 1: Registry, online target and lane-read head contracts
 Files: research/vggt_r1.py, research/vggt_r1_teacher.py, models/vggt_g3_heads.py, research/vggt_g1.py; tests/vln/test_vggt_r1_contract.py.
 Interfaces: validate_r1(config) validates exact registered lane spec/init/LR and canonical policy; r1_teacher_identity/OnlineR1Teacher produce G3-identical unpositioned regional targets using portable used-component identities; NativeStateHead(context_heads=32,heads=4) maps native4096 context into4x128 queries and decodes5x2048.
-- [ ] Write/run failing contracts: valid R1 accepted; changed layer/clock/init/LR/history/output rejected; H4 head shapes/parameter count/context detach/RNG; no-PCA online identity stable under unused-position drift.
-- [ ] Implement exact interfaces, preserve G1/G3/A0/A1 defaults and strict target checks.
-- [ ] Run targeted CPU suite and commit.
+- [x] Write/run failing contracts: valid R1 accepted; changed layer/clock/init/LR/history/output rejected; H4 head shapes/parameter count/context detach/RNG; no-PCA online identity stable under unused-position drift.
+- [x] Implement exact interfaces, preserve G1/G3/A0/A1 defaults and strict target checks.
+- [x] Run targeted CPU suite and commit.
 
 ### Task 2: Functional lane probes and training wiring
 Files: models/vggt_r1_forward.py, models/research_forward.py, models/nav_model.py, data/episode_dataset.py, train/train_episode.py; tests/vln/test_vggt_r1.py, test_vggt_r1_cuda.py.
 Interfaces: lane_forward_with_queries(lane,x,roles,head,context,anchors,lags,targets) returns original lane output and recall sum; lane_state_decoder computes native once and lane once; research loop passes original roles to every installed lane. R1 shares G3 pair metadata and global loss denominator.
-- [ ] Write failing CPU behavior tests for no-probe parity, frozen-state pre-action read, direct writer gradients with W_out0, no future gradient, empty participation; actual pinned GPU test native/lane/probe parity and checkpoint on/off.
-- [ ] Implement pure prepared-kernel insertion, no synthetic role/token; bind all metadata inside checkpoint closure.
-- [ ] Run CPU tests, server CUDA tests and whole available suite; report actual environment failures separately. Commit.
+- [x] Write failing CPU behavior tests for no-probe parity, frozen-state pre-action read, direct writer gradients with W_out0, no future gradient, empty participation; actual pinned GPU test native/lane/probe parity and checkpoint on/off.
+- [x] Implement pure prepared-kernel insertion, no synthetic role/token; bind all metadata inside checkpoint closure.
+- [x] Run CPU tests, server CUDA tests and whole available suite; report actual environment failures separately. Commit.
 
 ### Task 3: Qualification, export and speed trials
 Files: scripts/vln/profile_vggt_g1.py, scripts/vln/check_vggt_recovery.py, scripts/vln/check_vggt_export.py, scripts/vln/export_vggt_g1.py, scripts/vln/qualify_vggt_r1.py; tests/vln/test_vggt_r1_launch.py; configs/vggt/r1_omega_h4.yaml, r1_joint_one_epoch.yaml.
 Interfaces: allowlistedR1 profile uses bound registry and teacher identity; strict export strips research_aux only and retains all4lanes; qualification requires tests/mixed/empty/longestR2R/RxR/threshold/extreme/recovery/export/timing and source manifest.
-- [ ] Add failing tests for R1 head/export contracts and incomplete/source-mismatched qualification rejection; extend reusable profilers without changing existing arms.
-- [ ] Start from G3 runtime: CPUAdam/ZeRO2, pinned arena,4threads,8workers,teacher8,vision8,attention32. Compare limited identical mixed fixtures with attention16/64, then validate chosen setup on representativeR2R/RxR and actual joint manifest.
-- [ ] Complete three-update extreme/longest memory tests, fresh-process save/resume, trained same-history export/reset/retry/eviction; validate existing R0 serving parity read-only. Record finite auxiliary/writer gradients, GPU/hostOOMs and measured times. No objective/truncation changes for speed.
-- [ ] Fresh independent whole-branch review; fix important findings with regressions. Commit.
+- [x] Add failing tests for R1 head/export contracts and incomplete/source-mismatched qualification rejection; extend reusable profilers without changing existing arms.
+- [x] Start from G3 runtime: CPUAdam/ZeRO2, pinned arena,4threads,8workers,teacher8,vision8,attention32. Compare limited identical mixed fixtures with attention16/64, then validate chosen setup on representativeR2R/RxR and actual joint manifest.
+- [x] Complete three-update extreme/longest memory tests, fresh-process save/resume, trained same-history export/reset/retry/eviction; validate existing R0 serving parity read-only. Record finite auxiliary/writer gradients, GPU/hostOOMs and measured times. No objective/truncation changes for speed.
+- [x] Fresh independent whole-branch review; fix important findings with regressions. Commit.
 
 ### Task 4: Immutable production launch and report
 Files: train/launch_r1_omega_joint_e1.sh, scripts/vln/queue_vggt_r1.py, reports/vggt_five/R1/implementation_report.md and evidence.
-- [ ] Revalidate bound R0 artifact identity, source/qualification seal, worker2 ownership/idle state and disk/RAM guards; durable detached launch inside4925 only.
-- [ ] Observe all4ranks real optimizer progress, intended3852/116schedule and positive finite recall loss; validate complete checkpoint10 before claiming successful start.
-- [ ] Update plan/report with changes, limitations, failed attempts, measured speed/memory, recovery instructions and exact source/job; push new branch. Completion means launched and verified; full epoch remains running.
+- [x] Revalidate bound R0 artifact identity, source/qualification seal, worker2 ownership/idle state and disk/RAM guards; durable detached launch inside4925 only.
+- [x] Observe all4ranks real optimizer progress, intended3852/116schedule and positive finite recall loss; validate complete checkpoint10 before claiming successful start.
+- [x] Update plan/report with changes, limitations, failed attempts, measured speed/memory, recovery instructions and exact source/job for publication on the new branch. Completion means launched and verified; full epoch remains running.
+
+Progress 2026-10-15: core423tests passed on H100, initial4rank smoke passed. Independent whole-branch review approved after manifest/path binding and longest-save fixes. Final source dca86b6 completed all18 qualification gates, including the revised canonical-reference audit and explicit carry-forward provenance for unchanged training tests. Production started on worker-2 at2026-10-15T15:44:30Z, Slurm4925.62. Both fresh server suites passed432tests (initial68.05s, final65.69s). Live four-rank schedule gate confirms3852updates/116warmup,30815uniqueepisodes,global8. Checkpoint10 passed the shared recovery validator (4ranks,22files,71,004,556,006bytes); allfourranks continued tostep16 by15:50:21UTC. Implementation/qualification/launch are complete; the full epoch remains running. Initial ETA14–18hours after15:44:30UTC launch. Report: reports/vggt_five/R1/implementation_report.md.

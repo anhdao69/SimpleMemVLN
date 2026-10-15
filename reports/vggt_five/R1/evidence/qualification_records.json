@@ -1,0 +1,505 @@
+[
+  {
+    "name": "full-suite-initial",
+    "command": [
+      "-m",
+      "pytest",
+      "tests/vln",
+      "-q"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "baseline-load",
+    "command": [
+      "-m",
+      "scripts.vln.check_text_export",
+      "--checkpoint",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--out",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification/baseline-load.json"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "baseline-serving",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_export",
+      "--baseline-serving",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN-streaming_text_dual-runs/window8_text_base_e2_20261007/train/checkpoint-3852",
+      "--output",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification/baseline-serving",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "mixed",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "mixed",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "dac03963817f928d18c65296da1031bd1c54396de27bc5f1f0f77446a18da309"
+    }
+  },
+  {
+    "name": "mixed-empty",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "mixed-empty",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-omega-20261013/mixed_empty.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "e4f475689862f0a10868e8d53f828260479d92f3c459c760500614cb06364c57"
+    }
+  },
+  {
+    "name": "rxrce_longest",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "rxrce_longest",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_longest.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "4542a1fd36d7549957e12f42441b6a3fb582186ab299903f8d74980e556b1149"
+    }
+  },
+  {
+    "name": "r2rce_longest",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "r2rce_longest",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/r2rce_longest.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "06b0152cf20df2363ddccb8e4aa90d6ea40ffddaccf0f70ef9c292ebc50174a9"
+    }
+  },
+  {
+    "name": "threshold",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "threshold",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/threshold.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "85df9686f3bebf291344421b60fd18be27328095957ed4918a5548838bee3345"
+    }
+  },
+  {
+    "name": "mixed_extreme",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "mixed_extreme",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_extreme.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "a717f0df5fabacc4fb90cc2d710d1eecb7df0e263af657357f27ab489f69f1b9"
+    }
+  },
+  {
+    "name": "recovery-reference",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "recovery-reference",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "bd38e6f46f71b7e00d34f41edd401ddd65a387bed7d0d8a2227ffbd6937508c8"
+    }
+  },
+  {
+    "name": "recovery-resumed",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "--name",
+      "recovery-resumed",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_tail.jsonl",
+      "--updates",
+      "3",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8",
+      "--save",
+      "--resume",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train/checkpoint-2",
+      "--first-update",
+      "3"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "38ebcd23bac0bd239c6d138e97e9c831610e227b07341b82785827562af2b399"
+    }
+  },
+  {
+    "name": "recovery-compare",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_recovery",
+      "--reference",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train",
+      "--resumed",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train",
+      "--out",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/recovery.json"
+    ],
+    "returncode": 0,
+    "carried_evidence": {
+      "root": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification",
+      "source_manifest_sha256": "5c6ff439659ed59a1fecbbf7f02326fa86ca7b01ee8984a880fae138730f3c93",
+      "changed_audit_files": [
+        "scripts/vln/check_vggt_export.py",
+        "scripts/vln/qualify_vggt_r1.py"
+      ],
+      "log_sha256": "d66dc2ce0217019b193b38a7cb92e37ae7d5d71a6732eb297974a8e8715fe034"
+    }
+  },
+  {
+    "name": "export",
+    "command": [
+      "-m",
+      "scripts.vln.check_vggt_export",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train/final",
+      "--output",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification/serving-export",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model-path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "r2rce-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "r2rce-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/r2rce_representative.jsonl",
+      "--updates",
+      "8",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "rxrce-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "rxrce-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_representative.jsonl",
+      "--updates",
+      "8",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "joint-timing",
+    "command": [
+      "-m",
+      "scripts.vln.profile_vggt_g1",
+      "--arm",
+      "R1",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/qualification",
+      "--name",
+      "joint-timing",
+      "--fixture",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--updates",
+      "12",
+      "--cpu-adam",
+      "--threads",
+      "4",
+      "--workers",
+      "8",
+      "--teacher-batch",
+      "8",
+      "--attention-batch",
+      "32",
+      "--vision-batch",
+      "8"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "distributed-pair-normalization",
+    "command": [
+      "-m",
+      "torch.distributed.run",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "scripts.vln.check_vggt_g3_reduction"
+    ],
+    "returncode": 0
+  },
+  {
+    "name": "full-suite-final",
+    "command": [
+      "-m",
+      "pytest",
+      "tests/vln",
+      "-q"
+    ],
+    "returncode": 0
+  }
+]

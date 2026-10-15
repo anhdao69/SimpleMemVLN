@@ -1,0 +1,37 @@
+{
+  "selected_attention_batch": 32,
+  "reason": "All three pass; differences below 1.5%, retain established G3 profile. No robust speed improvement from alternatives.",
+  "settings": {
+    "threads": 4,
+    "workers": 8,
+    "teacher_batch": 8,
+    "vision_batch": 8,
+    "cpu_adam": true
+  },
+  "trials": [
+    {
+      "attention_batch": 16,
+      "passed": true,
+      "mean_all_intervals": 17.244050775255477,
+      "mean_after_first_two_updates": 17.161837895711262,
+      "peak_allocated_gib": 40.10969686508179,
+      "source_commit": "cac27d95d337ee0443928c3a4515ff53c3a0aabc"
+    },
+    {
+      "attention_batch": 32,
+      "passed": true,
+      "mean_all_intervals": 17.156739439283097,
+      "mean_after_first_two_updates": 17.143307209014893,
+      "peak_allocated_gib": 40.10969686508179,
+      "source_commit": "cac27d95d337ee0443928c3a4515ff53c3a0aabc"
+    },
+    {
+      "attention_batch": 64,
+      "passed": true,
+      "mean_all_intervals": 17.39052418300084,
+      "mean_after_first_two_updates": 17.384308139483135,
+      "peak_allocated_gib": 40.10969686508179,
+      "source_commit": "cac27d95d337ee0443928c3a4515ff53c3a0aabc"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "source_commit": "dca86b64742f779d6f4b5ebdb50e21dd1a5e7d3b",
+  "allocation": "4925",
+  "node": "worker-2",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6",
+  "run": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1",
+  "supervisor_log": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1/supervisor-20261015T154440-781680/command.log",
+  "schedule_gates": [
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)",
+    "SCHEDULE_GATE_PASS (3852, 116)"
+  ],
+  "training_contract": [
+    "TRAINING_CONTRACT {\"world_size\": 4, \"microbatch\": 1, \"accumulation\": 2, \"global_episode_batch\": 8, \"episode_records\": 30815, \"unique_episodes\": 30815, \"action_exposures_per_dataset_pass\": 3128624, \"min_tokens\": 700, \"max_tokens\": 199735}"
+  ],
+  "captured_unix": 1792079421.0713944
+}

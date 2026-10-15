@@ -1,0 +1,16 @@
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-5635357/scripts/vln/check_vggt_export.py", line 133, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-5635357/scripts/vln/check_vggt_export.py", line 114, in main
+    torch.testing.assert_close(streamed,offline,atol=.75,rtol=.03)
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/testing/_comparison.py", line 1600, in assert_close
+    raise error_metas[0].to_error(msg)
+AssertionError: Tensor-likes are not close!
+
+Mismatched elements: 1 / 12416000 (0.0%)
+Greatest absolute difference: 0.8125 at index (2, 24546) (up to 0.75 allowed)
+Greatest relative difference: 0.4482758641242981 at index (2, 24546) (up to 0.03 allowed)

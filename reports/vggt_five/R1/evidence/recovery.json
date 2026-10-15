@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "reference": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-reference/train",
+  "resumed": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/qualification/experiments/recovery-resumed/train",
+  "weights": {
+    "relative_l2": 1.7448689109791405e-08,
+    "max_abs": 1.194886863231659e-06,
+    "changed_elements": 344285,
+    "elements": 5201036496,
+    "bitwise_equal": false
+  },
+  "head": {
+    "relative_l2": 0.0,
+    "max_abs": 0.0,
+    "changed_elements": 0,
+    "elements": 5017760,
+    "bitwise_equal": true
+  },
+  "head_update_from_step2_to3": {
+    "relative_l2": 3.6154539229642203e-06,
+    "max_abs": 1.9073486328125e-06,
+    "changed_elements": 39373,
+    "elements": 5017760,
+    "bitwise_equal": false
+  },
+  "step3_losses": [
+    0.4147551953792572,
+    0.4147551953792572
+  ],
+  "head_bias_updates": {
+    "research_aux.state_head.query.1.bias": 512,
+    "research_aux.state_head.query.3.bias": 512,
+    "research_aux.state_head.decoder.0.bias": 1024,
+    "research_aux.state_head.decoder.2.bias": 2048
+  },
+  "recovery_world_size": 4,
+  "checkpoint_files": 22
+}

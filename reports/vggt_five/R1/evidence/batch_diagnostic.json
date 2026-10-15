@@ -1,0 +1,39 @@
+{
+  "vision_firstframe": {
+    "exact": true,
+    "relative_l2": 0.0,
+    "max_abs": 0.0
+  },
+  "vision8_attention32": {
+    "max_abs": 0.8125,
+    "rms": 0.05879683047533035,
+    "violations": 1,
+    "max_excess": 0.008125007152557373,
+    "offending_reference": 1.8125,
+    "top1_agreement": 0.9799999594688416
+  },
+  "vision1_attention32": {
+    "max_abs": 0.8125,
+    "rms": 0.05879683047533035,
+    "violations": 1,
+    "max_excess": 0.008125007152557373,
+    "offending_reference": 1.8125,
+    "top1_agreement": 0.9799999594688416
+  },
+  "vision8_attention1": {
+    "max_abs": 0.6875,
+    "rms": 0.06258776783943176,
+    "violations": 0,
+    "max_excess": -0.15113282203674316,
+    "offending_reference": 1.984375,
+    "top1_agreement": 0.9799999594688416
+  },
+  "vision1_attention1": {
+    "max_abs": 0.6875,
+    "rms": 0.06258776783943176,
+    "violations": 0,
+    "max_excess": -0.15113282203674316,
+    "offending_reference": 1.984375,
+    "top1_agreement": 0.9799999594688416
+  }
+}
