@@ -28,3 +28,36 @@ def test_profiler_accepts_r1_then_checks_real_fixture(monkeypatch,tmp_path):
     from scripts.vln.profile_vggt_g1 import main
     monkeypatch.setattr('sys.argv',['profile','--arm','R1','--root',str(tmp_path),'--name','fixture','--fixture',str(tmp_path/'missing')])
     with pytest.raises(FileNotFoundError):main()
+
+
+@pytest.mark.parametrize('initial', [None, 32])
+@pytest.mark.parametrize('fail', [False, True])
+def test_canonical_offline_restores_attention_configuration(initial, fail):
+    from scripts.vln.check_vggt_export import canonical_offline
+    class Model:
+        navigation_config = {'runtime': {}}
+        def __call__(self, **data):
+            assert self.navigation_config['runtime']['window_attention_batch_steps'] == 1
+            if fail:
+                raise RuntimeError('forward failed')
+            return {'logits': torch.ones(2)}
+    model = Model()
+    if initial is not None:
+        model.navigation_config['runtime']['window_attention_batch_steps'] = initial
+    before = dict(model.navigation_config['runtime'])
+    if fail:
+        with pytest.raises(RuntimeError, match='forward failed'):
+            canonical_offline(model, {})
+    else:
+        assert torch.equal(canonical_offline(model, {}), torch.ones(2))
+    assert model.navigation_config['runtime'] == before
+
+
+def test_replay_comparison_reports_failure_without_loosening_tolerance():
+    from scripts.vln.check_vggt_export import replay_comparison
+    reference = torch.tensor([1.8125])
+    streamed = torch.tensor([2.625])
+    record = replay_comparison(streamed, reference)
+    assert not record['passed'] and record['violations'] == 1
+    assert record['max_excess'] > 0
+    assert replay_comparison(reference, reference)['passed']

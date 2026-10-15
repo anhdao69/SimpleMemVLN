@@ -38,3 +38,38 @@ def test_registry_gate_rejects_changed_baseline_artifact(tmp_path):
     manifest.write_text('rxr15\n')
     weight.write_bytes(b'changed')
     with pytest.raises(ValueError,match='baseline'):check_baseline(cfg)
+
+
+def test_carry_forward_only_unchanged_training_and_successful_records(tmp_path):
+    from scripts.vln.qualify_vggt_r1 import reusable_training_records
+    old = {'src/train.py': 'same', 'scripts/vln/check_vggt_export.py': 'old'}
+    new = dict(old, **{'scripts/vln/check_vggt_export.py': 'new'})
+    (tmp_path/'source_start.json').write_text(json.dumps(old))
+    records = [{'name': 'mixed', 'returncode': 0}, {'name': 'export', 'returncode': 1}]
+    (tmp_path/'qualification.json').write_text(json.dumps(records))
+    (tmp_path/'mixed.log').write_text('passed\n')
+    got = reusable_training_records(tmp_path, new)
+    assert set(got) == {'mixed'}
+    assert got['mixed']['carried_evidence']['changed_audit_files'] == ['scripts/vln/check_vggt_export.py']
+    changed = dict(new, **{'src/train.py': 'changed'})
+    with pytest.raises(ValueError, match='runtime'):
+        reusable_training_records(tmp_path, changed)
+    (tmp_path/'qualification.json').write_text(json.dumps(records+[records[0]]))
+    with pytest.raises(ValueError, match='duplicate'):
+        reusable_training_records(tmp_path, new)
+    records[0]['returncode'] = 1
+    (tmp_path/'qualification.json').write_text(json.dumps(records))
+    assert not reusable_training_records(tmp_path, new)
+
+
+def test_carried_command_allows_only_output_relocation():
+    from scripts.vln.qualify_vggt_r1 import check_carried_command
+    before = ['-m', 'scripts.vln.profile_vggt_g1', '--root', '/old', '--fixture', '/data', '--updates', '3']
+    after = list(before);after[3] = '/new'
+    check_carried_command('mixed', before, after)
+    after[-1] = '8'
+    with pytest.raises(ValueError, match='command'):
+        check_carried_command('mixed', before, after)
+    after = list(before);after[5] = '/other-data'
+    with pytest.raises(ValueError, match='command'):
+        check_carried_command('mixed', before, after)
