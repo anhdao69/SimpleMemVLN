@@ -5,6 +5,30 @@ from qwen_vl.research.vggt_g3 import insert_probes
 from qwen_vl.models.parallel_step_lane import _finite
 
 
+def _insert_lane_probes(prepared, anchors, queries):
+    """Retain the same autograd edges at zero support for ZeRO-2 reduction.
+
+    No synthetic rows or targets: zero-sized query/index_copy operations keep
+    head gradients present in the same readiness order as supported episodes.
+    The shared G3 helper/teacher identity and its legacy fast path stay intact.
+    """
+    if len(anchors):
+        return insert_probes(prepared, anchors, queries)
+    q = prepared[0]
+    real = torch.arange(q.shape[1], device=q.device)
+    probes = anchors.to(device=q.device, dtype=torch.long)
+    expanded = []
+    for index, tensor in enumerate(prepared):
+        out = tensor.new_zeros(tensor.shape).index_copy(1, real, tensor)
+        if index == 0:
+            out = out.index_copy(1, probes, queries[None].to(tensor.dtype))
+        elif index == 1:
+            unit = tensor.new_zeros((1, 0, *tensor.shape[2:]))
+            out = out.index_copy(1, probes, unit)
+        expanded.append(out)
+    return tuple(expanded), real, probes
+
+
 def lane_forward_with_queries(lane,x,roles,head,context,anchors,lags,targets):
     spec=lane.spec
     if x.ndim!=3 or x.shape[0]!=1 or roles.shape!=x.shape[:2] or roles.dtype!=torch.uint8:
@@ -13,7 +37,6 @@ def lane_forward_with_queries(lane,x,roles,head,context,anchors,lags,targets):
         raise ValueError('R1 requires valid step-end lane roles')
     if len(anchors) and (anchors.min()<0 or anchors.max()>=x.shape[1] or roles[0,anchors].eq(3).any()):
         raise ValueError('R1 requires pre-action anchors, before STEP_END')
-    if not len(anchors):return lane(x,roles)[0],head.empty_loss(x)
     _finite(x,'R1 input')
     batch,length,_=x.shape
     kw=spec.num_key_heads*spec.key_dim;vw=spec.num_value_heads*spec.value_dim
@@ -28,7 +51,7 @@ def lane_forward_with_queries(lane,x,roles,head,context,anchors,lags,targets):
     write=roles.eq(3)[...,None]
     g=torch.where(write,g_raw,0.);beta=torch.where(write,beta_raw,0.)
     queries=head.queries(context,lags)
-    prepared,real,probes=insert_probes((q,k,v,g,beta),anchors.repeat_interleave(5),queries)
+    prepared,real,probes=_insert_lane_probes((q,k,v,g,beta),anchors.repeat_interleave(5),queries)
     pq,pk,pv,pg,pb=prepared
     read,_=lane._chunk_kernel(q=pq,k=pk,v=pv,g=pg,beta=pb,scale=spec.key_dim**-.5,
         initial_state=None,output_final_state=False,use_qk_l2norm_in_kernel=True)

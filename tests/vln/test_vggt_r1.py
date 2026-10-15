@@ -60,3 +60,49 @@ def test_step_end_anchor_is_rejected():
     head=NativeStateHead(heads=2,key_dim=3,value_dim=5,context_heads=3,query_hidden=8,decoder_hidden=12,target_dim=4)
     with pytest.raises(ValueError,match='pre-action'):
         run(m,x,roles,head,torch.randn(1,3,3),torch.tensor([3]),torch.randn(1,5,4))
+
+
+def test_empty_and_nonempty_support_have_identical_gradient_readiness_order():
+    orders = []
+    for count in (1, 0):
+        m = lane();torch.nn.init.normal_(m.out_proj.weight)
+        x, roles = sample();x.requires_grad_()
+        head = NativeStateHead(heads=2,key_dim=3,value_dim=5,context_heads=3,
+                               query_hidden=8,decoder_hidden=12,target_dim=4)
+        order = []
+        for prefix, module in (('lane',m),('head',head)):
+            for name, p in module.named_parameters():
+                p.register_hook(lambda grad, name=prefix+'.'+name: order.append(name))
+        anchors = torch.tensor([5],dtype=torch.long)[:count]
+        context = torch.randn(count,3,3);targets = torch.randn(count,5,4)
+        def forward(h):return run(m,h,roles,head,context,anchors,targets)
+        output,loss = checkpoint(forward,x,use_reentrant=False)
+        (output.square().sum()+loss).backward()
+        assert all(p.grad is not None for p in head.parameters())
+        if not count:
+            assert loss.item()==0
+            assert all(torch.count_nonzero(p.grad)==0 for p in head.parameters())
+        orders.append(order)
+    assert orders[0]==orders[1]
+
+
+def test_empty_support_preserves_lane_outputs_and_gradients_without_extra_rows():
+    m=lane();torch.nn.init.normal_(m.out_proj.weight)
+    x,roles=sample();x.requires_grad_()
+    head=NativeStateHead(heads=2,key_dim=3,value_dim=5,context_heads=3,query_hidden=8,decoder_hidden=12,target_dim=4)
+    sizes=[];original=m._chunk_kernel
+    def kernel(**kwargs):
+        sizes.append(kwargs['q'].shape[1])
+        return original(**kwargs)
+    m._chunk_kernel=kernel
+    expected=m(x,roles)[0]
+    out,loss=run(m,x,roles,head,torch.empty(0,3,3),torch.empty(0,dtype=torch.long),torch.empty(0,5,4))
+    assert torch.equal(out,expected) and loss.item()==0
+    assert sizes==[x.shape[1],x.shape[1]]
+    params=(x,*m.parameters())
+    expected_grads=torch.autograd.grad(expected.square().sum(),params,retain_graph=True)
+    actual_grads=torch.autograd.grad(out.square().sum()+loss,params,retain_graph=True)
+    for actual,reference in zip(actual_grads,expected_grads):
+        torch.testing.assert_close(actual,reference,atol=0,rtol=0)
+    loss.backward()
+    assert all(p.grad is not None and torch.count_nonzero(p.grad)==0 for p in head.parameters())
