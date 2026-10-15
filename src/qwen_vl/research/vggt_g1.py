@@ -6,7 +6,7 @@ import math
 def parse_g1(config):
     value=config.get('research')
     if value is None: return None
-    if value.get('run_id') not in ('G1','G3','A0','A1'): raise ValueError('This implementation permits only G1/G3/A0/A1')
+    if value.get('run_id') not in ('G1','G3','A0','A1','R1'): raise ValueError('This implementation permits only G1/G3/A0/A1/R1')
     run=value['run_id']
     from qwen_vl.research.geoaddress_contract import parse_geoaddress
     address = parse_geoaddress(config)
@@ -20,7 +20,10 @@ def parse_g1(config):
         raise ValueError('A0 is navigation-only')
     if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
         raise ValueError('G1 requires native Window8 text')
-    if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
+    if run=='R1':
+        from qwen_vl.research.vggt_r1 import validate_r1
+        validate_r1(config)
+    elif config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('Native research has no lane')
     expected_layer=23 if run=='G1' else 24
     if value.get('student_layer',expected_layer) != expected_layer: raise ValueError(f'{run} requires decoder{expected_layer}')
     if config['model'].get('episodic',{}).get('enabled',False): raise ValueError('Native research forbids episodic bank')
