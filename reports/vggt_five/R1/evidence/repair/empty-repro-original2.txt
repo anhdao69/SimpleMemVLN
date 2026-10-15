@@ -1,0 +1,431 @@
+[2026-10-15 16:03:03,204] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:03:03,473] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:03:03,610] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:03:03,620] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[2026-10-15 16:03:13,991] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:03:13,991] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:03:14,059] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:03:14,060] [INFO] [comm.py:689:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[2026-10-15 16:03:14,127] [INFO] [comm.py:658:init_distributed] cdb=None
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank [Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+TRAINING_CONTRACT {"world_size": 4, "microbatch": 1, "accumulation": 2, "global_episode_batch": 8, "episode_records": 8, "unique_episodes": 8, "action_exposures_per_dataset_pass": 221, "min_tokens": 2615, "max_tokens": 13461}
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[RANK 0] Gradient accumulation steps mismatch: GradientAccumulationPlugin has 1, DeepSpeed config has 2. Using DeepSpeed's value.
+ninja: no work to do.
+Time to load cpu_adam op: 2.7224514484405518 seconds
+Time to load cpu_adam op: 2.6988461017608643 seconds
+Time to load cpu_adam op: 2.748814582824707 seconds
+Time to load cpu_adam op: 2.7066869735717773 seconds
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+  0%|          | 0/2 [00:00<?, ?it/s][rank3]: Traceback (most recent call last):
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 18, in <module>
+[rank3]:     runpy.run_module('qwen_vl.train.train_qwen',run_name='__main__')
+[rank3]:   File "<frozen runpy>", line 229, in run_module
+[rank3]:   File "<frozen runpy>", line 88, in _run_code
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 180, in <module>
+[rank3]:     train()
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 99, in train
+[rank3]:     return train_episode()
+[rank3]:            ^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 577, in train_episode
+[rank3]:     result = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
+[rank3]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1433, in train
+[rank3]:     return inner_training_loop(
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1515, in _inner_training_loop
+[rank3]:     self._run_epoch(
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 186, in _run_epoch
+[rank3]:     return super()._run_epoch(model, epoch, *args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1743, in _run_epoch
+[rank3]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank3]:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 221, in training_step
+[rank3]:     result = super().training_step(model, inputs, num_items_in_batch)
+[rank3]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1943, in training_step
+[rank3]:     self.accelerator.backward(loss, **kwargs)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2830, in backward
+[rank3]:     self.deepspeed_engine_wrapped.backward(loss, sync_gradients=self.sync_gradients, **kwargs)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/utils/deepspeed.py", line 270, in backward
+[rank3]:     self.engine.backward(loss, **kwargs)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/utils/nvtx.py", line 18, in wrapped_fn
+[rank3]:     ret_val = func(*args, **kwargs)
+[rank3]:               ^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 2126, in backward
+[rank3]:     self.optimizer.backward(loss, retain_graph=retain_graph)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 2067, in backward
+[rank3]:     self.loss_scaler.backward(loss.float(), retain_graph=retain_graph)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/fp16/loss_scaler.py", line 63, in backward
+[rank3]:     scaled_loss.backward(retain_graph=retain_graph)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 630, in backward
+[rank3]:     torch.autograd.backward(
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 364, in backward
+[rank3]:     _engine_run_backward(
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 865, in _engine_run_backward
+[rank3]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 915, in reduce_partition_and_remove_grads
+[rank3]:     self.reduce_ready_partitions_and_remove_grads(param, i)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1426, in reduce_ready_partitions_and_remove_grads
+[rank3]:     self.reduce_independent_p_g_buckets_and_remove_grads(param, i)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 944, in reduce_independent_p_g_buckets_and_remove_grads
+[rank3]:     self.reduce_ipg_grads()
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 16, in reduced
+[rank3]:     return original(self)
+[rank3]:            ^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1376, in reduce_ipg_grads
+[rank3]:     self.average_tensor(self.ipg_buffer[self.ipg_index].narrow(0, 0, self.elements_in_ipg_bucket))
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1138, in average_tensor
+[rank3]:     self.allreduce_and_scatter(buckets[bucket_key],
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1045, in allreduce_and_scatter
+[rank3]:     self.allreduce_and_copy_with_multiple_ranks(small_bucket,
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1018, in allreduce_and_copy_with_multiple_ranks
+[rank3]:     allreduced = self.allreduce_bucket(small_bucket, log=log, divide=divide, process_group=process_group)
+[rank3]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1510, in allreduce_bucket
+[rank3]:     dist.all_reduce(tensor_to_allreduce, group=process_group)
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 117, in log_wrapper
+[rank3]:     return func(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 502, in all_reduce
+[rank3]:     return cdb.all_reduce(tensor, op, group, async_op)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/torch.py", line 158, in all_reduce
+[rank3]:     return torch.distributed.all_reduce(tensor=tensor, op=op, group=group, async_op=async_op)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+[rank3]:     return func(*args, **kwargs)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank3]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3007, in all_reduce
+[rank3]:     work = group.allreduce([tensor], opts)
+[rank3]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank3]: RuntimeError: Detected mismatch between collectives on ranks. Rank 3 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[48501376], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))), but Rank 2 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[49813504], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))).Collectives differ in the following aspects:   Tensor Tensor shapes: 48501376vs 49813504
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 18, in <module>
+[rank0]:     runpy.run_module('qwen_vl.train.train_qwen',run_name='__main__')
+[rank0]:   File "<frozen runpy>", line 229, in run_module
+[rank0]:   File "<frozen runpy>", line 88, in _run_code
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 180, in <module>
+[rank0]:     train()
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 99, in train
+[rank0]:     return train_episode()
+[rank0]:            ^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 577, in train_episode
+[rank0]:     result = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1433, in train
+[rank0]:     return inner_training_loop(
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1515, in _inner_training_loop
+[rank0]:     self._run_epoch(
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 186, in _run_epoch
+[rank0]:     return super()._run_epoch(model, epoch, *args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1743, in _run_epoch
+[rank0]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank0]:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 221, in training_step
+[rank0]:     result = super().training_step(model, inputs, num_items_in_batch)
+[rank0]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1943, in training_step
+[rank0]:     self.accelerator.backward(loss, **kwargs)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2830, in backward
+[rank0]:     self.deepspeed_engine_wrapped.backward(loss, sync_gradients=self.sync_gradients, **kwargs)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/utils/deepspeed.py", line 270, in backward
+[rank0]:     self.engine.backward(loss, **kwargs)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/utils/nvtx.py", line 18, in wrapped_fn
+[rank0]:     ret_val = func(*args, **kwargs)
+[rank0]:               ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 2126, in backward
+[rank0]:     self.optimizer.backward(loss, retain_graph=retain_graph)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 2067, in backward
+[rank0]:     self.loss_scaler.backward(loss.float(), retain_graph=retain_graph)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/fp16/loss_scaler.py", line 63, in backward
+[rank0]:     scaled_loss.backward(retain_graph=retain_graph)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 630, in backward
+[rank0]:     torch.autograd.backward(
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 364, in backward
+[rank0]:     _engine_run_backward(
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 865, in _engine_run_backward
+[rank0]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 915, in reduce_partition_and_remove_grads
+[rank0]:     self.reduce_ready_partitions_and_remove_grads(param, i)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1426, in reduce_ready_partitions_and_remove_grads
+[rank0]:     self.reduce_independent_p_g_buckets_and_remove_grads(param, i)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 944, in reduce_independent_p_g_buckets_and_remove_grads
+[rank0]:     self.reduce_ipg_grads()
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 16, in reduced
+[rank0]:     return original(self)
+[rank0]:            ^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1376, in reduce_ipg_grads
+[rank0]:     self.average_tensor(self.ipg_buffer[self.ipg_index].narrow(0, 0, self.elements_in_ipg_bucket))
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1138, in average_tensor
+[rank0]:     self.allreduce_and_scatter(buckets[bucket_key],
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1045, in allreduce_and_scatter
+[rank0]:     self.allreduce_and_copy_with_multiple_ranks(small_bucket,
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1018, in allreduce_and_copy_with_multiple_ranks
+[rank0]:     allreduced = self.allreduce_bucket(small_bucket, log=log, divide=divide, process_group=process_group)
+[rank0]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1510, in allreduce_bucket
+[rank0]:     dist.all_reduce(tensor_to_allreduce, group=process_group)
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 117, in log_wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 502, in all_reduce
+[rank0]:     return cdb.all_reduce(tensor, op, group, async_op)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/torch.py", line 158, in all_reduce
+[rank0]:     return torch.distributed.all_reduce(tensor=tensor, op=op, group=group, async_op=async_op)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+[rank0]:     return func(*args, **kwargs)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank0]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3007, in all_reduce
+[rank0]:     work = group.allreduce([tensor], opts)
+[rank0]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank0]: RuntimeError: Detected mismatch between collectives on ranks. Rank 0 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[48501376], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))), but Rank 2 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[49813504], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))).Collectives differ in the following aspects:   Tensor Tensor shapes: 48501376vs 49813504
+[rank2]: Traceback (most recent call last):
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 18, in <module>
+[rank2]:     runpy.run_module('qwen_vl.train.train_qwen',run_name='__main__')
+[rank2]:   File "<frozen runpy>", line 229, in run_module
+[rank2]:   File "<frozen runpy>", line 88, in _run_code
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 180, in <module>
+[rank2]:     train()
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 99, in train
+[rank2]:     return train_episode()
+[rank2]:            ^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 577, in train_episode
+[rank2]:     result = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1433, in train
+[rank2]:     return inner_training_loop(
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1515, in _inner_training_loop
+[rank2]:     self._run_epoch(
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 186, in _run_epoch
+[rank2]:     return super()._run_epoch(model, epoch, *args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1743, in _run_epoch
+[rank2]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank2]:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 221, in training_step
+[rank2]:     result = super().training_step(model, inputs, num_items_in_batch)
+[rank2]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1943, in training_step
+[rank2]:     self.accelerator.backward(loss, **kwargs)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2830, in backward
+[rank2]:     self.deepspeed_engine_wrapped.backward(loss, sync_gradients=self.sync_gradients, **kwargs)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/utils/deepspeed.py", line 270, in backward
+[rank2]:     self.engine.backward(loss, **kwargs)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/utils/nvtx.py", line 18, in wrapped_fn
+[rank2]:     ret_val = func(*args, **kwargs)
+[rank2]:               ^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 2126, in backward
+[rank2]:     self.optimizer.backward(loss, retain_graph=retain_graph)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 2067, in backward
+[rank2]:     self.loss_scaler.backward(loss.float(), retain_graph=retain_graph)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/fp16/loss_scaler.py", line 63, in backward
+[rank2]:     scaled_loss.backward(retain_graph=retain_graph)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 630, in backward
+[rank2]:     torch.autograd.backward(
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 364, in backward
+[rank2]:     _engine_run_backward(
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 865, in _engine_run_backward
+[rank2]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 915, in reduce_partition_and_remove_grads
+[rank2]:     self.reduce_ready_partitions_and_remove_grads(param, i)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1426, in reduce_ready_partitions_and_remove_grads
+[rank2]:     self.reduce_independent_p_g_buckets_and_remove_grads(param, i)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 944, in reduce_independent_p_g_buckets_and_remove_grads
+[rank2]:     self.reduce_ipg_grads()
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 16, in reduced
+[rank2]:     return original(self)
+[rank2]:            ^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1376, in reduce_ipg_grads
+[rank2]:     self.average_tensor(self.ipg_buffer[self.ipg_index].narrow(0, 0, self.elements_in_ipg_bucket))
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1138, in average_tensor
+[rank2]:     self.allreduce_and_scatter(buckets[bucket_key],
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1045, in allreduce_and_scatter
+[rank2]:     self.allreduce_and_copy_with_multiple_ranks(small_bucket,
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1018, in allreduce_and_copy_with_multiple_ranks
+[rank2]:     allreduced = self.allreduce_bucket(small_bucket, log=log, divide=divide, process_group=process_group)
+[rank2]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1510, in allreduce_bucket
+[rank2]:     dist.all_reduce(tensor_to_allreduce, group=process_group)
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 117, in log_wrapper
+[rank2]:     return func(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 502, in all_reduce
+[rank2]:     return cdb.all_reduce(tensor, op, group, async_op)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/torch.py", line 158, in all_reduce
+[rank2]:     return torch.distributed.all_reduce(tensor=tensor, op=op, group=group, async_op=async_op)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+[rank2]:     return func(*args, **kwargs)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank2]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3007, in all_reduce
+[rank2]:     work = group.allreduce([tensor], opts)
+[rank2]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank2]: RuntimeError: Detected mismatch between collectives on ranks. Rank 2 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[49813504], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))), but Rank 0 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[48501376], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))).Collectives differ in the following aspects:   Tensor Tensor shapes: 49813504vs 48501376
+[rank1]: Traceback (most recent call last):
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 18, in <module>
+[rank1]:     runpy.run_module('qwen_vl.train.train_qwen',run_name='__main__')
+[rank1]:   File "<frozen runpy>", line 229, in run_module
+[rank1]:   File "<frozen runpy>", line 88, in _run_code
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 180, in <module>
+[rank1]:     train()
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_qwen.py", line 99, in train
+[rank1]:     return train_episode()
+[rank1]:            ^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 577, in train_episode
+[rank1]:     result = trainer.train(resume_from_checkpoint=args.resume_from_checkpoint)
+[rank1]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1433, in train
+[rank1]:     return inner_training_loop(
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1515, in _inner_training_loop
+[rank1]:     self._run_epoch(
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 186, in _run_epoch
+[rank1]:     return super()._run_epoch(model, epoch, *args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1743, in _run_epoch
+[rank1]:     tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+[rank1]:                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-dca86b6/src/qwen_vl/train/train_episode.py", line 221, in training_step
+[rank1]:     result = super().training_step(model, inputs, num_items_in_batch)
+[rank1]:              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/trainer.py", line 1943, in training_step
+[rank1]:     self.accelerator.backward(loss, **kwargs)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/accelerator.py", line 2830, in backward
+[rank1]:     self.deepspeed_engine_wrapped.backward(loss, sync_gradients=self.sync_gradients, **kwargs)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/accelerate/utils/deepspeed.py", line 270, in backward
+[rank1]:     self.engine.backward(loss, **kwargs)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/utils/nvtx.py", line 18, in wrapped_fn
+[rank1]:     ret_val = func(*args, **kwargs)
+[rank1]:               ^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/engine.py", line 2126, in backward
+[rank1]:     self.optimizer.backward(loss, retain_graph=retain_graph)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 2067, in backward
+[rank1]:     self.loss_scaler.backward(loss.float(), retain_graph=retain_graph)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/fp16/loss_scaler.py", line 63, in backward
+[rank1]:     scaled_loss.backward(retain_graph=retain_graph)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/_tensor.py", line 630, in backward
+[rank1]:     torch.autograd.backward(
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/__init__.py", line 364, in backward
+[rank1]:     _engine_run_backward(
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/autograd/graph.py", line 865, in _engine_run_backward
+[rank1]:     return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 915, in reduce_partition_and_remove_grads
+[rank1]:     self.reduce_ready_partitions_and_remove_grads(param, i)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1426, in reduce_ready_partitions_and_remove_grads
+[rank1]:     self.reduce_independent_p_g_buckets_and_remove_grads(param, i)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 944, in reduce_independent_p_g_buckets_and_remove_grads
+[rank1]:     self.reduce_ipg_grads()
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py", line 16, in reduced
+[rank1]:     return original(self)
+[rank1]:            ^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1376, in reduce_ipg_grads
+[rank1]:     self.average_tensor(self.ipg_buffer[self.ipg_index].narrow(0, 0, self.elements_in_ipg_bucket))
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1138, in average_tensor
+[rank1]:     self.allreduce_and_scatter(buckets[bucket_key],
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1045, in allreduce_and_scatter
+[rank1]:     self.allreduce_and_copy_with_multiple_ranks(small_bucket,
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1018, in allreduce_and_copy_with_multiple_ranks
+[rank1]:     allreduced = self.allreduce_bucket(small_bucket, log=log, divide=divide, process_group=process_group)
+[rank1]:                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/zero/stage_1_and_2.py", line 1510, in allreduce_bucket
+[rank1]:     dist.all_reduce(tensor_to_allreduce, group=process_group)
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 117, in log_wrapper
+[rank1]:     return func(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/comm.py", line 502, in all_reduce
+[rank1]:     return cdb.all_reduce(tensor, op, group, async_op)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/comm/torch.py", line 158, in all_reduce
+[rank1]:     return torch.distributed.all_reduce(tensor=tensor, op=op, group=group, async_op=async_op)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py", line 83, in wrapper
+[rank1]:     return func(*args, **kwargs)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^
+[rank1]:   File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py", line 3007, in all_reduce
+[rank1]:     work = group.allreduce([tensor], opts)
+[rank1]:            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[rank1]: RuntimeError: Detected mismatch between collectives on ranks. Rank 1 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[48501376], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))), but Rank 2 is running collective: CollectiveFingerPrint(SequenceNumber=868, OpType=ALLREDUCE, TensorShape=[49813504], TensorDtypes=BFloat16, TensorDeviceTypes=TensorOptions(dtype=float (default), device=cuda, layout=Strided (default), requires_grad=false (default), pinned_memory=false (default), memory_format=(nullopt))).Collectives differ in the following aspects:   Tensor Tensor shapes: 48501376vs 49813504
+  0%|          | 0/2 [00:34<?, ?it/s]
+[rank0]:[W1015 16:04:09.370964840 ProcessGroupNCCL.cpp:1553] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())
+W1015 16:04:12.744000 783575 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 783588 closing signal SIGTERM
+W1015 16:04:12.747000 783575 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 783590 closing signal SIGTERM
+W1015 16:04:12.747000 783575 torch/distributed/elastic/multiprocessing/api.py:1010] Sending process 783591 closing signal SIGTERM
+E1015 16:04:16.386000 783575 torch/distributed/elastic/multiprocessing/api.py:984] failed (exitcode: 1) local_rank: 1 (pid: 783589) of binary: /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/bin/python
+Traceback (most recent call last):
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/bin/torchrun", line 10, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 362, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/run.py", line 991, in main
+    run(args)
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/run.py", line 982, in run
+    elastic_launch(
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 170, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/distributed/launcher/api.py", line 317, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/repro_empty.py FAILED
+------------------------------------------------------------
+Failures:
+[1]:
+  time      : 2026-10-15_16:04:16
+  host      : worker-2.fpt-hpc-worker-svc.fpt-hpc.svc.cluster.local
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 783588)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[2]:
+  time      : 2026-10-15_16:04:16
+  host      : worker-2.fpt-hpc-worker-svc.fpt-hpc.svc.cluster.local
+  rank      : 2 (local_rank: 2)
+  exitcode  : 1 (pid: 783590)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+[3]:
+  time      : 2026-10-15_16:04:16
+  host      : worker-2.fpt-hpc-worker-svc.fpt-hpc.svc.cluster.local
+  rank      : 3 (local_rank: 3)
+  exitcode  : 1 (pid: 783591)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2026-10-15_16:04:12
+  host      : worker-2.fpt-hpc-worker-svc.fpt-hpc.svc.cluster.local
+  rank      : 1 (local_rank: 1)
+  exitcode  : 1 (pid: 783589)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
+srun: error: worker-2: task 0: Exited with exit code 1

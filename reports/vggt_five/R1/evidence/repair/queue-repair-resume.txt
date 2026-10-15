@@ -1,0 +1,12 @@
+{"status": "running", "updated_unix": 1792081797.73643, "allocation": "4925", "node": "worker-2", "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-bcb14ea", "stage": "r1-joint-e1"}
+{"status": "blocked", "updated_unix": 1792082222.9519427, "allocation": "4925", "node": "worker-2", "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-bcb14ea", "error": "RuntimeError('R1 exited without completed epoch')"}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-bcb14ea/scripts/vln/queue_vggt_r1.py", line 82, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-bcb14ea/scripts/vln/queue_vggt_r1.py", line 76, in main
+    if predecessor_status(run,3852)!='complete':raise RuntimeError('R1 exited without completed epoch')
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: R1 exited without completed epoch

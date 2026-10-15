@@ -1,0 +1,62 @@
+........................................................................ [ 16%]
+........................................................................ [ 33%]
+........................................................................ [ 49%]
+........................................................................ [ 66%]
+........................................................................ [ 82%]
+........................................................................ [ 99%]
+..                                                                       [100%]
+=============================== warnings summary ===============================
+../../SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: 14 warnings
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests/vln/test_candidate_contract.py: 39 warnings
+tests/vln/test_serializer.py: 10 warnings
+tests/vln/test_step_lane_serializer.py: 16 warnings
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/transformers/processing_utils.py:928: DeprecationWarning: __array__ implementation doesn't accept a copy keyword, so passing copy=False failed. __array__ must implement 'dtype' and 'copy' keyword arguments. To learn more, see the migration guide https://numpy.org/devdocs/numpy_2_0_migration_guide.html#adapting-to-changes-in-the-copy-keyword
+    tokenizer_input = np.array(tokenizer_input)
+
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:1480: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+tests/vln/test_candidate_loss.py::test_direct_rows_use_backbone_lr_only
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/deepspeed/runtime/config_utils.py:100: PydanticDeprecatedSince211: Accessing the 'model_fields' attribute on the instance is deprecated. Instead, you should access this attribute from the model class. Deprecated in Pydantic V2.11 to be removed in V3.0.
+    fields = self.model_fields
+
+tests/vln/test_episodic_arena.py: 1 warning
+tests/vln/test_episodic_campaign.py: 24 warnings
+  /home/anhdh35/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=788328) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/vln/test_episodic_attention.py::test_episodic_matches_dense_oracle_values_and_gradients[8-6-4]
+  /mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-5635357/tests/vln/test_episodic_attention.py:49: UserWarning: The given NumPy array is not writable, and PyTorch does not support non-writable tensors. This means writing to this tensor will result in undefined behavior. You may want to copy the array to protect its data or make it writable before converting it to a tensor. This type of warning will be suppressed for the rest of this program. (Triggered internally at /pytorch/torch/csrc/utils/tensor_numpy.cpp:213.)
+    mask[q, torch.as_tensor(plan.group_ids(t))] = True
+
+tests/vln/test_geoaddress_cuda.py::test_h100_geoaddress_zero_and_active_native_cache_modes
+  /mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/source-5635357/tests/vln/test_geoaddress_cuda.py:48: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+    print('GEOADDRESS_CUDA_PASS',{'active_stream_relative':relative,'aux_loss':float(loss)})
+
+tests/vln/test_step_lane_fla.py::test_installed_chunk_gradients_with_exact_zero_mask_crossing_chunk_boundary
+tests/vln/test_vggt_g3_cuda.py::test_real_fla_32x128_identity_state_reads_and_gradients
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/tilelang/cache/__init__.py:82: DeprecationWarning: `tl.disable_tma_lower` is deprecated and will be removed in v0.1.10. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    return cache.cached(
+
+tests/vln/test_step_lane_fla.py::test_installed_chunk_gradients_with_exact_zero_mask_crossing_chunk_boundary
+tests/vln/test_vggt_g3_cuda.py::test_real_fla_32x128_identity_state_reads_and_gradients
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/tilelang/jit/kernel.py:170: DeprecationWarning: `tl.disable_tma_lower` is deprecated and will be removed in v0.1.10. Use `T.copy(..., disable_tma=True)` per-copy instead.
+    instance = cls(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+434 passed, 118 warnings in 66.17s (0:01:06)
+Adam Optimizer #0 is created with AVX512 arithmetic capability.
+Config: alpha=0.005000, betas=(0.900000, 0.950000), weight_decay=0.000000, adam_w=1
+Adam Optimizer #1 is created with AVX512 arithmetic capability.
+Config: alpha=0.001000, betas=(0.900000, 0.999000), weight_decay=0.000000, adam_w=1

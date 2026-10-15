@@ -1,0 +1,39 @@
+[2026-10-15 16:20:32,005] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:20:32,165] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:20:32,349] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2026-10-15 16:20:32,354] [INFO] [real_accelerator.py:222:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+[2026-10-15 16:20:41,047] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:20:41,118] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:20:41,283] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:20:41,284] [INFO] [comm.py:658:init_distributed] cdb=None
+[2026-10-15 16:20:41,284] [INFO] [comm.py:689:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 3 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 2 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+TRAINING_CONTRACT {"world_size": 4, "microbatch": 1, "accumulation": 2, "global_episode_batch": 8, "episode_records": 8, "unique_episodes": 8, "action_exposures_per_dataset_pass": 221, "min_tokens": 2615, "max_tokens": 13461}
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[transformers] The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'eos_token_id': 248046, 'pad_token_id': 248044}.
+[RANK 0] Gradient accumulation steps mismatch: GradientAccumulationPlugin has 1, DeepSpeed config has 2. Using DeepSpeed's value.
+ninja: no work to do.
+Time to load cpu_adam op: 2.8325726985931396 seconds
+Time to load cpu_adam op: 2.841966152191162 seconds
+Time to load cpu_adam op: 2.8697566986083984 seconds
+Time to load cpu_adam op: 2.8626813888549805 seconds
+[Gloo] Rank 0 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank 1 is connected to 3 peer ranks. Expected number of connected peer ranks is : 3
+[Gloo] Rank [Gloo] Rank 23 is connected to 3 is connected to  peer ranks. 3Expected number of connected peer ranks is : 3 peer ranks. 
+Expected number of connected peer ranks is : 3
+UPDATE_PROFILE {"update": 1, "seconds": 30.30853856401518, "unix_start": 1792081263.7052646, "unix_end": 1792081294.013801, "peak_allocated_gib": 21.018125534057617, "peak_reserved_gib": 28.55859375, "device_total_gib": 79.1890869140625, "cuda_ooms": 0, "process_rss_gib": 26.764816284179688, "cgroup_version": 2, "job_usage_gib": 555.350025177002, "job_limit_gib": 768.0, "job_peak_gib": 555.350025177002, "working_set_gib": 244.70079803466797, "clean_inactive_file_gib": 310.649227142334, "anon_gib": 58.262203216552734, "unevictable_gib": 0.0, "dirty_writeback_gib": 0.0, "swap_gib": 0.0, "oom_kill": 0, "oom": 0, "limit_events": 20381649}
+{'loss': '0.4597', 'grad_norm': '67.61', 'learning_rate': '0', 'epoch': '1'}
+UPDATE_PROFILE {"update": 2, "seconds": 5.074502426898107, "unix_start": 1792081295.168527, "unix_end": 1792081300.2430298, "peak_allocated_gib": 21.018125534057617, "peak_reserved_gib": 28.55859375, "device_total_gib": 79.1890869140625, "cuda_ooms": 0, "process_rss_gib": 26.764984130859375, "cgroup_version": 2, "job_usage_gib": 555.9554824829102, "job_limit_gib": 768.0, "job_peak_gib": 555.9554824829102, "working_set_gib": 245.3061637878418, "clean_inactive_file_gib": 310.64931869506836, "anon_gib": 58.92533874511719, "unevictable_gib": 0.0, "dirty_writeback_gib": 0.0, "swap_gib": 0.0, "oom_kill": 0, "oom": 0, "limit_events": 20381649}
+{'loss': '0.4598', 'grad_norm': '67.59', 'learning_rate': '4.31e-08', 'epoch': '2'}
+{'train_runtime': '38.35', 'train_samples_per_second': '0.417', 'train_steps_per_second': '0.052', 'train_loss': '0.4597', 'epoch': '2'}
+  0%|          | 0/2 [00:00<?, ?it/s] 50%|█████     | 1/2 [00:32<00:32, 32.05s/it]                                              50%|█████     | 1/2 [00:32<00:32, 32.05s/it]100%|██████████| 2/2 [00:38<00:00, 16.86s/it]                                             100%|██████████| 2/2 [00:38<00:00, 16.86s/it]                                             100%|██████████| 2/2 [00:38<00:00, 16.86s/it]100%|██████████| 2/2 [00:38<00:00, 19.17s/it]
+[W1015 16:21:40.836360094 ProcessGroupNCCL.cpp:1553] Warning: WARNING: destroy_process_group() was not called before program exit, which can leak resources. For more info, please see https://pytorch.org/docs/stable/distributed.html#shutdown (function operator())

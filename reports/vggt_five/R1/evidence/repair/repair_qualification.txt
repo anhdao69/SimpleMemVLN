@@ -1,0 +1,27 @@
+START full-suite-initial
+DONE full-suite-initial
+START baseline-load
+DONE baseline-load
+START baseline-serving
+DONE baseline-serving
+CARRIED_POSITIVE_SUPPORT mixed [6, 6, 6, 6]
+START mixed-empty
+DONE mixed-empty
+CARRIED_POSITIVE_SUPPORT rxrce_longest [6, 6, 6, 6]
+CARRIED_POSITIVE_SUPPORT r2rce_longest [6, 6, 6, 6]
+CARRIED_POSITIVE_SUPPORT threshold [6, 6, 6, 6]
+CARRIED_POSITIVE_SUPPORT mixed_extreme [6, 6, 6, 6]
+CARRIED_POSITIVE_SUPPORT recovery-reference [6, 6, 6, 6]
+CARRIED_POSITIVE_SUPPORT recovery-resumed [2, 2, 2, 2]
+START recovery-compare
+DONE recovery-compare
+START export
+DONE export
+CARRIED_POSITIVE_SUPPORT r2rce-timing [16, 16, 16, 16]
+CARRIED_POSITIVE_SUPPORT rxrce-timing [16, 16, 16, 16]
+CARRIED_POSITIVE_SUPPORT joint-timing [24, 24, 24, 24]
+START distributed-pair-normalization
+DONE distributed-pair-normalization
+START full-suite-final
+DONE full-suite-final
+R1_REPAIR_QUALIFICATION_PASS
