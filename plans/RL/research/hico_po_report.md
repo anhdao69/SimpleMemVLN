@@ -657,6 +657,14 @@ Its larger gradient norm reflects the batch-level scale (per-group normalisation
 loss), not instability: clipping at 1.0 is active in all runs and no run diverged. Wall-clock is not
 comparable across runs because the GPUs were shared with other users' jobs.
 
+**GRPO+F-B seed 2 (in progress, 2026-10-16).** Every failed launch so far was a systems failure on the
+shared GPU 0, not a training instability: CUDA OOM at the first or second update, host-RAM thrash, and
+twice the NCCL watchdog aborting a rank that idled in collectives while the other rank waited for memory.
+None of the fixes changes the update (`param_groups: 32`, placement margin, a wait-for-memory gate
+before the update, a per-rank GPU reservation `hold_gpu_gib`, CPU-group polling). The 19:05 UTC launch
+reproduced the step-0 metrics of every earlier attempt exactly and passed step 1 at 19:22 UTC with
+no memory wait. Restart count and step times will be filled in when the run finishes.
+
 **Gradient clipping is always active.** In every run, all 125 updates have a pre-clip gradient norm
 above the clip threshold of 1.0:
 
