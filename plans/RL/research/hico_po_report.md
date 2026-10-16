@@ -295,9 +295,26 @@ replays, vs GRPO's 261 k at step 125) reaches SR 50.19, SPL 45.54, NE 6.23, OSR 
 - vs GRPO s1 / s2 at step 125: −6.7 / −7.2 SR (p < 1e-8).
 - vs SFT: −1.4 SR (95 % CI [−3.5, +0.7], p = 0.23).
 
-So at matched simulator interaction GRPO+F is clearly worse. Part of this is a mid-training dip that
-GRPO shares: on the val_seen-300 pilot, GRPO went 56.3 (SFT) → 52.0 (step 50) → 63.7 (step 125). A
-GRPO s1 step-50 val_unseen evaluation is queued for a matched-RL-step comparison.
+Compared with GRPO's *final* checkpoint at matched interaction, GRPO+F is clearly worse. That
+comparison is confounded by a mid-training dip that GRPO shares. The GRPO s1 step-50 val_unseen
+evaluation (`results/grpo_s1_step50_*`) shows the dip on unseen scenes, and GRPO's is deeper:
+
+| Step 50 (val_unseen) | SR | SPL | NE | OSR | cap hits |
+|---|---:|---:|---:|---:|---:|
+| SFT (step 0) | 51.55 | 47.64 | 5.80 | 59.27 | 114 |
+| GRPO s1 step 50 | 47.15 | 41.06 | 6.63 | 62.53 | 182 |
+| GRPO+F step 50 | 50.19 | 45.54 | 6.23 | 60.09 | — |
+
+- GRPO step 50 is significantly *below* SFT: −4.4 SR, CI [−6.6, −2.2], p = 1e-4.
+- At matched RL steps, GRPO+F leads GRPO: **+3.0 SR**, CI [+1.1, +5.0], McNemar p = 0.002; **+4.5 SPL**,
+  CI [+2.8, +6.1] (`results/grpo_fork_step50_vs_grpo_s1_step50_comparison.json`).
+- GRPO's step-50 policy reaches the goal region more often (OSR 62.5) but walks past it and hits the cap
+  (182). This matches §6.2: per-group std normalisation under-credits stopping in all-success groups.
+  Early in training those groups are common.
+
+So "matched env steps" for GRPO+F reads as two dips of different depth, not as a clean
+sample-efficiency verdict. A fair efficiency comparison needs each method's full learning curve. The
+GRPO+F-B step-50 evaluation is queued next.
 
 **Where it differs** (vs GRPO s2, `results/grpo_fork_step125_failure_analysis_vs_grpo_s2.json`):
 
