@@ -13,7 +13,7 @@ def export_checkpoint(source, destination):
     if destination.exists(): raise FileExistsError(destination)
     metadata=json.loads((source/'navigation.json').read_text())
     research=metadata['config'].get('research')
-    if not research or research['run_id'] not in ('G1','G3'): raise ValueError('Expected a G1/G3 training checkpoint')
+    if not research or research['run_id'] not in ('G1','G3','G3_M5'): raise ValueError('Expected a G1/G3/G3_M5 training checkpoint')
     head='current_projector' if research['run_id']=='G1' else 'state_head'
     state=torch.load(source/'pytorch_model.bin',map_location='cpu',weights_only=True,mmap=True)
     if not any(k.startswith(f'research_aux.{head}.') for k in state):

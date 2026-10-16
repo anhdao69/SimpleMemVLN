@@ -9,7 +9,26 @@ from torch.nn import functional as F
 from qwen_vl.research.vggt_g3 import insert_probes
 
 
-def native_state_gdn(gdn,hidden,head,anchors,lags,targets):
+def _uniform_probes(prepared, anchors, queries):
+    """Zero-sized operations retain supported-episode autograd edge ordering.
+
+    ZeRO2 requires matching gradient bucket readiness across ranks. A separate
+    empty parameter-sum loss does not provide that. No fake probes or targets;
+    the legacy G3 helper and its teacher identity remain unchanged.
+    """
+    if len(anchors):return insert_probes(prepared,anchors,queries)
+    q=prepared[0];real=torch.arange(q.shape[1],device=q.device)
+    probes=anchors.to(device=q.device,dtype=torch.long)
+    expanded=[]
+    for index,tensor in enumerate(prepared):
+        out=tensor.new_zeros(tensor.shape).index_copy(1,real,tensor)
+        if index==0:out=out.index_copy(1,probes,queries[None].to(tensor.dtype))
+        elif index==1:out=out.index_copy(1,probes,tensor.new_zeros((1,0,*tensor.shape[2:])))
+        expanded.append(out)
+    return tuple(expanded),real,probes
+
+
+def native_state_gdn(gdn,hidden,head,anchors,lags,targets,*,uniform_empty=False):
     batch,length,_=hidden.shape
     if batch!=1:raise ValueError('G3 supports one complete unpadded episode')
     kernel=gdn.chunk_gated_delta_rule
@@ -31,9 +50,10 @@ def native_state_gdn(gdn,hidden,head,anchors,lags,targets):
     beta=b.sigmoid();g=-gdn.A_log.float().exp()*F.softplus(a.float()+gdn.dt_bias)
     repeat=gdn.num_v_heads//gdn.num_k_heads
     if repeat>1:q=q.repeat_interleave(repeat,dim=2);k=k.repeat_interleave(repeat,dim=2)
-    if len(anchors):
+    if len(anchors) or uniform_empty:
         queries=head.queries(q[0,anchors],lags)
-        prepared,real,probes=insert_probes((q,k,v,g,beta),anchors.repeat_interleave(5),queries)
+        pack=_uniform_probes if uniform_empty else insert_probes
+        prepared,real,probes=pack((q,k,v,g,beta),anchors.repeat_interleave(5),queries)
         pq,pk,pv,pg,pb=prepared
         out,_=kernel(pq,pk,pv,g=pg,beta=pb,initial_state=None,output_final_state=False,
                      use_qk_l2norm_in_kernel=True,cu_seqlens=None)
@@ -47,9 +67,10 @@ def native_state_gdn(gdn,hidden,head,anchors,lags,targets):
     return gdn.out_proj(out.reshape(batch,length,-1)),loss
 
 
-def native_state_decoder(layer,hidden,head,anchors,lags,targets):
+def native_state_decoder(layer,hidden,head,anchors,lags,targets,*,uniform_empty=False):
     if layer.layer_type!='linear_attention':raise ValueError('G3 selected layer must be GDN')
     residual=hidden
-    output,loss=native_state_gdn(layer.linear_attn,layer.input_layernorm(hidden),head,anchors,lags,targets)
+    output,loss=native_state_gdn(layer.linear_attn,layer.input_layernorm(hidden),head,anchors,lags,targets,
+                               uniform_empty=uniform_empty)
     hidden=residual+output
     return hidden+layer.mlp(layer.post_attention_layernorm(hidden)),loss

@@ -48,7 +48,8 @@ def _layer_kwargs(spec, plan):
 def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step_plan=None,
                           layout=None, episode_uid=None, past_key_values=None, use_cache=False,
                           stream_append=False, serving=None, window_attention_batch_steps=1,
-                          diagnostics=None):
+                          diagnostics=None, state_head=None, anchors=None, lags=None,
+                          targets=None, state_layer=24):
     """Return last hidden state [1, T, width] under the episodic visibility rule."""
     config = text_model.config
     if inputs_embeds.shape[0] != 1:
@@ -57,6 +58,15 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
         raise ValueError('Expected logical + 3-axis multimodal positions')
     text_position_ids, mrope_position_ids = position_ids[0], position_ids[1:]
     offline = not stream_append
+    if state_head is not None:
+        if not offline or use_cache or past_key_values is not None:
+            raise ValueError('State supervision requires uncached episodic training')
+        if anchors is None or lags is None or targets is None or len(anchors)!=len(lags) or len(anchors)!=len(targets):
+            raise ValueError('State supervision requires matching anchors, lags and targets')
+        if not 0<=state_layer<config.num_hidden_layers or config.layer_types[state_layer]!='linear_attention':
+            raise ValueError('State supervision requires a native GDN layer')
+    elif any(x is not None for x in (anchors,lags,targets)):
+        raise ValueError('State metadata requires a state head')
     if offline:
         if past_key_values is not None or use_cache or layout is None or step_plan is None:
             raise ValueError('Offline episodic forward is uncached and needs a layout')
@@ -70,6 +80,7 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
         past_key_values=past_key_values, position_ids=text_position_ids)
     linear_mask = text_model._update_linear_attn_mask(None, past_key_values)
     hidden = inputs_embeds
+    aux = hidden.new_zeros((),dtype=torch.float32)
     position_embeddings = text_model.rotary_emb(hidden, mrope_position_ids)
 
     scorer_layers = {gdn: attention for gdn, attention in spec.scoring_pairs}
@@ -97,6 +108,16 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
         layer_kwargs = {}
         if kind == 'full_attention' and offline:
             layer_kwargs = _layer_kwargs(spec, plans.get(attention_index(index, spec)))
+        if state_head is not None and index==state_layer:
+            from qwen_vl.models.vggt_g3_forward import native_state_decoder
+            # Bound layer default is essential: checkpoint recomputes after
+            # the loop has advanced. Scoring/plans remain outside checkpoint.
+            def run_state(x,layer=decoder_layer):
+                return native_state_decoder(layer,x,state_head,anchors,lags,targets,uniform_empty=True)
+            if text_model.gradient_checkpointing and text_model.training:
+                hidden,aux=decoder_layer._gradient_checkpointing_func(run_state,hidden)
+            else:hidden,aux=run_state(hidden)
+            continue
         hidden = decoder_layer(
             hidden,
             position_embeddings=position_embeddings,
@@ -111,7 +132,8 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
         )
     if diagnostics is not None:
         diagnostics['plans'] = plans
-    return text_model.norm(hidden)
+    hidden=text_model.norm(hidden)
+    return (hidden,aux) if state_head is not None else hidden
 
 
 def attention_index(index, spec):

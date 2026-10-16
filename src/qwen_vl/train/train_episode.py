@@ -145,7 +145,7 @@ class EpisodeTrainer(QwenSFTTrainer):
             if not hasattr(self,'online_teacher'):
                 from qwen_vl.research.vggt_omega import OnlineOmegaTeacher
                 spec=self.model.navigation_config['research']
-                if spec['run_id']=='G3':
+                if spec['run_id'] in ('G3','G3_M5'):
                     from qwen_vl.research.vggt_g3_teacher import OnlineG3Teacher
                     self.online_teacher=OnlineG3Teacher(spec,self.args.device)
                 else:self.online_teacher=OnlineOmegaTeacher(spec,self.args.device)

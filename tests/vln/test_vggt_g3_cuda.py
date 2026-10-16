@@ -41,7 +41,8 @@ def test_real_fla_32x128_identity_state_reads_and_gradients():
                     'probe_reference':relative(actual[:,read],ref[:,read]),'gradients':errors})
 
 
-def test_native_prep_checkpoint_and_probe_free_parity():
+@pytest.mark.parametrize('uniform_empty',[False,True])
+def test_native_prep_checkpoint_and_probe_free_parity(uniform_empty):
     from transformers.models.qwen3_5.modeling_qwen3_5 import Qwen3_5GatedDeltaNet
     from transformers.models.qwen3_5.configuration_qwen3_5 import Qwen3_5TextConfig
     cfg=Qwen3_5TextConfig(hidden_size=2560,linear_num_value_heads=32,linear_num_key_heads=16,
@@ -54,12 +55,12 @@ def test_native_prep_checkpoint_and_probe_free_parity():
     anchors=torch.tensor([31,99],device='cuda');lags=torch.tensor([8,32],device='cuda')
     targets=torch.randn(2,5,2048,device='cuda')
     native=gdn(x)
-    empty,zero=native_state_gdn(gdn,x,head,anchors[:0],lags[:0],targets[:0])
+    empty,zero=native_state_gdn(gdn,x,head,anchors[:0],lags[:0],targets[:0],uniform_empty=uniform_empty)
     assert torch.equal(native,empty) and zero==0
     results=[]
     for enabled in (False,True):
         leaf=x.clone().requires_grad_();gdn.zero_grad(set_to_none=True);head.zero_grad(set_to_none=True)
-        fn=lambda h:native_state_gdn(gdn,h,head,anchors,lags,targets)
+        fn=lambda h:native_state_gdn(gdn,h,head,anchors,lags,targets,uniform_empty=uniform_empty)
         out,loss=checkpoint(fn,leaf,use_reentrant=False) if enabled else fn(leaf)
         assert relative(out,native)<.02
         loss.backward()

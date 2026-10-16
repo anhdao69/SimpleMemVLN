@@ -6,7 +6,7 @@ from scripts.vln.profile_episodic import verify, _rows
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--arm',choices=['G1','G3'],default='G1');p.add_argument('--root',required=True);p.add_argument('--name',required=True)
+    p=argparse.ArgumentParser();p.add_argument('--arm',choices=['G1','G3','G3_M5'],default='G1');p.add_argument('--root',required=True);p.add_argument('--name',required=True)
     p.add_argument('--fixture',required=True);p.add_argument('--updates',type=int,default=3)
     p.add_argument('--threads',type=int,default=8);p.add_argument('--workers',type=int,default=4)
     p.add_argument('--attention-batch',type=int,default=8);p.add_argument('--vision-batch',type=int,default=4)
@@ -34,7 +34,7 @@ def main():
                             episodic_diagnostics=False,malloc_trim_each_update=False)
     if not a.baseline:
         from qwen_vl.research.vggt_omega import teacher_identity
-        if a.arm=='G3':
+        if a.arm in ('G3','G3_M5'):
             from qwen_vl.research.vggt_g3_teacher import g3_teacher_identity as teacher_identity
         source='/mnt/data/vmo-ai-task/anhdh35/third_party/vggt-omega'
         weights='/mnt/data/vmo-ai-task/anhdh35/models/vggt-omega/vggt_omega_1b_512.pt'
@@ -47,10 +47,11 @@ def main():
     model='/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a'
     command=['torchrun','--standalone','--nproc_per_node=4','-m','qwen_vl.train.train_qwen',
         '--vln_config','configs/episodic/science_common.yaml','--output_config','configs/vln_empty.yaml',
-        '--memory_config','configs/vln_memory_window8.yaml','--runtime_profile',str(config_path),
+        '--memory_config',('configs/episodic/arm_m5.yaml' if a.arm=='G3_M5' else 'configs/vln_memory_window8.yaml'),'--runtime_profile',str(config_path),
         '--deepspeed',('configs/deepspeed_zero2_cpu_optimizer.json' if a.cpu_optimizer else 'deepspeed.json'),'--manifest',a.fixture,
         '--model_name_or_path',model,'--max-optimizer-updates',str(a.updates),'--debug-repeat-episodes',
         '--output_dir',str(out/'train'),'--run-name',a.arm.lower()+'-diagnostic-'+a.name]
+    if a.arm=='G3_M5':command+=['--policy_config','configs/vggt/g3_joint_one_epoch.yaml']
     if a.save: command+=['--recovery-save-steps','1']
     else: command+=['--profile-only']
     if a.resume: command+=['--resume_from_checkpoint',a.resume]
@@ -86,8 +87,8 @@ def main():
         teacher_batch=a.teacher_batch,teacher_residency=a.teacher_residency,cpu_optimizer=a.cpu_optimizer,
         cpu_adam=a.cpu_adam,
         cuda_toolkit=os.environ.get('CUDA_HOME'),
-        source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
-        source_status=subprocess.check_output(['git','status','--porcelain'],text=True),
+        source_commit=(Path('SOURCE_COMMIT').read_text().strip() if Path('SOURCE_COMMIT').is_file() else subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()),
+        source_status=('immutable archive' if Path('SOURCE_COMMIT').is_file() else subprocess.check_output(['git','status','--porcelain'],text=True)),
         source_tree_sha256=source_digest,
         teacher_identity=config.get('research',{}).get('teacher_identity'),
         fixture_sha256=__import__('hashlib').sha256(Path(a.fixture).read_bytes()).hexdigest())

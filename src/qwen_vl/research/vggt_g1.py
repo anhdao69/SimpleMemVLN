@@ -6,9 +6,15 @@ import math
 def parse_g1(config):
     value=config.get('research')
     if value is None: return None
-    if value.get('run_id') not in ('G1','G3'): raise ValueError('This implementation permits only G1/G3')
+    if value.get('run_id') not in ('G1','G3','G3_M5'): raise ValueError('This implementation permits only G1/G3/G3_M5')
     run=value['run_id']
-    if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
+    if run=='G3_M5':
+        from qwen_vl.research.episodic_contract import parse_episodic_spec
+        spec=parse_episodic_spec(config)
+        if spec is None or (spec.recent_groups,spec.budget_tokens,spec.granularity,spec.score,
+                            spec.selector_seed,spec.per_source_cap)!=(4,1200,'token','committed_mean_l2_v1',429,None):
+            raise ValueError('G3_M5 requires the exact M5 memory contract')
+    elif config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
     expected_layer=23 if run=='G1' else 24

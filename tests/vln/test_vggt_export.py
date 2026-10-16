@@ -24,15 +24,17 @@ def test_export_and_resume_keep_separate_contracts(tmp_path):
     with pytest.raises(FileExistsError): export_checkpoint(source,dest)
 
 
-def test_g3_export_drops_state_queries_and_decoder(tmp_path):
+@pytest.mark.parametrize('run',['G3','G3_M5'])
+def test_g3_export_drops_state_queries_and_decoder(tmp_path,run):
     source=tmp_path/'checkpoint';source.mkdir()
-    metadata={'config':{'research':{'run_id':'G3'}}}
+    metadata={'config':{'research':{'run_id':run},'memory':{'mode':'episodic_window_v1','episodic_budget_tokens':1200}}}
     (source/'navigation.json').write_text(json.dumps(metadata))
     torch.save({'backbone.weight':torch.ones(2),'research_aux.state_head.query.1.weight':torch.ones(2),
                 'research_aux.state_head.decoder.0.weight':torch.ones(2)},source/'pytorch_model.bin')
     target=export_checkpoint(source,tmp_path/'serving')
     assert list(torch.load(target/'pytorch_model.bin',weights_only=True))==['backbone.weight']
     assert 'research' not in json.loads((target/'navigation.json').read_text())['config']
+    assert json.loads((target/'navigation.json').read_text())['config']['memory']==metadata['config']['memory']
 
 
 def test_export_audit_records_bounded_policy_failure_without_hiding_runtime_errors():

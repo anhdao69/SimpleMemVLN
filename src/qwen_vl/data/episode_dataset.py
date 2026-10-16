@@ -54,7 +54,7 @@ class EpisodeDataset(Dataset):
             from qwen_vl.data.vggt_online import preprocess_teacher_images
             episode=self.episodes[index]
             spec=self.serializer.config['research']
-            if spec['run_id']=='G3':
+            if spec['run_id'] in ('G3','G3_M5'):
                 from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
                 pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
                 frames=sorted({s for s,t in pairs})
