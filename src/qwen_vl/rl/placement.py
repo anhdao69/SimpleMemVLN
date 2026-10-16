@@ -52,10 +52,19 @@ def hold_memory(device, chunk=GIB):
 
 
 def start_hold(device, target_bytes, helper_reserve_bytes, log, wait_seconds, poll_seconds=30):
-    """Set the reservation and grow it, waiting up to wait_seconds for other jobs to free memory."""
+    """Set the reservation and grow it, waiting up to wait_seconds for other jobs to free memory.
+
+    All ranks poll in step (one small all_gather per poll): a rank that reached its target must not sit
+    in the next collective while another rank waits, or the NCCL watchdog aborts it after 480 s.
+    """
     HOLD['target'], HOLD['helper_reserve'] = target_bytes, helper_reserve_bytes
     start = time.time()
-    while hold_memory(device) < target_bytes and time.time() - start < wait_seconds:
+    while True:
+        short = hold_memory(device) < target_bytes and time.time() - start < wait_seconds
+        flags = [None] * dist.get_world_size()
+        dist.all_gather_object(flags, short)
+        if not any(flags):
+            break
         time.sleep(poll_seconds)
     reserved = torch.cuda.memory_reserved(device)
     torch.cuda.reset_peak_memory_stats(device)  # the reservation blocks are not part of the step peaks

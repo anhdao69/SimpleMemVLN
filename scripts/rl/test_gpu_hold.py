@@ -5,14 +5,17 @@ that device_free() counts it as usable by this process, that later allocations r
 the memory is returned once the reservation is cleared.
 """
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
 
 import torch  # noqa: E402
+import torch.distributed as dist  # noqa: E402
 
 from qwen_vl.rl import placement as P  # noqa: E402
 
+dist.init_process_group('gloo', init_method='tcp://127.0.0.1:29533', rank=0, world_size=1)  # start_hold polls in step
 device = torch.device('cuda', 1)
 torch.cuda.set_device(device)
 torch.cuda.memory._set_allocator_settings('expandable_segments:True')  # as train_grpo after helpers start
@@ -37,4 +40,12 @@ assert P.hold_memory(device) >= target, 'top-up failed'
 P.HOLD['target'] = 0
 P.release_cache()
 assert torch.cuda.memory_reserved(device) < P.GIB // 4, 'memory not returned after clearing the hold'
-print('OK: reservation held, reused and returned')
+
+# A target that cannot be reached must end after wait_seconds instead of blocking the trainer.
+began = time.time()
+P.start_hold(device, 4 * P.GIB, 10 ** 4 * P.GIB, lines.append, wait_seconds=3, poll_seconds=1)  # reserve > free: no growth
+assert time.time() - began < 30, 'start_hold did not stop after wait_seconds'
+P.HOLD['target'] = 0
+P.release_cache()
+dist.destroy_process_group()
+print('OK: reservation held, reused and returned; unreachable target gave up in time')
