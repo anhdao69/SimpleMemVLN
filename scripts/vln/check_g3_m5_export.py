@@ -15,6 +15,32 @@ def snapshot(model,serializer,episode):
     data={k:v.cuda() if torch.is_tensor(v) else v for k,v in serializer.encode_episode(episode).items()}
     diagnostics={}
     with torch.inference_mode():offline=model(**data,episodic_diagnostics=diagnostics)['logits'].float().cpu()
+    probe_report=None
+    if model.g1_spec is not None:
+        from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
+        from qwen_vl.research.vggt_sampling import collection_trajectory_key
+        pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']))
+        assert pairs
+        anchors=observation_anchors(data['response_target_positions'],data['response_action_index'],data['num_actions'])
+        selected=anchors[torch.tensor([t for s,t in pairs],device=anchors.device)]
+        # Targets do not enter queries/navigation. Zero targets here audit
+        # only the probe-expanded forward; actual online targets are separately
+        # tested and used in every training qualification.
+        probe_diag={}
+        with torch.inference_mode():
+            expanded=model(**data,aux_anchors=selected,
+                aux_lags=torch.tensor([t-s for s,t in pairs],device=anchors.device),
+                aux_pair_count=len(pairs),aux_targets=torch.zeros(len(pairs),5,2048,device=anchors.device),
+                episodic_diagnostics=probe_diag)['logits'].float().cpu()
+        torch.testing.assert_close(expanded,offline,atol=.75,rtol=.03)
+        rms=float((expanded-offline).square().mean().sqrt());assert rms<=.15
+        overlaps=[]
+        for layer,plan in diagnostics['plans'].items():
+            for t in range(len(episode['steps'])):
+                ids=plan.group_ids(t)
+                if len(ids):overlaps.append(np.intersect1d(ids,probe_diag['plans'][layer].group_ids(t)).size/len(ids))
+        probe_report=dict(pairs=len(pairs),rms=rms,max_abs=float((expanded-offline).abs().max()),
+                          mean_selected_overlap=float(np.mean(overlaps)),min_selected_overlap=float(np.min(overlaps)))
     tokens=data['input_ids'][0,data['response_target_positions']].tolist();del data
     scores=[];cursor=[0];head=model.backbone.lm_head;original=head.forward
     def forced(hidden):
@@ -46,7 +72,7 @@ def snapshot(model,serializer,episode):
     first,greedy=greedy_snapshot(model,serializer,episode,'first')
     second,reset=greedy_snapshot(model,serializer,episode,'reset')
     assert first==second;torch.testing.assert_close(greedy,reset,atol=0,rtol=0)
-    return dict(offline=offline,streamed=streamed,selections=selections,greedy=greedy,outcome=first,
+    return dict(offline=offline,streamed=streamed,selections=selections,greedy=greedy,outcome=first,probe_report=probe_report,
                 rms=rms,max_abs=float((streamed-offline).abs().max()),peak_kv=peak,
                 mean_overlap=float(np.mean(overlap)),min_overlap=float(np.min(overlap)))
 
@@ -75,7 +101,8 @@ def main():
         for field in ('offline','streamed','greedy'):torch.testing.assert_close(after[field],prior[field],atol=0,rtol=0)
         assert after['outcome']==prior['outcome']
         for x,y in zip(after['selections'],prior['selections'],strict=True):np.testing.assert_array_equal(x,y)
-        report.append(dict(dataset=key,exact_export=True,**{k:after[k] for k in ('rms','max_abs','peak_kv','mean_overlap','min_overlap','outcome')}))
+        report.append(dict(dataset=key,exact_export=True,probe_forward=prior['probe_report'],
+            **{k:after[k] for k in ('rms','max_abs','peak_kv','mean_overlap','min_overlap','outcome')}))
     (output/'g3_m5_export_check.json').write_text(json.dumps(dict(passed=True,replay=report),indent=2))
     print('G3_M5_EXPORT_PASS',json.dumps(report),flush=True)
 
