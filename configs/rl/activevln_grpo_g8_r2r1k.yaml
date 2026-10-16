@@ -47,7 +47,7 @@ optim:
   betas: [0.9, 0.999]
   eps: 1.0e-8
   weight_decay: 0.01                            # verl applies it to every trainable parameter
-  param_groups: 8                               # port: identical groups; bounds ZeRO-2 host RAM at init
+  param_groups: 32                              # systems only (seed 1 used 8): smaller flat Adam temporaries on the shared GPU 0
   grad_clip: 1.0
   warmup_steps: 0
 trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
