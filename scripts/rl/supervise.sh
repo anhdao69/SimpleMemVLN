@@ -2,7 +2,9 @@
 # Unattended supervisor for an ActiveVLN GRPO run (runs as its own user unit).
 # Usage: supervise.sh RUN_NAME CONFIG FINAL_STEP
 #  1. Keeps training unit rl-$RUN_NAME alive: if it stops before COMPLETE it is relaunched with
-#     --resume from the last per-rank checkpoint (at most 12 restarts per 6 hours).
+#     --resume from the last per-rank checkpoint (at most 12 restarts per 6 hours). Every (re)launch
+#     first waits until each GPU has GPU_FREE_MIB free, since the GPUs are shared with other users'
+#     jobs and a launch into a nearly full GPU only dies with CUDA OOM at the first update.
 #  2. After COMPLETE, evaluates exports/step_FINAL on R2R val_unseen with the unchanged evaluator,
 #     in 4 shards (2 per GPU; scripts/rl/eval_shards.py), merges the shards and writes the paired
 #     comparison against the completed baseline journal.
@@ -19,6 +21,18 @@ cd "$ROOT"
 say() { echo "$(date -Is) $*" >> "$LOG"; }
 complete() { python3 -c "import json,sys; sys.exit(0 if json.load(open('$1/summary.json')).get('complete') else 1)" 2>/dev/null; }
 restarts=()
+GPU_FREE_MIB=${GPU_FREE_MIB:-40000}
+
+wait_gpus() {
+  local logged=0 free
+  while true; do
+    free=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | sort -n | head -1)
+    [ "${free:-0}" -ge "$GPU_FREE_MIB" ] && break
+    [ $logged = 1 ] || { say "waiting for ${GPU_FREE_MIB} MiB free on every GPU (min free ${free} MiB)"; logged=1; }
+    sleep 120
+  done
+  [ $logged = 0 ] || say "GPUs free enough (min free ${free} MiB)"
+}
 
 launch_train() {
   local extra=() waited=0
@@ -26,6 +40,7 @@ launch_train() {
   while [ "$(systemctl --user show "$UNIT" -p LoadState --value 2>/dev/null)" = loaded ] && [ $waited -lt 600 ]; do
     systemctl --user reset-failed "$UNIT" 2>/dev/null; sleep 10; waited=$((waited + 10))
   done
+  wait_gpus
   [ -s "$RUN/rl_state.json" ] && extra=(--resume)
   say "launch training ${extra[*]}"
   scripts/rl/launch_unit.sh "$UNIT" "$LOGS/$NAME.log" /usr/bin/env PYTORCH_ALLOC_CONF= \

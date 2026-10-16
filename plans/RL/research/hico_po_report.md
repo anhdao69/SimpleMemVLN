@@ -313,8 +313,27 @@ evaluation (`results/grpo_s1_step50_*`) shows the dip on unseen scenes, and GRPO
   Early in training those groups are common.
 
 So "matched env steps" for GRPO+F reads as two dips of different depth, not as a clean
-sample-efficiency verdict. A fair efficiency comparison needs each method's full learning curve. The
-GRPO+F-B step-50 evaluation is queued next.
+sample-efficiency verdict. A fair efficiency comparison needs each method's full learning curve.
+
+**Learning curves (val_unseen SR / SPL; cumulative simulator steps incl. sampled branches and replays):**
+
+| RL step | GRPO s1 | GRPO+F | GRPO+F-B |
+|---|---|---|---|
+| 0 (SFT) | 51.55 / 47.64 (0) | 51.55 / 47.64 (0) | 51.55 / 47.64 (0) |
+| 50 | 47.15 / 41.06 (105 k) | 50.19 / 45.54 (229 k) | 48.29 / 43.09 (223 k) |
+| 75 | — | 53.51 / 48.70 (335 k) | — |
+| 125 | 56.88 / 50.45 (263 k) | 55.57 / 50.59 (570 k) | 58.40 / 52.99 (561 k) |
+
+- All three methods dip below SFT around step 50 and recover afterwards. GRPO+F rises monotonically
+  from step 50 through 75 to 125 (`results/grpo_fork_step75_*`; step 75 vs SFT +2.0 SR, p = 0.07).
+- At step 50, GRPO+F-B vs GRPO: +1.1 SR (CI [−0.8, +3.0], p = 0.26), **+2.0 SPL** (CI [+0.4, +3.7]).
+  vs GRPO+F: −1.9 SR (p = 0.055). GRPO+F-B is below SFT at step 50 (−3.3 SR, p = 0.005)
+  (`results/grpo_fork_bs_step50_vs_*`).
+- **Per update step**, both fork variants are at or above GRPO at steps 50 and 125 except GRPO+F at 125.
+- **Per simulator step, GRPO is more sample-efficient at this budget.** GRPO reaches 56.9 SR with
+  263 k steps; at comparable or larger interaction, GRPO+F-B gets 48.3 (223 k) and GRPO+F 53.5 (335 k).
+  The fork's extra interaction pays off only late in training. Whether it pays off better than spending the
+  same interaction on more GRPO roots is the question of the G = 8 control (§5.5).
 
 **Where it differs** (vs GRPO s2, `results/grpo_fork_step125_failure_analysis_vs_grpo_s2.json`):
 
@@ -471,8 +490,10 @@ training-seed variance, which needs the second GRPO+F-B seed.
 
 **Matched compute.** GRPO+F-B used 2.1× GRPO's environment steps (1.6× policy forward steps), so the
 matched-RL-step comparison above is not matched-interaction.
-- The step-50 export (223 k env steps incl. branches and replays, vs GRPO's 261 k at step 125) is being
-  evaluated: queue `rl-queue-fork6`, after the GRPO s1 step-50 evaluation.
+- The step-50 export (223 k env steps incl. branches and replays, vs GRPO's 263 k at step 125) reaches
+  SR 48.29 / SPL 43.09 / NE 6.58 / OSR 60.52. At less interaction than GRPO's final checkpoint, it is
+  8.6 SR below it. At matched interaction GRPO+F-B is therefore *not* more sample-efficient than GRPO
+  (learning curves in §5.4); its gain is per update step, and it appears only late in training.
 - **GRPO G = 8** (`configs/rl/activevln_grpo_g8_r2r1k.yaml`) is queued as the matched-interaction
   control. It differs from GRPO only in group size (G = 8 instead of 4), giving about 2× the rollouts:
   ≈ 520 k policy steps against GRPO+F-B's 428 k policy and 561 k simulator steps, a slightly generous
@@ -482,7 +503,10 @@ matched-RL-step comparison above is not matched-interaction.
 
 **Seed control.** A second GRPO+F-B training seed (`configs/rl/hico_grpo_fork_bs_r2r1k_seed2.yaml`, seed
 20261111, the same seed as GRPO s2) is queued. A claim of outperforming GRPO requires the two-seed mean
-to exceed GRPO's two-seed mean (57.1 SR / 51.1 SPL) with a pooled paired test. *Pending.*
+to exceed GRPO's two-seed mean (57.1 SR / 51.1 SPL) with a pooled paired test. *Pending.* The first
+attempts (2026-10-16 09:11–12:42 UTC) never finished step 0. Each died with CUDA OOM at the first update
+because another user's jobs left GPU 0 with less than the ≈ 36 GB rank 0 needs. `scripts/rl/supervise.sh`
+now waits for 40 GB free on every GPU before each launch.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
