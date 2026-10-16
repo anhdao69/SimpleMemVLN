@@ -81,12 +81,13 @@ def attach(model, tensors):
 
 
 def helper_main(index, device_index, tensors, navigation_metadata, model_path, env_kwargs,
-                tasks, results):
+                tasks, results, hold_bytes=0):
     try:
         torch.cuda.set_device(device_index)
         os.environ.setdefault('TOKENIZERS_PARALLELISM', 'false')
         import transformers
         from qwen_vl.data.episode_serializer import EpisodeSerializer
+        from qwen_vl.rl import placement
         from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
         from qwen_vl.rl.rollout import run_episode
         from qwen_vl.rl.sampling import SamplingSession
@@ -100,6 +101,11 @@ def helper_main(index, device_index, tensors, navigation_metadata, model_path, e
         make_env = lambda: EnvClient(**env_kwargs)
         env = make_env()
         device = torch.device('cuda', device_index)
+        if hold_bytes:
+            # Systems only (runtime.hold_gpu_gib): keep this helper's cached blocks, so that other
+            # users' jobs cannot take the memory its rollouts need between episodes.
+            placement.HOLD['target'] = hold_bytes
+            placement.hold_memory(device)
         results.put(('ready', index, None))
         while True:
             task = tasks.get()
@@ -119,8 +125,9 @@ def helper_main(index, device_index, tensors, navigation_metadata, model_path, e
             else:
                 raise RuntimeError('Environment failed three times on one episode')
             torch.cuda.synchronize()
-            # Idle helpers must not pin cached blocks while the learner trains on this GPU.
-            torch.cuda.empty_cache()
+            # Idle helpers must not pin cached blocks while the learner trains on this GPU, unless they
+            # hold a reservation (the learner's own reservation then leaves room for it).
+            placement.release_cache()
             results.put(('done', key, episode))
         env.close()
     except BaseException:
@@ -128,7 +135,7 @@ def helper_main(index, device_index, tensors, navigation_metadata, model_path, e
 
 
 class RolloutPool:
-    def __init__(self, model, navigation_metadata, model_path, env_kwargs, device_index, size):
+    def __init__(self, model, navigation_metadata, model_path, env_kwargs, device_index, size, hold_bytes=0):
         ctx = mp.get_context('spawn')
         self.tasks, self.results = ctx.Queue(), ctx.Queue()
         self.fingerprint = storage_fingerprint(model)
@@ -136,7 +143,7 @@ class RolloutPool:
         self.procs = [ctx.Process(target=helper_main, daemon=True,
                                   args=(i, device_index, tensors, navigation_metadata, model_path,
                                         dict(env_kwargs, log_path=f"{env_kwargs['log_path']}.h{i}"),
-                                        self.tasks, self.results))
+                                        self.tasks, self.results, hold_bytes))
                       for i in range(size)]
         for proc in self.procs:
             proc.start()

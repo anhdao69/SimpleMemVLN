@@ -636,7 +636,8 @@ def main():
             data_path=env_root['R2R_DATA'], scenes_dir=env_root['MP3D_SCENES'], gpu=local_rank,
             episode_list=str(episode_list), split=cfg['env']['split'],
             pythonpath=f"{REPO / 'src'}:{env_root.get('SIMULATOR_SOURCE', '')}",
-            log_path=str(out / f'env_rank{rank}.log')), local_rank, cfg['rollout']['helpers_per_rank'])
+            log_path=str(out / f'env_rank{rank}.log')), local_rank, cfg['rollout']['helpers_per_rank'],
+            hold_bytes=cfg['runtime'].get('hold_helper_reserve_gib', 3) * 2 ** 30 if cfg['runtime'].get('hold_gpu_gib') else 0)
         log('rollout helpers ready', cfg['rollout']['helpers_per_rank'])
         # Every tensor the helpers map now lives in ordinary cudaMalloc segments, which CUDA IPC
         # shares without ptrace rights. All later (training) allocations may use expandable
