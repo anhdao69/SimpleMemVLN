@@ -186,3 +186,31 @@ nohup env G1_CODE_DIR="$R1_SOURCE" \
 ```
 
 Keep the source, world size, manifest, teacher and output root unchanged. The existing seal is revalidated, completed epochs are not repeated, and interrupted production resumes only from a complete recovery checkpoint. Updates after the last complete checkpoint repeat. The queue/launcher locks reject duplicate processes targeting this run. This command is for interrupted production after successful qualification; a failed qualification needs investigation and a new audited attempt rather than bypassing its seal.
+
+
+## Completed epoch and Hugging Face publication — 2026-10-16
+
+R1 completed all 3,852 updates (epoch 1.0) and saved a complete four-rank
+checkpoint-3852. Its final supervisor passed with zero new OOM/OOM-kill events;
+completion was approximately 06:32 UTC. The final serving export passed strict
+reload and exact source/export offline, forced-history streaming and greedy
+checks on both R2R and RxR, retaining all four recurrent step lanes while
+removing only training-only auxiliary parameters.
+
+Published to `anhdao69/Streaming_VGGT`, folder `R1/epoch-1`, immutable revision
+`31df909373b455d30cefcbc8854c5373a213db35`. The model file is 10,392,300,939 bytes
+(9.68 GiB), SHA256
+`2b25416a500d92d4c13925046551ff9fcfa77d5f57e6c7aea94fc3ac889cb347`.
+All 17 published files were verified using Hub LFS SHA256/size or downloaded
+content SHA256/size. All 85 pre-existing non-attributes files remained unchanged.
+Hugging Face automatically appended only the R1 tokenizer LFS rule to
+`.gitattributes`; this exact metadata addition was separately verified. The
+initial blanket unchanged-files check caught that addition after commit; the
+subsequent verification allowed precisely this expected line, not arbitrary
+changes. No second upload or overwrite was needed.
+
+The serving export, source/training provenance and checksums are published;
+optimizer/RNG recovery files remain on the cluster. This is the requested true
+one-epoch schedule, not halfway through a two-epoch cosine run. The trained R0
+artifact in research provenance is a comparison reference, not initialization.
+Machine-readable evidence: `evidence/publication-20261016/verified_upload.json`.

@@ -1,0 +1,234 @@
+{
+  "upload": {
+    "passed": true,
+    "repo": "anhdao69/Streaming_VGGT",
+    "revision": "31df909373b455d30cefcbc8854c5373a213db35",
+    "folder": "R1/epoch-1",
+    "prior_files_unchanged": 85,
+    "automatic_metadata_change": {
+      ".gitattributes": "R1/epoch-1/tokenizer.json filter=lfs diff=lfs merge=lfs -text"
+    },
+    "files": [
+      {
+        "path": "R1/README.md",
+        "sha256": "407d6e49f8cd0b19eceea5dba4532ec73b09d1ddf883e7770578b555ad168974",
+        "size": 1918,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/SHA256SUMS.json",
+        "sha256": "d6867566b3bc0e926b836eb18eee2b2662215fc8373eba59c1778e6ec43f18c5",
+        "size": 2290,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/chat_template.jinja",
+        "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+        "size": 7756,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/config.json",
+        "sha256": "2451a8786918f4c348acb32c438d9a127098c022334ae1a7713ce5be588a7df1",
+        "size": 2903,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/navigation.json",
+        "sha256": "c3b5020acba53cb22aaf86f929e7a35475fd31cd230ae1c6fd354ca2c80bf770",
+        "size": 3662,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/processor_config.json",
+        "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1",
+        "size": 1191,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/pytorch_model.bin",
+        "sha256": "2b25416a500d92d4c13925046551ff9fcfa77d5f57e6c7aea94fc3ac889cb347",
+        "size": 10392300939,
+        "method": "Hub LFS SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/research_training.json",
+        "sha256": "2089bbbd225502747f958799d27002c7c5edbe17712355b6f6897ff5caceaaa5",
+        "size": 7682,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/tokenizer.json",
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "size": 19989325,
+        "method": "Hub LFS SHA256 and size"
+      },
+      {
+        "path": "R1/epoch-1/tokenizer_config.json",
+        "sha256": "7488550a894dcf741616126e322ea31d66cf9457b59ec5825f4c7efdced421f8",
+        "size": 1164,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/completion_resources.json",
+        "sha256": "fe5637c8809c853b1aa58e6b40178e96c8ac17b25b5e3b64cda2a797974f7f3c",
+        "size": 1865,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/epoch-1.json",
+        "sha256": "57e06aad935f1f913d973319c1dfb1b550e84e4d3f9694ea34e8d1e9fccfde88",
+        "size": 396522,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/publication_validation.json",
+        "sha256": "d901718d81173674e14e97deeb6d7414166febf2a87e736e3728c69ab1e49012",
+        "size": 3055,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/resolved_config.json",
+        "sha256": "6be7055dff94d6a3f93765b8a602559e5017643fa69ed5c3073b01ead4dd0944",
+        "size": 9864,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/run_timing.json",
+        "sha256": "782978f0889e49078a7c3a7726bc5d5c2b41ad4b92deaa026cff781eec91b798",
+        "size": 352,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/source_and_completion.json",
+        "sha256": "2748e0ec58f44d7e3b44762137a70634251223bc4ea714813b9b607654257ebc",
+        "size": 1774,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "R1/provenance/trainer_state.json",
+        "sha256": "f73ed12b71cb17bd8fd75913f875fd1e56b630658553a6b88ec123881f4b8029",
+        "size": 719218,
+        "method": "Downloaded SHA256 and size"
+      }
+    ],
+    "verified_utc": "2026-10-16T12:28:32.840144+00:00"
+  },
+  "export_check": {
+    "passed": true,
+    "source": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1/train/checkpoint-3852",
+    "export": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/publication-epoch1-20261016/epoch-1",
+    "baseline_serving": false,
+    "replay": [
+      {
+        "dataset": "r2rce",
+        "response_tokens": 50,
+        "optimized_vs_canonical": {
+          "passed": true,
+          "max_abs": 0.2734375,
+          "rms": 0.0332954041659832,
+          "violations": 0,
+          "max_excess": -0.5176416039466858,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "streaming_vs_canonical": {
+          "passed": true,
+          "max_abs": 0.307861328125,
+          "rms": 0.03578323870897293,
+          "violations": 0,
+          "max_excess": -0.4509863257408142,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "legacy_direct_streaming_vs_optimized": {
+          "passed": true,
+          "max_abs": 0.40625,
+          "rms": 0.0355818048119545,
+          "violations": 0,
+          "max_excess": -0.35856443643569946,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "source_export_forced_streaming_exact": true,
+        "source_export_logits_exact": true,
+        "source_export_greedy_exact": true,
+        "greedy_outcome": {
+          "valid_action": true,
+          "response_token_ids": [
+            15834,
+            20549,
+            248046
+          ],
+          "action_name": "TURN_RIGHT"
+        },
+        "greedy_tokens": [
+          15834,
+          20549,
+          248046
+        ],
+        "reset_exact": true,
+        "retry_exact": true,
+        "window8_eviction": true
+      },
+      {
+        "dataset": "rxrce",
+        "response_tokens": 50,
+        "optimized_vs_canonical": {
+          "passed": true,
+          "max_abs": 0.25,
+          "rms": 0.02455161325633526,
+          "violations": 0,
+          "max_excess": -0.5943164229393005,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "streaming_vs_canonical": {
+          "passed": true,
+          "max_abs": 0.25,
+          "rms": 0.02838054485619068,
+          "violations": 0,
+          "max_excess": -0.5512499809265137,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "legacy_direct_streaming_vs_optimized": {
+          "passed": true,
+          "max_abs": 0.25,
+          "rms": 0.02983441948890686,
+          "violations": 0,
+          "max_excess": -0.5739843845367432,
+          "atol": 0.75,
+          "rtol": 0.03,
+          "rms_limit": 0.15
+        },
+        "source_export_forced_streaming_exact": true,
+        "source_export_logits_exact": true,
+        "source_export_greedy_exact": true,
+        "greedy_outcome": {
+          "valid_action": true,
+          "response_token_ids": [
+            15834,
+            18440,
+            248046
+          ],
+          "action_name": "TURN_LEFT"
+        },
+        "greedy_tokens": [
+          15834,
+          18440,
+          248046
+        ],
+        "reset_exact": true,
+        "retry_exact": true,
+        "window8_eviction": true
+      }
+    ]
+  },
+  "captured_utc": "2026-10-16T12:29:35.977515+00:00"
+}
