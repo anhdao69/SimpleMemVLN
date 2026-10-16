@@ -432,3 +432,10 @@ from the combined full run overlaps R1. Allocation 4925 remains intact.
 At the pre-pause rate (mean 11.52 seconds over updates 3,260–3,360), R1's
 479 remaining updates imply around 1.5 hours of compute plus checkpointing;
 allow roughly 1.5–2 hours after resume before the combined run begins.
+
+
+Final handoff verification: R1 advanced beyond the paused checkpoint to update
+3,375, with zero CUDA OOMs in that update. The combined queue
+heartbeat remained current and waiting for R1. Local and GitHub branch heads
+were verified equal after pushing; the working tree was clean. Machine-readable
+operational evidence is in `evidence/handoff.json`.

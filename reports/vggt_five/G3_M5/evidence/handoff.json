@@ -1,0 +1,60 @@
+{
+  "checked_unix": 1792126362.8875566,
+  "r1_latest_profile": {
+    "update": 3375,
+    "seconds": 6.991650613956153,
+    "unix_start": 1792126332.3435583,
+    "unix_end": 1792126339.335209,
+    "peak_allocated_gib": 21.868733406066895,
+    "peak_reserved_gib": 30.798828125,
+    "device_total_gib": 79.1890869140625,
+    "cuda_ooms": 0,
+    "process_rss_gib": 58.846622467041016,
+    "cgroup_version": 2,
+    "job_usage_gib": 767.7203102111816,
+    "job_limit_gib": 768.0,
+    "job_peak_gib": 767.7203102111816,
+    "working_set_gib": 496.44620513916016,
+    "clean_inactive_file_gib": 271.2741050720215,
+    "anon_gib": 261.64484786987305,
+    "unevictable_gib": 0.0,
+    "dirty_writeback_gib": 7.62939453125e-06,
+    "swap_gib": 0.0,
+    "oom_kill": 0,
+    "oom": 0,
+    "limit_events": 25281002,
+    "arena_capacity_gib": 30.4771728515625,
+    "arena_peak_gib": 0.0,
+    "arena_live": 0
+  },
+  "queue": {
+    "status": "waiting",
+    "updated_unix": 1792126341.2968094,
+    "allocation": "4925",
+    "node": "worker-2",
+    "source": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/source-9031d75",
+    "stage": "R1",
+    "predecessor": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1"
+  },
+  "watcher_host": "login-0",
+  "watcher": {
+    "pid": 3739763,
+    "command": [
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-m",
+      "scripts.vln.queue_g3_m5",
+      "--source",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/source-9031d75",
+      "--root",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/production",
+      "--allocation",
+      "4925",
+      "--predecessor",
+      "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1",
+      "--seal",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/attempt3/qualification/qualification_pass.json"
+    ]
+  },
+  "handoff": "REQUESTED_R1_CHECKPOINT\nR1_SAVED 3373\nQUALIFICATION_EXIT 0\nR1_RESUME_REQUESTED\n",
+  "steps": "4925.0|train_vln|3-01:22:56\n4925.91|r1-joint-e1|2:43\n"
+}
