@@ -1,0 +1,62 @@
+[
+  {
+    "path": "src/qwen_vl/models/committed_write.py",
+    "sha256": "9a351e80c7054bcd97b967223baa3b63d24e59433d55911495bd7d1dabe22b16",
+    "reference": "origin/c2_ablations",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/stream/episodic.py",
+    "sha256": "a6985800e650016500e81afaa8fe0acfc8840cb00e513b8d347d7916c5959fbb",
+    "reference": "origin/c2_ablations",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/stream/episodic_cache.py",
+    "sha256": "9580dbc1152cfad00a358016da449c12fc56f47cc69616833f2ee3c31ce92732",
+    "reference": "origin/c2_ablations",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/research/episodic_contract.py",
+    "sha256": "0b5257a4a66d74eb299d3d6b220c3b5c1567610521dd9ebf92c3d1dd078a38b8",
+    "reference": "origin/c2_ablations",
+    "exact": true
+  },
+  {
+    "path": "configs/episodic/arm_m5.yaml",
+    "sha256": "45b351af30ad891fa01b7cd06fc60493c1367e5a13fbdda5dbbb0acddc45ac88",
+    "reference": "origin/c2_ablations",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/research/vggt_g3.py",
+    "sha256": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839",
+    "reference": "origin/c2_vggt_omega_g3",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/research/vggt_g3_teacher.py",
+    "sha256": "91fab33372f42c22de5991bc7bcfb85480193eb00d3c94b7c3df563419c5fb5e",
+    "reference": "origin/c2_vggt_omega_g3",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/models/vggt_g3_heads.py",
+    "sha256": "2e45c9dfa99b5db7a1e0f5c7b1286d99d8b31d99525c0a8b4e54216f9ac9268c",
+    "reference": "origin/c2_vggt_omega_g3",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/research/vggt_omega.py",
+    "sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+    "reference": "origin/c2_vggt_omega_g3",
+    "exact": true
+  },
+  {
+    "path": "src/qwen_vl/data/vggt_online.py",
+    "sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+    "reference": "origin/c2_vggt_omega_g3",
+    "exact": true
+  }
+]

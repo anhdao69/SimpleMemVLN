@@ -82,3 +82,18 @@ over either model require navigation evaluation, not only training smoke tests.
 - R1 safely saved3362. First handoff did not start GPU tests because its
   supervisor result was not visible immediately after step exit; R1 resumed
   as step4925.85. Added bounded NFS publication wait to the owned handoff.
+
+- Qualification complete on source9031d75:377 full-suite tests passed, all15
+  gates passed. Both maximum-length datasets, both real empty-support slots,
+  exact export parity, distributed reduction and fresh-process recovery passed.
+- Attention16/32/64 were effectively tied on the mixed fixture; retain32.
+  Representative warm intervals:R2R9.7277s/update,RxR19.7602s/update.
+  Initial joint-epoch budget18–22h including checkpoint overhead.
+- Longest RxR627 actions/199,735tokens passed at67.87GiB allocated GPU,
+  73.65GiB reserved GPU and429.12GiB host working set; zero new OOMs.
+- R1 resumed from3373 under originalsourcebcb14ea as4925.91. Combined queue
+  PID3739763 waits for R1's successful3852 checkpoint onworker-2/4925.
+  Production root:g3-m5-omega-worker2-20261016/production.
+- Full evidence and limitations:reports/vggt_five/G3_M5/implementation_report.md
+  andevidence/h100_qualification.json. No navigation improvement is claimed
+  before evaluation; historical M5 uses a different LR denominator.
