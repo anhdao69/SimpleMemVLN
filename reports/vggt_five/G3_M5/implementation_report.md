@@ -439,3 +439,31 @@ Final handoff verification: R1 advanced beyond the paused checkpoint to update
 heartbeat remained current and waiting for R1. Local and GitHub branch heads
 were verified equal after pushing; the working tree was clean. Machine-readable
 operational evidence is in `evidence/handoff.json`.
+
+
+## Handoff incident and direct launch — 2026-10-16
+
+The earlier queue verification was a point-in-time check, not proof of durable
+future launch. Its heartbeat stopped at 05:45:54 UTC before R1 finished at
+approximately 06:32 UTC. At the next user-requested check (12:19 UTC), allocation
+4925 contained only its interactive shell, R1 had completed successfully, and
+G3_M5 had never started. The watcher log had no terminal exception. The old
+queue lock still appeared held during inspection, while its recorded PID was
+not visible in the inspected login namespaces. The underlying process/lock
+failure is not established; no queue-code fix or automatic recovery guarantee
+is claimed. The stale lock was not removed and no unknown process was killed.
+
+Recovery revalidated the exact existing qualification seal, source hashes,
+R1's completed checkpoint and idle worker-2 allocation. After the newly
+requested R1 publication audit, the same qualified launcher started directly
+as Slurm step4925.93 around12:23 UTC, preserving the shared launcher lock and
+production output path. No model/config/scientific source changed. The live
+schedule guard passed3852/116 on all four ranks. At verification it had
+advanced to update15 with zero CUDA OOMs and a complete checkpoint-10.
+
+Operational status for this direct launch is
+`production/direct_launch_state.json` and `production/direct-handoff.log`;
+the original `queue_state.json` is retained as historical stalled-watcher
+evidence and is not authoritative for the direct run. The training profiles,
+supervisor logs and Slurm step are the live progress source. Evidence:
+`evidence/direct_launch_recovery_20261016.json`.

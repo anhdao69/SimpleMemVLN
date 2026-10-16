@@ -1,0 +1,52 @@
+{
+  "direct_launch": {
+    "status": "running",
+    "stage": "g3-m5-joint-e1",
+    "allocation": "4925",
+    "node": "worker-2",
+    "source": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/source-9031d75",
+    "updated_unix": 1792153424.4732878,
+    "controller_host": "login-0",
+    "recovery_note": "Direct qualified launch after stale watcher heartbeat; launcher lock preserved"
+  },
+  "last_profile": {
+    "update": 15,
+    "seconds": 8.550225629005581,
+    "unix_start": 1792153752.335389,
+    "unix_end": 1792153760.8856144,
+    "peak_allocated_gib": 23.111245155334473,
+    "peak_reserved_gib": 48.36328125,
+    "device_total_gib": 79.1890869140625,
+    "cuda_ooms": 0,
+    "process_rss_gib": 58.688663482666016,
+    "cgroup_version": 2,
+    "job_usage_gib": 755.2600898742676,
+    "job_limit_gib": 768.0,
+    "job_peak_gib": 755.2600898742676,
+    "working_set_gib": 448.2662773132324,
+    "clean_inactive_file_gib": 306.99381256103516,
+    "anon_gib": 216.32550811767578,
+    "unevictable_gib": 0.0,
+    "dirty_writeback_gib": 1.1444091796875e-05,
+    "swap_gib": 0.0,
+    "oom_kill": 0,
+    "oom": 0,
+    "limit_events": 26599916,
+    "arena_capacity_gib": 30.4771728515625,
+    "arena_peak_gib": 12.830810546875,
+    "arena_live": 0
+  },
+  "checkpoints": [
+    "checkpoint-10"
+  ],
+  "previous_queue": {
+    "status": "waiting",
+    "updated_unix": 1792129554.5308406,
+    "allocation": "4925",
+    "node": "worker-2",
+    "source": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/source-9031d75",
+    "stage": "R1",
+    "predecessor": "/mnt/data/vmo-ai-task/anhdh35/r1-omega-worker2-20261015/attempt2/r1_joint_e1"
+  },
+  "captured_utc": "2026-10-16T12:29:35.977515+00:00"
+}
