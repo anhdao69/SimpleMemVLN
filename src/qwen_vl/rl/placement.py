@@ -7,6 +7,8 @@ are moved with NCCL point-to-point transfers, and each rank decides per episode 
 checkpointed layer inputs in host memory. Every trained episode keeps its own advantage and loss
 weight, and DeepSpeed sums gradients over ranks, so the applied gradient is identical.
 """
+import time
+
 import numpy as np
 import torch
 import torch.distributed as dist
@@ -85,6 +87,28 @@ def redistribute(items, device, margin_bytes=0):
     del sends, receives
     torch.cuda.empty_cache()
     return kept, dict(free_gib=[r['free'] / GIB for r in reports], moved=len(moved))
+
+
+def wait_for_free(device, min_bytes, log, poll_seconds=60):
+    """Before the update, wait until every rank's GPU has min_bytes free instead of running into OOM.
+
+    The GPUs are shared: other users' jobs can take memory that the update (ZeRO-2 gradient partition,
+    activations, optimizer temporaries) needs. Waiting costs time; an OOM costs the steps since the
+    last checkpoint plus a restart. Returns the seconds waited.
+    """
+    waited, last_log = 0, -1
+    while True:
+        torch.cuda.empty_cache()
+        frees = [None] * dist.get_world_size()
+        dist.all_gather_object(frees, device_free(device))
+        if min(frees) >= min_bytes:
+            return waited
+        if waited // 600 != last_log:
+            last_log = waited // 600
+            log(f'waiting for {min_bytes / GIB:.0f} GiB free on every GPU before the update '
+                f'(free {[round(f / GIB, 1) for f in frees]} GiB, waited {waited} s)')
+        time.sleep(poll_seconds)
+        waited += poll_seconds
 
 
 HOST_SAFETY_BYTES = 16 * GIB

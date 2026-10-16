@@ -39,7 +39,7 @@ from qwen_vl.rl.episode import encode_rollout, response_log_probs
 from qwen_vl.rl.hico import (GeometricBaseline, action_terms, batch_scale, coefficients, episode_features,
                              fork_coefficients,
                              grpo_stop_coefficients, rloo_baselines, stop_values)
-from qwen_vl.rl.placement import redistribute, should_offload
+from qwen_vl.rl.placement import redistribute, should_offload, wait_for_free
 from qwen_vl.rl.rollout import rollout_seed, run_episode
 from qwen_vl.rl.sampling import SamplingSession
 
@@ -722,8 +722,12 @@ def main():
         else:
             trajectories, items, hico_stats = hico_prepare(groups, step, cfg, critic, n_star, world, device)
         placement = dict(moved=0, free_gib=[])
+        update_wait = 0
+        if cfg['runtime'].get('update_min_free_gib'):
+            update_wait = wait_for_free(device, cfg['runtime']['update_min_free_gib'] * 2 ** 30, log)
         if world > 1:
             items, placement = redistribute(items, device, cfg['runtime'].get('placement_margin_gib', 0) * 2 ** 30)
+        placement['update_wait'] = update_wait
         n_max = int(all_reduce([len(items)], dist.ReduceOp.MAX, device)[0])
         steps_needed = max(n_max, 1)
 
@@ -833,6 +837,7 @@ def main():
                 trained_per_rank=[g['items'] for g in gathered],
                 moved_trajectories=gathered[0]['placement']['moved'],
                 free_gib_before_update=gathered[0]['placement']['free_gib'],
+                update_wait_seconds=gathered[0]['placement'].get('update_wait', 0),
                 offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
                 **hico_metrics(gathered, critic),
                 **fork_metrics(gathered, threshold),
