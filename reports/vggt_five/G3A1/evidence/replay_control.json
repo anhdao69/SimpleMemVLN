@@ -1,0 +1,26 @@
+{
+  "trained_adapters/r2rce": {
+    "max_abs": 1.0,
+    "rms": 0.06787648797035217,
+    "elements_over_tolerance": 34,
+    "argmax_agreement": 0.9799999594688416
+  },
+  "trained_adapters/rxrce": {
+    "max_abs": 0.56640625,
+    "rms": 0.05233456939458847,
+    "elements_over_tolerance": 0,
+    "argmax_agreement": 1.0
+  },
+  "zero_up_adapters/r2rce": {
+    "max_abs": 1.0078125,
+    "rms": 0.06943049281835556,
+    "elements_over_tolerance": 28,
+    "argmax_agreement": 0.9799999594688416
+  },
+  "zero_up_adapters/rxrce": {
+    "max_abs": 0.578125,
+    "rms": 0.05347743630409241,
+    "elements_over_tolerance": 0,
+    "argmax_agreement": 1.0
+  }
+}

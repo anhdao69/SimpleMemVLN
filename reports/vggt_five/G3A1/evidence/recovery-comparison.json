@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "reference": "/groups/yshang/an221229/checkpoints/g3a1-newton-20261016/experiments/recovery-reference/train",
+  "resumed": "/groups/yshang/an221229/checkpoints/g3a1-newton-20261016/experiments/recovery-resume/train",
+  "weights": {
+    "relative_l2": 1.147090071494211e-08,
+    "max_abs": 1.1920928955078125e-07,
+    "changed_elements": 46527,
+    "elements": 5185536160,
+    "bitwise_equal": false
+  },
+  "head": {
+    "relative_l2": 0.0,
+    "max_abs": 0.0,
+    "changed_elements": 0,
+    "elements": 10526368,
+    "bitwise_equal": true
+  },
+  "head_update_from_step2_to3": {
+    "relative_l2": 3.1514029910634453e-06,
+    "max_abs": 1.9073486328125e-06,
+    "changed_elements": 71504,
+    "elements": 10526368,
+    "bitwise_equal": false
+  },
+  "step3_losses": [
+    0.28496813774108887,
+    0.28496813774108887
+  ],
+  "head_bias_updates": {
+    "research_aux.state_head.query.1.bias": 512,
+    "research_aux.state_head.query.3.bias": 4096,
+    "research_aux.state_head.decoder.0.bias": 1024,
+    "research_aux.state_head.decoder.2.bias": 2048
+  },
+  "recovery_world_size": 4,
+  "checkpoint_files": 22,
+  "adapter": {
+    "relative_l2": 4.351900954542751e-08,
+    "max_abs": 5.960464477539063e-08,
+    "changed_elements": 405,
+    "elements": 45056,
+    "bitwise_equal": false
+  },
+  "adapter_update_from_step2_to3": {
+    "relative_l2": 6.6941222595335795e-06,
+    "max_abs": 4.76837158203125e-07,
+    "changed_elements": 4172,
+    "elements": 45056,
+    "bitwise_equal": false
+  }
+}

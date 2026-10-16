@@ -1,0 +1,132 @@
+{
+  "arm": "G3A1",
+  "name": "recovery-reference",
+  "passed": true,
+  "check": {
+    "passed": true,
+    "problems": [],
+    "peak_reserved_gib": 28.5625,
+    "max_process_rss_gib": 26.268333435058594,
+    "losses": [
+      0.2877700626850128,
+      0.2879582643508911,
+      0.28496813774108887
+    ],
+    "grad_norms": [
+      62.69683074951172,
+      62.704891204833984,
+      63.308006286621094
+    ],
+    "peak_allocated_gib": 20.989250659942627
+  },
+  "resources": {
+    "status": "PASS",
+    "exit_code": 0,
+    "host_guard_triggered": false,
+    "host_guard_gib": 460.8,
+    "job_limit_gib": 512.0,
+    "sampled_peak_job_usage_gib": 155.3344955444336,
+    "sampled_peak_working_set_gib": 139.17083358764648,
+    "sampled_peak_anon_gib": 81.80875396728516,
+    "cgroup_recorded_peak_gib": 276.3762321472168,
+    "new_oom_events": 0,
+    "new_oom_kill_events": 0,
+    "new_limit_events": 0,
+    "start_usage_gib": 8.523334503173828,
+    "nvidia_smi_peak_used_mib": {
+      "0": 31475,
+      "1": 23295,
+      "2": 23295,
+      "3": 23295
+    },
+    "seconds": 476.252046585083,
+    "command": [
+      "torchrun",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "qwen_vl.train.train_qwen",
+      "--vln_config",
+      "configs/episodic/science_common.yaml",
+      "--output_config",
+      "configs/vln_empty.yaml",
+      "--memory_config",
+      "configs/vln_memory_window8.yaml",
+      "--runtime_profile",
+      "/groups/yshang/an221229/checkpoints/g3a1-newton-20261016/experiments/recovery-reference/runtime.yaml",
+      "--deepspeed",
+      "configs/deepspeed_zero2_cpu_optimizer.json",
+      "--manifest",
+      "/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic/profiles/fixtures/smoke.jsonl",
+      "--model_name_or_path",
+      "/groups/yshang/an221229/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "--max-optimizer-updates",
+      "3",
+      "--debug-repeat-episodes",
+      "--output_dir",
+      "/groups/yshang/an221229/checkpoints/g3a1-newton-20261016/experiments/recovery-reference/train",
+      "--run-name",
+      "g3a1-diagnostic-recovery-reference",
+      "--recovery-save-steps",
+      "1"
+    ],
+    "cgroup": "/sys/fs/cgroup/memory/slurm/uid_1228030620/job_926610",
+    "cgroup_version": 1,
+    "free_disk_gib_at_start": 384107.9794921875
+  },
+  "steady_seconds": 123.3332633972168,
+  "intervals": [
+    126.52016162872314,
+    120.14636516571045
+  ],
+  "wall_seconds": 476.3063454627991,
+  "runtime": {
+    "training": {
+      "activation_offload_backend": "pinned_arena_v1",
+      "cpu_optimizer_impl": "deepspeed_cpu_adam",
+      "dataloader_num_workers": 1,
+      "dataloader_persistent_workers": true,
+      "dataloader_pin_memory": false,
+      "dataloader_prefetch_factor": 2,
+      "gradient_accumulation_steps": 2,
+      "optimizer_group_chunks": 1
+    },
+    "runtime": {
+      "episodic_diagnostics": false,
+      "malloc_trim_each_update": false,
+      "stage_pixels_bf16": true,
+      "vision_microbatch_images": 8,
+      "window_attention_batch_steps": 32
+    }
+  },
+  "omp_threads": "1",
+  "fixture": "/groups/yshang/an221229/checkpoints/SimpleMemVLN-c2_episodic/profiles/fixtures/smoke.jsonl",
+  "complete_episode_exposures": 24,
+  "aux_pairs": 96,
+  "empty_support_exposures": 12,
+  "aux_state_sum": 94.65929555892944,
+  "aux_relation_sum": 44.66339135169983,
+  "cuda_toolkit": "/groups/yshang/an221229/vggt_omega_assets/cuda-12.9.1",
+  "source_commit": "5f56a4518e3972938fa772b8bd07e4ce504bf716",
+  "source_status": "?? train/launch_g3a1_newton_joint_e1.sh\n",
+  "source_tree_sha256": "524dc7cb6f86c313384b59ea03b7930c78f39f4f7057e76f7dd4dc504b7c6837",
+  "teacher_identity": {
+    "base": {
+      "weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "source_sha256": "b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb",
+      "preprocessing": "omega-balanced512-rgb640x480-bicubic448x592-v1",
+      "adapter_sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+      "preprocessing_code_sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+      "teacher_layer": 23,
+      "patch_offset": 17,
+      "teacher_dim": 2048,
+      "compute_dtype": "float32",
+      "pooling": "adaptive-average-15x20-LN2048-eps1e-6"
+    },
+    "target": "g3a1-unpositioned-LN2048-regions-and-soft-relations-v1",
+    "adapter_sha256": "3d94d92d9c5a130fb7809800526eaf13e24d00b8db917054719ddd561fdb23b2",
+    "regions_sha256": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839",
+    "relations_sha256": "b64e488e9054f72069a0eb71d16115591ae8f6e98c9351211d2971dfb7c7651d"
+  },
+  "fixture_sha256": "9aa030a6089dc212f82ce6edf042e7ec79a5903d4b5e33c0939018cf550af256"
+}
