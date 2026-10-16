@@ -506,7 +506,11 @@ matched-RL-step comparison above is not matched-interaction.
 to exceed GRPO's two-seed mean (57.1 SR / 51.1 SPL) with a pooled paired test. *Pending.* The first
 attempts (2026-10-16 09:11–12:42 UTC) never finished step 0. Each died with CUDA OOM at the first update
 because another user's jobs left GPU 0 with less than the ≈ 36 GB rank 0 needs. `scripts/rl/supervise.sh`
-now waits for 40 GB free on every GPU before each launch.
+now waits for free GPU memory before each launch. Later attempts got through rollout but hit OOM inside
+the fused AdamW step, which allocates a temporary the size of one flat ZeRO-2 parameter group (1 GiB with
+8 groups). Seed 2 and the G = 8 control therefore use `param_groups: 32` instead of 8. The update is
+unchanged (AdamW is elementwise, every group has the same hyperparameters, and clipping uses the
+global norm); only the temporaries are 4× smaller. Seed 2 restarted from scratch on 2026-10-16 at 15:04 UTC.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
