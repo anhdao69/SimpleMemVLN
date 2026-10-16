@@ -54,12 +54,24 @@ class EpisodeDataset(Dataset):
             from qwen_vl.data.vggt_online import preprocess_teacher_images
             episode=self.episodes[index]
             spec=self.serializer.config['research']
-            if spec['run_id'] in ('A0','A1'):
+            if spec['run_id'] in ('A0','A1','G3A1'):
                 from qwen_vl.research.geoaddress_sampling import address_metadata
                 metadata,frames=address_metadata(episode,result,self.serializer.image_id,spec['run_id'],spec.get('sample_seed',429))
                 result.update(metadata)
                 if spec['run_id']=='A0':
                     return result
+                if spec['run_id']=='G3A1':
+                    # G3 fields on the SAME ordered pair list A1 uses; G3 sources index the
+                    # union teacher frames through aux_teacher_sources (no second sampling).
+                    from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
+                    pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))
+                    if (len(pairs)!=metadata['aux_pair_count']
+                            or [frames[i] for i in metadata['aux_teacher_sources'].tolist()]!=[s for s,t in pairs]
+                            or [frames[i] for i in metadata['aux_teacher_reads'].tolist()]!=[t for s,t in pairs]):
+                        raise ValueError('G3A1 G3/A1 pair layouts disagree')
+                    anchors=observation_anchors(result['response_target_positions'],result['response_action_index'],result['num_actions'])
+                    result['aux_anchors']=anchors[torch.tensor([t for s,t in pairs],dtype=torch.long)]
+                    result['aux_lags']=torch.tensor([t-s for s,t in pairs],dtype=torch.long)
             elif spec['run_id']=='G3':
                 from qwen_vl.research.vggt_g3 import sample_pairs,observation_anchors
                 pairs=sample_pairs(collection_trajectory_key(episode),len(episode['steps']),spec.get('sample_seed',429))

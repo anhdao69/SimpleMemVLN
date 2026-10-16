@@ -135,7 +135,7 @@ class SimpleMemVLNForNavigation(nn.Module):
             from qwen_vl.models.vggt_aux_heads import CurrentSpatialProjector
             from qwen_vl.models.episodic_forward import NATIVE_FORWARD_SHA256, check_native_source
             check_native_source(NATIVE_FORWARD_SHA256)
-            if self.g1_spec['run_id']=='G3':
+            if self.g1_spec['run_id'] in ('G3','G3A1'):
                 from qwen_vl.models.vggt_g3_heads import NativeStateHead
                 text=backbone.config.text_config
                 if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
@@ -241,6 +241,7 @@ class SimpleMemVLNForNavigation(nn.Module):
         aux_lags=None,
         aux_query_positions=None,
         aux_key_positions=None,
+        aux_relation_targets=None,
     ):
         lane_kwargs = {}
         if getattr(self, "step_lane_spec", None) is not None:
@@ -262,6 +263,36 @@ class SimpleMemVLNForNavigation(nn.Module):
         image_mask = input_ids.eq(self.config.image_token_id) if self.geoaddress_spec is not None else None
         if image_mask is not None:
             lane_kwargs['geoaddress_image_mask'] = image_mask
+        if self.g1_spec is not None and self.g1_spec['run_id']=='G3A1' and (
+                aux_query_positions is not None or aux_anchors is not None):
+            if cache is not None or stream_append:
+                raise ValueError('G3A1 metadata requires the uncached research forward')
+            if any(x is None for x in (aux_query_positions,aux_key_positions,aux_anchors,aux_lags,
+                                       aux_targets,aux_relation_targets)):
+                raise ValueError('G3A1 requires both G3 state and A1 relation metadata/targets')
+            pairs=len(aux_anchors)
+            if (aux_query_positions.shape!=(pairs,32) or aux_key_positions.shape!=(pairs,300)
+                    or aux_lags.shape!=(pairs,) or aux_targets.shape!=(pairs,5,2048)
+                    or aux_relation_targets.shape!=(pairs,32,300)):
+                raise ValueError('G3A1 pair metadata/target shapes disagree')
+            for positions in (aux_query_positions,aux_key_positions,aux_anchors):
+                if positions.dtype!=torch.long or ((positions<0)|(positions>=input_ids.shape[1])).any():
+                    raise ValueError('G3A1 positions outside original sequence')
+            for positions in (aux_query_positions,aux_key_positions):
+                if not image_mask[0,positions].all():
+                    raise ValueError('Address positions must be actual image tokens')
+            if pairs and not ((aux_key_positions.max(-1).values<aux_query_positions.min(-1).values).all()
+                              and (aux_query_positions.max(-1).values<aux_anchors).all()):
+                # Same pair on both objectives: source cells < read cells < read-step anchor.
+                raise ValueError('G3A1 source/read/anchor order violates causality')
+            from qwen_vl.models.geoaddress_loss import address_relation_loss
+            from qwen_vl.models.research_forward import research_text_forward
+            def relation(q,k):
+                return address_relation_loss(q[0,aux_query_positions,:2],k[0,aux_key_positions,:2],aux_relation_targets)
+            return research_text_forward(self.backbone.model.language_model,embeddings,position_ids,step_plan,
+                state_head=self.research_aux.state_head,anchors=aux_anchors,lags=aux_lags,targets=aux_targets,
+                image_mask=image_mask,address_relation=relation,
+                window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
         if aux_query_positions is not None:
             if self.g1_spec is None or self.g1_spec['run_id'] not in ('A0','A1') or cache is not None or stream_append:
                 raise ValueError('Address auxiliary metadata requires uncached A0/A1 research forward')
@@ -361,6 +392,7 @@ class SimpleMemVLNForNavigation(nn.Module):
         aux_key_positions=None,
         aux_frame_count=None,
         aux_pair_count=None,
+        aux_relation_targets=None,
     ):
         episodic = {}
         if self.episodic_spec is not None:
@@ -370,7 +402,17 @@ class SimpleMemVLNForNavigation(nn.Module):
                             episodic_diagnostics=episodic_diagnostics)
         elif episodic_layout is not None:
             raise ValueError("Episodic layout supplied to a non-episodic model")
-        if aux_query_positions is not None:
+        g3a1 = self.g1_spec is not None and self.g1_spec['run_id']=='G3A1'
+        if g3a1 and (aux_query_positions is not None or aux_anchors is not None):
+            if (aux_query_positions is None or aux_anchors is None or aux_key_positions is None or aux_lags is None
+                    or not aux_pair_count==len(aux_query_positions)==len(aux_key_positions)==len(aux_anchors)==len(aux_lags)):
+                raise ValueError('G3A1 pair support mismatch')
+            episodic.update(aux_query_positions=aux_query_positions,aux_key_positions=aux_key_positions,
+                            aux_anchors=aux_anchors,aux_lags=aux_lags,aux_targets=aux_targets,
+                            aux_relation_targets=aux_relation_targets)
+        elif aux_relation_targets is not None:
+            raise ValueError('Relation targets are only valid for G3A1')
+        elif aux_query_positions is not None:
             if aux_pair_count != len(aux_query_positions) or aux_key_positions is None or len(aux_key_positions) != aux_pair_count:
                 raise ValueError('Address pair support mismatch')
             episodic.update(aux_query_positions=aux_query_positions,aux_key_positions=aux_key_positions,aux_targets=aux_targets)
@@ -427,6 +469,16 @@ class SimpleMemVLNForNavigation(nn.Module):
             predictions=predictions,
             action_losses=losses.detach(),
         )
+        if aux_sum is not None and aux_sum.ndim == 1:
+            # G3A1 returns [G3 state cosine sum, A1 relation KL sum]; both share the pair
+            # denominator and lambda, so the optimized auxiliary numerator is their sum.
+            if not g3a1 or aux_sum.shape != (2,):
+                raise ValueError('Vector auxiliary sums are only valid for G3A1')
+            result["aux_state_loss_sum"] = aux_sum[0].detach()
+            result["aux_relation_loss_sum"] = aux_sum[1].detach()
+            aux_sum = aux_sum.sum()
+        elif aux_sum is not None and g3a1:
+            raise ValueError('G3A1 must return separate G3/A1 objective sums')
         if aux_sum is not None:
             result["aux_loss_sum"] = aux_sum
             result["aux_pair_count" if aux_anchors is not None or aux_query_positions is not None else "aux_frame_count"] = aux_pair_count if aux_anchors is not None or aux_query_positions is not None else aux_frame_count

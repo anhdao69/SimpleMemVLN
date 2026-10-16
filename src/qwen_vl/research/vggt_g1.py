@@ -6,16 +6,21 @@ import math
 def parse_g1(config):
     value=config.get('research')
     if value is None: return None
-    if value.get('run_id') not in ('G1','G3','A0','A1'): raise ValueError('This implementation permits only G1/G3/A0/A1')
+    if value.get('run_id') not in ('G1','G3','A0','A1','G3A1'):
+        raise ValueError('This implementation permits only G1/G3/A0/A1/G3A1')
     run=value['run_id']
     from qwen_vl.research.geoaddress_contract import parse_geoaddress
     address = parse_geoaddress(config)
-    if (run in ('A0','A1')) != (address is not None):
-        raise ValueError('A0/A1 require runtime GeoAddress; G1/G3 forbid it')
-    if run in ('A0','A1') and value.get('adapter_lr') != 5e-5:
-        raise ValueError('A0/A1 adapter LR must be 5e-5')
-    if run=='A1' and value.get('relation_projection')!='direct-native-qk-cosine-v1':
-        raise ValueError('A1 requires the declared direct native Q/K objective')
+    if (run in ('A0','A1','G3A1')) != (address is not None):
+        raise ValueError('A0/A1/G3A1 require runtime GeoAddress; G1/G3 forbid it')
+    if run in ('A0','A1','G3A1') and value.get('adapter_lr') != 5e-5:
+        raise ValueError('A0/A1/G3A1 adapter LR must be 5e-5')
+    if run in ('A1','G3A1') and value.get('relation_projection')!='direct-native-qk-cosine-v1':
+        raise ValueError('A1/G3A1 require the declared direct native Q/K objective')
+    if run=='G3A1' and (value.get('lambda_max')!=.1 or value.get('head_lr')!=1e-4):
+        # Each objective keeps its specified weight: lambda(G3)=lambda(A1)=0.1 on one shared
+        # ramp and the shared global pair count, so their sum is applied with one lambda.
+        raise ValueError('G3A1 keeps the specified lambda_max 0.1 for both objectives and head LR 1e-4')
     if run == 'A0' and value.get('lambda_max') != 0:
         raise ValueError('A0 is navigation-only')
     if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':

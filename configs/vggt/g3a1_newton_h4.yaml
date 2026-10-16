@@ -1,0 +1,62 @@
+# G3+A1 on newton (4xH100, few CPUs): G3 native-state reads + A1 GeoAddress relations at
+# the same native GDN decoder24. Science identical to qualified G3 and A1: same online
+# frozen FP32 VGGT-Omega-1B-512 (identity-equal to worker-2), same pairs, both objectives
+# lambda_max 0.1 (shared 771-update ramp, shared global pair count), G3 head LR 1e-4,
+# GeoAddress LR 5e-5, backbone 5e-6. Runtime knobs below are newton measurements.
+research:
+  head_lr: 0.0001
+  lambda_max: 0.1
+  ramp_updates: 771
+  run_id: G3A1
+  sample_seed: 429
+  sampling_identity: collected-rgb-paths-v1
+  student_layer: 24
+  teacher: VGGT-Omega-1B-512
+  teacher_batch_size: 8
+  teacher_identity:
+    base:
+      weights_sha256: c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934
+      source_sha256: b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb
+      preprocessing: omega-balanced512-rgb640x480-bicubic448x592-v1
+      adapter_sha256: 86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60
+      preprocessing_code_sha256: f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6
+      teacher_layer: 23
+      patch_offset: 17
+      teacher_dim: 2048
+      compute_dtype: float32
+      pooling: adaptive-average-15x20-LN2048-eps1e-6
+    target: g3a1-unpositioned-LN2048-regions-and-soft-relations-v1
+    adapter_sha256: 3d94d92d9c5a130fb7809800526eaf13e24d00b8db917054719ddd561fdb23b2
+    regions_sha256: 09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839
+    relations_sha256: b64e488e9054f72069a0eb71d16115591ae8f6e98c9351211d2971dfb7c7651d
+  teacher_residency: resident
+  teacher_source: /groups/yshang/an221229/vggt_omega_assets/third_party/vggt-omega
+  teacher_weights: /groups/yshang/an221229/vggt_omega_assets/models/vggt-omega/vggt_omega_1b_512.pt
+  adapter_lr: 5.0e-05
+  relation_projection: direct-native-qk-cosine-v1
+runtime:
+  episodic_diagnostics: false
+  malloc_trim_each_update: false
+  stage_pixels_bf16: true
+  vision_microbatch_images: 8
+  window_attention_batch_steps: 32
+training:
+  activation_offload_backend: pinned_arena_v1
+  cpu_optimizer_impl: deepspeed_cpu_adam
+  dataloader_num_workers: 1
+  dataloader_persistent_workers: true
+  dataloader_pin_memory: false
+  dataloader_prefetch_factor: 2
+  gradient_accumulation_steps: 2
+  optimizer_group_chunks: 1
+model:
+  geoaddress:
+    version: geoaddress_v1
+    layer: 24
+    rank: 8
+    heads:
+    - 0
+    - 1
+    init_seed: 429
+observations:
+  serializer_version: vln_append_only_chat_geoaddress_v1

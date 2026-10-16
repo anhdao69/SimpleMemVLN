@@ -151,11 +151,21 @@ class EpisodeTrainer(QwenSFTTrainer):
                 elif spec['run_id']=='A1':
                     from qwen_vl.research.geoaddress_teacher import OnlineAddressTeacher
                     self.online_teacher=OnlineAddressTeacher(spec,self.args.device)
+                elif spec['run_id']=='G3A1':
+                    from qwen_vl.research.g3a1_teacher import OnlineG3A1Teacher
+                    self.online_teacher=OnlineG3A1Teacher(spec,self.args.device)
                 else:self.online_teacher=OnlineOmegaTeacher(spec,self.args.device)
             targets=self.online_teacher(images)
             self.online_teacher_seconds=self.online_teacher.last_seconds
-        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets','aux_source_indices','aux_teacher_sources','aux_teacher_reads','aux_query_cells')})
-        if targets is not None and 'aux_teacher_sources' in inputs:
+        prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets','aux_relation_targets','aux_source_indices','aux_teacher_sources','aux_teacher_reads','aux_query_cells')})
+        if targets is not None and self.model.navigation_config['research']['run_id']=='G3A1':
+            from qwen_vl.research.g3a1_teacher import g3a1_targets
+            device=targets.device
+            regions,relations=g3a1_targets(targets,inputs['aux_teacher_sources'].to(device),
+                inputs['aux_teacher_reads'].to(device),inputs['aux_query_cells'].to(device))
+            prepared['aux_targets']=regions
+            prepared['aux_relation_targets']=relations
+        elif targets is not None and 'aux_teacher_sources' in inputs:
             from qwen_vl.models.geoaddress_loss import teacher_relations
             source=targets[inputs['aux_teacher_sources'].to(targets.device)]
             current=targets[inputs['aux_teacher_reads'].to(targets.device)]
@@ -293,6 +303,9 @@ class EpisodeTrainer(QwenSFTTrainer):
                 loss_sum=float(output["loss_sum"].detach()),
                 update_global_actions=int(num_items_in_batch),
             )
+            if 'aux_state_loss_sum' in output:
+                record.update(aux_state_loss_sum=float(output['aux_state_loss_sum']),
+                              aux_relation_loss_sum=float(output['aux_relation_loss_sum']))
             if 'aux_loss_sum' in output:
                 record.update(aux_loss_sum=float(output['aux_loss_sum'].detach()),
                               aux_support=output.get('aux_pair_count',output.get('aux_frame_count')),

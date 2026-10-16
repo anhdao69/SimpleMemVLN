@@ -20,6 +20,8 @@ def research_text_forward(text_model, embeddings, position_ids, step_plan, *,
         attention_mask=None,past_key_values=None,position_ids=logical)
     linear = text_model._update_linear_attn_mask(None,None)
     rope = text_model.rotary_emb(embeddings,mrope)
+    if state_head is not None and image_mask is not None and text_model._geoaddress_spec[0] != 24:
+        raise ValueError('G3A1 requires GeoAddress and the G3 state read at the same decoder24')
     hidden = embeddings
     aux = hidden.new_zeros((),dtype=torch.float32)
     for index, layer in enumerate(text_model.layers[:text_model.config.num_hidden_layers]):
@@ -31,6 +33,10 @@ def research_text_forward(text_model, embeddings, position_ids, step_plan, *,
         selected_state = state_head is not None and index==24
         selected_address = image_mask is not None and index == text_model._geoaddress_spec[0]
         def run(x, layer=layer, kwargs=kwargs, selected=selected, selected_state=selected_state, selected_address=selected_address):
+            if selected_address and selected_state:
+                # G3A1: one fused layer24 forward; returns objective sums [G3, A1].
+                from qwen_vl.models.vggt_g3a1_forward import address_state_decoder
+                return address_state_decoder(layer,x,state_head,anchors,lags,targets,image_mask,address_relation)
             if selected_address:
                 from qwen_vl.models.geoaddress_runtime import geoaddress_decoder
                 return geoaddress_decoder(layer,x,image_mask,address_relation)

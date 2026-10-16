@@ -1,0 +1,8 @@
+# G3+A1 starts independently from the original base for ONE full joint pass with a
+# true one-epoch decay, identical to G3/A0/A1: ceil(30,815/8)=3,852 updates,
+# 116 warmup updates (3%), cosine decay to 0.1 of peak LR at update 3,852.
+training:
+  epochs: 1
+  expected_total_steps: 3852
+  warmup_steps: 116
+  expected_warmup_steps: 116
