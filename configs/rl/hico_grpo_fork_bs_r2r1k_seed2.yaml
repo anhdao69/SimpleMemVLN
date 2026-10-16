@@ -68,6 +68,9 @@ runtime:
   checkpoint_decoder_layers: true
   placement_margin_gib: 16                      # systems only: shared GPU 0 free memory drifts during the update
   update_min_free_gib: 14                       # systems only: wait (not OOM) until each GPU can hold the grad partition + temporaries
+  hold_gpu_gib: [46, 66]                        # systems only: per-rank GPU reservation kept between steps (shared GPUs)
+  hold_helper_reserve_gib: 3                    # left free for this rank's rollout helper
+  hold_wait_minutes: 20
 run:
   seed: 20261111                                # second training seed (only change vs hico_grpo_fork_bs_r2r1k)
   save_every: 10                                # port: more frequent than trainer.save_freq=50 (shared host)

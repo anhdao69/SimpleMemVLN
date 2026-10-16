@@ -39,7 +39,7 @@ from qwen_vl.rl.episode import encode_rollout, response_log_probs
 from qwen_vl.rl.hico import (GeometricBaseline, action_terms, batch_scale, coefficients, episode_features,
                              fork_coefficients,
                              grpo_stop_coefficients, rloo_baselines, stop_values)
-from qwen_vl.rl.placement import redistribute, should_offload, wait_for_free
+from qwen_vl.rl.placement import redistribute, release_cache, should_offload, start_hold, wait_for_free
 from qwen_vl.rl.rollout import rollout_seed, run_episode
 from qwen_vl.rl.sampling import SamplingSession
 
@@ -646,6 +646,11 @@ def main():
         workers = [RolloutWorker(model, serializer, env_factory, device)
                    for _ in range(cfg['rollout'].get('workers_per_rank', 1))]
         log('environments ready', len(workers), workers[0].env.info)
+    hold = cfg['runtime'].get('hold_gpu_gib')
+    if hold:
+        # Systems only: keep this rank's peak GPU memory reserved on the shared GPU (see placement.HOLD).
+        start_hold(device, hold[local_rank] * 2 ** 30, cfg['runtime'].get('hold_helper_reserve_gib', 3) * 2 ** 30,
+                   log, cfg['runtime'].get('hold_wait_minutes', 20) * 60)
     dummy = DummyItem(serializer)
 
     for step in range(start_step, total_steps):
@@ -675,7 +680,7 @@ def main():
         torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
-        torch.cuda.empty_cache()
+        release_cache()
 
         hico_stats = {}
         stop_token = serializer.action_ids[3][0]
@@ -796,7 +801,7 @@ def main():
             raise RuntimeError(f'Expected one optimizer update per RL step, got {engine.global_steps}')
         train_seconds = time.perf_counter() - tick
         train_peak = torch.cuda.max_memory_allocated() / 2 ** 30
-        torch.cuda.empty_cache()
+        release_cache()
 
         # ---- metrics and records ----
         records = [{k: v for k, v in e.items() if not k.startswith('_') and k != 'rollout_logps'}

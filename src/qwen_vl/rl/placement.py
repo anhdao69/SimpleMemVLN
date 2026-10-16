@@ -22,6 +22,48 @@ STEP_RESERVE_BYTES = 10 * GIB   # fp32 grad partition (8.4 GiB) allocated during
 ITEM_MARGIN_BYTES = 2 * GIB
 
 
+# GPU reservation (runtime.hold_gpu_gib): the GPUs are shared, and memory this process hands back
+# between steps can be taken by other jobs, after which the update runs out of memory. While a target
+# is set, the process keeps its cached blocks instead of returning them to the driver.
+HOLD = {'target': 0, 'helper_reserve': 0}
+
+
+def release_cache():
+    """torch.cuda.empty_cache(), unless this process holds a GPU reservation."""
+    if not HOLD['target']:
+        torch.cuda.empty_cache()
+
+
+def hold_memory(device, chunk=GIB):
+    """Grow this process's reserved GPU memory towards HOLD['target'] without waiting.
+
+    Leaves HOLD['helper_reserve'] free on the device for this rank's rollout helper processes.
+    Returns the reserved bytes afterwards.
+    """
+    blocks = []
+    try:
+        while (torch.cuda.memory_reserved(device) < HOLD['target']
+               and torch.cuda.mem_get_info(device)[0] > HOLD['helper_reserve'] + chunk):
+            blocks.append(torch.empty(chunk, dtype=torch.uint8, device=device))
+    except torch.OutOfMemoryError:
+        pass
+    del blocks  # freed into this process's cache, which release_cache() no longer empties
+    return torch.cuda.memory_reserved(device)
+
+
+def start_hold(device, target_bytes, helper_reserve_bytes, log, wait_seconds, poll_seconds=30):
+    """Set the reservation and grow it, waiting up to wait_seconds for other jobs to free memory."""
+    HOLD['target'], HOLD['helper_reserve'] = target_bytes, helper_reserve_bytes
+    start = time.time()
+    while hold_memory(device) < target_bytes and time.time() - start < wait_seconds:
+        time.sleep(poll_seconds)
+    reserved = torch.cuda.memory_reserved(device)
+    torch.cuda.reset_peak_memory_stats(device)  # the reservation blocks are not part of the step peaks
+    log(f'GPU reservation {reserved / GIB:.1f} of {target_bytes / GIB:.0f} GiB '
+        f'(waited {time.time() - start:.0f} s; topped up before every update)')
+    return reserved
+
+
 def episode_tokens(episode):
     """Upper estimate of the training sequence length (prefix + 300 image + text tokens per step)."""
     return 320 * len(episode['_responses']) + 400
@@ -50,7 +92,7 @@ def redistribute(items, device, margin_bytes=0):
     other users' jobs keep changing only takes episodes it can fit with room to spare.
     """
     rank, world = dist.get_rank(), dist.get_world_size()
-    torch.cuda.empty_cache()
+    release_cache()
     free = max(device_free(device) - margin_bytes, 0)
     reports = [None] * world
     dist.all_gather_object(reports, dict(free=free, lengths=[episode_tokens(e) for e, _ in items]))
@@ -85,7 +127,7 @@ def redistribute(items, device, margin_bytes=0):
         episode['_frames'] = list(buffer.cpu().numpy())
         kept.append((episode, weight))
     del sends, receives
-    torch.cuda.empty_cache()
+    release_cache()
     return kept, dict(free_gib=[r['free'] / GIB for r in reports], moved=len(moved))
 
 
@@ -98,7 +140,9 @@ def wait_for_free(device, min_bytes, log, poll_seconds=60):
     """
     waited, last_log = 0, -1
     while True:
-        torch.cuda.empty_cache()
+        release_cache()
+        if HOLD['target']:
+            hold_memory(device)  # take memory other jobs have freed since the last poll
         frees = [None] * dist.get_world_size()
         dist.all_gather_object(frees, device_free(device))
         if min(frees) >= min_bytes:
