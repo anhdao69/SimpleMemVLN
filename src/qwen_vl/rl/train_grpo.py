@@ -723,7 +723,7 @@ def main():
             trajectories, items, hico_stats = hico_prepare(groups, step, cfg, critic, n_star, world, device)
         placement = dict(moved=0, free_gib=[])
         if world > 1:
-            items, placement = redistribute(items, device)
+            items, placement = redistribute(items, device, cfg['runtime'].get('placement_margin_gib', 0) * 2 ** 30)
         n_max = int(all_reduce([len(items)], dist.ReduceOp.MAX, device)[0])
         steps_needed = max(n_max, 1)
 

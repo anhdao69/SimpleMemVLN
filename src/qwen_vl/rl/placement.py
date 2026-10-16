@@ -41,11 +41,15 @@ def plan(free_bytes, lengths):
     return assignment
 
 
-def redistribute(items, device):
-    """items: this rank's [(episode, weight)]. Returns this rank's items after placement + stats."""
+def redistribute(items, device, margin_bytes=0):
+    """items: this rank's [(episode, weight)]. Returns this rank's items after placement + stats.
+
+    margin_bytes is withheld from every rank's reported free memory, so that a GPU whose free memory
+    other users' jobs keep changing only takes episodes it can fit with room to spare.
+    """
     rank, world = dist.get_rank(), dist.get_world_size()
     torch.cuda.empty_cache()
-    free = device_free(device)
+    free = max(device_free(device) - margin_bytes, 0)
     reports = [None] * world
     dist.all_gather_object(reports, dict(free=free, lengths=[episode_tokens(e) for e, _ in items]))
     assignment = plan([r['free'] for r in reports], [r['lengths'] for r in reports])

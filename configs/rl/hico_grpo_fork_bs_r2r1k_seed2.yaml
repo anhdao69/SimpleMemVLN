@@ -66,6 +66,7 @@ trainable: language_model                       # port: SFT recipe keeps the vis
 runtime:
   activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
   checkpoint_decoder_layers: true
+  placement_margin_gib: 16                      # systems only: shared GPU 0 free memory drifts during the update
 run:
   seed: 20261111                                # second training seed (only change vs hico_grpo_fork_bs_r2r1k)
   save_every: 10                                # port: more frequent than trainer.save_freq=50 (shared host)
