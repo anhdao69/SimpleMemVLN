@@ -303,7 +303,7 @@ evaluation (`results/grpo_s1_step50_*`) shows the dip on unseen scenes, and GRPO
 |---|---:|---:|---:|---:|---:|
 | SFT (step 0) | 51.55 | 47.64 | 5.80 | 59.27 | 114 |
 | GRPO s1 step 50 | 47.15 | 41.06 | 6.63 | 62.53 | 182 |
-| GRPO+F step 50 | 50.19 | 45.54 | 6.23 | 60.09 | — |
+| GRPO+F step 50 | 50.19 | 45.54 | 6.23 | 60.09 | 137 |
 
 - GRPO step 50 is significantly *below* SFT: −4.4 SR, CI [−6.6, −2.2], p = 1e-4.
 - At matched RL steps, GRPO+F leads GRPO: **+3.0 SR**, CI [+1.1, +5.0], McNemar p = 0.002; **+4.5 SPL**,
