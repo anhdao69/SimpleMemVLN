@@ -21,7 +21,7 @@ cd "$ROOT"
 say() { echo "$(date -Is) $*" >> "$LOG"; }
 complete() { python3 -c "import json,sys; sys.exit(0 if json.load(open('$1/summary.json')).get('complete') else 1)" 2>/dev/null; }
 restarts=()
-GPU_FREE_MIB=${GPU_FREE_MIB:-40000}
+GPU_FREE_MIB=${GPU_FREE_MIB:-30000}
 
 wait_gpus() {
   local logged=0 free
