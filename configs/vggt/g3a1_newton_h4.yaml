@@ -43,7 +43,9 @@ runtime:
 training:
   activation_offload_backend: pinned_arena_v1
   cpu_optimizer_impl: deepspeed_cpu_adam
-  dataloader_num_workers: 1
+  # Newton has 4 CPUs/allocation: measured 2 workers/rank 30.46 vs 1 worker 31.37 s/update
+  # (mixed_tail_interactive, 4 updates, OMP 1/rank); G3/A1 used 8 workers with 60 CPUs.
+  dataloader_num_workers: 2
   dataloader_persistent_workers: true
   dataloader_pin_memory: false
   dataloader_prefetch_factor: 2
