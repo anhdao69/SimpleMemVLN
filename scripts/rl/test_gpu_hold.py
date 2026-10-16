@@ -36,6 +36,7 @@ x = torch.empty(int(1.5 * P.GIB), dtype=torch.uint8, device=device)
 assert torch.cuda.memory_reserved(device) <= reserved + 64 * 2 ** 20, 'allocation did not reuse the reservation'
 del x
 assert P.hold_memory(device) >= target, 'top-up failed'
+assert P.wait_for_free(device, P.GIB, print) == 0, 'update gate waited although memory is free'
 
 P.HOLD['target'] = 0
 P.release_cache()

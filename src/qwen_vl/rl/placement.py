@@ -26,6 +26,17 @@ ITEM_MARGIN_BYTES = 2 * GIB
 # between steps can be taken by other jobs, after which the update runs out of memory. While a target
 # is set, the process keeps its cached blocks instead of returning them to the driver.
 HOLD = {'target': 0, 'helper_reserve': 0}
+_POLL_GROUP = []
+
+
+def poll_group():
+    """CPU (gloo) group for the long waits below. Twice a rank idled for many minutes in NCCL
+    collectives while the other rank waited for memory, and the NCCL watchdog declared itself stuck
+    and aborted it; with gloo, NCCL has no work queued during these waits. Created on first use,
+    which every rank reaches in the same order."""
+    if not _POLL_GROUP:
+        _POLL_GROUP.append(dist.new_group(backend='gloo'))
+    return _POLL_GROUP[0]
 
 
 def release_cache():
@@ -54,15 +65,15 @@ def hold_memory(device, chunk=GIB):
 def start_hold(device, target_bytes, helper_reserve_bytes, log, wait_seconds, poll_seconds=30):
     """Set the reservation and grow it, waiting up to wait_seconds for other jobs to free memory.
 
-    All ranks poll in step (one small all_gather per poll): a rank that reached its target must not sit
-    in the next collective while another rank waits, or the NCCL watchdog aborts it after 480 s.
+    All ranks poll in step (one small gloo all_gather per poll), so a rank that reached its target
+    waits here instead of in the next NCCL collective.
     """
     HOLD['target'], HOLD['helper_reserve'] = target_bytes, helper_reserve_bytes
     start = time.time()
     while True:
         short = hold_memory(device) < target_bytes and time.time() - start < wait_seconds
         flags = [None] * dist.get_world_size()
-        dist.all_gather_object(flags, short)
+        dist.all_gather_object(flags, short, group=poll_group())
         if not any(flags):
             break
         time.sleep(poll_seconds)
@@ -153,7 +164,7 @@ def wait_for_free(device, min_bytes, log, poll_seconds=60):
         if HOLD['target']:
             hold_memory(device)  # take memory other jobs have freed since the last poll
         frees = [None] * dist.get_world_size()
-        dist.all_gather_object(frees, device_free(device))
+        dist.all_gather_object(frees, device_free(device), group=poll_group())
         if min(frees) >= min_bytes:
             return waited
         if waited // 600 != last_log:
