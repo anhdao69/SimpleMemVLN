@@ -23,6 +23,8 @@ def test_predecessor_needs_success_complete_inventory_and_full_epoch(tmp_path):
     sup=tmp_path/'supervisor-1';sup.mkdir()
     report=sup/'resources.json';report.write_text(json.dumps({'status':'FAIL'}))
     assert predecessor_status(tmp_path)=='failed'
+    report.write_text('{"status":')
+    assert predecessor_status(tmp_path)=='waiting'  # writer has not published all JSON yet
     report.write_text(json.dumps({'status':'PASS'}))
     final=tmp_path/'train/checkpoint-3852';final.mkdir(parents=True)
     for name in ['pytorch_model.bin','resume_contract.json','navigation.json','optimizer.pt','scheduler.pt']+[f'rng_state_{r}.pth' for r in range(4)]:
@@ -41,3 +43,14 @@ def test_launch_is_single_task_four_gpus_worker2():
     cmd=step_command('4925',Path('/source'),'g3-m5',['python','test.py'])
     assert '--ntasks=1' in cmd and '--gpus=4' in cmd and '--nodelist=worker-2' in cmd
     assert cmd[-2:]==['python','test.py']
+
+
+def test_mixed_empty_requires_real_heterogeneity_in_requested_slot():
+    from scripts.vln.qualify_g3_m5 import validate_empty_exposures
+    # Each rank has two complete microsteps per update.
+    rows=[[dict(update=0,aux_pair_count=x) for x in pair] for pair in ((8,0),(8,0),(8,0),(0,0))]
+    validate_empty_exposures(rows,0)
+    with pytest.raises(ValueError):validate_empty_exposures(rows,1)
+    second=[[dict(update=0,aux_pair_count=x) for x in pair] for pair in ((8,8),(8,8),(8,0),(8,8))]
+    validate_empty_exposures(second,1)
+    with pytest.raises(ValueError):validate_empty_exposures(second,0)

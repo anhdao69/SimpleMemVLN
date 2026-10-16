@@ -39,7 +39,11 @@ def predecessor_status(root,steps=3852):
     root=Path(root);supervisors=sorted(root.glob('supervisor-*'))
     if not supervisors or not (supervisors[-1]/'resources.json').exists():
         return 'waiting'
-    resources=json.loads((supervisors[-1]/'resources.json').read_text())
+    try:resources=json.loads((supervisors[-1]/'resources.json').read_text())
+    except json.JSONDecodeError:
+        # Older supervisors publish this small file nonatomically. Do not
+        # mistake its in-progress write for a failed completed predecessor.
+        return 'waiting'
     if resources.get('status')!='PASS':
         return 'failed'
     from qwen_vl.train.recovery import validate_complete

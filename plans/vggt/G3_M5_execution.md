@@ -70,3 +70,15 @@ over either model require navigation evaluation, not only training smoke tests.
   design-approval round. Final independent review follows executing-plans.
 - Shared interfaces: G3_M5 config -> dataset/teacher/head dispatch -> episodic
   forward -> existing trainer reduction/export -> qualified launcher.
+- Task 1–3 core implementation complete in53ace67. Targeted regression suite:
+  33 passed. Local full suite:331 passed,34 skipped,4 failures due unavailable
+  Slurm, DeepSpeed CPUAdam, Omega source and base processor assets. These
+  server-dependent tests remain part of H100 qualification.
+- Independent whole-branch review found no model-integration defect. Fixed
+  empty-support fixture ordering (length sorting invalidates row rotation)
+  and partial supervisor JSON reads; added exposure-slot and queue tests.
+  Review fixes:4 tests passed. The selected-layer/head readiness-order CPU
+  regression also passes for empty and supported episodes.
+- R1 safely saved3362. First handoff did not start GPU tests because its
+  supervisor result was not visible immediately after step exit; R1 resumed
+  as step4925.85. Added bounded NFS publication wait to the owned handoff.

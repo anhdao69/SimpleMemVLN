@@ -4,6 +4,20 @@ from pathlib import Path
 from scripts.vln.queue_g3_m5 import source_files,write_seal
 
 
+def validate_empty_exposures(ranks,slot):
+    """Require mixed support at a real accumulation slot, after length sorting."""
+    if len(ranks)!=4 or slot not in (0,1):raise ValueError('Four ranks and slot0/1 required')
+    updates={e['update'] for e in ranks[0]}
+    if not updates:raise ValueError('No distributed exposures')
+    for update in updates:
+        counts=[]
+        for rank in ranks:
+            batch=[e for e in rank if e['update']==update]
+            if len(batch)!=2:raise ValueError('Expected two complete episodes per rank/update')
+            counts.append(batch[slot]['aux_pair_count'])
+        if not min(counts)==0<max(counts):raise ValueError(f'No mixed support at slot{slot}: {counts}')
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',required=True);a=p.parse_args()
     root=Path(a.root).resolve();root.mkdir(parents=True,exist_ok=True)
@@ -30,12 +44,24 @@ def main():
             '--threads','4','--workers','8','--teacher-batch','8','--attention-batch',str(attention),
             '--vision-batch','8',*extra])
     task('cpu-and-cuda-suite',['-m','pytest','tests/vln','-q'],timeout=1800)
-    # Exact original failing R1 batch, in both accumulation-slot orders.
+    # Original failing R1 batch: mixed support in the second slot. Five
+    # complete short episodes + three supported ones place empty support in
+    # the first slot even after the real sampler's descending length sort.
     empty=base/'r1-omega-worker2-20261015/stall-update19-fixture.jsonl'
     rows=empty.read_text().splitlines();assert len(rows)==8
-    reverse=root/'mixed_empty_reversed.jsonl';reverse.write_text('\n'.join(rows[4:]+rows[:4])+'\n')
+    episodes=[json.loads(row) for row in rows]
+    from qwen_vl.research.vggt_g3 import sample_pairs
+    from qwen_vl.research.vggt_sampling import collection_trajectory_key
+    supported=[e for e in episodes if sample_pairs(collection_trajectory_key(e),len(e['steps']))]
+    unsupported=[e for e in episodes if not sample_pairs(collection_trajectory_key(e),len(e['steps']))]
+    assert supported and unsupported
+    first_slot=supported[:3]+[unsupported[0]]*5
+    reverse=root/'mixed_empty_first_slot.jsonl';reverse.write_text(''.join(json.dumps(e)+'\n' for e in first_slot))
     profile('mixed-empty',empty)
     profile('mixed-empty-reversed',reverse)
+    for name,slot in [('mixed-empty',1),('mixed-empty-reversed',0)]:
+        ranks=[[json.loads(line) for line in (root/'experiments'/name/'train'/f'exposures_rank{r}.jsonl').read_text().splitlines()] for r in range(4)]
+        validate_empty_exposures(ranks,slot)
     profile('mixed',fixtures/'mixed_tail.jsonl')
     profile('attention16',fixtures/'mixed_tail.jsonl',attention=16)
     profile('attention64',fixtures/'mixed_tail.jsonl',attention=64)
