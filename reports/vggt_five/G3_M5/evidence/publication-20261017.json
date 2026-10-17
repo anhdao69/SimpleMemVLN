@@ -1,0 +1,371 @@
+{
+  "captured_utc": "2026-10-17T03:16:59.329792+00:00",
+  "epoch_summary": {
+    "world_size": 4,
+    "start_update": 1,
+    "end_update": 3852,
+    "completed_updates": 3852,
+    "loss_action_weighted": 0.12690321479437824,
+    "first_update_loss": 0.48658676849386834,
+    "last_update_loss": 0.06168381936724868,
+    "mean_update_compute_seconds": 12.742572476094706,
+    "median_update_compute_seconds": 10.096004497492686,
+    "mean_wall_seconds_per_update": 13.389795317828098,
+    "peak_allocated_gib": 67.87403631210327,
+    "peak_reserved_gib": 76.82421875,
+    "gpu_utilization_mean_pct": null,
+    "gpu_utilization_samples": 0
+  },
+  "resources": {
+    "status": "PASS",
+    "exit_code": 0,
+    "host_guard_triggered": false,
+    "host_guard_gib": 691.2,
+    "job_limit_gib": 768.0,
+    "sampled_peak_job_usage_gib": 768.0,
+    "sampled_peak_working_set_gib": 528.8483772277832,
+    "sampled_peak_anon_gib": 265.6779670715332,
+    "cgroup_recorded_peak_gib": 458.5009231567383,
+    "new_oom_events": 0,
+    "new_oom_kill_events": 0,
+    "new_limit_events": 4726867,
+    "start_usage_gib": 438.2575340270996,
+    "nvidia_smi_peak_used_mib": {
+      "0": 80965,
+      "1": 77523,
+      "2": 73263,
+      "3": 78483
+    },
+    "seconds": 51721.417999982834,
+    "command": [
+      "torchrun",
+      "--standalone",
+      "--nproc_per_node=4",
+      "-m",
+      "qwen_vl.train.train_qwen",
+      "--vln_config",
+      "configs/episodic/science_common.yaml",
+      "--output_config",
+      "configs/vln_empty.yaml",
+      "--memory_config",
+      "configs/episodic/arm_m5.yaml",
+      "--policy_config",
+      "configs/vggt/g3_joint_one_epoch.yaml",
+      "--runtime_profile",
+      "configs/vggt/g3_m5_omega_h4.yaml",
+      "--deepspeed",
+      "configs/deepspeed_zero2_cpu_optimizer.json",
+      "--manifest",
+      "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+      "--model_name_or_path",
+      "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+      "--output_dir",
+      "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/production/g3_m5_joint_e1/train",
+      "--run-name",
+      "g3_m5_omega_h4_joint_e1",
+      "--recovery-save-steps",
+      "100",
+      "--first-recovery-save-step",
+      "10",
+      "--resume_from_checkpoint",
+      "auto"
+    ],
+    "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podf16b1000_b339_46e0_b01c_db5bc40a1e72.slice/system.slice/slurmstepd.scope/job_4925",
+    "cgroup_version": 2,
+    "free_disk_gib_at_start": 7993.6220703125
+  },
+  "completed_utc": "2026-10-17T02:45:50.337705+00:00",
+  "export_check": {
+    "passed": true,
+    "replay": [
+      {
+        "dataset": "r2rce",
+        "exact_export": true,
+        "probe_forward": {
+          "pairs": 8,
+          "rms": 0.009729566052556038,
+          "max_abs": 0.25,
+          "mean_selected_overlap": 0.9999919871794872,
+          "min_selected_overlap": 0.9991666666666666
+        },
+        "rms": 0.0339399091899395,
+        "max_abs": 0.390625,
+        "peak_kv": 2539,
+        "mean_overlap": 0.9966826923076924,
+        "min_overlap": 0.9875,
+        "outcome": {
+          "valid_action": true,
+          "response_token_ids": [
+            15834,
+            20549,
+            248046
+          ],
+          "action_name": "TURN_RIGHT"
+        }
+      },
+      {
+        "dataset": "rxrce",
+        "exact_export": true,
+        "probe_forward": {
+          "pairs": 8,
+          "rms": 0.008497069589793682,
+          "max_abs": 0.25,
+          "mean_selected_overlap": 0.9999759615384616,
+          "min_selected_overlap": 0.9991666666666666
+        },
+        "rms": 0.030697045847773552,
+        "max_abs": 0.34375,
+        "peak_kv": 2579,
+        "mean_overlap": 0.9960416666666667,
+        "min_overlap": 0.985,
+        "outcome": {
+          "valid_action": true,
+          "response_token_ids": [
+            15834,
+            18440,
+            248046
+          ],
+          "action_name": "TURN_LEFT"
+        }
+      }
+    ]
+  },
+  "source_and_completion": {
+    "source_commit": "9031d75d2aa8c3cbd1d6a1bb394f2de5a4a1abc5",
+    "source_directory": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/source-9031d75",
+    "checkpoint": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-omega-worker2-20261016/production/g3_m5_joint_e1/train/checkpoint-3852",
+    "completed_epoch": 1,
+    "optimizer_updates": 3852,
+    "global_batch": 8,
+    "manifest_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+    "recovery_inventory": {
+      "step": 3852,
+      "epoch_boundary": true,
+      "world_size": 4,
+      "files": {
+        "chat_template.jinja": 7756,
+        "config.json": 2903,
+        "latest": 15,
+        "navigation.json": 5524,
+        "processor_config.json": 1191,
+        "pytorch_model.bin": 10371235419,
+        "resume_contract.json": 2016444,
+        "rng_state_0.pth": 15493,
+        "rng_state_1.pth": 15493,
+        "rng_state_2.pth": 15493,
+        "rng_state_3.pth": 15493,
+        "scheduler.pt": 1529,
+        "tokenizer.json": 19989325,
+        "tokenizer_config.json": 1164,
+        "trainer_state.json": 719160,
+        "training_args.bin": 6865,
+        "zero_to_fp32.py": 33272,
+        "global_step3852/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt": 12648847775,
+        "global_step3852/bf16_zero_pp_rank_1_mp_rank_00_optim_states.pt": 12648852447,
+        "global_step3852/bf16_zero_pp_rank_2_mp_rank_00_optim_states.pt": 12648852639,
+        "global_step3852/bf16_zero_pp_rank_3_mp_rank_00_optim_states.pt": 12648851743,
+        "global_step3852/mp_rank_00_model_states.pt": 9767007511
+      }
+    },
+    "export_source_weights_sha256": "65c818cf73134b2d019a83c238d8bcbf910c4cf89478c84374beaf8326f6635a",
+    "export_weights_sha256": "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f",
+    "verified_utc": "2026-10-17T03:13:30.497270+00:00"
+  },
+  "receipt": {
+    "repo": "anhdao69/Streaming_VGGT",
+    "revision": "249464698837e6d71e275ed769fd40fa90d41d6e",
+    "digests": {
+      "G3_M5/epoch-1/chat_template.jinja": {
+        "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+        "size": 7756
+      },
+      "G3_M5/epoch-1/config.json": {
+        "sha256": "2451a8786918f4c348acb32c438d9a127098c022334ae1a7713ce5be588a7df1",
+        "size": 2903
+      },
+      "G3_M5/epoch-1/navigation.json": {
+        "sha256": "f07953c882bf8fa6b8bc5bc546f5ec714acb2d976c13dacf31cf44acc081a44b",
+        "size": 3876
+      },
+      "G3_M5/epoch-1/processor_config.json": {
+        "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1",
+        "size": 1191
+      },
+      "G3_M5/epoch-1/pytorch_model.bin": {
+        "sha256": "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f",
+        "size": 10350179659
+      },
+      "G3_M5/epoch-1/research_training.json": {
+        "sha256": "7c3fa38ff2095674011b462b1ecf377096fbc5a3f876898ba58c2787e22d791b",
+        "size": 1705
+      },
+      "G3_M5/epoch-1/tokenizer.json": {
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "size": 19989325
+      },
+      "G3_M5/epoch-1/tokenizer_config.json": {
+        "sha256": "7488550a894dcf741616126e322ea31d66cf9457b59ec5825f4c7efdced421f8",
+        "size": 1164
+      },
+      "G3_M5/provenance/completion_resources.json": {
+        "sha256": "263b3bc22cce6002bf3ceabb076a5d2706ce70c7733a3f8a06bdec453d960019",
+        "size": 1878
+      },
+      "G3_M5/provenance/epoch-1.json": {
+        "sha256": "faa949bdf9defddad151d9a1bcfaf6bad28280ffd6647d8061f04b76130e0fd1",
+        "size": 396559
+      },
+      "G3_M5/provenance/publication_validation.json": {
+        "sha256": "d1c569e5dc361c4b96e83a222922205d2845351cac2b004adea21ab9a10284f1",
+        "size": 1293
+      },
+      "G3_M5/provenance/qualification_pass.json": {
+        "sha256": "6641d198c563628502a075adf48f6e6b15d86ffb6070c1d3fabbbfabecd5ae05",
+        "size": 35566
+      },
+      "G3_M5/provenance/resolved_config.json": {
+        "sha256": "cac4982a9ad8c2ae27139a0b74fda80f81d2e4c998cf68420f8eb91bac2c878f",
+        "size": 3831
+      },
+      "G3_M5/provenance/run_timing.json": {
+        "sha256": "2706e89f9a87fcc883dbdf76a5ace2675efc03830fe9627f99d7502d880fe792",
+        "size": 353
+      },
+      "G3_M5/provenance/source_and_completion.json": {
+        "sha256": "fca2e72a70688c41af326b3cabadac71360c2aaa773e61888e0b895625c5030b",
+        "size": 1784
+      },
+      "G3_M5/provenance/trainer_state.json": {
+        "sha256": "867af590f7796b4ccd4b73ce354867edfe1318253e867cd3d6b5bb1462cb9cd3",
+        "size": 719160
+      },
+      "G3_M5/README.md": {
+        "sha256": "4767ab9bc1c870995678fbb0eade669065472c5865c2eb9e467e7e51cad708a8",
+        "size": 2345
+      },
+      "G3_M5/SHA256SUMS.json": {
+        "sha256": "01b432eb29aceddb5f5c41db8c3d9e4495b7f01ecf8ad1e6a5e7b2e723845048",
+        "size": 2491
+      }
+    }
+  },
+  "upload": {
+    "passed": true,
+    "repo": "anhdao69/Streaming_VGGT",
+    "revision": "249464698837e6d71e275ed769fd40fa90d41d6e",
+    "folder": "G3_M5/epoch-1",
+    "prior_files_unchanged": 102,
+    "automatic_metadata_change": "G3_M5/epoch-1/tokenizer.json filter=lfs diff=lfs merge=lfs -text",
+    "files": [
+      {
+        "path": "G3_M5/README.md",
+        "sha256": "4767ab9bc1c870995678fbb0eade669065472c5865c2eb9e467e7e51cad708a8",
+        "size": 2345,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/SHA256SUMS.json",
+        "sha256": "01b432eb29aceddb5f5c41db8c3d9e4495b7f01ecf8ad1e6a5e7b2e723845048",
+        "size": 2491,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/chat_template.jinja",
+        "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+        "size": 7756,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/config.json",
+        "sha256": "2451a8786918f4c348acb32c438d9a127098c022334ae1a7713ce5be588a7df1",
+        "size": 2903,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/navigation.json",
+        "sha256": "f07953c882bf8fa6b8bc5bc546f5ec714acb2d976c13dacf31cf44acc081a44b",
+        "size": 3876,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/processor_config.json",
+        "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1",
+        "size": 1191,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/pytorch_model.bin",
+        "sha256": "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f",
+        "size": 10350179659,
+        "method": "Hub LFS SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/research_training.json",
+        "sha256": "7c3fa38ff2095674011b462b1ecf377096fbc5a3f876898ba58c2787e22d791b",
+        "size": 1705,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/tokenizer.json",
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "size": 19989325,
+        "method": "Hub LFS SHA256 and size"
+      },
+      {
+        "path": "G3_M5/epoch-1/tokenizer_config.json",
+        "sha256": "7488550a894dcf741616126e322ea31d66cf9457b59ec5825f4c7efdced421f8",
+        "size": 1164,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/completion_resources.json",
+        "sha256": "263b3bc22cce6002bf3ceabb076a5d2706ce70c7733a3f8a06bdec453d960019",
+        "size": 1878,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/epoch-1.json",
+        "sha256": "faa949bdf9defddad151d9a1bcfaf6bad28280ffd6647d8061f04b76130e0fd1",
+        "size": 396559,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/publication_validation.json",
+        "sha256": "d1c569e5dc361c4b96e83a222922205d2845351cac2b004adea21ab9a10284f1",
+        "size": 1293,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/qualification_pass.json",
+        "sha256": "6641d198c563628502a075adf48f6e6b15d86ffb6070c1d3fabbbfabecd5ae05",
+        "size": 35566,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/resolved_config.json",
+        "sha256": "cac4982a9ad8c2ae27139a0b74fda80f81d2e4c998cf68420f8eb91bac2c878f",
+        "size": 3831,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/run_timing.json",
+        "sha256": "2706e89f9a87fcc883dbdf76a5ace2675efc03830fe9627f99d7502d880fe792",
+        "size": 353,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/source_and_completion.json",
+        "sha256": "fca2e72a70688c41af326b3cabadac71360c2aaa773e61888e0b895625c5030b",
+        "size": 1784,
+        "method": "Downloaded SHA256 and size"
+      },
+      {
+        "path": "G3_M5/provenance/trainer_state.json",
+        "sha256": "867af590f7796b4ccd4b73ce354867edfe1318253e867cd3d6b5bb1462cb9cd3",
+        "size": 719160,
+        "method": "Downloaded SHA256 and size"
+      }
+    ],
+    "verified_utc": "2026-10-17T03:16:27.850592+00:00"
+  }
+}

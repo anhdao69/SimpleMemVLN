@@ -97,3 +97,11 @@ over either model require navigation evaluation, not only training smoke tests.
 - Full evidence and limitations:reports/vggt_five/G3_M5/implementation_report.md
   andevidence/h100_qualification.json. No navigation improvement is claimed
   before evaluation; historical M5 uses a different LR denominator.
+
+- Final completion:3,852/3,852updates, one joint epoch, supervisorPASS, zero
+  CUDA/host OOMs. Full wall time14h22m; completed2026-10-17~02:46UTC.
+- Trained serving export re-audited successfully on R2R/RxR. Published and
+  verified18files atStreaming_VGGT/G3_M5/epoch-1, Hubrevision
+  249464698837e6d71e275ed769fd40fa90d41d6e. Existing model files preserved.
+- Final evidence:reports/vggt_five/G3_M5/evidence/publication-20261017.json.
+  Historical queue/ETA entries above do not represent current run status.

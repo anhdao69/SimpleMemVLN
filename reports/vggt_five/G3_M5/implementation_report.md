@@ -1,10 +1,12 @@
 # G3 + M5 implementation and training qualification
 
-Status: implementation and all 15 H100 qualification gates complete. The
-combined epoch is queued behind R1 in allocation 4925 on worker-2. R1 was
-safely restored from checkpoint 3,373. Production requires the complete
-source-bound qualification and a successfully completed R1 epoch; it has
-not yet started at this report snapshot (2026-10-16, about 04:50 UTC).
+Status: full joint epoch completed (3,852 updates, epoch 1.0) and final
+serving export published and verified at
+[Streaming_VGGT/G3_M5/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/G3_M5/epoch-1).
+All 18 uploaded files passed checksum/size verification. Completion evidence
+and immutable Hub revision are recorded in the final section. Earlier queue,
+qualification and ETA sections are historical; the handoff incident is
+explicitly documented below.
 
 ## Reference audit and experimental question
 
@@ -467,3 +469,60 @@ the original `queue_state.json` is retained as historical stalled-watcher
 evidence and is not authoritative for the direct run. The training profiles,
 supervisor logs and Slurm step are the live progress source. Evidence:
 `evidence/direct_launch_recovery_20261016.json`.
+
+
+## Completed epoch and verified publication — 2026-10-17 UTC
+
+The production epoch finished all 3,852 optimizer updates on four H100s in
+worker-2 allocation 4925, Slurm step4925.93. Final supervisor status is PASS,
+exit0; checkpoint-3852 has a complete four-rank recovery inventory, epoch1.0
+and schedule denominator3852. Final completion evidence was written at
+2026-10-17T02:45:50.337705+00:00 (approximately10:46PM EDT October16).
+The training step ended normally; the existing interactive shell remains.
+Historical queue/direct-launch status JSON files did not update reliably,
+so completed checkpoint inventory, supervisor result and Slurm step state
+are authoritative. `production/verified_completion.json` records this check.
+
+Measured full-run supervisor wall time: 14.3671 hours
+(about14h22m). Mean update compute time: 12.7426s;
+mean wall interval: 13.3898s. The completed
+production run was faster than the initial18–22h fixture estimate; small
+length-quantile fixtures did not reproduce the full joint sampler/I/O mix.
+Action-weighted epoch loss: 0.126903215; final reported
+update loss: 0.061683819. These are training losses, not
+navigation-quality metrics.
+
+Peak allocated/reserved GPU memory: 67.8740/
+76.8242GiB. Peak sampled host working set:
+528.8484GiB. All four rank profiles
+record zero CUDA OOMs; the supervisor records zero new host OOM/OOM-kill
+events and no host-guard trigger. Total cgroup memory reached768GiB including
+reclaimable filesystem cache, with memory-limit/reclaim events; these were
+not OOMs and should not be represented as zero memory-pressure events.
+
+The actual completed model passed `check_g3_m5_export` again, independently
+of the earlier three-update qualification export. Source/export ordinary
+offline logits, forced-history streaming logits, greedy results and selected
+token IDs were exact for both datasets. M5 reset/retry/residency checks passed.
+Probe/no-probe RMS differences were0.009730(R2R)/0.008497(RxR), maximum0.25;
+streaming/offline RMS0.033940/0.030697 and maximum0.390625/0.34375, within
+unchanged BF16 limits. This remains a bounded serving audit, not Habitat
+navigation evaluation.
+
+Published folder: `anhdao69/Streaming_VGGT/G3_M5/epoch-1`.
+Immutable Hub revision: `249464698837e6d71e275ed769fd40fa90d41d6e`.
+Serving model bytes: 10,350,179,659 (9.6394GiB).
+Serving model SHA256: `4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f`.
+Only training-only `research_aux.*` weights/configuration were removed;
+all backbone weights and M5 memory metadata remain. No teacher or auxiliary
+head is needed for inference. Full optimizer/RNG recovery remains on the
+cluster; this publication is not a resumable training checkpoint.
+
+All18 published files were verified against local hashes and sizes, using
+Hub LFS SHA256/size for LFS files and downloaded SHA256/size for smaller files.
+All102 pre-existing non-attributes files remained unchanged.
+The sole automatic `.gitattributes` change was the exact new tokenizer LFS
+rule for this folder. Existing G1/G3/A0/A1/R1 model contents were preserved.
+The model card, checksums, qualification seal, training summary and export
+validation are included under `G3_M5/`. Machine-readable local evidence:
+`evidence/publication-20261017.json`.
