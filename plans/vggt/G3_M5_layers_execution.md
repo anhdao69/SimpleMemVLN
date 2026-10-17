@@ -107,3 +107,10 @@ episodes, and controller survival independent of login-node watcher processes.
   exit, then execs the worker-resident production queue. Six operational safety
   cases passed (failed/missing qualification, active competing step, ready).
   Existing interactive shell .0 and unrelated jobs are untouched.
+- Triple-head qualification complete (all nine arm-specific gates passed):
+  mixed/empty support, both longest datasets with three updates each,
+  recovery reference/resume/compare, and serving export. Every recovered head
+  is bitwise equal; global relative L2 2.503e-8. L16 qualification is running.
+- Supplemental initialization checker added as a read-only operations artifact;
+  tested against deliberate head/backbone mismatches. Run against all three
+  zero-LR checkpoint-1 saves once L8 reaches that save, before final launch.

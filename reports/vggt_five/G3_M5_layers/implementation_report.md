@@ -188,3 +188,34 @@ without a seal blocks training. The queue then independently verifies the
 seal and run identities. Six safety cases passed using
 `python3 reports/vggt_five/G3_M5_layers/operations/check_launch_gate.py`.
 This gate allows qualification-to-training handoff without another SSH session.
+
+The automatic launch gate is confirmed active as Slurm step **4925.101** on
+worker-2, waiting on qualification step **4925.100**. It has no training child
+while qualification is pending. The existing interactive shell remains .0.
+
+Initial three-head mixed fixture measurement: six complete optimizer updates,
+48 episode exposures, all four ranks, no OOM or RAM/disk guard event. Five warm
+intervals were 19.1599, 19.2868, 19.0838, 18.9248 and 18.8759 seconds; mean
+**19.0662 s/update**. The prior L24 baseline's same-fixture mean was 18.5025 s,
+so this bounded measurement is about **3.05% slower**, not three times slower.
+Peak allocated/reserved GPU memory: **39.8478 / 50.2012 GiB**; sampled host
+working set: **330.96 GiB**. This fixture timing is not a full-epoch ETA.
+
+Three-head longest-RxR stress passed **three complete updates**, with all four
+ranks processing the 627-action episode twice per update. Warm intervals:
+84.2468 and 81.3290 seconds (mean 82.7879). Peak allocated/reserved GPU memory
+was **67.9133 / 76.0547 GiB**; sampled maximum device use was **80,167 MiB**
+(78.288 GiB) on a 79.189-GiB device. Host working-set peak was **479.44 GiB**.
+Total cgroup usage, which includes reclaimable file cache, reached the 768-GiB
+limit and recorded 24,827 reclaim/limit events; there were **zero OOM and
+zero OOM-kill events**, and the working-set guard did not trigger. This is
+measured headroom, not a guarantee for changed inputs or resource conditions.
+
+All nine three-head qualification gates passed. Fresh-process recovery produced
+**bitwise-identical weights for each of L8, L16 and L24's readout heads** and
+identical final logged loss (0.4841836094856262). Backbone/global relative L2
+error was 2.503e-8, maximum absolute difference 2.384e-7, comfortably inside
+the predeclared 1e-5 gate. Every head had nonzero query and decoder bias updates;
+268,005 head tensor elements changed from step 2 to step 3. Export and replay
+passed for both datasets. These are qualification results, not full-epoch
+navigation evaluation metrics.
