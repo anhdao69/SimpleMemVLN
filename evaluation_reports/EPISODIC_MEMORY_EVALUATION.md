@@ -1,6 +1,8 @@
 # Episodic-memory campaign — R2R evaluation report
 
-V0, M2, M2 c and M5 are complete. M1 and M5 c are running. M5 currently has the highest completed SR among the episodic arms; the unfinished controls prevent a final conclusion about the benefit of committed-write selection.
+At the October 16 snapshot, V0, M2, M2 c and M5 were complete; M1 and M5 c were running. M5 had the highest completed SR among the original episodic arms; the unfinished controls prevented a final conclusion about the benefit of committed-write selection. Those historical rows and job statuses have not been refreshed.
+
+**October 18 update — G3_M5 epoch 1:** the combined VGGT-supervised M5 model completed all 1,839 R2R val_unseen episodes with **917 successes, SR 49.864057%, SPL 46.140869%, and zero execution failures**. Compared with the historical M5 row below, this is 21 fewer successes, -1.1419 pp SR and -1.2981 pp SPL. Its true one-epoch training schedule differs from M5's epoch-1-of-two schedule, and the simulator environment also differs; this is an aggregate checkpoint comparison, not an isolated teacher-effect experiment. The [updated VGGT report](VGGT_EVALUATION.md) records the full result, caveats and provenance, with a [machine-readable evidence record](evidence/G3_M5_R2R_EPOCH1_20261018.json). The original campaign tables below retain their October 16 scope.
 
 ## Snapshot and scope
 
@@ -57,7 +59,7 @@ The newer G3, M5, Window8-B and A0 coordinators report complete after their fina
 | M5 c | 1,224 / 1,839 | 583 | 47.630719 | 44.105767 | RUNNING — partial |
 | Window8-B | 1,839 / 1,839 | 907 | 49.320283 | 45.561094 | FINAL |
 
-The companion [VGGT report](VGGT_EVALUATION.md) records G1/G3/A0/A1. Window8-B is an independently trained historical reference evaluated here with the V0 source checkout; it is not a second V0 checkpoint.
+The companion [VGGT report](VGGT_EVALUATION.md) records G1/G3/G3_M5/A0/A1. Window8-B is an independently trained historical reference evaluated here with the V0 source checkout; it is not a second V0 checkpoint.
 
 ### Additional navigation and memory measurements
 
