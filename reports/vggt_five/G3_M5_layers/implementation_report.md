@@ -1,158 +1,266 @@
 # G3+M5 native-state supervision-layer ablations
 
-Status: implementation complete; H100 qualification and independent review in
-progress. No production run has been declared qualified or complete yet.
+## Verified status
 
-## Scientific comparison
+Verified at 2026-10-17 05:17:55 UTC.
 
-The reference is the completed L24 G3+M5 baseline, branch
-`c2_vggt_omega_g3_m5`, baseline code commit 9031d75 and final baseline
-report commit 295e85e. This branch implements three independent runs: L8, L16,
-and L8+L16+L24. All indices are zero based. These are native GDN layers,
-not the attention layers or M5's scoring layers.
+The implementation is on `c2_vggt_omega_g3_m5_layers`. All **403 cluster tests**,
+**29 source-bound qualification gates**, and the supplemental cross-arm
+initialization audit passed. The automatic sequential queue is running on
+**worker-2**, Slurm step **4925.101**, inside allocation 4925.
+L8 has reached optimizer update **12 / 3852** and has a
+complete four-rank recovery checkpoint at update 10. L16 and L8+L16+L24 follow
+in that order, only after their predecessor successfully completes its epoch.
+The three full training runs are not all finished; full-epoch navigation
+accuracy and ablation conclusions are not yet available.
 
-The only research change is where the native state is supervised. Each layer
-has its own original NativeStateHead (10,526,368 parameters), initialized with
-seed 429 in isolated CPU RNG scope. Heads have identical starting tensors but
-separate storage; constructing additional heads does not advance global RNG.
-The original pretrained Qwen3.5-4B snapshot is used independently for every arm.
-No arm starts from the baseline's trained checkpoint or another ablation.
+Scientific source: `f4d1c2f216e68a960a5a691d21cbf1f08ea4a901`. Later commits
+contain reports/operational evidence, not changes to qualified training code.
+The starting branch was `c2_vggt_omega_g3_m5` at `295e85e`; the completed L24
+baseline's scientific implementation was `9031d75`. Existing branches, outputs,
+and training jobs were not modified. Only our disposable preliminary
+qualification step was replaced after the queue review fix.
 
-M5 retains recent groups R=4, token budget B=1200, committed_mean_l2_v1 scores,
-selector seed 429, no per-source cap, and its existing causal selection and
-serving cache. Online frozen FP32 VGGT-Omega, preprocessing, unpositioned
-regional targets, original pair sampling, anchors, lags, and target reuse are
-unchanged. There is no PCA, offline extraction, truncation, or detached BPTT.
+## Controlled experiment
 
-## Loss and implementation
+| Arm | Zero-based native GDN layers | Independent readout heads | Auxiliary parameters |
+|---|---|---:|---:|
+| Existing baseline | 24 | 1 | 10,526,368 |
+| L8 | 8 | 1 | 10,526,368 |
+| L16 | 16 | 1 | 10,526,368 |
+| L8+L16+L24 | 8, 16, 24 | 3 | 31,579,104 |
 
-Explicit `research.student_layers` enables `research_aux.state_heads.<index>`.
-The legacy scalar `student_layer: 24` keeps the old `research_aux.state_head`
-namespace. Empty, duplicated, unsorted, noninteger, attention, and out-of-range
-layer selections are rejected. Model construction also checks actual decoder
-layer types.
+The three new runtime YAMLs differ from `g3_m5_omega_h4.yaml` only in the
+supervised-layer field; this exact equivalence is tested. Every head uses the
+original architecture and seed 429, with independent parameter storage.
+Identical head initialization controls the comparison; it is not parameter
+sharing. Head construction preserves global CPU RNG and does not draw CUDA RNG.
 
-At each selected decoder, the existing native state read uses read-only FLA
-probes at the original causal anchors. Probe rows are removed before passing
-hidden states onward. The checkpoint closure binds both the decoder and its
-readout head; M5 plan construction stays outside checkpoint recomputation.
-Query context remains detached exactly as in G3, while the recurrent state,
-state writes, readout and backbone receive the existing full-BPTT gradients.
+Every full run starts independently from the original Qwen3.5-4B snapshot
+`851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a`. No run initializes from the trained
+L24 baseline, a diagnostic checkpoint, or another ablation's final weights.
+The existing canonical text actions and action history are preserved.
 
-For N selected layers, forward returns sum(layer numerator)/N. The existing
-trainer then multiplies by world_size * auxiliary_weight / global_pair_count,
-where the count covers all ranks and both accumulation slots. The denominator
-counts original sampled pairs, not pairs times layers. Thus N=3 implements
-(L8+L16+L24)/3 and preserves lambda maximum 0.1 with the original 771-update ramp.
-Every selected head participates in the uniform zero-pair graph.
+M5 is unchanged: recent groups R=4, episodic token budget B=1200,
+`committed_mean_l2_v1` scores, selector seed 429, no per-source cap, and the same
+causal selection, old-token handling and bounded serving cache. The online
+frozen FP32 VGGT-Omega teacher, preprocessing, sampling, targets and full BPTT
+are unchanged. There is no PCA or offline feature extraction.
 
-## Identical training recipe
+## Data and complete one-epoch schedule
 
-- One joint R2R + English RxR15deg epoch; 30,815 original episodes.
-- Manifest SHA256: 5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933.
-- Four H100 GPUs, one episode per GPU per microbatch, two accumulation slots:
-  eight episodes per optimizer update, 3,852 updates with one repeated tail slot.
-- Seed 429; 116 warmup updates; one-epoch cosine_with_min_lr schedule, minimum
-  ratio 0.1; backbone LR 5e-6, auxiliary LR 1e-4, weight decay 0.01.
-- ZeRO-2 CPU optimizer offload, DeepSpeed CPUAdam, full BPTT and pinned activation
-  arena; eight loader workers/rank, prefetch two, BF16 staged images, vision batch
-  eight and attention batch 32. Online Omega stays resident, batch eight.
-- Base snapshot: Qwen3.5-4B/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a.
-- Online Omega weight SHA256:
-  c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934.
+- Joint R2R + English RxR-CE 15deg: 30,815 episodes, comprising 10,819 R2R and
+  19,996 RxR episodes; 3,128,624 original action states.
+- Manifest: `/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl`.
+- Rechecked manifest SHA256:
+  `5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933`.
+- Four H100 GPUs, one episode per rank per microbatch, GAS=2: global batch eight
+  episodes, 3,852 optimizer updates, and one repeated tail slot.
+- Seed 429; 116 warmup updates; **one-epoch** `cosine_with_min_lr`, minimum LR
+  ratio 0.1. The one-epoch policy overlay replaces the older two-epoch defaults.
+- Backbone LR 5e-6, readout LR 1e-4, weight decay 0.01, Adam betas (0.9,0.95),
+  global gradient clipping 1.0.
+- Lambda maximum 0.1, ramped over the original 771 updates.
+- BF16 student; frozen visual encoder; complete episodes and full BPTT;
+  non-reentrant decoder checkpointing; no cache during training.
+- ZeRO-2 CPU optimizer offload and DeepSpeed CPUAdam, four OMP/MKL threads/rank;
+  pinned activation arena above 65,536 tokens; maximum context 262,144.
+- Eight persistent loader workers/rank, prefetch two, no loader pinning;
+  BF16 staged pixels, vision batch eight, attention batch 32.
+- Online resident FP32 Omega, teacher batch eight. Weight SHA256:
+  `c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934`.
 
-The three runtime YAMLs are tested for exact equality with the baseline after
-replacing only the supervised-layer field. The original baseline YAML is intact.
+## Implementation and causal gradient path
 
-## Tests and qualification gates
+`research.student_layers` is a sorted, unique, nonempty list of zero-based
+native GDN indices. Empty/duplicate/unsorted/noninteger, attention and
+out-of-range selections fail validation; the actual backbone layer types are
+checked again during model construction. The list is exclusive to G3_M5 and
+cannot accompany the legacy scalar field.
 
-Existing targeted baseline: 12 passed in 11.27 seconds. Initial implementation
-causal/gradient/checkpoint suite: 21 passed in 15.76 seconds. Combined targeted
-configuration, export, queue and baseline suite: 31 passed in 18.33 seconds.
-After canonical-key validation, focused new/export/queue suite: 28 passed in
-8.30 seconds. These are CPU tests with an independent recurrence reference;
-they do not substitute for real FLA/ZeRO testing.
+Legacy `student_layer: 24` retains the old `research_aux.state_head` namespace.
+Explicit lists create `research_aux.state_heads.<index>` using the unchanged
+NativeStateHead: a 4160→512→4096 query MLP and 4096→1024→2048 readout decoder,
+with the original five learned region embeddings and lag encoding.
 
-The CUDA qualification runs the entire tests/vln suite and a real four-rank
-NCCL/DDP reduction check with three heads, heterogeneous and all-empty support.
-For EACH arm it requires mixed support in both actual accumulation slots,
-six mixed complete-episode updates, three repeated longest-RxR updates, three
-repeated longest-R2R updates, fresh-process checkpoint-2 to checkpoint-3 recovery
-against an uninterrupted three-update reference, and serving export/replay.
-The longest RxR episode has 627 actions and approximately 199,735 tokens;
-three updates process six such complete episodes per GPU.
+Each selected decoder uses the existing G3 read-only FLA probes at the original
+causal observation anchors. Queries use that layer's normalized native query
+context, lag and region; teacher targets never enter queries or navigation.
+The original query-context detach is retained. Gradients still flow through
+the state reads, recurrent writes, earlier backbone computation and readout
+parameters. Probe rows are removed before later decoders or M5 scoring.
 
-Recovery compares every readout head individually, including nonzero bias
-updates, not just aggregate parameter movement. Original BF16 gates are retained:
-relative weight L2 <=1e-5 globally and <=1e-4 per head, final loss difference
-<=1e-4. Serving export validates all configured head namespaces, strips them,
-strictly reloads the native policy, and checks exact source/export offline,
-streaming, greedy and selection equality, plus existing replay numerical gates.
+Checkpoint closures bind **both decoder and readout head**, avoiding loop
+late binding. Immutable M5 selection plans remain outside recomputation.
+Each selected head follows the same uniform empty-support graph, including
+zero-pair ranks, so ZeRO readiness remains consistent.
 
-## Queue and isolation
+Teacher targets are computed once per episode and reused across layers.
+The original maximum-eight pair sampling, lags 8–32, collected-RGB trajectory
+identity, teacher patch offset 17, layer-23 descriptors, unpositioned 2048-D
+regional targets and five-region loss are unchanged.
 
-Remote campaign: `/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017`.
-There are separate detached source worktrees for all three arms. A single
-worker-resident controller runs L8, then L16, then all three layers. It waits for
-child exit and verifies a complete step-3852 recovery checkpoint, epoch and
-supervisor success before advancing. Failures block successors. A queue lock
-prevents duplicate controllers; each run also has a launcher lock. Status is
-atomic and a worker heartbeat records controller liveness. Qualification binds
-all executable/config/test source hashes, and each launch rechecks the seal.
+## Loss normalization
 
-The controller is owned by one Slurm step on worker-2, not a login-node polling
-watcher. Cancelling the allocation still stops its step: restarting the
-controller in a replacement worker-2 allocation resumes the current arm from
-its latest complete checkpoint, and verifies/skips finished arms. The queue
-cannot promise continued execution after allocation cancellation or node loss.
-No existing job is cancelled, and no existing output directory is reused.
+For N selected layers, the forward returns the mean of their auxiliary
+numerators. For the triple arm this is `(L8 + L16 + L24) / 3`.
+The original trainer then applies `world_size * lambda(update) / global_pairs`,
+where `global_pairs` counts sampled pairs across all ranks and both accumulation
+slots. Pair counts are **not multiplied by the number of layers**.
+`lambda(update) = 0.1 * min(1, update / 771)`.
 
-## Measurements and production results
+This keeps the total auxiliary weight at 0.1 rather than increasing it to 0.3.
+All-empty updates retain connected zero gradients. Independent CPU references
+verify the multi-layer backbone/head gradients against the mean of separate
+single-layer runs; real NCCL/DDP tests verify heterogeneous and all-empty
+normalization with three heads and GAS=2.
 
-Pending actual H100 qualification. Baseline full L24 training took about
-14h22m, averaging 13.39 seconds/update; this is a reference, not a measured ETA
-for these new ablations. No validation metrics for the new models exist yet.
+## Tests actually executed
 
-## Review and environment checks
+The frozen reviewed source passed all **403 tests/vln tests** on worker-2
+(62.65 seconds, no skips). Before deployment, targeted local suites passed,
+including the 34-test regression suite after the queue identity fix. The broad
+Mac run had 364 passes and 35 CUDA skips, with four environment failures caused
+by absent Slurm, DeepSpeed, Omega and the cluster base-model path. Those same
+tests passed in the complete cluster environment.
 
-A fresh reviewer found no critical issue and one important operational issue:
-completed-arm skipping initially checked epoch completion without layer/source
-identity. Two failing regression tests demonstrated the missing guard. The
-fixed queue binds each run directory to its arm, source path and qualified file
-hashes before launch or skip, refuses unbound existing outputs, and checks final
-checkpoint supervised-layer identity. The resulting targeted suite passed all
-34 tests in 16.23 seconds.
+The 29 qualification gates comprise the full CPU/CUDA suite, the real
+three-head distributed reduction test, and nine gates for **each** arm:
 
-The complete suite on the Mac produced 364 passes, 35 CUDA skips and four
-missing-environment failures: no Slurm `squeue`, no DeepSpeed, no Omega package,
-and no cluster `VLN_MODEL_PATH`. The preliminary cluster checkout passed all
-401 tests and the three-head distributed reduction test before qualification
-was restarted on the reviewed commit f4d1c2f. Those preliminary results are
-not substituted into the final source-bound qualification seal.
+1. Three updates with empty/nonempty support mixed in accumulation slot 1.
+2. Three updates with mixed support in slot 0 after actual length sorting.
+3. Six complete mixed R2R/RxR updates (48 episode exposures).
+4. Three longest-RxR updates: 627 actions / approximately 199,735 tokens,
+   repeated across every rank and both accumulation slots.
+5. Three longest-R2R updates: 183 actions, similarly repeated.
+6. Uninterrupted three-update reference with full recovery saves.
+7. Fresh-process checkpoint-2 → update-3 continuation and save.
+8. Per-head/backbone recovery comparison, including nonzero bias updates.
+9. Strict serving export, both-dataset offline/streaming/greedy replay,
+   reset/retry and M5 cache/selection checks.
 
-Deferred minor from review: a failed/interrupted qualification profile leaves
-its fixed experiment directory. Preserve that failed directory under an attempt
-suffix before rerunning the same gate; successful gates may be reused only with
-an identical source manifest. Production auto-resume is a separate path and
-is not affected by this diagnostic-directory limitation.
+The longest tests cover six maximum-length episodes per GPU across three
+optimizer updates, including repeated activation-arena reuse. Checkpoint
+recovery is separately tested on the complete mixed fixture. CUDA tests use
+the actual pinned FLA kernels; CPU recurrence tests are not substituted for
+hardware tests. All gates are bound to hashes of src/scripts/configs/train/tests.
 
-A separate real-process queue exercise launched disposable child processes,
-forced L16 to exit 17, and verified that the third arm did not start. A fresh
-controller process then skipped completed L8, retried L16, and ran the final
-arm. Another fresh restart launched nothing. Launch sequence was
-`l8, l16(failed), l16(retry), l8_l16_l24`; both restart controllers exited zero.
-This tests process-level ordering/failure/restart, not cluster cancellation.
+The supplemental checkpoint-1 audit verifies learning rate zero, bitwise-equal
+backbone tensors across all three arms, identical initial values for every
+readout head, identical data contracts, and identical first-update episode
+order and auxiliary support counts on all four ranks. Two early live-reader
+attempts rejected checkpoint-1 file-size inventories while diagnostic saving
+was still in progress. After the files stabilized, the unchanged strict
+validator and tensor audit passed; no checkpoint repair or validation bypass
+was used. Run this supplemental audit after the reference save finishes.
 
-The current joint manifest was rehashed on the cluster and exactly matched the
-baseline SHA256 above. Final reviewed source f4d1c2f passed all 403 cluster tests
-in 62.65 seconds and its three-head distributed reduction gate passed. Further
-per-arm qualification remains pending at the time of this record.
+## Measured warm update times
 
-## Controller launch / recovery command
+These are diagnostic complete-episode fixtures, not estimates that every
+production update takes the same time. Startup and checkpoint writes are
+excluded from the warm intervals below.
 
-After the qualification seal exists and all other GPU steps have finished,
-run the following inside the same idle four-H100 worker-2 allocation (replace
-the allocation number only if it has changed):
+| Arm | Mixed fixture s/update | Longest R2R s/update | Longest RxR s/update |
+|---|---:|---:|---:|
+| L8 | 18.8299 | 23.9888 | 82.8307 |
+| L16 | 18.6822 | 24.0741 | 80.6622 |
+| L8+L16+L24 | 19.0662 | 24.4795 | 82.7879 |
+
+Historical L24 G3+M5 on the same mixed fixture averaged 18.5025 s/update.
+The triple arm adds about 3.05% in this bounded comparison. The original L24
+full epoch took about 14h22m; approximately 14–16 hours per new epoch is a
+planning range, not a completion promise. Actual timing depends on episode
+lengths and shared-storage checkpoint latency.
+
+## Longest-RxR memory measurements
+
+All rows use three repeated maximum-length updates. GPU capacities are
+79.189 GiB. Host limits are 768 GiB; the working-set guard is 691.2 GiB.
+
+| Arm | Allocated GPU GiB | Reserved GPU GiB | Sampled device use GiB | Host working set GiB | New OOM / OOM-kill |
+|---|---:|---:|---:|---:|---:|
+| L8 | 67.874 | 76.055 | 78.288 | 502.57 | 0 / 0 |
+| L16 | 67.874 | 76.055 | 78.288 | 496.57 | 0 / 0 |
+| L8+L16+L24 | 67.913 | 76.055 | 78.288 | 479.44 | 0 / 0 |
+
+File cache is included in total cgroup usage but excluded when calculating
+reclaimable working-set headroom. Total usage sometimes reached the cgroup
+limit and caused reclaim/limit events; there were no OOM or OOM-kill events.
+For example, the triple stress recorded 24,827 limit events, a 479.44-GiB peak
+working set, and zero OOM events. Resource guards remain enabled in production.
+These tests establish observed safety for the audited inputs/runtime; they
+cannot guarantee safety after input, software or resource changes.
+
+## Recovery results
+
+| Arm | Global relative weight L2 error | All readout heads bitwise equal | Final logged loss difference |
+|---|---:|---|---:|
+| L8 | 2.506e-08 | True | 0.000e+00 |
+| L16 | 2.492e-08 | True | 0.000e+00 |
+| L8+L16+L24 | 2.503e-08 | True | 0.000e+00 |
+
+Predeclared BF16 gates were global relative L2 <=1e-5, each head <=1e-4 and
+loss difference <=1e-4. Every head also had nonzero query/decoder bias updates
+between steps 2 and 3, demonstrating learning beyond weight decay. The saved
+inventory includes model, optimizer, scheduler and per-rank RNG state.
+
+## Serving consistency
+
+All configured training heads are validated before export, then removed along
+with research configuration. Strict reload uses the original native policy
+architecture and unchanged M5 memory configuration, with no teacher dependency.
+Source-versus-export offline, streamed, greedy outputs and selections are exact.
+
+| Arm | Dataset | Exact source/export | Probe/native RMS | Offline/streaming RMS | Peak resident KV tokens |
+|---|---|---|---:|---:|---:|
+| L8 | r2rce | True | 0.02649 | 0.06198 | 2539 |
+| L8 | rxrce | True | 0.01697 | 0.04845 | 2579 |
+| L16 | r2rce | True | 0.02009 | 0.06194 | 2539 |
+| L16 | rxrce | True | 0.01356 | 0.04898 | 2579 |
+| L8+L16+L24 | r2rce | True | 0.02400 | 0.06588 | 2539 |
+| L8+L16+L24 | rxrce | True | 0.01758 | 0.05328 | 2579 |
+
+Training-probe/native and offline/streaming comparisons preserve the existing
+G3 BF16 tolerances: atol 0.75 plus rtol 0.03, with RMS <=0.15. The absolute
+maximum alone is not the tolerance criterion. Numerical M5 selection overlap
+is recorded in each export artifact; probe insertion is not claimed to be
+bitwise neutral under BF16 kernels. The replay uses 17 frames from each dataset
+and validates bounded KV residency (guard 4784), R4 recent groups, greedy
+reset/retry and source/export identity. It is not a navigation quality metric.
+
+## Queue, isolation and restart
+
+Campaign root:
+`/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017`.
+There are three separate detached worktrees:
+`source-f4d1c2f-l8`, `source-f4d1c2f-l16`, `source-f4d1c2f-l8_l16_l24`.
+Outputs are respectively `production/l8`, `production/l16`, and
+`production/l8_l16_l24`. The L24 baseline and unrelated outputs are untouched.
+
+A worker-resident launch gate waited for the qualification seal and for other
+compute steps to finish, then execed the sequential production controller.
+The controller launches one local training process at a time. It advances only
+after successful child exit, supervisor PASS, a validated four-rank checkpoint
+at step 3852, and a completed epoch. Failed or incomplete runs block successors.
+A completed checkpoint must also have the expected supervised-layer identity.
+Each output directory is bound to its arm and qualified source/config hashes;
+existing unbound or differently bound directories are refused.
+
+The queue and individual launchers use locks. Status and heartbeat files are
+atomic. The sequence is owned by a worker-2 Slurm step, not a login polling
+watcher, and continued through intermittent SSH/VPN outages during qualification.
+Cancelling the allocation or losing the node still stops its processes.
+Restarting the same controller under a replacement worker-2 allocation resumes
+the current arm from its latest complete checkpoint and verifies/skips finished
+arms. The allocation must remain available for unattended sequential training.
+
+Production saves at update 10, every 100 updates, and the epoch boundary. It
+retains two rolling recoveries plus epoch checkpoints in each run's own folder.
+A real-process controller test forced L16 to fail, verified that the last arm
+never started, then restarted and observed L8 skipped, L16 retried and the final
+arm executed. A further restart launched no completed arm again.
+
+Restart command, after confirming the replacement allocation is idle:
 
 ```bash
 ROOT=/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017
@@ -169,53 +277,27 @@ srun --jobid=4925 --overlap --ntasks=1 --gpus=4 --cpus-per-task=60 \
             "$ROOT/source-f4d1c2f-l8_l16_l24"
 ```
 
-Use the same production root and source paths when recovering. Do not launch
-another controller while the first is alive. `production/queue_state.json`
-records the current arm, `heartbeat.json` records worker liveness, and each
-arm retains complete recovery checkpoints with model, optimizer, scheduler,
-per-rank RNG and resume contract. The first production save is update 10,
-followed by every 100 updates and the epoch boundary; bounded older recovery
-pruning applies only within that arm's own output directory.
+Replace job 4925 only if using a replacement allocation. Do not launch a second
+controller while the first is alive. Monitor `production/queue_state.json`,
+`production/heartbeat.json`, per-arm supervisor logs and
+`production/<arm>/train/profile_rank*.jsonl`.
 
-## Automatic launch gate
+## Review and evidence
 
-The deployment recipe in `operations/launch_after_qualification.py` is a
-CPU-only waiting process in a separate Slurm step of the same allocation.
-It waits for the successful source-bound seal, the qualification step to exit,
-and any unrelated compute step to finish before replacing itself with the
-production controller. A failed qualification or an exited qualifying step
-without a seal blocks training. The queue then independently verifies the
-seal and run identities. Six safety cases passed using
-`python3 reports/vggt_five/G3_M5_layers/operations/check_launch_gate.py`.
-This gate allows qualification-to-training handoff without another SSH session.
+An independent whole-branch review found no critical scientific issue. Its
+important finding—completed arms could be skipped without checking layer/source
+identity—was fixed with failing-then-passing regression tests before qualification.
+One minor diagnostic limitation remains: after an interrupted qualification
+profile, preserve/rename its failed fixed-name directory before retrying that
+gate. Successful qualification gates may be reused only with identical source
+hashes. Production checkpoint resume is unaffected.
 
-The automatic launch gate is confirmed active as Slurm step **4925.101** on
-worker-2, waiting on qualification step **4925.100**. It has no training child
-while qualification is pending. The existing interactive shell remains .0.
+Implementation choices: identical seed per independently stored head controls
+initialization across arms; supporting arbitrary qualified GDN indices does not
+imply hardware qualification of indices beyond the three requested arms.
 
-Initial three-head mixed fixture measurement: six complete optimizer updates,
-48 episode exposures, all four ranks, no OOM or RAM/disk guard event. Five warm
-intervals were 19.1599, 19.2868, 19.0838, 18.9248 and 18.8759 seconds; mean
-**19.0662 s/update**. The prior L24 baseline's same-fixture mean was 18.5025 s,
-so this bounded measurement is about **3.05% slower**, not three times slower.
-Peak allocated/reserved GPU memory: **39.8478 / 50.2012 GiB**; sampled host
-working set: **330.96 GiB**. This fixture timing is not a full-epoch ETA.
-
-Three-head longest-RxR stress passed **three complete updates**, with all four
-ranks processing the 627-action episode twice per update. Warm intervals:
-84.2468 and 81.3290 seconds (mean 82.7879). Peak allocated/reserved GPU memory
-was **67.9133 / 76.0547 GiB**; sampled maximum device use was **80,167 MiB**
-(78.288 GiB) on a 79.189-GiB device. Host working-set peak was **479.44 GiB**.
-Total cgroup usage, which includes reclaimable file cache, reached the 768-GiB
-limit and recorded 24,827 reclaim/limit events; there were **zero OOM and
-zero OOM-kill events**, and the working-set guard did not trigger. This is
-measured headroom, not a guarantee for changed inputs or resource conditions.
-
-All nine three-head qualification gates passed. Fresh-process recovery produced
-**bitwise-identical weights for each of L8, L16 and L24's readout heads** and
-identical final logged loss (0.4841836094856262). Backbone/global relative L2
-error was 2.503e-8, maximum absolute difference 2.384e-7, comfortably inside
-the predeclared 1e-5 gate. Every head had nonzero query and decoder bias updates;
-268,005 head tensor elements changed from step 2 to step 3. Export and replay
-passed for both datasets. These are qualification results, not full-epoch
-navigation evaluation metrics.
+`evidence/` contains per-arm mixed/longest measurements, recovery comparisons,
+serving checks, the complete qualification seal, initialization audit and the
+verified production-start record. Detailed per-rank exposures, losses, memory,
+source manifests and checkpoint inventories remain under the campaign root.
+No full-epoch evaluation results or guaranteed finish time are claimed here.

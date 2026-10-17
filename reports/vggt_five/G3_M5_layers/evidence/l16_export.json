@@ -1,0 +1,55 @@
+{
+  "passed": true,
+  "replay": [
+    {
+      "dataset": "r2rce",
+      "exact_export": true,
+      "probe_forward": {
+        "pairs": 8,
+        "rms": 0.020093364641070366,
+        "max_abs": 0.2060546875,
+        "mean_selected_overlap": 0.9998878205128207,
+        "min_selected_overlap": 0.9966666666666667
+      },
+      "rms": 0.061940938234329224,
+      "max_abs": 0.6259765625,
+      "peak_kv": 2539,
+      "mean_overlap": 0.994511217948718,
+      "min_overlap": 0.9783333333333334,
+      "outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      }
+    },
+    {
+      "dataset": "rxrce",
+      "exact_export": true,
+      "probe_forward": {
+        "pairs": 8,
+        "rms": 0.013558167964220047,
+        "max_abs": 0.171875,
+        "mean_selected_overlap": 0.9999439102564103,
+        "min_selected_overlap": 0.9975
+      },
+      "rms": 0.048982810229063034,
+      "max_abs": 0.6126708984375,
+      "peak_kv": 2579,
+      "mean_overlap": 0.9938701923076925,
+      "min_overlap": 0.9783333333333334,
+      "outcome": {
+        "valid_action": true,
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ],
+        "action_name": "TURN_RIGHT"
+      }
+    }
+  ]
+}

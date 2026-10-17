@@ -1,0 +1,31 @@
+{
+  "passed": true,
+  "zero_learning_rate": true,
+  "initialization": {
+    "l8": {
+      "backbone_tensors": 724,
+      "head_layers": [
+        8
+      ],
+      "bitwise_equal": true
+    },
+    "l16": {
+      "backbone_tensors": 724,
+      "head_layers": [
+        16
+      ],
+      "bitwise_equal": true
+    },
+    "l8_l16_l24": {
+      "backbone_tensors": 724,
+      "head_layers": [
+        8,
+        16,
+        24
+      ],
+      "bitwise_equal": true
+    }
+  },
+  "identical_data_contract": true,
+  "identical_first_update_exposure_order": true
+}

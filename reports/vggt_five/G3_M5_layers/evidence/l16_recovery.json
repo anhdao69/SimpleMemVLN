@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "reference": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017/qualification-f4d1c2f/l16/experiments/recovery-reference/train",
+  "resumed": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017/qualification-f4d1c2f/l16/experiments/recovery-resumed/train",
+  "weights": {
+    "relative_l2": 2.4921107460548777e-08,
+    "max_abs": 2.384185791015625e-07,
+    "changed_elements": 55724,
+    "elements": 5185491104,
+    "bitwise_equal": false
+  },
+  "head": {
+    "relative_l2": 0.0,
+    "max_abs": 0.0,
+    "changed_elements": 0,
+    "elements": 10526368,
+    "bitwise_equal": true
+  },
+  "head_update_from_step2_to3": {
+    "relative_l2": 9.1034555366719e-06,
+    "max_abs": 3.814697265625e-06,
+    "changed_elements": 139989,
+    "elements": 10526368,
+    "bitwise_equal": false
+  },
+  "step3_losses": [
+    0.4836578965187073,
+    0.4836578965187073
+  ],
+  "head_bias_updates": {
+    "research_aux.state_heads.16.query.1.bias": 512,
+    "research_aux.state_heads.16.query.3.bias": 4096,
+    "research_aux.state_heads.16.decoder.0.bias": 1024,
+    "research_aux.state_heads.16.decoder.2.bias": 2048
+  },
+  "per_head": {
+    "research_aux.state_heads.16.": {
+      "recovery": {
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "changed_elements": 0,
+        "elements": 10526368,
+        "bitwise_equal": true
+      },
+      "update": {
+        "relative_l2": 9.1034555366719e-06,
+        "max_abs": 3.814697265625e-06,
+        "changed_elements": 139989,
+        "elements": 10526368,
+        "bitwise_equal": false
+      }
+    }
+  },
+  "recovery_world_size": 4,
+  "checkpoint_files": 22
+}

@@ -1,5 +1,9 @@
 # G3+M5 supervision-layer ablations
 
+Status: implementation, review, qualification and queue launch complete.
+At 2026-10-17 05:17:55 UTC, L8 was at update 12/3852 with a validated
+checkpoint-10; L16 and triple remain queued. Full-epoch results are pending.
+
 ## Binding specification
 
 Implement the user's zero-based L8, L16, and L8+L16+L24 ablations from
@@ -114,3 +118,19 @@ episodes, and controller survival independent of login-node watcher processes.
 - Supplemental initialization checker added as a read-only operations artifact;
   tested against deliberate head/backbone mismatches. Run against all three
   zero-LR checkpoint-1 saves once L8 reaches that save, before final launch.
+
+- Final frozen-source qualification: all 403 cluster tests and all 29 gates
+  passed. Every arm passed both longest episodes, repeated updates, recovery,
+  and serving export. Supplemental zero-LR checkpoint audit passed: 724
+  identical backbone tensors, all initial heads equal, same sample/target order.
+- Automatic handoff succeeded at 2026-10-17 05:12:46 UTC. Production controller
+  in step 4925.101 started L8; L16 and triple follow sequentially. Final
+  production checkpoint-10 audit and evidence report are pending.
+
+- Task 3 complete: first full-training audit passed at 05:17:55 UTC, update 12,
+  complete checkpoint-10 inventory (22 files, four ranks), original base,
+  30,815 episodes, seed 429, one epoch, 3,852 total/116 warmup, identical
+  optimizer settings, auxiliary weight and source identities. No OOM events.
+- Final report and machine-readable evidence are in
+  reports/vggt_five/G3_M5_layers/. All requested runs are independently
+  configured and automatically queued; full-epoch evaluation remains future work.

@@ -1,4 +1,8 @@
-"""Read-only comparison of zero-LR checkpoint-1 tensors and sample order."""
+"""Compare zero-LR checkpoint-1 tensors/order after reference saves finish.
+
+Do not run against an actively rewritten diagnostic save: the strict inventory
+validator intentionally rejects transient size mismatches.
+"""
 import argparse
 import json
 from pathlib import Path
