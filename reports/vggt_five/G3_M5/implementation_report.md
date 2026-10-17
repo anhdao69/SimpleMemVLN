@@ -8,6 +8,12 @@ and immutable Hub revision are recorded in the final section. Earlier queue,
 qualification and ETA sections are historical; the handoff incident is
 explicitly documented below.
 
+## Completed R2R evaluation — 2026-10-18 update
+
+The published epoch-1 export completed **1,839/1,839 R2R VLN-CE val_unseen episodes**, with **917 successes, SR 49.864057%, SPL 46.140869%, zero execution failures and zero invalid responses**. Evaluation used branch `c2_vggt_omega_g3_m5` at `295e85e6081be2a8d8d9d786f2ba47ca22e0667b` and Hub revision `249464698837e6d71e275ed769fd40fa90d41d6e`. All four workers exited successfully; merged/shard journals, episode membership, contracts and recomputed summaries passed validation.
+
+The combination scored below the historical G3 and M5 references on both SR and SPL. This is not an isolated auxiliary-loss comparison: the historical M5 training schedule and simulator environment differ. See the [evaluation report](../../../evaluation_reports/VGGT_EVALUATION.md) for metrics, serving checks, timing, comparison limits and reproduction details, and the [evidence record](../../../evaluation_reports/evidence/G3_M5_R2R_EPOCH1_20261018.json) for exact values and artifact hashes. The implementation/training sections below retain their historical chronology; qualification alone was not navigation evidence.
+
 ## Reference audit and experimental question
 
 The isolated branch `c2_vggt_omega_g3_m5` starts from latest fetched
@@ -207,7 +213,9 @@ its own qualification source hashes before using the same allocation. A
 failed or partially saved R1 does not trigger training. Locks and immutable
 source snapshots prevent duplicate launch and live-code drift. GPU test
 results and review establish bounded engineering confidence, not a proof of
-100% correctness or navigation improvement. Full evaluation remains needed.
+100% correctness or navigation improvement. Full evaluation was still needed
+at this qualification stage; the completed R2R result is recorded in the
+October 18 update above.
 
 The actual completed G3 checkpoint3852/navigation.json was inspected on the
 server and confirms the stated one-epoch schedule, head settings and optimized
