@@ -1,10 +1,12 @@
 # VGGT campaign — R2R evaluation report
 
-G3 has the highest completed SR among the evaluated versions in these two campaigns. G1, G3 and A0 are complete; A1 is still running. This is a navigation result report with implementation and provenance checks, not a claim that training success guarantees improved navigation.
+**G3_M5 epoch 1 completed all 1,839 R2R val_unseen episodes: 917 successes, SR 49.864057%, SPL 46.140869%, and zero execution failures.** Its SR and SPL are below the historical G3 and M5 results; this run does not show an improvement from combining them. G3 retains the highest completed SR recorded in these reports.
 
 ## Snapshot and scope
 
-Snapshot collected through **2026-10-16 02:45:04 UTC / 2026-10-16 09:45:04 Asia/Ho_Chi_Minh**. Results were read sequentially and frozen at the counts below; running jobs may have advanced since collection. This Markdown file is a dated report, not a live dashboard. SR/SPL use percentages; changes use percentage points (pp).
+**G3_M5 update: 2026-10-18 Asia/Ho_Chi_Minh.** The full run completed at **2026-10-17 17:33:43 UTC / 2026-10-18 00:33:43 Asia/Ho_Chi_Minh**. Its journals and summaries were independently rechecked for this update.
+
+All other rows retain the historical snapshot collected through **2026-10-16 02:45:04 UTC / 2026-10-16 09:45:04 Asia/Ho_Chi_Minh**. Their results and job status were not refreshed for this update; A1, M1 and M5 c were partial at that snapshot. This Markdown file is a dated report, not a live dashboard. SR/SPL use percentages; changes use percentage points (pp).
 
 All results here are **R2R VLN-CE val_unseen**, with **1,839 scheduled episodes**. Every published checkpoint evaluated here is epoch 1. Training used joint R2R/RxR data, but **no full RxR navigation evaluation result is available in this report**. RxR training/qualification fixtures are not RxR benchmark scores.
 
@@ -15,7 +17,7 @@ Completed and partial runs are explicitly separated. The partial denominator is 
 | Item | Verified setting |
 |---|---|
 | Protocol | `R2R-VLNCE-0.2.4`, split `val_unseen` |
-| Simulator | Habitat-Lab 0.2.4 / Habitat-Sim 0.2.4, Python 3.10.20 |
+| Simulator | Habitat-Lab 0.2.4 / Habitat-Sim 0.2.4; historical Python 3.10.20, G3_M5 Python 3.9.25 |
 | Policy environment | Python 3.12.13, PyTorch 2.10.0+cu129, Transformers 5.11.0 |
 | Attention stack | FlashAttention 2.8.3+cu.12.9.torch.2.10, FLA/fla-core 0.5.2, Triton 3.6.0 |
 | GPU | NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition, 96 GB class |
@@ -25,13 +27,17 @@ Completed and partial runs are explicitly separated. The partial denominator is 
 | Motion | Forward 0.25 m, turns 15° |
 | Success | Habitat navigation success with STOP within the configured 3 m goal radius |
 | Evaluation seed / cap | 42 / 500 actions, cap-ending forced STOP recorded separately |
-| Dataset | `/storage/anhdh35/SpatialForcing-VLN/data/datasets/R2R_VLNCE_v1-3_preprocessed/{split}/{split}.json.gz` |
+| Historical dataset path | `/storage/anhdh35/SpatialForcing-VLN/data/datasets/R2R_VLNCE_v1-3_preprocessed/{split}/{split}.json.gz` |
 | Dataset SHA-256 | `1767a407e2c8a011fbb7abece76cd64c5b39ff9fa0e9e340ebdce5a490d167c3` |
 | Habitat config SHA-256 | `dd20dd0e43e6dff3e552b63e9bc70c74062170c39352564758835c313bcf468f` |
-| Scenes | `/storage/anhdh35/JanusVLN/data/scene_datasets_full`; 11 evaluation scene assets checked |
+| Historical scenes path | `/storage/anhdh35/JanusVLN/data/scene_datasets_full`; 11 evaluation scene assets checked |
 | Failure policy | `zero_sr_spl_keep_partial_metrics`: failed episodes remain in SR/SPL denominator |
 
-Frozen ordered episode IDs, dataset/config hashes, base-asset hashes, scenes, seed, action cap, protocol and failure policy match across all 11 runs in the reporting snapshot. The evaluator/stream modules were kept fixed across campaigns; model-specific architecture and memory contracts remain checkpoint-specific. Evaluation sources are isolated snapshots and were not switched under running processes.
+The original report verified matching ordered episode IDs, dataset/config hashes, base-asset hashes, scenes, seed, action cap, protocol and failure policy across its 11 historical runs. That evidence is retained here; those older journals were not available locally for a fresh comparison with G3_M5. Evaluation sources are isolated snapshots and were not switched under running processes.
+
+G3_M5 used the same dataset/config SHA-256 values, registered 1,839 episode IDs, base revision, seed, action cap and failure policy. Its dataset is `/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/datasets/r2r/{split}/{split}.json.gz`, and scenes are under `/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets`. All 11 scenes passed render/metric checks; the 22 local GLB/navmesh hashes are preserved in the evidence file. Cross-host scene-byte equality and episode UID equality with the historical runs were not established.
+
+The G3_M5 simulator environment uses Python 3.9.25, NumPy 1.26.4, Hydra 1.3.2 and OmegaConf 2.3.0; the historical environment recorded Python 3.10.20, Hydra 1.3.4 and OmegaConf 2.3.1. Habitat-Lab source is `1639e1ae732ba1e84199a1a04b79c7243c3f8586`; Habitat-Sim is `f179b584bcd713c5a2a998132211e2cae881d6d1`. The resolved configuration and both package inventories are preserved. These environment differences limit strict cross-run equivalence.
 
 **Definitions:** SR is the mean binary navigation success; SPL is mean success weighted by shortest-path versus executed-path efficiency. NE is final distance to goal. Oracle success records whether the trajectory ever reached the goal region; it does not mean the model stopped correctly. Forced STOP is an episode hitting the action cap, not an execution exception. nDTW is unavailable (`null`, zero coverage), not zero. NE/oracle coverage equals the evaluated count in these snapshots.
 
@@ -39,11 +45,13 @@ All listed runs have **0 execution failures and 0 invalid responses** at the sna
 
 ## Report verification and historical validator flags
 
-The report independently reread the episode journals, checked unique episode IDs and exact ordered membership, and recomputed all saved summary fields. Integral fields and structure matched exactly; floating values matched with relative/absolute tolerance **1e-12**. This tolerance only handles aggregation/JSON rounding and does not alter navigation decisions or numerical replay gates.
+The original report independently reread the historical episode journals, checked unique episode IDs and exact ordered membership, and recomputed all saved summary fields. Integral fields and structure matched exactly; floating values matched with relative/absolute tolerance **1e-12**. This tolerance only handles aggregation/JSON rounding and does not alter navigation decisions or numerical replay gates.
 
-Older V0/M2 c orchestration (`campaign_status.json`), M2 (`M2-status.json`) and G1 (`status.json`) retain failed final-validator flags from exact floating-point equality assertions. They are not evidence of missing episodes: all four journals contain 1,839 unique completed episodes and zero execution failures. This report freshly verified their metrics. Across all snapshot runs, SPL recomputation differences were at most 7.22e-16 in fraction units and mean-path differences at most 2.85e-14 m. Historical status files were preserved. Newer coordinators use the 1e-12 final-metric check.
+Older V0/M2 c orchestration (`campaign_status.json`), M2 (`M2-status.json`) and G1 (`status.json`) retain failed final-validator flags from exact floating-point equality assertions. They are not evidence of missing episodes: all four journals contain 1,839 unique completed episodes and zero execution failures. The original report verified their metrics at the historical snapshot. Across the historical snapshot runs, SPL recomputation differences were at most 7.22e-16 in fraction units and mean-path differences at most 2.85e-14 m. Historical status files were preserved. Newer coordinators use the 1e-12 final-metric check.
 
-The newer G3, M5, Window8-B and A0 coordinators report complete after their final contract/journal checks. A1, M5 c and M1 are still running at this snapshot. No partial run is certified as a final completed evaluation.
+The historical G3, M5, Window8-B and A0 coordinators reported complete after their final contract/journal checks. A1, M5 c and M1 were still running at that snapshot. No partial run is certified as a final completed evaluation.
+
+For this update, G3_M5's merged journal was checked against the four original shard journals (459/460/460/460 episodes). All 1,839 IDs are unique, have exact scheduled order/membership and match the historical registered ID set. Every merged and shard summary field was recomputed with the unchanged source evaluator and matched at tolerance 1e-12; shard contracts and runtimes agree. All four workers exited 0, `complete=true`, and final validation passed. The frozen source hashes also reverified. The [machine-readable evidence record](evidence/G3_M5_R2R_EPOCH1_20261018.json) retains this fresh verification separately from historical claims.
 
 ## Results: VGGT versions and reference checkpoints
 
@@ -51,8 +59,9 @@ The newer G3, M5, Window8-B and A0 coordinators report complete after their fina
 |---|---:|---:|---:|---:|---|
 | G1 | 1,839 / 1,839 | 914 | 49.700924 | 46.072125 | FINAL |
 | G3 | 1,839 / 1,839 | 956 | 51.984774 | 48.095941 | FINAL |
+| **G3_M5** | **1,839 / 1,839** | **917** | **49.864057** | **46.140869** | **FINAL** |
 | A0 | 1,839 / 1,839 | 910 | 49.483415 | 45.394182 | FINAL |
-| A1 | 1,356 / 1,839 | 680 | 50.147493 | 46.306672 | RUNNING — partial |
+| A1 | 1,356 / 1,839 | 680 | 50.147493 | 46.306672 | Partial at Oct 16 snapshot |
 | Window8-B | 1,839 / 1,839 | 907 | 49.320283 | 45.561094 | FINAL |
 | V0 | 1,839 / 1,839 | 852 | 46.329527 | 41.756802 | FINAL |
 
@@ -64,12 +73,15 @@ Window8-B and V0 are reference runs, not VGGT-supervised versions. Their own tra
 |---|---:|---:|---:|---:|---:|---:|
 | G1 | 6.0579 | 55.8999 | 83.84 | 94 | 2718 | 8.668 |
 | G3 | 5.7935 | 58.7819 | 94.51 | 133 | 2718 | 8.670 |
+| G3_M5 | 5.8037 | 56.6612 | 91.78 | 130 | 2646 | 8.673 |
 | A0 | 5.9695 | 55.3018 | 93.42 | 129 | 2718 | 8.670 |
 | A1 | 6.4297 | 57.6696 | 100.47 | 114 | 2683 | 8.656 |
 | Window8-B | 6.0358 | 59.8695 | 115.39 | 212 | 2718 | 8.668 |
 | V0 | 6.4879 | 59.3801 | 126.32 | 240 | 2718 | 8.668 |
 
-Peak retained KV is the observed run maximum, not the configured upper bound. All four VGGT-arm serving models use Window8 and a 4,096-row guard. V0 instead uses the generalized episodic R8/B0 path with a 5,120-row structural guard.
+Peak retained KV is the observed run maximum, not the configured upper bound. G1/G3/A0/A1 use Window8 and a 4,096-row guard. G3_M5 uses four recent groups plus 1,200 old visual rows per full-attention layer, with a 4,784-row guard. V0 instead uses the generalized episodic R8/B0 path with a 5,120-row structural guard.
+
+G3_M5 mean trajectory length is 9.4223 m, with complete NE, trajectory-length and oracle-success coverage. Its 1,709 predicted STOPs and 130 cap-ending forced STOPs account for all 1,839 final STOPs. Forced stops remain in the scored denominator; nDTW has zero coverage and is unavailable.
 
 ## What each version actually implements
 
@@ -77,6 +89,7 @@ Peak retained KV is the observed run maximum, not the configured upper bound. Al
 |---|---|---|---|
 | G1 | Current visual residual alignment to online Omega descriptors, learned MLP projector | Native Window8; auxiliary projector removed | No |
 | G3 | Delayed visual-region prediction from native GDN layer-24 state through read-only probes | Native Window8; probes, query/decoder heads removed | No |
+| G3_M5 | G3 delayed native-state supervision during M5 episodic training | M5 R4/B1200 committed-write selection; probes, query/decoder heads removed | No |
 | A0 | Navigation-only architecture control; no teacher loss | Window8 **plus trained GeoAddress Q/K adapters** | No |
 | A1 | Direct native Q/K relation KL against online Omega teacher similarities | Same retained GeoAddress architecture as A0 | No |
 
@@ -92,6 +105,10 @@ G3 also uses frozen online single-view Omega features, without PCA or added posi
 
 At native GDN index 24, a training-only query MLP uses detached normalized current native queries, a region embedding and lag encoding. Five read-only probes per pair use zero value/update/decay contributions and are removed before native output projection. A decoder predicts the 2,048-wide target from the read state. Auxiliary cosine loss uses a global pair denominator and weight ramp to 0.1 over 771 updates. Query/decoder/probes do not become inference tokens, KV rows or persistent serving modules. Serving is native Window8.
 
+### G3_M5: delayed native-state supervision with M5 memory
+
+G3_M5 combines the G3 training objective above with unchanged M5 episodic attention: four recent complete groups including the current observation and 1,200 older visual K/V rows per full-attention layer. Selection uses `committed_mean_l2_v1`, selector seed 429 and no per-source cap. Native FP32 GDN recurrent state persists through the full episode; attention eviction does not reset it. Serving uses canonical appended text actions and `vln_append_only_chat_v1`, with no teacher, auxiliary heads, probes, PCA or extra lane. The model starts from the original Qwen base, not trained G3 or trained M5 weights.
+
 ### A0 / A1: persistent GeoAddress adapters
 
 Both arms retain four trained bias-free matrices at decoder 24: separate Q and K residual paths 2560→8→256, totaling **45,056 parameters**. They modify raw Q/K heads 0 and 1 (head width 128), only for image tokens, after causal convolution/SiLU and before native head expansion/L2 normalization. Native values, gates, convolution, text-token Q/K and other raw heads are unchanged directly by the adapter operation; subsequent hidden states can still differ. The adapters are part of the learned serving model and must not be stripped.
@@ -106,9 +123,20 @@ The late A1 identity repair excludes unused positional-grid bytes while retainin
 
 G1/G3/A0/A1 completed 3,852/3,852 updates of a true one-epoch schedule, warmup 116, seed 429, nominal batch 8 and joint R2R + English RxR15 data (30,815 episodes). Their published training topology is four GPUs/GAS2. Frozen vision/merger and full-episode BPTT are retained. Vision microbatch 8 and attention batch 32 are training execution settings; **the serving window is 8, not 32**.
 
-Episodic V0/M1/M2/M2 c/M5/M5 c are epoch-1 exports at 3,852/7,704 with warmup 232. Window8-B also comes from a configured two-epoch schedule. Consequently G1/G3/A0/A1 versus those references is a practical checkpoint comparison, not a clean auxiliary-only experiment. A1 versus A0 is the more directly matched teacher-effect comparison, but A1 is unfinished and single-seed outcomes do not establish statistical robustness.
+G3_M5 also completed a true joint one-epoch schedule: 3,852 updates with 116 warmup updates. Its serving memory is R4/B1200 as specified above.
 
-### Descriptive paired comparisons
+Episodic V0/M1/M2/M2 c/M5/M5 c are epoch-1 exports at 3,852/7,704 with warmup 232. Window8-B also comes from a configured two-epoch schedule. Consequently G1/G3/G3_M5/A0/A1 versus those references is a practical checkpoint comparison, not a clean auxiliary-only experiment. A1 versus A0 is the more directly matched teacher-effect comparison, but A1 was unfinished at the historical snapshot and single-seed outcomes do not establish statistical robustness.
+
+### G3_M5 versus completed historical results
+
+| G3_M5 minus reference | Shared registered split size | Δsuccesses | ΔSR (pp) | ΔSPL (pp) |
+|---|---:|---:|---:|---:|
+| G3 | 1,839 | -39 | -2.1207 | -1.9551 |
+| M5 | 1,839 | -21 | -1.1419 | -1.2981 |
+
+These are aggregate differences against the recorded final reference scores; SPL differences use the references' published six-decimal percentages. No per-episode pairing or significance estimate was recomputed for these comparisons. The G3_M5 result is lower on both metrics than either individual reference. G3_M5 versus M5 also changes the learning-rate schedule (3,852 versus 7,704 total planned updates, warmup 116 versus 232); together with the environment differences above, this prevents attributing the difference solely to G3 supervision. A single seed does not establish a general interaction between G3 and M5.
+
+### Historical descriptive paired comparisons
 
 The next table compares identical episode IDs, UIDs and instructions. For A1, the comparator is restricted to A1's completed prefix; these values are not the comparator's full-run result. No confidence interval or significance claim is made.
 
@@ -128,20 +156,23 @@ G3's completed advantage over G1 is a descriptive comparison of different auxili
 |---|---|---|---|
 | G1 | 33 passed; 1 training-only Omega preprocessing test deselected | 64/128 steps: RMS 0.030369/0.028647; max drift 0.328125; raw token flips 1/191 and 2/383 | Peak 2,618 / guard 4,096 |
 | G3 | 24 passed | 64/128: RMS about 0.03275/0.03092; max drift 0.5; one raw token flip in each | Peak 2,618 / 4,096 |
+| G3_M5 | 81 passed, 25 warnings | 64/128: RMS 0.031916/0.030446; max drift 0.5625/0.6875; raw token flips 1/191 and 3/383 | Peak 2,546 / 4,784; all eight banks end at 1,200 rows |
 | A0 | 25 passed | 64/128: RMS 0.039986/0.037494; max drift 0.75; flips 0/191 and 2/383 | Peak 2,618 / 4,096 |
 | A1 | 33 passed | 64/128: RMS 0.031206/0.029061; max drift 0.5; flips 0/191 and 1/383 | Peak 2,618 / 4,096 |
 
-All four exports passed strict loading, finite tensor checks, two real Habitat smoke episodes, reset/retry checks and recurrent-state/cache invariants before full launch. G1/G3 serving has 724 native tensors; A0/A1 has 728 including all four adapters. Source-manifest matches: G1 53 files, G3 57, A0/A1 63 each. Actual trained A0/A1 instrumentation verified image Q/K modifications, unchanged unselected heads/text rows at the adapter, and all cache modes.
+The original four exports passed strict loading, finite tensor checks, two real Habitat smoke episodes, reset/retry checks and recurrent-state/cache invariants before full launch. G1/G3 serving has 724 native tensors; A0/A1 has 728 including all four adapters. Source-manifest matches: G1 53 files, G3 57, A0/A1 63 each. Actual trained A0/A1 instrumentation verified image Q/K modifications, unchanged unselected heads/text rows at the adapter, and all cache modes.
 
 G1/G3 training-wrapper reconstruction uses published native and auxiliary weights; A0/A1 reconstruction uses published native+adapter weights and training metadata. Their evaluation logits match the serving export bitwise on the checked fixture. Original cluster recovery artifacts were not independently available locally; this is not a claim of repeating the publisher's complete recovery-byte comparison.
 
-Replay uses real rendered Habitat RGB and fixed forced canonical histories, checking every response token including EOS. The 64/128 fixtures contain 103 distinct images across the longer fixture and are not expert-quality navigation evidence. Inherited BF16 thresholds are atol 0.75, rtol 0.03, RMS ≤0.15. Raw argmax differences are explicitly retained: a tolerance pass is not bitwise or universally free-running action equivalence. The 520-step cyclic-image test establishes bounded storage on its fixture, not navigation SR. No thresholds were relaxed for these weights. The initial A0 audit monitoring hook was corrected for keyword hidden-state arguments; production model source was unchanged.
+The original four-arm replay uses real rendered Habitat RGB and fixed forced canonical histories, checking every response token including EOS. The 64/128 fixtures contain 103 distinct images across the longer fixture and are not expert-quality navigation evidence. Inherited BF16 thresholds are atol 0.75, rtol 0.03, RMS ≤0.15. Raw argmax differences are explicitly retained: a tolerance pass is not bitwise or universally free-running action equivalence. The 520-step cyclic-image test establishes bounded storage on its fixture, not navigation SR. No thresholds were relaxed for these weights. The initial A0 audit monitoring hook was corrected for keyword hidden-state arguments; production model source was unchanged.
+
+G3_M5 independently passed strict loading/serializer checks, finite checks on 724 native tensors, auxiliary-head absence, two real Habitat smoke episodes, reset/retry checks and 64/128-step replay using real rendered observations with fixed canonical histories. Replay selected-token overlap averaged 99.0748%/98.8612% (minimum 97.3333%/97.5000%). The same BF16 thresholds above were retained; raw token flips and differing bank selection remain visible. These checks do not establish identical free-running behavior. Its 520-step storage fixture is separate from the scored navigation run. The local G3_M5 audit did not reconstruct the training wrapper or repeat distributed training; the implementation report's publication qualification remains historical evidence.
 
 Remote H100 training/recovery/teacher qualification described in implementation reports is historical evidence; the local inference checks did not repeat the complete distributed training campaign. Checks cannot guarantee the absence of every possible bug.
 
 ## Versions without a navigation result in this report
 
-R1 now has an implementation/training report on `v2_vggt_omega_r1`, but no R1 local navigation evaluation was launched or recorded in this campaign snapshot. R0 and any other planned VGGT variants likewise have no result in this report. Do not substitute training losses, qualification success or older unrelated dual-lane runs for missing benchmark results. G1, G3, A0 and A1 are the evaluated VGGT-family versions covered here.
+R1 now has an implementation/training report on `v2_vggt_omega_r1`, but no R1 local navigation evaluation was launched or recorded in this campaign snapshot. R0 and any other planned VGGT variants likewise have no result in this report. Do not substitute training losses, qualification success or older unrelated dual-lane runs for missing benchmark results. G1, G3, G3_M5, A0 and A1 are the evaluated VGGT-family versions covered here.
 
 ### Observed latency under shared GPU load
 
@@ -151,10 +182,13 @@ These values summarize the evaluated episodes in this snapshot, including partia
 |---|---:|---:|---:|---:|---:|
 | G1 | 92.53 | 86.01 | 143.56 | 98.95 | 2.22 |
 | G3 | 185.31 | 179.03 | 226.68 | 191.35 | 4.13 |
+| G3_M5 | 330.24 | 350.45 | 357.46 | 336.81 | 5.57 |
 | A0 | 167.26 | 144.22 | 478.96 | 173.45 | 4.39 |
 | A1 | 311.12 | 226.82 | 726.21 | 317.92 | 7.33 |
 | Window8-B | 178.47 | 172.80 | 227.79 | 184.47 | 4.66 |
 | V0 | 224.70 | 229.61 | 238.74 | 230.79 | 4.35 |
+
+G3_M5 ran four independent workers sharing GPU 0, each using the unchanged branch evaluator and a disjoint contiguous episode panel. Coordinator wall time was 4 h 19 min 17 s (2026-10-17 13:14:26–17:33:43 UTC). The merged timing distributions are computed over all recorded actions; this is concurrent rollout timing, not isolated policy latency.
 
 ## Checkpoint and code identities
 
@@ -177,6 +211,17 @@ These values summarize the evaluated episodes in this snapshot, including partia
 - Published training source: `22593831c80b742ee77b478ce7cb76fb44bc328b`.
 - Local export: `/data14t/anhdh35/simplememvln_g3_m5_eval/checkpoints/G3/G3/epoch-1`.
 - Local evidence root: `/data14t/anhdh35/simplememvln_g3_m5_eval`.
+
+### G3_M5
+
+- Published export: [Streaming_VGGT/G3_M5/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/249464698837e6d71e275ed769fd40fa90d41d6e/G3_M5/epoch-1).
+- Pinned Hub revision: `249464698837e6d71e275ed769fd40fa90d41d6e`; all 18 downloaded files passed checksum/size verification.
+- Weight SHA-256: `4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f`.
+- Navigation configuration SHA-256: `f07953c882bf8fa6b8bc5bc546f5ec714acb2d976c13dacf31cf44acc081a44b`.
+- Evaluation branch/source: `c2_vggt_omega_g3_m5` / `295e85e6081be2a8d8d9d786f2ba47ca22e0667b`.
+- Qualified training source: `9031d75d2aa8c3cbd1d6a1bb394f2de5a4a1abc5`; executable trees `src`, `scripts`, `configs`, `train`, `tests` match the evaluation source exactly.
+- Local evidence root: `/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/g3_m5_epoch1_20261017`.
+- Local export: `checkpoints/G3_M5/epoch-1` beneath that root; the frozen evaluation checkout is `source/`.
 
 ### A0
 
@@ -224,22 +269,28 @@ These values summarize the evaluated episodes in this snapshot, including partia
 |---|---|---|
 | G1 | `/data14t/anhdh35/simplememvln_g1_eval` | `results/full/G1` |
 | G3 | `/data14t/anhdh35/simplememvln_g3_m5_eval` | `results/full/G3` |
+| G3_M5 | `/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/g3_m5_epoch1_20261017` | `full` |
 | A0 | `/data14t/anhdh35/simplememvln_a0_eval` | `results/full/A0` |
 | A1 | `/data14t/anhdh35/simplememvln_a1_eval` | `results/full/A1` |
 | Window8-B | `/data14t/anhdh35/simplememvln_window8_b_eval` | `results/full/Window8-B-E1` |
 | V0 | `/data14t/anhdh35/simplememvln_episodic_eval` | `results/full/V0` |
 
-At each result directory, inspect `summary.json`, `episodes.jsonl`, `runtime.json` and `evaluation_contract.json`. Root `audit/`, `preflight.json`, tensor inventories, download manifests, test logs and `audit_notes.txt` (V0 uses `campaign_notes.txt`) retain qualification evidence. G3 shares its root with M5 and has arm-specific audit subdirectories. A0/A1 use `A0-status.json`/`A1-status.json`; G1 uses `status.json`; G3 uses `G3-status.json`.
+At each result directory, inspect `summary.json`, `episodes.jsonl`, `runtime.json` and `evaluation_contract.json`. For the historical runs, root `audit/`, `preflight.json`, tensor inventories, download manifests, test logs and `audit_notes.txt` (V0 uses `campaign_notes.txt`) retain qualification evidence. G3 shares its root with M5 and has arm-specific audit subdirectories. A0/A1 use `A0-status.json`/`A1-status.json`; G1 uses `status.json`; G3 uses `G3-status.json`.
 
-For reproduction, use the immutable source and exact checkpoint above, the saved navigation configuration, pinned base/runtime, dataset/scene assets and frozen `r2r_episode_ids.json`. The existing root `run_eval.py` launches the model environment and Habitat environment separately. Inspect each script's CLI before use; G1 and older V0 scripts differ from the newer arm/mode launchers. Write a new output directory for a rerun instead of overwriting evidence. Never strip A0/A1 adapters or install an online teacher into their serving path.
+For G3_M5, `full/` contains the merged journal, summary, contract, runtime and passing `validation.json`; `full/shard-00` through `shard-03` preserve the original evaluator outputs. Root `status.json`, `download_verified.json`, `source_verification.json`, `serving_audit.json`, `simulator_preflight.json`, `scene_assets.json`, `targeted_tests.log` and `review_record.json` retain qualification and provenance. The [repository evidence record](evidence/G3_M5_R2R_EPOCH1_20261018.json) includes the final summary/contract/runtime, audit records, source identities and artifact SHA-256 values, including the merged journal hash; the large journals and weights remain at the local evidence root.
+
+G3_M5's root `run_eval.sh` launches the separate policy and simulator environments; `evaluate_full.py` partitions and validates the split. The frozen selection is `episode_ids.json`, with `panel-00.json` through `panel-03.json` for the workers. Inspect the saved scripts and resolved Habitat config before reproducing, and select a fresh output root: the coordinator contains fixed evidence-root paths. Do not overwrite this completed run.
+
+For the historical runs' reproduction, use the immutable source and exact checkpoint above, the saved navigation configuration, pinned base/runtime, dataset/scene assets and frozen `r2r_episode_ids.json`. The existing root `run_eval.py` launches the model environment and Habitat environment separately. Inspect each script's CLI before use; G1 and older V0 scripts differ from the newer arm/mode launchers. Write a new output directory for a rerun instead of overwriting evidence. Never strip A0/A1 adapters or install an online teacher into their serving path.
 
 Implementation references at immutable commits:
 
 - [G1 report](https://github.com/anhdao69/SimpleMemVLN/blob/67b206b8a2e338e436e340c6c41dd146d4b2eb0e/reports/vggt_five/G1/implementation_report.md)
 - [G3 report](https://github.com/anhdao69/SimpleMemVLN/blob/9d658c245b2b9d14232e8db0b235bf92e857a43d/reports/vggt_five/G3/implementation_report.md)
+- [G3_M5 implementation and publication report](https://github.com/anhdao69/SimpleMemVLN/blob/295e85e6081be2a8d8d9d786f2ba47ca22e0667b/reports/vggt_five/G3_M5/implementation_report.md)
 - [A0/A1 implementation ledger](https://github.com/anhdao69/SimpleMemVLN/blob/4f772d3bac877322e2cb58e127c17f87e202f17c/reports/vggt_five/A0_A1/IMPLEMENTATION_2026-10-14.md)
 - [A1 completed training/publication report](https://github.com/anhdao69/SimpleMemVLN/blob/4f772d3bac877322e2cb58e127c17f87e202f17c/reports/vggt_five/A0_A1/A1_CONTINUATION_2026-10-14.md)
 
 ## Next update
 
-Wait for all 1,839 A1 episodes and final validation, then replace its partial row and shared-prefix comparison with full results. Preserve the checkpoint/source identity and the dated history. No automated refresh is configured by this report. Publishing this file to multiple branches is documentation distribution, not evidence that every branch can load every listed checkpoint.
+G3_M5 R2R evaluation is complete. Refresh A1 only when a verified 1,839-episode final journal is available, then replace its dated partial row and shared-prefix comparison with full results. Preserve the checkpoint/source identity and the dated history. No automated refresh is configured by this report. Publishing this file to multiple branches is documentation distribution, not evidence that every branch can load every listed checkpoint.
