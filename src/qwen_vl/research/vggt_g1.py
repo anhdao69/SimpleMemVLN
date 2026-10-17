@@ -18,7 +18,12 @@ def parse_g1(config):
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
     expected_layer=23 if run=='G1' else 24
-    if value.get('student_layer',expected_layer) != expected_layer: raise ValueError(f'{run} requires decoder{expected_layer}')
+    if 'student_layers' in value:
+        if run!='G3_M5' or 'student_layer' in value:
+            raise ValueError('student_layers is exclusive to G3_M5 and cannot accompany student_layer')
+        validate_student_layers(value['student_layers'])
+    elif value.get('student_layer',expected_layer) != expected_layer:
+        raise ValueError(f'{run} requires decoder{expected_layer}')
     if config['model'].get('episodic',{}).get('enabled',False): raise ValueError('Native research forbids episodic bank')
     if value.get('sampling_identity','collected-rgb-paths-v1')!='collected-rgb-paths-v1':
         raise ValueError('Unsupported G1 trajectory sampling identity')
@@ -50,3 +55,15 @@ def serving_state_dict(state):
 
 def serving_config(config):
     result=copy.deepcopy(config); result.pop('research',None); return result
+
+
+def validate_student_layers(layers, config=None):
+    """Explicit zero-based native GDN layers; canonical order is checkpoint identity."""
+    if (not isinstance(layers,list) or not layers or any(type(i) is not int for i in layers)
+            or layers!=sorted(set(layers))):
+        raise ValueError('student_layers must be a nonempty sorted list of unique integers')
+    types=(config.layer_types if config is not None else
+           ['full_attention' if i%4==3 else 'linear_attention' for i in range(32)])
+    if any(not 0<=i<len(types) or types[i]!='linear_attention' for i in layers):
+        raise ValueError('student_layers must select native GDN decoder layers')
+    return tuple(layers)

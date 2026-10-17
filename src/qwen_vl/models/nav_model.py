@@ -134,7 +134,13 @@ class SimpleMemVLNForNavigation(nn.Module):
                 text=backbone.config.text_config
                 if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
                     raise ValueError('G3 requires the qualified native 32x128 state heads')
-                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
+                if 'student_layers' in self.g1_spec:
+                    from qwen_vl.research.vggt_g1 import validate_student_layers
+                    from qwen_vl.models.vggt_g3_heads import build_state_heads
+                    layers=validate_student_layers(self.g1_spec['student_layers'],text)
+                    self.research_aux=nn.ModuleDict({'state_heads':build_state_heads(layers)})
+                else:
+                    self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
             else:
                 self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
             parameter = next(backbone.parameters())
@@ -256,7 +262,9 @@ class SimpleMemVLNForNavigation(nn.Module):
                 from qwen_vl.models.episodic_forward import episodic_text_forward
                 return episodic_text_forward(self.backbone.model.language_model,embeddings,position_ids,
                     self.episodic_spec,step_plan=step_plan,layout=episodic_layout,episode_uid=episode_uid,
-                    state_head=self.research_aux.state_head,anchors=aux_anchors,lags=aux_lags,targets=aux_targets,
+                    **({'state_heads':self.research_aux.state_heads} if 'state_heads' in self.research_aux
+                       else {'state_head':self.research_aux.state_head}),
+                    anchors=aux_anchors,lags=aux_lags,targets=aux_targets,
                     diagnostics=episodic_diagnostics,
                     window_attention_batch_steps=self.navigation_config['runtime'].get('window_attention_batch_steps',1))
             from qwen_vl.models.research_forward import research_text_forward

@@ -39,13 +39,22 @@ def main():
     bias_updates={k:int((state[k]!=earlier[k]).count_nonzero()) for k in state
                   if k.startswith('research_aux.') and k.endswith('.bias')}
     assert sum(bias_updates.values())>0,'Head movement could be weight decay alone'
+    per_head={}
+    prefixes=sorted({'.'.join(k.split('.')[:3])+'.' for k in state if k.startswith('research_aux.state_heads.')})
+    for prefix in prefixes:
+        comparison=compare((state,resumed),prefix)
+        updates=compare((earlier,state),prefix)
+        assert comparison['elements']>0 and comparison['relative_l2']<=1e-4
+        assert updates['changed_elements']>0
+        assert sum(v for k,v in bias_updates.items() if k.startswith(prefix))>0
+        per_head[prefix]=dict(recovery=comparison,update=updates)
     assert weights['relative_l2']<=1e-5 and head['relative_l2']<=1e-4
     logs=[json.loads((path/'trainer_state.json').read_text())['log_history'] for path in (ref,res)]
     losses=[next(r['loss'] for r in reversed(log) if r.get('step')==3 and 'loss' in r) for log in logs]
     assert abs(losses[0]-losses[1])<=1e-4
     result=dict(passed=True,reference=str(ref),resumed=str(res),weights=weights,head=head,
                 head_update_from_step2_to3=movement,step3_losses=losses,
-                head_bias_updates=bias_updates,
+                head_bias_updates=bias_updates,per_head=per_head,
                 recovery_world_size=last['world_size'],checkpoint_files=len(last['files']))
     Path(a.out).write_text(json.dumps(result,indent=2)+'\n')
     print('G1_RECOVERY_COMPARE_PASS',json.dumps(result),flush=True)

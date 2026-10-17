@@ -1,0 +1,46 @@
+# G3_M5: M5 memory + online G3 native-state targets; CPU optimizer offload.
+research:
+  head_lr: 0.0001
+  lambda_max: 0.1
+  ramp_updates: 771
+  run_id: G3_M5
+  sample_seed: 429
+  sampling_identity: collected-rgb-paths-v1
+  student_layers: [8]
+  teacher: VGGT-Omega-1B-512
+  teacher_batch_size: 8
+  teacher_identity:
+    adapter_sha256: 91fab33372f42c22de5991bc7bcfb85480193eb00d3c94b7c3df563419c5fb5e
+    base:
+      adapter_sha256: 86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60
+      compute_dtype: float32
+      patch_offset: 17
+      pooling: adaptive-average-15x20-LN2048-eps1e-6
+      position: g1-center-sincos2048-rms1-scale0.5-v1
+      position_sha256: dfee8e96d744f224ab3e8032096a468146a6df91b0d4397c2d30112a272c2ea7
+      preprocessing: omega-balanced512-rgb640x480-bicubic448x592-v1
+      preprocessing_code_sha256: f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6
+      source_sha256: b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb
+      teacher_dim: 2048
+      teacher_layer: 23
+      weights_sha256: c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934
+    regions_sha256: 09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839
+    target: g3-unpositioned-LN2048-regions-v1
+  teacher_residency: resident
+  teacher_source: /mnt/data/vmo-ai-task/anhdh35/third_party/vggt-omega
+  teacher_weights: /mnt/data/vmo-ai-task/anhdh35/models/vggt-omega/vggt_omega_1b_512.pt
+runtime:
+  episodic_diagnostics: false
+  malloc_trim_each_update: false
+  stage_pixels_bf16: true
+  vision_microbatch_images: 8
+  window_attention_batch_steps: 32
+training:
+  activation_offload_backend: pinned_arena_v1
+  cpu_optimizer_impl: deepspeed_cpu_adam
+  dataloader_num_workers: 8
+  dataloader_persistent_workers: true
+  dataloader_pin_memory: false
+  dataloader_prefetch_factor: 2
+  gradient_accumulation_steps: 2
+  optimizer_group_chunks: 1

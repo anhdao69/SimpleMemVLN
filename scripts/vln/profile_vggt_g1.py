@@ -14,6 +14,7 @@ def main():
     p.add_argument('--cpu-optimizer',action='store_true')
     p.add_argument('--cpu-adam',action='store_true',help='Vectorized DeepSpeed CPU AdamW; implies CPU optimizer offload')
     p.add_argument('--save',action='store_true');p.add_argument('--resume');p.add_argument('--first-update',type=int,default=1)
+    p.add_argument('--student-layers',type=int,nargs='+')
     p.add_argument('--baseline',action='store_true',help='Disposable native-off timing diagnostic only')
     a=p.parse_args();a.cpu_optimizer=a.cpu_optimizer or a.cpu_adam
     if not Path(a.fixture).is_file():raise FileNotFoundError(a.fixture)
@@ -43,6 +44,12 @@ def main():
             teacher_batch_size=a.teacher_batch,teacher_residency=a.teacher_residency,sample_seed=429,
             sampling_identity='collected-rgb-paths-v1',
             head_lr=1e-4,lambda_max=.2 if a.arm=='G1' else .1,ramp_updates=771)
+    if a.student_layers is not None:
+        if a.arm!='G3_M5' or a.baseline:raise ValueError('Layer ablations require G3_M5')
+        config['research'].pop('student_layer')
+        config['research']['student_layers']=a.student_layers
+        from qwen_vl.research.vggt_g1 import validate_student_layers
+        validate_student_layers(a.student_layers)
     config_path=out/'runtime.yaml';config_path.write_text(yaml.safe_dump(config))
     model='/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a'
     command=['torchrun','--standalone','--nproc_per_node=4','-m','qwen_vl.train.train_qwen',
@@ -78,7 +85,7 @@ def main():
         if not all(math.isfinite(e.get('aux_loss_sum',float('nan'))) and e.get('aux_pair_count',e.get('aux_frame_count',-1))>=0
                    for rank in exposures for e in rank):
             check['passed']=False;check['problems'].append('Missing/nonfinite auxiliary evidence')
-    result=dict(arm=a.arm,name=a.name,passed=status==0 and check['passed'] and resources['status']=='PASS',
+    result=dict(arm=a.arm,student_layers=a.student_layers,name=a.name,passed=status==0 and check['passed'] and resources['status']=='PASS',
         check=check,resources=resources,steady_seconds=statistics.mean(intervals) if intervals else None,
         intervals=intervals,wall_seconds=time.time()-start,threads=a.threads,workers=a.workers,
         attention_batch=a.attention_batch,vision_batch=a.vision_batch,fixture=a.fixture,

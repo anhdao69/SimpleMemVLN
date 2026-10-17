@@ -47,3 +47,8 @@ class NativeStateHead(nn.Module):
 
     def empty_loss(self,hidden):
         return hidden.sum()*0+sum(p.sum()*0 for p in self.parameters())
+
+
+def build_state_heads(layers, **kwargs):
+    """Independent, identically initialized heads; never consume backbone/data RNG."""
+    return nn.ModuleDict({str(index):NativeStateHead(**kwargs) for index in layers})

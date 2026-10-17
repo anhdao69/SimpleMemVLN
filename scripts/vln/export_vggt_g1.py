@@ -16,8 +16,14 @@ def export_checkpoint(source, destination):
     if not research or research['run_id'] not in ('G1','G3','G3_M5'): raise ValueError('Expected a G1/G3/G3_M5 training checkpoint')
     head='current_projector' if research['run_id']=='G1' else 'state_head'
     state=torch.load(source/'pytorch_model.bin',map_location='cpu',weights_only=True,mmap=True)
-    if not any(k.startswith(f'research_aux.{head}.') for k in state):
-        raise ValueError('Checkpoint missing training head')
+    prefixes=[f'research_aux.{head}.']
+    if 'student_layers' in research:
+        from qwen_vl.research.vggt_g1 import validate_student_layers
+        prefixes=[f'research_aux.state_heads.{i}.' for i in validate_student_layers(research['student_layers'])]
+    if any(not any(k.startswith(prefix) for k in state) for prefix in prefixes):
+        raise ValueError('Checkpoint missing a configured training head')
+    if any(k.startswith('research_aux.') and not any(k.startswith(prefix) for prefix in prefixes) for k in state):
+        raise ValueError('Unexpected training head namespace')
     destination.mkdir(parents=True)
     torch.save(serving_state_dict(state),destination/'pytorch_model.bin')
     metadata['config']=serving_config(metadata['config'])

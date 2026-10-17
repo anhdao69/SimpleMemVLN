@@ -17,13 +17,18 @@ from qwen_vl.train.trainer import QwenSFTTrainer
 class Model(torch.nn.Module):
     navigation_config={'research':{'ramp_updates':771,'lambda_max':.1}}
     def __init__(self):
-        super().__init__();self.head=NativeStateHead(heads=2,key_dim=3,value_dim=5,query_hidden=8,decoder_hidden=12,target_dim=8)
+        super().__init__()
+        count=int(os.environ.get('G3_REDUCTION_HEADS','1'))
+        self.heads=torch.nn.ModuleList([NativeStateHead(heads=2,key_dim=3,value_dim=5,query_hidden=8,decoder_hidden=12,target_dim=8) for _ in range(count)])
     def forward(self,hidden,target,state,**kwargs):
-        if len(hidden):
-            queries=self.head.queries(hidden,torch.full((len(hidden),),8,device=hidden.device)).reshape(-1,5,2,3)
-            reads=torch.einsum('prhkv,prhk->prhv',state,queries)
-            aux=self.head.loss(reads,target)
-        else:aux=self.head.empty_loss(hidden)
+        values=[]
+        for head in self.heads:
+            if len(hidden):
+                queries=head.queries(hidden,torch.full((len(hidden),),8,device=hidden.device)).reshape(-1,5,2,3)
+                reads=torch.einsum('prhkv,prhk->prhv',state,queries)
+                values.append(head.loss(reads,target))
+            else:values.append(head.empty_loss(hidden))
+        aux=sum(values)/len(values)
         return {'loss_sum':aux*0,'aux_loss_sum':aux}
 
 
