@@ -96,3 +96,14 @@ episodes, and controller survival independent of login-node watcher processes.
 - Review hardware items remain gated by actual H100 qualification, not inferred
   from CPU tests. Slurm allocation cancellation requires controller relaunch;
   worker-resident orchestration does not claim survival of scheduler cancellation.
+- Frozen reviewed source: f4d1c2f216e68a960a5a691d21cbf1f08ea4a901, pushed
+  to origin/c2_vggt_omega_g3_m5_layers. Three detached cluster worktrees:
+  g3-m5-layers-worker2-20261017/source-f4d1c2f-{l8,l16,l8_l16_l24}.
+- Final qualification is running in owned Slurm step 4925.100. All 403 cluster
+  tests and three-head NCCL normalization passed. Triple-head empty-support
+  tests passed for both accumulation slots; remaining hardware gates pending.
+- A separate CPU-only launch gate was submitted inside allocation 4925. It
+  waits for the final qualification seal and for all other compute steps to
+  exit, then execs the worker-resident production queue. Six operational safety
+  cases passed (failed/missing qualification, active competing step, ready).
+  Existing interactive shell .0 and unrelated jobs are untouched.

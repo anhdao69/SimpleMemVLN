@@ -112,3 +112,79 @@ No existing job is cancelled, and no existing output directory is reused.
 Pending actual H100 qualification. Baseline full L24 training took about
 14h22m, averaging 13.39 seconds/update; this is a reference, not a measured ETA
 for these new ablations. No validation metrics for the new models exist yet.
+
+## Review and environment checks
+
+A fresh reviewer found no critical issue and one important operational issue:
+completed-arm skipping initially checked epoch completion without layer/source
+identity. Two failing regression tests demonstrated the missing guard. The
+fixed queue binds each run directory to its arm, source path and qualified file
+hashes before launch or skip, refuses unbound existing outputs, and checks final
+checkpoint supervised-layer identity. The resulting targeted suite passed all
+34 tests in 16.23 seconds.
+
+The complete suite on the Mac produced 364 passes, 35 CUDA skips and four
+missing-environment failures: no Slurm `squeue`, no DeepSpeed, no Omega package,
+and no cluster `VLN_MODEL_PATH`. The preliminary cluster checkout passed all
+401 tests and the three-head distributed reduction test before qualification
+was restarted on the reviewed commit f4d1c2f. Those preliminary results are
+not substituted into the final source-bound qualification seal.
+
+Deferred minor from review: a failed/interrupted qualification profile leaves
+its fixed experiment directory. Preserve that failed directory under an attempt
+suffix before rerunning the same gate; successful gates may be reused only with
+an identical source manifest. Production auto-resume is a separate path and
+is not affected by this diagnostic-directory limitation.
+
+A separate real-process queue exercise launched disposable child processes,
+forced L16 to exit 17, and verified that the third arm did not start. A fresh
+controller process then skipped completed L8, retried L16, and ran the final
+arm. Another fresh restart launched nothing. Launch sequence was
+`l8, l16(failed), l16(retry), l8_l16_l24`; both restart controllers exited zero.
+This tests process-level ordering/failure/restart, not cluster cancellation.
+
+The current joint manifest was rehashed on the cluster and exactly matched the
+baseline SHA256 above. Final reviewed source f4d1c2f passed all 403 cluster tests
+in 62.65 seconds and its three-head distributed reduction gate passed. Further
+per-arm qualification remains pending at the time of this record.
+
+## Controller launch / recovery command
+
+After the qualification seal exists and all other GPU steps have finished,
+run the following inside the same idle four-H100 worker-2 allocation (replace
+the allocation number only if it has changed):
+
+```bash
+ROOT=/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017
+CODE="$ROOT/source-f4d1c2f-l8"
+srun --jobid=4925 --overlap --ntasks=1 --gpus=4 --cpus-per-task=60 \
+  --nodelist=worker-2 --job-name=g3-layers-sequence \
+  env G1_CODE_DIR="$CODE" \
+  G1_CUDA_HOME=/mnt/data/vmo-ai-task/anhdh35/cuda-12.9.1 \
+  OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
+  bash "$CODE/train/g1_omega_env.sh" python -m scripts.vln.queue_g3_layers \
+  --root "$ROOT/production" \
+  --seal "$ROOT/qualification-f4d1c2f/qualification_pass.json" \
+  --sources "$ROOT/source-f4d1c2f-l8" "$ROOT/source-f4d1c2f-l16" \
+            "$ROOT/source-f4d1c2f-l8_l16_l24"
+```
+
+Use the same production root and source paths when recovering. Do not launch
+another controller while the first is alive. `production/queue_state.json`
+records the current arm, `heartbeat.json` records worker liveness, and each
+arm retains complete recovery checkpoints with model, optimizer, scheduler,
+per-rank RNG and resume contract. The first production save is update 10,
+followed by every 100 updates and the epoch boundary; bounded older recovery
+pruning applies only within that arm's own output directory.
+
+## Automatic launch gate
+
+The deployment recipe in `operations/launch_after_qualification.py` is a
+CPU-only waiting process in a separate Slurm step of the same allocation.
+It waits for the successful source-bound seal, the qualification step to exit,
+and any unrelated compute step to finish before replacing itself with the
+production controller. A failed qualification or an exited qualifying step
+without a seal blocks training. The queue then independently verifies the
+seal and run identities. Six safety cases passed using
+`python3 reports/vggt_five/G3_M5_layers/operations/check_launch_gate.py`.
+This gate allows qualification-to-training handoff without another SSH session.
