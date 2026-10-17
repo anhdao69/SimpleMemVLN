@@ -1,8 +1,11 @@
 # G3+M5 supervision-layer ablations
 
-Status: implementation, review, qualification and queue launch complete.
-At 2026-10-17 05:17:55 UTC, L8 was at update 12/3852 with a validated
-checkpoint-10; L16 and triple remain queued. Full-epoch results are pending.
+Status: L8 completed and was published to Streaming_VGGT/G3_M5_L8/epoch-1.
+User changed the queue on October 17: stop L16 after publication and run the
+triple-layer arm. L16 stopped at update 35, with checkpoint-10 preserved.
+Triple is running in 4925.124 from the original base; no scientific changes.
+Use operations/run_selected_arm.py for the current queue, not the historical
+three-arm controller. Triple completion and navigation evaluation are pending.
 
 ## Binding specification
 
@@ -134,3 +137,6 @@ episodes, and controller survival independent of login-node watcher processes.
 - Final report and machine-readable evidence are in
   reports/vggt_five/G3_M5_layers/. All requested runs are independently
   configured and automatically queued; full-epoch evaluation remains future work.
+
+- Queue override and publication evidence: see the latest-status section of
+  reports/vggt_five/G3_M5_layers/implementation_report.md.

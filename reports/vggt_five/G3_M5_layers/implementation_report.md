@@ -1,6 +1,46 @@
 # G3+M5 native-state supervision-layer ablations
 
-## Verified status
+## Latest status — user-directed queue change, October 17
+
+L8 completed its one joint epoch (3,852 updates) in approximately **14h25m**,
+with mean wall time **13.4564 s/update**, action-weighted training loss
+**0.12704034**, and zero GPU/host OOM events.
+Published serving weights: [G3_M5_L8/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/G3_M5_L8/epoch-1).
+Immutable revision: `792a0c959d8e6be8aee20e9cfa560c4f4b5a6b9b`.
+All **19 files** passed hash/size verification; **120 existing non-attributes
+files** remained unchanged. The only automatic metadata addition was the LFS
+rule for the new folder's tokenizer. The CPU export strictly reloaded the
+navigation architecture and preserved all **724 serving tensors bit-for-bit**.
+No new GPU replay of the completed model was run while L16 occupied the GPUs;
+the earlier GPU serving qualification is explicitly labeled as such.
+
+After verified upload, the user explicitly requested stopping L16 and running
+the triple-layer arm next. L16 stopped after update **35**; its latest complete
+recovery is **checkpoint-10**. Updates 11–35 would be replayed on resume.
+No L16 checkpoint was deleted. The original queue exited after the intentional
+stop; its blocked/FAIL record reflects that user cancellation, not a training
+numerical failure. `production/l16/USER_STOPPED.json` records the reason and
+preserved checkpoint. The interactive allocation and shell remain available.
+
+The replacement controller now runs **L8+L16+L24 only**, in **4925.124** on
+worker-2. At 2026-10-17 19:52:07 UTC, every rank had completed update **5/3852**,
+with finite loss and no OOMs. It starts from original pretrained Qwen weights,
+not L8 or stopped L16, and uses layers [8,16,24], seed 429, lambda 0.1 and the
+same one-epoch schedule. L16 is explicitly omitted, not marked complete.
+
+Operational records: `evidence/publication_and_user_override_20261017.json`,
+`evidence/triple_user_start_20261017.json`; executable recipes in
+`operations/publish_l8.py` and `operations/run_selected_arm.py`. The deployed
+controller is at the campaign root. It reuses the original source seal,
+per-arm identity, launcher, recovery and completion checks; scientific source
+remains unchanged at f4d1c2f. Do not restart the original three-arm queue if
+L16 is meant to remain stopped. To recover the triple run in allocation 4925,
+use the same srun/environment command below but execute
+`python "$ROOT/run_selected_arm.py"`; the helper's allocation assertion must
+be updated deliberately if allocation 4925 is replaced. It resumes the triple
+arm from its latest complete checkpoint and leaves L16 stopped.
+
+## Initial launch verification
 
 Verified at 2026-10-17 05:17:55 UTC.
 
