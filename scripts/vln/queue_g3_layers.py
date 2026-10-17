@@ -38,6 +38,30 @@ def check_seal(source,path):
     return data
 
 
+def bind_run(root,arm,source,seal):
+    """Never adopt outputs from an unqualified or differently configured run."""
+    root,source=Path(root),Path(source).resolve()
+    data=check_seal(source,seal)
+    identity=dict(arm=arm,layers=LAYERS[arm],source=str(source),source_files=data['source_files'])
+    path=root/'run_identity.json'
+    if path.exists():
+        if json.loads(path.read_text())!=identity:raise ValueError('Run identity differs from qualified source/arm')
+        return
+    if root.exists() and any(root.iterdir()):raise ValueError('Refusing existing unbound run directory')
+    root.mkdir(parents=True,exist_ok=True)
+    temp=path.with_suffix('.tmp');temp.write_text(json.dumps(identity,indent=2));temp.replace(path)
+
+
+def arm_complete(root,arm):
+    if predecessor_status(root)!='complete':return False
+    config=json.loads((Path(root)/'train/checkpoint-3852/navigation.json').read_text())['config']
+    research=config.get('research',{})
+    if (research.get('run_id')!='G3_M5' or research.get('student_layers')!=LAYERS[arm]
+            or 'student_layer' in research):
+        raise ValueError('Completed checkpoint has wrong supervised layer identity')
+    return True
+
+
 def run_sequence(launch,complete,record):
     """No scheduler dependency races: this worker process owns every child."""
     arm=None
@@ -70,7 +94,7 @@ def main():
         path=root/'queue_state.json';temp=path.with_suffix('.tmp')
         temp.write_text(json.dumps(data,indent=2));temp.replace(path)
         print(json.dumps(data),flush=True)
-    def complete(arm):return predecessor_status(root/arm)=='complete'
+    def complete(arm):return arm_complete(root/arm,arm)
     def launch(arm):
         source=sources[arm];check_seal(source,a.seal)
         command=['bash',str(source/'train/launch_g3_layers_joint_e1.sh'),str(root/arm),arm,a.seal]
@@ -82,6 +106,7 @@ def main():
             temp.write_text(json.dumps(dict(unix=time.time(),pid=os.getpid(),node='worker-2')));temp.replace(path)
     with (root/'queue.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        for arm,source in sources.items():bind_run(root/arm,arm,source,a.seal)
         stop=threading.Event();thread=threading.Thread(target=heartbeat,args=(stop,),daemon=True);thread.start()
         try:run_sequence(launch,complete,record)
         finally:stop.set();thread.join()

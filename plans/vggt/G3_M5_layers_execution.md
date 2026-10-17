@@ -85,3 +85,14 @@ episodes, and controller survival independent of login-node watcher processes.
   each arm has separate source/output, auto-resume, and successful-checkpoint
   gating. A cancelled allocation still requires starting the controller in a
   replacement allocation; its saved weights and queue position are recoverable.
+- Fresh whole-branch reviewer: no critical scientific issue; one important
+  completion-skip identity gap. Added run/source binding and explicit final
+  checkpoint layer identity verification; regression reproduced the missing
+  guard before implementation.
+- Deferred minor: interrupted qualification profiles use fixed directories.
+  Preserve a failed experiment directory by renaming it with an attempt suffix
+  before restarting that qualification; successful gates are retained only
+  when the source manifest is identical. Production resume is unaffected.
+- Review hardware items remain gated by actual H100 qualification, not inferred
+  from CPU tests. Slurm allocation cancellation requires controller relaunch;
+  worker-resident orchestration does not claim survival of scheduler cancellation.

@@ -43,3 +43,24 @@ def test_zero_exit_without_complete_checkpoint_blocks_next_arm():
     with pytest.raises(RuntimeError,match='checkpoint'):
         run_sequence(lambda arm:calls.append(arm),lambda arm:False,lambda **data:None)
     assert calls==[ARMS[0]]
+
+
+def test_run_binding_rejects_other_source_and_existing_unbound_run(tmp_path):
+    from scripts.vln.queue_g3_layers import bind_run
+    source,seal=make_seal(tmp_path/'first');run=tmp_path/'run'
+    bind_run(run,'l8',source,seal)
+    bind_run(run,'l8',source,seal)
+    with pytest.raises(ValueError,match='identity'):bind_run(run,'l16',source,seal)
+    second,secondseal=make_seal(tmp_path/'second')
+    with pytest.raises(ValueError,match='identity'):bind_run(run,'l8',second,secondseal)
+    unbound=tmp_path/'unbound';unbound.mkdir();(unbound/'train').mkdir()
+    with pytest.raises(ValueError,match='unbound'):bind_run(unbound,'l8',source,seal)
+
+
+def test_complete_wrong_arm_is_never_skipped(tmp_path,monkeypatch):
+    import scripts.vln.queue_g3_layers as queue
+    monkeypatch.setattr(queue,'predecessor_status',lambda root:'complete')
+    final=tmp_path/'train/checkpoint-3852';final.mkdir(parents=True)
+    (final/'navigation.json').write_text(json.dumps({'config':{'research':{'run_id':'G3_M5','student_layers':[16]}}}))
+    with pytest.raises(ValueError,match='layer'):queue.arm_complete(tmp_path,'l8')
+    assert queue.arm_complete(tmp_path,'l16')
