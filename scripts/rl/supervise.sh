@@ -20,6 +20,9 @@ LOG=$LOGS/supervisor-$NAME.log
 cd "$ROOT"
 say() { echo "$(date -Is) $*" >> "$LOG"; }
 complete() { python3 -c "import json,sys; sys.exit(0 if json.load(open('$1/summary.json')).get('complete') else 1)" 2>/dev/null; }
+# Only an explicit inactive/failed state counts as stopped: under host memory pressure systemctl can
+# fail or time out, and treating that as "stopped" once started the next run while this one ran.
+stopped() { local s; s=$(systemctl --user is-active "$1" 2>/dev/null); [ "$s" = inactive ] || [ "$s" = failed ]; }
 restarts=()
 GPU_FREE_MIB=${GPU_FREE_MIB:-46000}  # rank 0 holds ~40 GiB of ZeRO-2 state + grads plus a ~1 GiB helper
 
@@ -59,7 +62,7 @@ while true; do
       shard="$EVAL/shard$1"
       if complete "$shard"; then
         done_shards=$((done_shards + 1))
-      elif ! systemctl --user is-active -q "rl-eval-$NAME-$1"; then
+      elif stopped "rl-eval-$NAME-$1"; then
         say "launch eval shard $1 on GPU $2"
         mkdir -p "$shard"
         scripts/rl/launch_unit.sh "rl-eval-$NAME-$1" "$LOGS/eval-$NAME-shard$1.log" \
@@ -74,7 +77,7 @@ while true; do
       say "evaluation merged and compared: $EVAL" && exit 0
       say "merge/compare failed"; exit 1
     fi
-  elif ! systemctl --user is-active -q "$UNIT"; then
+  elif stopped "$UNIT"; then
     now=$(date +%s); kept=()
     for t in "${restarts[@]}"; do [ $((now - t)) -lt 21600 ] && kept+=("$t"); done
     restarts=("${kept[@]}")
