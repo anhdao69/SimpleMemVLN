@@ -1,5 +1,23 @@
 # Plain M5 with the G3 one-epoch decay schedule
 
+## Latest observation — automatic handoff succeeded
+
+At **2026-10-18 13:44:10 UTC**, the triple-layer predecessor had completed its
+full epoch and the same controller reported `running-m5`. Plain M5 reached
+**889/3852 updates (23.08%)** with no GPU/host OOM events. The latest saved
+recovery was checkpoint 800. M5 started automatically on worker-2; no manual
+launch was needed after the triple run completed.
+
+Measured wall rate was 12.35 s/update over 300 updates and 12.70 s/update over
+800 updates; the latest 100 averaged 13.12 s/update. This suggests roughly
+10–11 hours remaining, approximately 00:00–00:45 UTC October 19, including
+uncertainty from episode lengths and final checkpoint I/O. This is an estimate,
+not a completion guarantee. Evidence: `evidence/training_status_20261018.json`.
+The completed triple model was uploaded separately; M5 has no completed
+epoch-1 export yet.
+
+## Setup and qualification record
+
 Verified at **2026-10-18 04:28:24 UTC**: four-H100 qualification passed, and
 the triple-layer predecessor resumed successfully from checkpoint **2227**.
 All four ranks reached **2228/3852**, with zero CUDA OOMs. The worker-resident

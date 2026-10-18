@@ -1,6 +1,32 @@
 # G3+M5 native-state supervision-layer ablations
 
-## Latest status — plain M5 queued after triple, October 18
+## Latest status — triple completed and published, October 18
+
+The triple-layer arm completed all **3,852 updates / epoch 1** with
+action-weighted training loss **0.12598709897034086** and no GPU/host OOMs.
+The completion supervisor passed. The automatic queue then started plain M5
+with the matched one-epoch decay in the same worker-2 allocation.
+
+Published serving weights:
+[G3_M5_L8_L16_L24/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/G3_M5_L8_L16_L24/epoch-1).
+Immutable revision: `36c478841d489366ccf91c06033fea8921e9d0b1`.
+At 2026-10-18 13:43:35 UTC all **19 published files** passed hash/size checks,
+and **139 existing non-attributes files** remained unchanged. The automatic
+metadata change only added the new tokenizer's LFS rule. Every one of the
+**724 serving tensors** was bitwise identical to the completed checkpoint,
+and the navigation model strictly reloaded on CPU with exact serializer and
+memory metadata. Only the three training-only readout heads and research
+configuration were removed. GPU export replay evidence is from qualification;
+the completed export was validated on CPU while M5 continued training.
+
+Publication evidence: `evidence/triple_publication_20261018.json`.
+Reproducible operation: `operations/publish_triple.py`. Cluster publication
+root: `publication-triple-epoch1-20261018` within this campaign. The published
+`run_timing.json` measures the resumed invocation, not the full pre-pause plus
+post-pause epoch; `epoch-1.json` covers all epoch updates. No navigation
+evaluation score is claimed.
+
+## Earlier status — plain M5 queued after triple, October 18
 
 At the user's request, triple-layer training saved a complete checkpoint at
 **2227** and paused briefly for plain-M5 qualification. All M5 qualification

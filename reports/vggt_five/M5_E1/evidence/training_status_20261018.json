@@ -1,0 +1,84 @@
+{
+  "observed_utc": "2026-10-18T13:44:10.706161+00:00",
+  "triple_epoch": {
+    "world_size": 4,
+    "start_update": 1,
+    "end_update": 3852,
+    "completed_updates": 3852,
+    "loss_action_weighted": 0.12598709897034086,
+    "first_update_loss": 0.4864458217742337,
+    "last_update_loss": 0.06755169215072696,
+    "mean_update_compute_seconds": 12.82772236736582,
+    "median_update_compute_seconds": 10.183605173486285,
+    "mean_wall_seconds_per_update": 13.76656462965477,
+    "peak_allocated_gib": 67.91325044631958,
+    "peak_reserved_gib": 76.609375,
+    "gpu_utilization_mean_pct": null,
+    "gpu_utilization_samples": 0
+  },
+  "queue": {
+    "status": "running-m5",
+    "updated_unix": 1792319747.456299,
+    "pid": 1036091,
+    "node": "worker-2",
+    "step": "4925.127",
+    "predecessor": "/mnt/data/vmo-ai-task/anhdh35/g3-m5-layers-worker2-20261017/production/l8_l16_l24",
+    "next_run": "plain_M5_one_epoch",
+    "run": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/production/m5_joint_e1"
+  },
+  "m5_step": 889,
+  "total": 3852,
+  "progress_pct": 23.078920041536865,
+  "rates": {
+    "100": {
+      "s_per_update": 13.120582444667816,
+      "remaining_hours": 10.798968273208539,
+      "finish_utc": "2026-10-19T00:32:07.009464+00:00"
+    },
+    "300": {
+      "s_per_update": 12.35496441046397,
+      "remaining_hours": 10.168822096723538,
+      "finish_utc": "2026-10-18T23:54:18.483244+00:00"
+    },
+    "800": {
+      "s_per_update": 12.699307917952538,
+      "remaining_hours": 10.452235933581491,
+      "finish_utc": "2026-10-19T00:11:18.773064+00:00"
+    }
+  },
+  "ranks": [
+    {
+      "update": 889,
+      "peak_reserved_gib": 66.814453125,
+      "cuda_ooms": 0,
+      "working_set_gib": 385.43141174316406,
+      "oom_kill": 0,
+      "oom": 0
+    },
+    {
+      "update": 889,
+      "peak_reserved_gib": 64.451171875,
+      "cuda_ooms": 0,
+      "working_set_gib": 385.43141174316406,
+      "oom_kill": 0,
+      "oom": 0
+    },
+    {
+      "update": 889,
+      "peak_reserved_gib": 61.326171875,
+      "cuda_ooms": 0,
+      "working_set_gib": 385.43142318725586,
+      "oom_kill": 0,
+      "oom": 0
+    },
+    {
+      "update": 889,
+      "peak_reserved_gib": 45.681640625,
+      "cuda_ooms": 0,
+      "working_set_gib": 385.4314155578613,
+      "oom_kill": 0,
+      "oom": 0
+    }
+  ],
+  "latest_checkpoint": 800
+}

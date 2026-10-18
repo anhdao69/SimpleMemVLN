@@ -1,0 +1,125 @@
+{
+  "passed": true,
+  "repo": "anhdao69/Streaming_VGGT",
+  "revision": "36c478841d489366ccf91c06033fea8921e9d0b1",
+  "folder": "G3_M5_L8_L16_L24/epoch-1",
+  "files": [
+    {
+      "path": "G3_M5_L8_L16_L24/README.md",
+      "sha256": "aa9f13c322bfcc28eb354084a62b7e8308859b6f5d7cf946bfff7116bf4a9daf",
+      "size": 2697,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/SHA256SUMS.json",
+      "sha256": "767f48473fc1248722a75313f564c43730aaf9cd180b28a3e6c513c78d6d2c75",
+      "size": 2851,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/chat_template.jinja",
+      "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+      "size": 7756,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/config.json",
+      "sha256": "2451a8786918f4c348acb32c438d9a127098c022334ae1a7713ce5be588a7df1",
+      "size": 2903,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/navigation.json",
+      "sha256": "f07953c882bf8fa6b8bc5bc546f5ec714acb2d976c13dacf31cf44acc081a44b",
+      "size": 3876,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/processor_config.json",
+      "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1",
+      "size": 1191,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/pytorch_model.bin",
+      "sha256": "c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce",
+      "size": 10350179659,
+      "method": "Hub LFS SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/research_training.json",
+      "sha256": "53dc86063c525c708e65186efd8bf6419ef1e2dcaf62c4cee6fda122c2945dca",
+      "size": 1736,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer.json",
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "size": 19989325,
+      "method": "Hub LFS SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer_config.json",
+      "sha256": "7488550a894dcf741616126e322ea31d66cf9457b59ec5825f4c7efdced421f8",
+      "size": 1164,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/completion_resources.json",
+      "sha256": "c4ffa766108b88e9a9ae155a4a5839ac30b1af5cca5557c937c77a45be7d15b9",
+      "size": 1897,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/epoch-1.json",
+      "sha256": "37d7fbd3dd3ae9d4c4900f9a54f4360d251a96c64ba7541256f7c88a4f08a373",
+      "size": 396566,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/publication_validation.json",
+      "sha256": "1dbc3d3980e215926891231caa1640dc14c68d13e2a804107eae0f9732376f65",
+      "size": 1708,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_pass.json",
+      "sha256": "c907ded9b5a956c97642abd76376de5531d953d7d0bc92dd5f1cedcff52c2690",
+      "size": 52658,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_serving_replay.json",
+      "sha256": "042f57c37fc9a08766c80633b2939d8cc221177397aea42c4c692af01a8d85fd",
+      "size": 1292,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/resolved_config.json",
+      "sha256": "5124c528b3de930e436eca4fdb7a73becd49e2698756a462ecf3ab6796588567",
+      "size": 3865,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/run_timing.json",
+      "sha256": "be9af55cf35385c6a10cb46cfdf162777c2a21bf1d43b517c3e83405fe607de7",
+      "size": 354,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/source_and_completion.json",
+      "sha256": "ffbc5c420ef332c6f85a293ee301c1e9ad9408169963fc9e0c862df4d66c8a75",
+      "size": 1756,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/trainer_state.json",
+      "sha256": "84e9e5370224028e02e04215ca65489dfd77443a58a7aaf8c87411eb34bceabe",
+      "size": 719134,
+      "method": "Downloaded SHA256 and size"
+    }
+  ],
+  "prior_files_unchanged": 139,
+  "automatic_metadata_change": "G3_M5_L8_L16_L24/epoch-1/tokenizer.json filter=lfs diff=lfs merge=lfs -text",
+  "verified_utc": "2026-10-18T13:43:35.565163+00:00"
+}
