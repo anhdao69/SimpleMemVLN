@@ -1,6 +1,26 @@
 # G3+M5 native-state supervision-layer ablations
 
-## Latest status — user-directed queue change, October 17
+## Latest status — plain M5 queued after triple, October 18
+
+At the user's request, triple-layer training saved a complete checkpoint at
+**2227** and paused briefly for plain-M5 qualification. All M5 qualification
+gates passed, including mixed updates, fresh-process recovery and repeated
+longest RxR episodes. Triple resumed and reached **2228/3852 on every rank**
+at 2026-10-18 04:28:24 UTC, with zero CUDA OOMs.
+
+The active outer controller is **4925.127 on worker-2**, rooted at
+`/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018`. It resumes the
+existing triple controller, waits for its successful full epoch, then
+automatically trains plain M5 from the original base with G3's one-epoch
+3,852-update/116-warmup schedule. L16 remains stopped. The new M5 output is
+separate; no scientific source changed. See the
+[M5 report and evidence](../M5_E1/implementation_report.md).
+
+The recovery commands below describe earlier controllers. Use the new outer
+controller when recovering the current triple-then-M5 sequence; restarting
+only the old triple helper does not queue M5.
+
+## Historical status — user-directed queue change, October 17
 
 L8 completed its one joint epoch (3,852 updates) in approximately **14h25m**,
 with mean wall time **13.4564 s/update**, action-weighted training loss
