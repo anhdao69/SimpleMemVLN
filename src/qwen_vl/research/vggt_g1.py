@@ -7,6 +7,14 @@ def parse_g1(config):
     value=config.get('research')
     if value is None: return None
     if value.get('run_id') != 'G1': raise ValueError('This implementation permits only G1')
+    context=value.get('teacher_context','single_frame')
+    if context not in ('single_frame','current_future_v1'):
+        raise ValueError('Unsupported teacher context')
+    if context=='current_future_v1':
+        from qwen_vl.research.vggt_future import future_frame_pairs
+        future_frame_pairs((),0,value.get('teacher_future_offset'))
+    elif 'teacher_future_offset' in value:
+        raise ValueError('Future offset requires paired teacher context')
     if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
         raise ValueError('G1 requires native Window8 text')
     if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')

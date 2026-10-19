@@ -55,9 +55,21 @@ class EpisodeDataset(Dataset):
             episode=self.episodes[index]
             frames=sample_frames(collection_trajectory_key(episode),len(episode['steps']),
                                  self.serializer.config['research'].get('sample_seed',429))
+            spec=self.serializer.config['research']
+            pairs=None
+            if spec.get('teacher_context')=='current_future_v1':
+                from qwen_vl.research.vggt_future import future_frame_pairs
+                pairs=future_frame_pairs(frames,len(episode['steps']),spec['teacher_future_offset'])
+                frames=tuple(t for t,future in pairs)
             result['aux_visual_positions']=sampled_visual_positions(result['input_ids'],
                 self.serializer.image_id,result['step_plan'][1],frames)
-            result['teacher_images']=preprocess_teacher_images([episode['steps'][i]['rgb_path'] for i in frames])
+            if pairs is None:
+                result['teacher_images']=preprocess_teacher_images([episode['steps'][i]['rgb_path'] for i in frames])
+            else:
+                unique=sorted({i for pair in pairs for i in pair})
+                images=preprocess_teacher_images([episode['steps'][i]['rgb_path'] for i in unique])
+                indices=torch.tensor([[unique.index(i) for i in pair] for pair in pairs],dtype=torch.long).reshape(-1,2)
+                result['teacher_images']=images[indices]
             result['aux_frame_count']=len(frames)
         return result
 

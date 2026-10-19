@@ -143,8 +143,13 @@ class EpisodeTrainer(QwenSFTTrainer):
         self.online_teacher_seconds=0.
         if images is not None:
             if not hasattr(self,'online_teacher'):
-                from qwen_vl.research.vggt_omega import OnlineOmegaTeacher
-                self.online_teacher=OnlineOmegaTeacher(self.model.navigation_config['research'],self.args.device)
+                spec=self.model.navigation_config['research']
+                if spec.get('teacher_context')=='current_future_v1':
+                    from qwen_vl.research.vggt_future import OnlineFutureOmegaTeacher
+                    self.online_teacher=OnlineFutureOmegaTeacher(spec,self.args.device)
+                else:
+                    from qwen_vl.research.vggt_omega import OnlineOmegaTeacher
+                    self.online_teacher=OnlineOmegaTeacher(spec,self.args.device)
             targets=self.online_teacher(images)
             self.online_teacher_seconds=self.online_teacher.last_seconds
         prepared=super()._prepare_inputs({k:v for k,v in inputs.items() if k not in ('teacher_images','aux_targets')})
