@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "step": 2649,
+  "max_steps": 3852,
+  "epoch": 0.6876947040498442,
+  "world_size": 4,
+  "files": 22,
+  "checkpoint": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/train/checkpoint-2649"
+}

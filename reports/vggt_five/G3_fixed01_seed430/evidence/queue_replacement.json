@@ -1,0 +1,9 @@
+{
+  "unix": 1792381899.6381352,
+  "replacement": "/mnt/data/vmo-ai-task/anhdh35/g3-fixed01-seed430-worker2-20261019/queue",
+  "old_successor": "g1_future",
+  "new_successor": "g3_fixed",
+  "seed": 430,
+  "lambda_geo": 0.1,
+  "reason": "User-requested queue replacement; G3A1 checkpoint2649 retained"
+}

@@ -1,0 +1,1 @@
+G3_FIXED_QUALIFICATION_AND_QUEUE_PASS /mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/train/checkpoint-2649

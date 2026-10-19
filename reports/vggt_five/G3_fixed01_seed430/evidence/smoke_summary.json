@@ -1,0 +1,20 @@
+{
+  "fixture": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/mixed_extreme.jsonl",
+  "sha256": "64f737eb23838ff55f541f6422dd1fd5bcd302af48fa210fd959ca4cb7ebf301",
+  "exposures": 16,
+  "max_frames": 627,
+  "max_tokens": 199735,
+  "weights": [
+    0.1
+  ],
+  "episode_uids": [
+    "r2rce:train:mp3d/PuKPg4mmafe/PuKPg4mmafe.glb:6967:6967",
+    "r2rce:train:mp3d/rPc6DW4iMge/rPc6DW4iMge.glb:297:297",
+    "r2rce:train:mp3d/sKLMLpTHeUy/sKLMLpTHeUy.glb:3200:3200",
+    "rxrce:train:mp3d/82sE5b5pLXE/82sE5b5pLXE.glb:31149:22206",
+    "rxrce:train:mp3d/SN83YJsR3w2/SN83YJsR3w2.glb:3098:91046",
+    "rxrce:train:mp3d/Vvot9Ly1tCj/Vvot9Ly1tCj.glb:13476:79656",
+    "rxrce:train:mp3d/kEZ7cmS4wCh/kEZ7cmS4wCh.glb:10317:39641",
+    "rxrce:train:mp3d/p5wJjkQkbXX/p5wJjkQkbXX.glb:16733:10791"
+  ]
+}

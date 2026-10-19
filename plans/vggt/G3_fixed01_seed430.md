@@ -11,3 +11,5 @@ User request: replace the unstarted G1-future queue stage with original G3 using
 - GPU full suite and two-update mixed-extreme training include the longest627-frame RxR episode, fixed0.1 exposure weights, finite gradients/losses, complete four-rank checkpoint2, and actual readout bias updates.
 - On success, launch a new persistent queue with the exact old G3+A1 source/state first and fresh G3 second. Require complete epoch3852/checkpoint/export before transition. Preserve current allocation4925 on worker-2 and its interactive shell.
 - Verify G3+A1 resumes from the newly saved checkpoint; document the replacement queue and push the branch.
+
+Completed verification:381GPUtests pass with no skips; two full mixed-extreme updates pass including627-frame RxR, all16exposures have constant0.1, checkpoint2 validates22files, and readout biases update. G3+A1 safely saved2649 and resumed through2654 with preserved one-epoch schedule and40nonrepeated exposures. Active sequence in4925.139 isG3+A1→G3fixed0.1seed430; G1-future launcher disabled and retained as superseded evidence. Full G3 remains queued, not yet trained/evaluated.

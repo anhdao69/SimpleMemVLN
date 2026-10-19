@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "unix": 1792382025.0403616,
+  "resumed_from": 2649,
+  "current_step": 2654,
+  "full_steps": 3852,
+  "new_exposures": 40,
+  "no_repeated_episodes": true,
+  "finite_losses": true,
+  "cuda_ooms": 0,
+  "queue": {
+    "unix": 1792381858.4538167,
+    "pid": 1135729,
+    "allocation": "4925",
+    "status": "running",
+    "stage": "g3a1"
+  },
+  "heartbeat": {
+    "unix": 1792382021.3318508,
+    "pid": 1135729
+  },
+  "next_run": "/mnt/data/vmo-ai-task/anhdh35/g3-fixed01-seed430-worker2-20261019/production"
+}

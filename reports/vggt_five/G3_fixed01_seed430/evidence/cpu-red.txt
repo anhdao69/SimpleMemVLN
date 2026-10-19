@@ -1,0 +1,198 @@
+FFFFFFFF.                                                                [100%]
+=================================== FAILURES ===================================
+__________________ test_constant_weight_from_first_update[0] ___________________
+
+step = 0
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 0, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+__________________ test_constant_weight_from_first_update[1] ___________________
+
+step = 1
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 1, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+_________________ test_constant_weight_from_first_update[770] __________________
+
+step = 770
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 770, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+_________________ test_constant_weight_from_first_update[771] __________________
+
+step = 771
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 771, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+_________________ test_constant_weight_from_first_update[2623] _________________
+
+step = 2623
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 2623, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+_________________ test_constant_weight_from_first_update[3852] _________________
+
+step = 3852
+
+    @pytest.mark.parametrize('step',[0,1,770,771,2623,3852])
+    def test_constant_weight_from_first_update(step):
+>       assert auxiliary_weight(step,0,.1)==.1
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 3852, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+____________________ test_original_ramp_and_invalid_config _____________________
+
+    def test_original_ramp_and_invalid_config():
+        cfg=config();assert parse_g1(cfg)['ramp_updates']==771
+        assert auxiliary_weight(0,771,.1)==0
+        assert auxiliary_weight(385,771,.1)==pytest.approx(.1*385/771)
+        cfg['research']['ramp_updates']=0;cfg['research']['head_seed']=430
+>       assert parse_g1(cfg)['ramp_updates']==0
+               ^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:25: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+config = {'model': {'backbone': 'Qwen/Qwen3.5-4B', 'revision': '851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a', 'output_mode': 'qwen...he': False, 'microbatch_episodes_per_rank': 1, 'nominal_episodes_per_update': 8, 'model_max_length': 262144, ...}, ...}
+
+    def parse_g1(config):
+        value=config.get('research')
+        if value is None: return None
+        if value.get('run_id') not in ('G1','G3'): raise ValueError('This implementation permits only G1/G3')
+        run=value['run_id']
+        if config['memory']['mode'] != 'window8' or config['model']['output_mode'] != 'qwen_text':
+            raise ValueError('G1 requires native Window8 text')
+        if config['model'].get('step_lane',{}).get('enabled',False): raise ValueError('G1 has no lane')
+        expected_layer=23 if run=='G1' else 24
+        if value.get('student_layer',expected_layer) != expected_layer: raise ValueError(f'{run} requires decoder{expected_layer}')
+        if config['model'].get('episodic',{}).get('enabled',False): raise ValueError('Native research forbids episodic bank')
+        if value.get('sampling_identity','collected-rgb-paths-v1')!='collected-rgb-paths-v1':
+            raise ValueError('Unsupported G1 trajectory sampling identity')
+        for key in ('teacher_source','teacher_weights','teacher_identity'):
+            if not value.get(key): raise ValueError(f'G1 requires {key}')
+        for key in ('lambda_max','head_lr'):
+            v=value[key]
+            if not math.isfinite(v) or v<0: raise ValueError(f'Invalid {key}')
+>       if value.get('ramp_updates') != 771: raise ValueError('Declared G1 ramp is 771 updates')
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: Declared G1 ramp is 771 updates
+
+src/qwen_vl/research/vggt_g1.py:24: ValueError
+______ test_constant_loss_and_gradient_use_existing_global_normalization _______
+
+    def test_constant_loss_and_gradient_use_existing_global_normalization():
+        class Model:
+            training=True
+            navigation_config={'research':{'ramp_updates':0,'lambda_max':.1}}
+            def __call__(self,**kw):return dict(loss_sum=nav,aux_loss_sum=geo)
+        nav=torch.tensor(12.,requires_grad=True);geo=torch.tensor(8.,requires_grad=True)
+        model=Model()
+        trainer=SimpleNamespace(model=model,state=SimpleNamespace(global_step=0),accelerator=SimpleNamespace(num_processes=4))
+>       actual,out=QwenSFTTrainer.compute_loss(trainer,model,dict(num_actions=3,aux_pair_count=2,update_aux_count=16),return_outputs=True,num_items_in_batch=24)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/vln/test_g3_fixed_weight.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/qwen_vl/train/trainer.py:40: in compute_loss
+    weight = auxiliary_weight(self.state.global_step,spec['ramp_updates'],spec['lambda_max'])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+update = 0, ramp_updates = 0, maximum = 0.1
+
+    def auxiliary_weight(update,ramp_updates,maximum):
+>       return maximum*min(1.,max(0.,update/ramp_updates))
+                                     ^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/qwen_vl/research/vggt_g1.py:34: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[0]
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[1]
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[770]
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[771]
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[2623]
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_weight_from_first_update[3852]
+FAILED tests/vln/test_g3_fixed_weight.py::test_original_ramp_and_invalid_config
+FAILED tests/vln/test_g3_fixed_weight.py::test_constant_loss_and_gradient_use_existing_global_normalization
+8 failed, 1 passed in 5.75s
