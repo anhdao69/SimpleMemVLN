@@ -1,12 +1,69 @@
 # VGGT campaign — R2R evaluation report
 
-**G3_M5 epoch 1 completed all 1,839 R2R val_unseen episodes: 917 successes, SR 49.864057%, SPL 46.140869%, and zero execution failures.** Its SR and SPL are below the historical G3 and M5 results; this run does not show an improvement from combining them. G3 retains the highest completed SR recorded in these reports.
+**October 19 final update:** all six local evaluations below completed 1,839 R2R val_unseen episodes with zero execution failures. **G3 has the highest local SR, 51.984774%; the new plain-M5 control M5_E1 has SR 51.658510% and the highest local SPL, 48.401034%.** The qualified G3_M5 variants score below both references on SR and SPL. L8 remains an unqualified diagnostic because its serving replay failed.
 
-## Snapshot and scope
+## Completed local evaluations verified October 19
+
+These are the completed October 17–19 local evaluations, independently rechecked
+from their original journals for this update. They are distinct from the older
+campaign snapshot below. Percentages use the full 1,839-episode denominator.
+
+| Checkpoint | Successful / evaluated | SR (%) | SPL (%) | Serving qualification | Evaluation status |
+|---|---:|---:|---:|---|---|
+| G3 | 956 / 1,839 | 51.984774 | 48.095941 | Passed | Final |
+| **M5_E1, true one-epoch schedule** | **950 / 1,839** | **51.658510** | **48.401034** | **Passed** | **Final** |
+| Older M5, epoch 1 of two-epoch schedule | 938 / 1,839 | 51.005982 | 47.438938 | Passed | Final |
+| G3_M5, layer 24 | 917 / 1,839 | 49.864057 | 46.140869 | Passed | Final |
+| G3_M5_L8_L16_L24 | 916 / 1,839 | 49.809679 | 46.265741 | Passed | Final |
+| G3_M5_L8 | 898 / 1,839 | 48.830886 | 46.037255 | **Failed 128-step replay** | **Final diagnostic only** |
+
+Every row has zero execution failures and zero invalid responses. All worker
+exit codes are 0. For each run, the merged journal exactly matches its original
+shards and frozen ordered list of 1,839 unique episode IDs. Every merged and
+shard summary field was freshly recomputed with that run's frozen metric
+function; values matched at relative/absolute tolerance 1e-12. Contracts and
+runtimes agree within each run. Final validation passed for all six, but this
+validates dataset coverage and aggregation, **not L8's failed serving replay**.
+
+All six use the same local Python 3.9.25/Habitat 0.2.4 simulator setup,
+dataset/config hashes, scene paths, pinned base assets, seed 42, 500-action cap
+and failure policy. M5_E1 pairings freshly verified matching IDs, episode UIDs,
+scene paths and instructions against every other local run. G3 uses native
+Window8: current plus seven previous groups in full-attention KV, with the
+instruction prefix retained. It does not use full-history attention KV; native
+GDN recurrence persists across the episode. All M5-family rows use R4/B1200
+committed-write episodic memory. L8/L16/L24 denote zero-based training layers,
+not attention-window sizes.
+
+The new M5_E1 control uses the true 3,852-update schedule with 116 warmup
+updates, matching the one-epoch schedule of the G3_M5 variants. Older M5 is
+an epoch-1 checkpoint of a 7,704-update schedule with 232 warmup updates.
+M5_E1 exceeds older M5 by 12 successes (+0.652529 pp SR, +0.962096 pp SPL).
+Relative to G3, M5_E1 has six fewer successes (-0.326264 pp SR) and
++0.305093 pp SPL. These are single-seed descriptive results, not a significance
+claim. See the [M5_E1 final report and paired comparisons](EPISODIC_MEMORY_EVALUATION.md#m5_e1-new-matched-one-epoch-control-2026-10-19).
+
+| Local checkpoint | Final summary | Frozen evaluation source |
+|---|---|---|
+| G3 | [g3_epoch1_20261018/full](../evaluation/g3_epoch1_20261018/full/summary.json) | `c2_vggt_omega_g3` at `9d658c245b2b9d14232e8db0b235bf92e857a43d` |
+| Older M5 | [m5_epoch1_20261018/full](../evaluation/m5_epoch1_20261018/full/summary.json) | `c2_ablations` at `a340e131b63c9ab7846690acdb369599462076c4` |
+| G3_M5 | [g3_m5_epoch1_20261017/full](../evaluation/g3_m5_epoch1_20261017/full/summary.json) | `c2_vggt_omega_g3_m5` at `295e85e6081be2a8d8d9d786f2ba47ca22e0667b` |
+| G3_M5_L8 | [g3_m5_l8_epoch1_20261018/full_unqualified](../evaluation/g3_m5_l8_epoch1_20261018/full_unqualified/summary.json) | `c2_vggt_omega_g3_m5_layers` at `f4d1c2f216e68a960a5a691d21cbf1f08ea4a901` |
+| G3_M5_L8_L16_L24 | [g3_m5_l8_l16_l24_epoch1_20261018/full](../evaluation/g3_m5_l8_l16_l24_epoch1_20261018/full/summary.json) | `c2_vggt_omega_g3_m5_layers` at `5bdf5eed274709f0349a9d6c1572b623a0a2f066` |
+| M5_E1 | [m5_e1_epoch1_20261019/full](../evaluation/m5_e1_epoch1_20261019/full/summary.json) | `c2_vggt_omega_g3_m5_layers` at `c5d5422b4408e4701437543f94e51ceac2b47b16` |
+
+The [fresh evidence record](evidence/LOCAL_R2R_FINAL_20261019.json) preserves
+all six full summaries, immutable Hub revisions, weight SHA-256 values,
+source identities, qualification status, journal hashes, paired comparisons
+and the M5_E1 resume-prefix checks. Reproduce the checks with
+`python evaluation_reports/evidence/verify_local_r2r_20261019.py` from the
+repository root. Evaluation outputs and frozen source archives are unchanged.
+
+## Historical snapshot and scope
 
 **G3_M5 update: 2026-10-18 Asia/Ho_Chi_Minh.** The full run completed at **2026-10-17 17:33:43 UTC / 2026-10-18 00:33:43 Asia/Ho_Chi_Minh**. Its journals and summaries were independently rechecked for this update.
 
-All other rows retain the historical snapshot collected through **2026-10-16 02:45:04 UTC / 2026-10-16 09:45:04 Asia/Ho_Chi_Minh**. Their results and job status were not refreshed for this update; A1, M1 and M5 c were partial at that snapshot. This Markdown file is a dated report, not a live dashboard. SR/SPL use percentages; changes use percentage points (pp).
+The original campaign tables below retain the snapshot collected through **2026-10-16 02:45:04 UTC / 2026-10-16 09:45:04 Asia/Ho_Chi_Minh**, plus the October 18 G3_M5 update. They are historical records; the completed local reruns and later checkpoints are reported separately above. A1, M1 and M5 c were partial at the older snapshot and their current status was not checked here. This Markdown file is a dated report, not a live dashboard. SR/SPL use percentages; changes use percentage points (pp).
 
 All results here are **R2R VLN-CE val_unseen**, with **1,839 scheduled episodes**. Every published checkpoint evaluated here is epoch 1. Training used joint R2R/RxR data, but **no full RxR navigation evaluation result is available in this report**. RxR training/qualification fixtures are not RxR benchmark scores.
 
@@ -53,7 +110,7 @@ The historical G3, M5, Window8-B and A0 coordinators reported complete after the
 
 For this update, G3_M5's merged journal was checked against the four original shard journals (459/460/460/460 episodes). All 1,839 IDs are unique, have exact scheduled order/membership and match the historical registered ID set. Every merged and shard summary field was recomputed with the unchanged source evaluator and matched at tolerance 1e-12; shard contracts and runtimes agree. All four workers exited 0, `complete=true`, and final validation passed. The frozen source hashes also reverified. The [machine-readable evidence record](evidence/G3_M5_R2R_EPOCH1_20261018.json) retains this fresh verification separately from historical claims.
 
-## Results: VGGT versions and reference checkpoints
+## Historical results with the October 18 G3_M5 update
 
 | Version (epoch 1) | Completed / scheduled | Successful | SR (%) | SPL (%) | Status |
 |---|---:|---:|---:|---:|---|
@@ -150,7 +207,7 @@ The next table compares identical episode IDs, UIDs and instructions. For A1, th
 
 G3's completed advantage over G1 is a descriptive comparison of different auxiliary designs. A0 is not an unchanged native baseline because it retains adapters. Partial A1 results cannot yet establish the full-split A1−A0 effect.
 
-## Qualification and limitations
+## Historical qualification and G3_M5 limitations
 
 | Arm | Targeted local tests | Trained replay evidence | 520-step storage check |
 |---|---|---|---|
@@ -172,7 +229,7 @@ Remote H100 training/recovery/teacher qualification described in implementation 
 
 ## Versions without a navigation result in this report
 
-R1 now has an implementation/training report on `v2_vggt_omega_r1`, but no R1 local navigation evaluation was launched or recorded in this campaign snapshot. R0 and any other planned VGGT variants likewise have no result in this report. Do not substitute training losses, qualification success or older unrelated dual-lane runs for missing benchmark results. G1, G3, G3_M5, A0 and A1 are the evaluated VGGT-family versions covered here.
+R1 has an implementation/training report on `v2_vggt_omega_r1`, but no R1 local navigation evaluation was launched or recorded in this campaign snapshot. R0 and other variants absent from the results tables likewise have no result in this report. Do not substitute training losses, qualification success or older unrelated dual-lane runs for missing benchmark results. The historical VGGT-family rows cover G1, G3, G3_M5, A0 and A1; the later local results also include G3_M5_L8 and G3_M5_L8_L16_L24.
 
 ### Observed latency under shared GPU load
 
@@ -291,6 +348,117 @@ Implementation references at immutable commits:
 - [A0/A1 implementation ledger](https://github.com/anhdao69/SimpleMemVLN/blob/4f772d3bac877322e2cb58e127c17f87e202f17c/reports/vggt_five/A0_A1/IMPLEMENTATION_2026-10-14.md)
 - [A1 completed training/publication report](https://github.com/anhdao69/SimpleMemVLN/blob/4f772d3bac877322e2cb58e127c17f87e202f17c/reports/vggt_five/A0_A1/A1_CONTINUATION_2026-10-14.md)
 
+
+## G3_M5_L8 epoch 1: unqualified diagnostic evaluation (2026-10-18)
+
+The requested `G3_M5_L8/epoch-1` export is downloaded and verified at
+`evaluation/g3_m5_l8_epoch1_20261018`. The correct branch is
+`c2_vggt_omega_g3_m5_layers`, using frozen source
+`f4d1c2f216e68a960a5a691d21cbf1f08ea4a901`; the fetched branch tip
+`7ededbf19f534582a7af1c446d6904ee0b76078e` has identical executable sources.
+Hub revision is `792a0c959d8e6be8aee20e9cfa560c4f4b5a6b9b`, and weight SHA-256 is
+`4081cb1fd573be20a5d656846bd6044a0b79fe956e1a8164e1d2ce9fa677657e`.
+All 19 Hub file digests, all 18 publisher manifest entries, and all 241
+published source-seal entries verified. Strict loading found 724 finite native
+tensors; 109 targeted tests passed without skips. L8 identifies training
+supervision at zero-based decoder layer 8. Serving still uses M5 R4/B1200
+with committed-write scoring, exactly matching the original G3_M5 navigation
+metadata; no teacher or training head is installed during evaluation.
+
+**Serving qualification failed and remains failed.** The 64-step replay passed,
+but two independent 128-step attempts reproduced 20 out-of-tolerance logits
+among 95,106,560 values using the original `atol=0.75`, `rtol=0.03` budget.
+The diagnostic RMS was 0.0392229483 (within the separate 0.15 RMS limit), and
+maximum absolute difference was 0.9375. The outliers were at response positions
+202/203 (observation 67); argmax agreed at those positions. Two other response
+positions had raw argmax changes near ties. The cause is unresolved. These
+observations do not establish offline/online equivalence or waive the failure.
+See root `serving_audit.json`, `replay_diagnostic.json`, and saved full logits
+`diagnostic_128_logits.pt`. Original tests, thresholds, model, and serving
+sources are unchanged.
+
+The independent two-episode Habitat smoke completed with zero execution
+failures and zero successes; this is not a full-split SR estimate. The full
+1,839-episode R2R VLN-CE `val_unseen` run launched at 2026-10-18 03:06:36
+Asia/Ho_Chi_Minh (2026-10-17 20:06:36 UTC) with two workers as an explicitly
+**unqualified diagnostic evaluation of the published streaming policy**, with
+seed 42, cap 500, and the same dataset, scene assets, simulator, and metric
+rules as the previous local run. `evaluate_unqualified.py` requires reset,
+retry, 520-step storage, provenance, and smoke checks before launch. The
+original `evaluate_full.py` still refuses this checkpoint because its replay
+qualification failed. `diagnostic_run_decision.json` records this distinction.
+The diagnostic coordinator labels its status, summary, final contract, and
+aggregation validation with `serving_qualification_passed=false`; any final
+aggregation pass refers only to dataset coverage and metric recomputation.
+Exact evolved-session reset, retry, and greedy reset checks passed. The
+520-step storage test passed with peak resident KV 2,546 (guard 4,784), and
+all eight episodic banks held exactly 1,200 rows. Both coordinator cleanup
+tests passed. Outputs are preserved in `full_unqualified/`.
+
+**Final diagnostic result:** 898 successes / 1,839 episodes, **SR 48.830886%,
+SPL 46.037255%**, zero execution failures and zero invalid responses.
+The two workers exited 0; final coverage and aggregation validation passed at
+**2026-10-18 07:12:54 UTC / 14:12:54 Asia/Ho_Chi_Minh**. Serving qualification
+remains failed. This report's fresh journal recomputation confirms the saved
+metrics without changing that status. Shared-GPU timings are not isolated
+model latency measurements.
+
+## G3_M5_L8_L16_L24 epoch 1: latest-code evaluation (2026-10-18)
+
+The requested triple-layer checkpoint was evaluated from the then freshly
+fetched `c2_vggt_omega_g3_m5_layers` tip
+`5bdf5eed274709f0349a9d6c1572b623a0a2f066`. Its executable source, configurations,
+tests and dependency lockfiles are identical to published training source
+`f4d1c2f216e68a960a5a691d21cbf1f08ea4a901`; later commits contain reports and
+operations evidence. An isolated source archive preserves the existing working
+copy and prior evaluation outputs.
+
+Checkpoint: `anhdao69/Streaming_VGGT/G3_M5_L8_L16_L24/epoch-1`, immutable Hub
+revision `36c478841d489366ccf91c06033fea8921e9d0b1`, expected weight SHA-256
+`c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce`.
+The completed training ledger contains every update 1–3,852. This arm supervises
+zero-based native layers [8,16,24], averages their auxiliary losses, and retains
+M5 R4/B1200 serving. Its tokenizer, processor, architecture and navigation
+metadata match the L8 export byte-for-byte. The publisher removed 27 tensors
+from the three training-only heads; no teacher or readout head is used during
+navigation. Published final-export validation was CPU-only, so the earlier
+qualification-checkpoint GPU evidence is not treated as a local learned-weight
+replay pass.
+
+Local evidence root: `evaluation/g3_m5_l8_l16_l24_epoch1_20261018`.
+All 253 saved source hashes, 241 publisher source-seal hashes, 14 pinned base
+files and 22 scene assets reverified. All 109 targeted tests passed with no
+skips after supplying the pinned processor path; the initial log with two
+missing-path skips is retained. All 11 Habitat scenes passed fresh render and
+navmesh checks; the 128-frame replay fixture and all 1,839 episode IDs exactly
+match the prior local runs. Four-worker coordinator cleanup passed both child
+failure and interruption tests.
+
+All 19 Hub files and all 18 publisher-manifest entries verified, including the
+complete weight SHA-256 above. Local strict GPU loading found 724 finite native
+tensors. Learned-checkpoint qualification **passed** with unchanged tolerances:
+64/128-step replay RMS 0.034710/0.032162, maximum absolute drift 0.375/0.5;
+one raw argmax change was recorded at each length. The committed-scorer/native
+FLA relative error was 0.002095 (limit 0.01). Exact retry, evolved-session reset,
+and greedy reset checks passed. The 520-step test held peak resident KV at
+2,546 (guard 4,784), with all eight episodic banks ending at 1,200 rows.
+The two-episode Habitat smoke completed with zero execution failures (one
+success); its SR is only a smoke statistic.
+
+The full evaluation launched at **2026-10-18 20:58:17 Asia/Ho_Chi_Minh**
+(13:58:17 UTC), with four disjoint panels covering all 1,839 episodes. It uses
+R2R VLN-CE `val_unseen`, seed 42, a 500-action cap, and the unchanged
+simulator/metric protocol. Root `status.json` and `full/summary.json` now record
+completion; `full/shard-00` through `shard-03` preserve original episode journals.
+
+**Final result:** 916 successes / 1,839 episodes, **SR 49.809679%, SPL 46.265741%**,
+zero execution failures and zero invalid responses. All four workers exited 0.
+Final validation passed at **2026-10-18 18:27:21 UTC / October 19 01:27:21
+Asia/Ho_Chi_Minh**, including exact full coverage, common contracts/runtimes
+and recomputed metrics. This update independently rechecked those results.
+Both serving qualification and final aggregation passed for this checkpoint;
+the separate L8 checkpoint's failed replay remains recorded under its own run.
+
 ## Next update
 
-G3_M5 R2R evaluation is complete. Refresh A1 only when a verified 1,839-episode final journal is available, then replace its dated partial row and shared-prefix comparison with full results. Preserve the checkpoint/source identity and the dated history. No automated refresh is configured by this report. Publishing this file to multiple branches is documentation distribution, not evidence that every branch can load every listed checkpoint.
+All six local R2R evaluations in the October 19 table are complete; L8 remains an unqualified diagnostic. Refresh historical A1 only when a verified 1,839-episode final journal is available, then replace its dated partial row and shared-prefix comparison with full results. Preserve the checkpoint/source identity and the dated history. No automated refresh is configured by this report. Publishing this file to multiple branches is documentation distribution, not evidence that every branch can load every listed checkpoint.
