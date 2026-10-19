@@ -1,6 +1,43 @@
 # Plain M5 with the G3 one-epoch decay schedule
 
-## Latest observation — automatic handoff succeeded
+## Final result — completed and published October 19
+
+M5 completed **3852/3852 updates, epoch 1**, and the automatic controller
+recorded `complete` at **2026-10-19 00:10:31 UTC**. Full wall time including
+load and checkpoint saving was **48,849.65 seconds (13h34m10s)**. Mean wall
+time per update was **12.6523 seconds**, action-weighted training loss
+**0.12657747317027537**, and the last update's loss was **0.06453494**.
+These are training metrics, not navigation evaluation results.
+
+The supervisor passed with zero GPU/host OOMs and no host guard trigger.
+Peak reserved GPU memory was **68.51 GiB** and sampled peak host working set
+**448.90 GiB**. The complete four-rank recovery checkpoint at step 3852 and
+earlier rolling recoveries remain on the cluster. The interactive allocation
+4925 remains available; the training controller has finished its sequence.
+
+Published model:
+[M5_E1/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/main/M5_E1/epoch-1).
+Immutable revision: `9af2591940a22e8338fbf125ad6336390d850b6a`.
+This is plain M5 with the G3-matched **one-epoch** LR schedule, separate from
+the older two-epoch-schedule model and from G3-supervised models.
+
+The serving export copies the checkpoint model and navigation configuration
+unchanged. All **724 tensors** matched bitwise, and the actual navigation
+architecture strictly reloaded on CPU with exact serializer/memory metadata.
+There are no research auxiliary tensors or teacher configuration to remove.
+No completed-model GPU replay is claimed. Existing qualification and recovery
+evidence are included as provenance alongside completion metrics.
+
+At **00:24:11 UTC**, all **18 uploaded files** passed remote SHA256 and size
+verification. All **158 existing non-attributes files** were preserved;
+the only automatic metadata change added the new tokenizer's LFS rule.
+Evidence: `evidence/completion_20261019.json` and
+`evidence/publication_20261019.json`. Reproducible publication recipe:
+`publication/publish_m5.py`, deliberately outside the sealed `operations/`
+directory so it does not invalidate the qualification contract. Deployed
+publication root: `publication-m5-epoch1-20261019` within the M5 campaign.
+
+## Earlier observation — automatic handoff succeeded
 
 At **2026-10-18 13:44:10 UTC**, the triple-layer predecessor had completed its
 full epoch and the same controller reported `running-m5`. Plain M5 reached

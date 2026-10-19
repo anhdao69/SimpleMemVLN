@@ -1,0 +1,119 @@
+{
+  "passed": true,
+  "repo": "anhdao69/Streaming_VGGT",
+  "revision": "9af2591940a22e8338fbf125ad6336390d850b6a",
+  "folder": "M5_E1/epoch-1",
+  "files": [
+    {
+      "path": "M5_E1/README.md",
+      "sha256": "89add7385953bc573bac42cae91d0c47c2be82cfe051bb0ddc974dcb3443814c",
+      "size": 2293,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/SHA256SUMS.json",
+      "sha256": "5551c64b218b2de95bedfa1e5afd6b9d60cfdb2c930d56b7f9d7339cddd15fff",
+      "size": 2487,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/chat_template.jinja",
+      "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715",
+      "size": 7756,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/config.json",
+      "sha256": "2451a8786918f4c348acb32c438d9a127098c022334ae1a7713ce5be588a7df1",
+      "size": 2903,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/navigation.json",
+      "sha256": "3c2f519deb46fb00a5cb1ec8ce4fb690fd8bafb6c7b8587ac118d38d8389169c",
+      "size": 3877,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/processor_config.json",
+      "sha256": "d89ef49ce9cd37fbf510158e13c1ef063d9286411c1ec9049932dbe0487143b1",
+      "size": 1191,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/pytorch_model.bin",
+      "sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+      "size": 10350179723,
+      "method": "Hub LFS SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer.json",
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "size": 19989325,
+      "method": "Hub LFS SHA256 and size"
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer_config.json",
+      "sha256": "7488550a894dcf741616126e322ea31d66cf9457b59ec5825f4c7efdced421f8",
+      "size": 1164,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/completion_resources.json",
+      "sha256": "2dad375de3e4035d444ec413417821a6e7ea126ffba30418aa35a10807e671de",
+      "size": 1936,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/epoch-1.json",
+      "sha256": "883888e6fd89f25baf086eef318061f8c108008f00f58fd438508e1352cf0077",
+      "size": 396528,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/publication_validation.json",
+      "sha256": "c3f3fe6aac8a74a3de4c62c6987cdb852fb0aa312fbb1de7bd86efd9a52c8df4",
+      "size": 305,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/qualification_pass.json",
+      "sha256": "03bd89055be0f164e6ca0faa5fc4b6e665362cb5a65d392e5cd5d21ec45a4e51",
+      "size": 4195,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/resolved_config.json",
+      "sha256": "ebd6d4741a14534be69478f30995b9146c48b80476fffcc8b352dcc7f7e4d075",
+      "size": 2250,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/run_identity.json",
+      "sha256": "6bdea01e9078555bc78fd6159a3f5d5b2023ea078d926535a270e26ef906fe4e",
+      "size": 2958,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/run_timing.json",
+      "sha256": "8b630f4c09577274177a07ef67321783d061a3e8f0870a3d9ed3d44aa8166332",
+      "size": 352,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/source_and_completion.json",
+      "sha256": "f67418225275d02ad5cb8821b67375f52bccfb28baa09b4a5d646b2fafc8b70c",
+      "size": 1740,
+      "method": "Downloaded SHA256 and size"
+    },
+    {
+      "path": "M5_E1/provenance/trainer_state.json",
+      "sha256": "67bbdb4de366377840f0c7de9c3b1db787dc001eab02beb9434afd68a240f6bf",
+      "size": 719164,
+      "method": "Downloaded SHA256 and size"
+    }
+  ],
+  "prior_files_unchanged": 158,
+  "automatic_metadata_change": "M5_E1/epoch-1/tokenizer.json filter=lfs diff=lfs merge=lfs -text",
+  "verified_utc": "2026-10-19T00:24:11.160323+00:00"
+}
