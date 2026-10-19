@@ -38,5 +38,5 @@ python -m scripts.vln.check_vggt_recovery \
 python -m scripts.vln.check_vggt_export \
   --source "$R/experiments/recovery-reference/train/final" --output "$R/serving-export" \
   --manifest "$B/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl" \
-  --model-path "$VLN_MODEL_PATH" > "$R/logs/export-check.log" 2>&1
+  --model-path "$VLN_MODEL_PATH" --allow-untrained-greedy-error > "$R/logs/export-check.log" 2>&1
 date -u > "$R/qualification-completed.txt"

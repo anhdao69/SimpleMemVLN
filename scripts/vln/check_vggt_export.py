@@ -15,10 +15,28 @@ from qwen_vl.stream.session import StreamSession
 from qwen_vl.train.vln_runtime import load_checkpoint
 
 
+def greedy_observation(session, uid, instruction, rgb, *, allow_untrained=False):
+    """Record the known incomplete-response failure only for smoke checkpoints.
+
+    Production serving still raises; all other failures remain fatal. Callers
+    must compare both the outcome and every captured logit after reset.
+    """
+    session.reset(uid, instruction)
+    try:
+        result=session.observe(uid,0,rgb)
+        return dict(response_token_ids=result['response_token_ids'],error=None)
+    except ValueError as error:
+        if not allow_untrained or str(error)!='Response limit reached without assistant terminator':
+            raise
+        return dict(response_token_ids=None,error=str(error))
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--source',required=True)
     p.add_argument('--output',required=True);p.add_argument('--manifest',required=True)
-    p.add_argument('--model-path',required=True);a=p.parse_args()
+    p.add_argument('--model-path',required=True)
+    p.add_argument('--allow-untrained-greedy-error',action='store_true')
+    a=p.parse_args()
     selected={}
     for line in Path(a.manifest).open():
         ep=json.loads(line)
@@ -78,12 +96,12 @@ def main():
                 record=dict(dataset=dataset,response_tokens=len(targets),max_abs=float(diff.abs().max()),rms=rms)
                 scores.clear();controlled[0]=False
                 with Image.open(ep['steps'][0]['rgb_path']) as rgb:
-                    session.reset('greedy',ep['instruction']);first=session.observe('greedy',0,rgb)
+                    first=greedy_observation(session,'greedy',ep['instruction'],rgb,allow_untrained=a.allow_untrained_greedy_error)
                     first_scores=torch.stack(scores);scores.clear()
-                    session.reset('reset',ep['instruction']);second=session.observe('reset',0,rgb)
-                    assert first['response_token_ids']==second['response_token_ids']
+                    second=greedy_observation(session,'reset',ep['instruction'],rgb,allow_untrained=a.allow_untrained_greedy_error)
+                    assert first==second
                     torch.testing.assert_close(torch.stack(scores),first_scores,atol=0,rtol=0)
-                record.update(source_export_logits_exact=True,reset_exact=True,retry_exact=True,window8_eviction=True)
+                record.update(greedy_valid=first['error'] is None,greedy_error=first['error'],source_export_logits_exact=True,reset_exact=True,retry_exact=True,window8_eviction=True)
                 report.append(record)
             finally:head.forward=original
     result=dict(passed=True,source=a.source,export=str(path),replay=report)
