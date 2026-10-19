@@ -1,0 +1,5 @@
+{
+  "passed": true,
+  "normal_local_manifest_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+  "statement": "Uploaded manifest is byte-identical to the established joint R2R+RxR15 manifest after ordinary image-root replacement; actual resume uses sampling-preserving alias instead."
+}

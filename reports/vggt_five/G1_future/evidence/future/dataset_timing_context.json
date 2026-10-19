@@ -1,0 +1,39 @@
+{
+  "corpus": {
+    "r2rce": {
+      "episodes": 10819,
+      "actions": 631244,
+      "max_frames": 183,
+      "mean_frames": 58.34587300120159
+    },
+    "rxrce": {
+      "episodes": 19996,
+      "actions": 2497380,
+      "max_frames": 627,
+      "mean_frames": 124.89397879575915
+    }
+  },
+  "manifest_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+  "fixtures": {
+    "r2rce_representative": {
+      "episodes": 16,
+      "mean_frames": 58.0,
+      "max_frames": 99
+    },
+    "rxrce_representative": {
+      "episodes": 16,
+      "mean_frames": 123.25,
+      "max_frames": 283
+    },
+    "r2rce_longest": {
+      "episodes": 8,
+      "mean_frames": 183.0,
+      "max_frames": 183
+    },
+    "rxrce_longest": {
+      "episodes": 8,
+      "mean_frames": 627.0,
+      "max_frames": 627
+    }
+  }
+}

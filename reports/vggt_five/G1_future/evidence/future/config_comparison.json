@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "changed_research_keys": [
+    "teacher_batch_size",
+    "teacher_context",
+    "teacher_future_offset",
+    "teacher_identity"
+  ],
+  "training_and_student_runtime_unchanged": true,
+  "old_batch_frames": 16,
+  "new_batch_pairs": 8
+}

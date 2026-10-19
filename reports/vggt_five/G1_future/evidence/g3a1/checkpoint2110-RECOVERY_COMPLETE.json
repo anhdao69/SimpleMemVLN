@@ -1,0 +1,29 @@
+{
+  "step": 2110,
+  "epoch_boundary": false,
+  "world_size": 4,
+  "files": {
+    "chat_template.jinja": 7756,
+    "config.json": 2903,
+    "latest": 15,
+    "navigation.json": 4818,
+    "processor_config.json": 1191,
+    "pytorch_model.bin": 10371327003,
+    "resume_contract.json": 2015658,
+    "rng_state_0.pth": 15493,
+    "rng_state_1.pth": 15493,
+    "rng_state_2.pth": 15493,
+    "rng_state_3.pth": 15493,
+    "scheduler.pt": 1529,
+    "tokenizer.json": 19989325,
+    "tokenizer_config.json": 1164,
+    "trainer_state.json": 394226,
+    "training_args.bin": 6865,
+    "zero_to_fp32.py": 33272,
+    "global_step2110/bf16_zero_pp_rank_0_mp_rank_00_optim_states.pt": 12648984102,
+    "global_step2110/bf16_zero_pp_rank_1_mp_rank_00_optim_states.pt": 12648988902,
+    "global_step2110/bf16_zero_pp_rank_2_mp_rank_00_optim_states.pt": 12648988966,
+    "global_step2110/bf16_zero_pp_rank_3_mp_rank_00_optim_states.pt": 12648988198,
+    "global_step2110/mp_rank_00_model_states.pt": 9767099441
+  }
+}

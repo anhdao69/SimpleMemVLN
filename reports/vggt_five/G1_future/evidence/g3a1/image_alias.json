@@ -1,0 +1,6 @@
+{
+  "original_root": "/groups/yshang/an221229/data/JanusVLN_data",
+  "alias_root": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/image-alias/trajectory_data//groups/yshang/an221229/data/JanusVLN_data",
+  "target": "/mnt/data/vmo-ai-task/anhdh35/JanusVLN/data/trajectory_data",
+  "reason": "Double slash after trajectory_data preserves the original leading slash in sampling key"
+}

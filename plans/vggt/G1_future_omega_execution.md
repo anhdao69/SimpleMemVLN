@@ -33,29 +33,29 @@
 - [x] Write and run failing tests in `tests/vln/test_vggt_future.py`: source/current selection, future sensitivity, batch independence, detached ordinary tensors, malformed input, terminal exclusion, unchanged serialized student inputs, invalid config.
 - [x] Implement `future_frame_pairs(frames,length,offset)` and `OnlineFutureOmegaTeacher` in `src/qwen_vl/research/vggt_future.py`.
 - [x] Add explicit context validation in `research/vggt_g1.py`; pair CPU pixels in `data/episode_dataset.py`; select the teacher in `train/train_episode.py`. Leave student/model/head code unchanged.
-- [ ] Run targeted CPU tests and commit.
+- [x] Run targeted CPU tests and commit.
 
 ## Task 2 — Actual teacher, causal gradients and configuration
 
-- [ ] Add H100 tests: direct Omega oracle, current-slot selection, future perturbation, batch isolation and microbatch numerical parity, frozen teacher, identity mismatch rejection.
-- [ ] Verify current-prefix outputs/gradients with future student pixels changed, checkpoint on/off, auxiliary gradients to projector/backbone, zero future/teacher gradients.
-- [ ] Extend diagnostic profiler with opt-in future offset and one-epoch policy overlay. Validate empty support rather than requiring every episode to have positive support.
-- [ ] Create `configs/vggt/g1_future_h4.yaml` with actual pinned identity and a separate production launcher. Compare resolved config against G1; document only intended changes.
+- [x] Add H100 tests: direct Omega oracle, current-slot selection, future perturbation, batch isolation and microbatch numerical parity, frozen teacher, identity mismatch rejection.
+- [x] Verify current-prefix outputs/gradients with future student pixels changed, checkpoint on/off, auxiliary gradients to projector/backbone, zero future/teacher gradients.
+- [x] Extend diagnostic profiler with opt-in future offset and one-epoch policy overlay. Validate empty support rather than requiring every episode to have positive support.
+- [x] Create `configs/vggt/g1_future_h4.yaml` with actual pinned identity and a separate production launcher. Compare resolved config against G1; document only intended changes.
 
 ## Task 3 — Four-H100 qualification and speed
 
-- [ ] Full repository regression on worker-2; distinguish CPU skips from actual GPU execution.
-- [ ] Complete mixed R2R/RxR updates; benchmark pair microbatches without changing student batch/GAS. Test representative and longest episodes in both datasets, repeated long updates and empty support.
-- [ ] Save reference checkpoint2, fresh-process resume to3; compare complete state/head/loss and validate all-rank inventories.
-- [ ] Teacher-free export/strict reload and streaming replay for both datasets; verify exact source/export outcomes, preserving established BF16 tolerances.
-- [ ] Independent whole-branch review; resolve material findings and rerun affected gates.
+- [x] Full repository regression on worker-2; distinguish CPU skips from actual GPU execution.
+- [x] Complete mixed R2R/RxR updates; benchmark pair microbatches without changing student batch/GAS. Test representative and longest episodes in both datasets, repeated long updates and empty support.
+- [x] Save reference checkpoint2, fresh-process resume to3; compare complete state/head/loss and validate all-rank inventories.
+- [x] Teacher-free export/strict reload and streaming replay for both datasets; verify exact source/export outcomes, preserving established BF16 tolerances.
+- [x] Independent whole-branch review; resolve material findings and rerun affected gates.
 
 ## Task 4 — Launch and report
 
-- [ ] Pin qualified source/config/data/teacher hashes; push new branch normally.
-- [ ] Launch one full joint epoch in worker-2 allocation with owned supervisor, RAM/disk guards, periodic recovery and auto-resume.
-- [ ] Observe finite navigation/auxiliary losses, schedule3852/116, four-rank progress, first complete recovery checkpoint10 and stable memory.
-- [ ] Write detailed `reports/vggt_five/G1_future/implementation_report.md`, qualification evidence and measured ETA. Report running training honestly; do not present smoke validation as full navigation evaluation or guaranteed completion.
+- [x] Pin qualified source/config/data/teacher hashes; publish the isolated branch with a normal push.
+- [x] Launch the verified G3+A1 continuation first, with G1-future queued automatically after its complete one-epoch checkpoint/export. Preserve owned supervisors, RAM/disk guards, periodic recovery and auto-resume.
+- [x] Observe G3+A1 finite navigation/state/relation losses, preserved3852/116 schedule, four-rank continuation from2100 and complete recovery checkpoint2110. G1-future checkpoint10 monitoring belongs to its later automatic stage, not an already-completed claim.
+- [x] Write detailed `reports/vggt_five/G1_future/implementation_report.md`, qualification evidence and measured ETA. Report running training honestly; do not present smoke validation as full navigation evaluation or guaranteed completion.
 
 ## Execution ledger
 
@@ -78,3 +78,9 @@
 - Queue review found a material controller-only crash/restart risk: surviving per-run launcher could reject a duplicate start and strand the handoff. Fixed by waiting for the existing launcher's lock and rechecking completion before starting/resuming. Real subprocess regression: initially1 failed/4 passed; after fix5 passed. Both launchers hold the same per-run `launcher.lock` for their entire supervisor lifetime.
 - G3+A1 resume wrapper keeps exact source877815e and original command/config/schedule, adds worker-2 restriction and one early recovery save at2110 (then ordinary100-step saves). This is an operational checkpoint-cadence change only.
 - Full HF snapshot47043b9693d30f5f4b423e9fddf780f92a6f189e downloaded:66.46GiB. All source-manifest hashes pass. All-file checksum and checkpoint-internal validation in progress; immutable original download retained, prepared files use hardlinks plus atomic metadata replacement.
+
+- Final qualification:371 G1 GPU tests +419 exact-source G3+A1 GPU tests +4 export-audit tests pass with no skips. Mixed-extreme3updates passes, noOOM. Source hashes for every diagnostic `src/` entry match immutable1fcc2af. Recovery and source/export/replay/reset pass. R2R smoke greedy output remains invalid after3updates; explicit diagnostic-only recording preserves strict default and unchanged production serving.
+- Full migration audit passed all30815 original sampling keys, all3128624 image paths, explicit128pair lists/1024query sets, and all23 checkpoint-state hashes. Prepared metadata passes original trainer preflight.
+- Queue launched2026-10-19 01:41UTC in4925.138 onworker-2. G3+A1 continuation first from2100, G1-future fresh base second. Queue completion gate requires full3852-step checkpoint/export, not process exit alone.
+
+- Full continuation verified through2115/3852 at2026-10-19 01:46:56UTC:120 new unique exposures, no overlap with pre2100 samples, finite navigation/state/relation losses, zeroCUDAOOM. Newly saved checkpoint2110 independently validates all22 files, all four Adam shards/steps/LRs, scheduler, model heads/adapters and RNG. G1-future remains queued; no full-run completion/evaluation is claimed.

@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "episodes": 30815,
+  "actions": 3128624,
+  "identical_collection_keys": 30815,
+  "naive_rebase_changed_keys": 30815,
+  "explicit_pair_lists_verified": 128,
+  "explicit_query_cell_sets_verified": 1024,
+  "alias": {
+    "original_root": "/groups/yshang/an221229/data/JanusVLN_data",
+    "alias_root": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/image-alias/trajectory_data//groups/yshang/an221229/data/JanusVLN_data",
+    "target": "/mnt/data/vmo-ai-task/anhdh35/JanusVLN/data/trajectory_data",
+    "reason": "Double slash after trajectory_data preserves the original leading slash in sampling key"
+  },
+  "justification": "All key/length/seed inputs identical across full corpus; pinned pure sampling functions therefore preserve every pair and query cell"
+}

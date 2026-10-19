@@ -1,0 +1,60 @@
+{
+  "time": "2026-10-19T01:24:37+0000",
+  "checkpoint": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/train/checkpoint-2100",
+  "step": 2100,
+  "copy_mode": "hardlink",
+  "changed": {
+    "image_root": [
+      "/groups/yshang/an221229/data/JanusVLN_data",
+      "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/image-alias/trajectory_data//groups/yshang/an221229/data/JanusVLN_data"
+    ],
+    "teacher_source": [
+      "/groups/yshang/an221229/vggt_omega_assets/third_party/vggt-omega",
+      "/mnt/data/vmo-ai-task/anhdh35/third_party/vggt-omega"
+    ],
+    "teacher_weights": [
+      "/groups/yshang/an221229/vggt_omega_assets/models/vggt-omega/vggt_omega_1b_512.pt",
+      "/mnt/data/vmo-ai-task/anhdh35/models/vggt-omega/vggt_omega_1b_512.pt"
+    ],
+    "dataloader_num_workers": [
+      2,
+      8
+    ],
+    "manifest_sha256": [
+      "0e5ee1c3fd1e419727111d19ac208d4a74cdccaa7b41cf3076ab31197cec4515",
+      "c6e38493a387c528b8a2eb18241cac2b54b0409553ac2d18bc6c8adf10e8e1cd"
+    ]
+  },
+  "unchanged": "every other contract/navigation/config field, episode order, seed 429, world 4, GAS 2",
+  "manifest": {
+    "source_manifest_sha256": "0e5ee1c3fd1e419727111d19ac208d4a74cdccaa7b41cf3076ab31197cec4515",
+    "rebased_manifest_sha256": "c6e38493a387c528b8a2eb18241cac2b54b0409553ac2d18bc6c8adf10e8e1cd",
+    "fingerprint_v1": "f11fcceac19724e586f1b0a97828c388f619a88ee14d513bd8498856e9c2b0a9",
+    "episodes": 30815,
+    "steps": 3128624,
+    "old_root": "/groups/yshang/an221229/data/JanusVLN_data",
+    "new_root": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/image-alias/trajectory_data//groups/yshang/an221229/data/JanusVLN_data",
+    "images_checked": true,
+    "out": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/data/r2r_rxr15_train.rebased.jsonl"
+  },
+  "preflight": {
+    "PREFLIGHT": "PASS",
+    "transformers": "5.11.0",
+    "run_id": "G3A1",
+    "episodes": 30815,
+    "manifest_sha256": "c6e38493a387c528b8a2eb18241cac2b54b0409553ac2d18bc6c8adf10e8e1cd",
+    "teacher_weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+    "dataloader_num_workers": 8,
+    "world_size": 4,
+    "accumulation": 2
+  },
+  "completeness": {
+    "step": 2100,
+    "world": 4,
+    "files": 22,
+    "latest": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/train/checkpoint-2100"
+  },
+  "sha256_verified_files": 23,
+  "runtime_profile": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/g3a1_resume_h4.yaml",
+  "manifest_path": "/mnt/data/vmo-ai-task/anhdh35/g3a1-resume-worker2-20261019/production/data/r2r_rxr15_train.rebased.jsonl"
+}

@@ -1,0 +1,365 @@
+{
+  "trainer": {
+    "global_step": 2110,
+    "max_steps": 3852,
+    "epoch": 0.547767393561786
+  },
+  "scheduler": {
+    "base_lrs": [
+      5e-06,
+      5e-06,
+      0.0001,
+      0.0001,
+      5e-05
+    ],
+    "last_epoch": 2110,
+    "_step_count": 2111,
+    "_is_initial": false,
+    "_get_lr_called_within_step": false,
+    "_last_lr": [
+      2.5120513773545737e-06,
+      2.5120513773545737e-06,
+      5.024102754709147e-05,
+      5.024102754709147e-05,
+      2.5120513773545734e-05
+    ]
+  },
+  "optimizer": [
+    {
+      "rank": 0,
+      "steps": [
+        2110,
+        2110,
+        2110,
+        2110,
+        2110
+      ],
+      "groups": [
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545734e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "zero_stage": 2,
+      "partition_count": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "overflow": false
+    },
+    {
+      "rank": 1,
+      "steps": [
+        2110,
+        2110,
+        2110,
+        2110,
+        2110
+      ],
+      "groups": [
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545734e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "zero_stage": 2,
+      "partition_count": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "overflow": false
+    },
+    {
+      "rank": 2,
+      "steps": [
+        2110,
+        2110,
+        2110,
+        2110,
+        2110
+      ],
+      "groups": [
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545734e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "zero_stage": 2,
+      "partition_count": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "overflow": false
+    },
+    {
+      "rank": 3,
+      "steps": [
+        2110,
+        2110,
+        2110,
+        2110,
+        2110
+      ],
+      "groups": [
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545737e-06,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 5.024102754709147e-05,
+          "weight_decay": 0.0,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        },
+        {
+          "lr": 2.5120513773545734e-05,
+          "weight_decay": 0.01,
+          "betas": [
+            0.9,
+            0.95
+          ],
+          "eps": 1e-08
+        }
+      ],
+      "zero_stage": 2,
+      "partition_count": [
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "overflow": false
+    }
+  ],
+  "deepspeed_model_state": {
+    "global_steps": 2110,
+    "global_samples": 16880,
+    "skipped_steps": 0,
+    "dp_world_size": 4,
+    "mp_world_size": 1
+  },
+  "scheduler_owner": "HF scheduler.pt (validated against all optimizer groups)",
+  "model": {
+    "adapters": {
+      "backbone.model.language_model.layers.24.linear_attn.geoaddress.q_down.weight": [
+        8,
+        2560
+      ],
+      "backbone.model.language_model.layers.24.linear_attn.geoaddress.q_up.weight": [
+        256,
+        8
+      ],
+      "backbone.model.language_model.layers.24.linear_attn.geoaddress.k_down.weight": [
+        8,
+        2560
+      ],
+      "backbone.model.language_model.layers.24.linear_attn.geoaddress.k_up.weight": [
+        256,
+        8
+      ]
+    },
+    "head": {
+      "research_aux.state_head.region_embedding": [
+        5,
+        32
+      ],
+      "research_aux.state_head.query.1.weight": [
+        512,
+        4160
+      ],
+      "research_aux.state_head.query.1.bias": [
+        512
+      ],
+      "research_aux.state_head.query.3.weight": [
+        4096,
+        512
+      ],
+      "research_aux.state_head.query.3.bias": [
+        4096
+      ],
+      "research_aux.state_head.decoder.0.weight": [
+        1024,
+        4096
+      ],
+      "research_aux.state_head.decoder.0.bias": [
+        1024
+      ],
+      "research_aux.state_head.decoder.2.weight": [
+        2048,
+        1024
+      ],
+      "research_aux.state_head.decoder.2.bias": [
+        2048
+      ]
+    },
+    "tensor_count": 737,
+    "parameter_elements": 5185536160
+  },
+  "rng_files": {
+    "rng_state_0.pth": "4a9268faec27b05faae2651fe82c1d082f0024e835eb75530ace9c9fcab9c2b5",
+    "rng_state_1.pth": "4c0a97e27154590738f27f974b36f3cdd0294bbfefd8230339dd0eeeaa380336",
+    "rng_state_2.pth": "83996542abde610b1020bd671d4cd0522239a2aeca0c8c8fc647e2e1055f41c0",
+    "rng_state_3.pth": "792cb71df822ba438162569dd2a48b142f735ccc800eff4b9bfbe3746112cb79"
+  },
+  "inventory_files": 22,
+  "passed": true
+}

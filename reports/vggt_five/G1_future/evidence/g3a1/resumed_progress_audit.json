@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "unix": 1792374416.3808303,
+  "last_completed_all_ranks": 2115,
+  "remaining_updates": 1737,
+  "completed_new_exposures": 120,
+  "new_episode_uids_unique": true,
+  "no_overlap_before_checkpoint": true,
+  "first_update": 2101,
+  "all_losses_finite": true,
+  "aux_weight": 0.1,
+  "peak_allocated_gib": 37.30629062652588,
+  "peak_reserved_gib": 46.80078125,
+  "peak_working_set_gib": 453.57008361816406,
+  "cuda_ooms": 0,
+  "queue": {
+    "unix": 1792374083.662564,
+    "pid": 1126265,
+    "allocation": "4925",
+    "status": "running",
+    "stage": "g3a1"
+  },
+  "heartbeat": {
+    "unix": 1792374411.5186865,
+    "pid": 1126265
+  }
+}

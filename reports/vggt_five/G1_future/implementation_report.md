@@ -1,6 +1,6 @@
 # G1 future-conditioned Omega teacher
 
-Status: implemented and under four-H100 qualification on worker-2. Full training has not started. The user subsequently requested that the uploaded G3+A1 run be resumed and completed first, followed automatically by this experiment. Qualification and queue evidence will be appended below.
+Status: G1-future implementation and four-H100 qualification are complete. The verified G3+A1 continuation was launched first on worker-2 in step4925.138 at2026-10-19 01:41UTC. G1-future is the second automatic stage and has not yet trained on the full manifest. The live continuation verification is recorded below.
 
 ## Scientific definition
 
@@ -36,7 +36,7 @@ Four H100 80GB GPUs on worker-2 allocation 4925, 60 CPUs and 768 GiB host RAM. R
 
 Campaign root: `/mnt/data/vmo-ai-task/anhdh35/g1-future-worker2-20261019`. Separate diagnostics, frozen production source, outputs, locks and supervisor logs prevent collisions. RAM and disk guards are retained. No existing jobs are stopped. The final queue must require successful G3+A1 completion, rather than merely its process exit, before starting G1-future.
 
-## Validation evidence so far
+## Validation evidence
 
 - Test-first CPU run: ten intended failures before implementation; four baseline G1 tests passed, CUDA RNG check skipped on CPU.
 - After implementation: 14 passed, one CUDA-only skip.
@@ -77,3 +77,45 @@ Full-corpus sampling and image-existence verification is required before launch.
 Four-rank fresh-process recovery passed at update 3: global relative L2 2.6672e-8, maximum absolute difference 2.3842e-7; the entire auxiliary head is bitwise identical, both losses are 0.4154797792, and all three projector biases demonstrably update. All 22 recovery inventory files validate.
 
 The initial serving diagnostic reached an untrained greedy-output failure: the three-update model emitted 16 tokens without the required assistant terminator. This is not a trained navigation evaluation. The diagnostic now has an explicit smoke-only option to record that exact failure and still require identical reset outcomes and logits; all other errors remain fatal. The default remains strict. Source/export logits must still match exactly and 17-frame controlled replay on both datasets must still meet the original BF16 tolerance, including retry and Window8 eviction. Production serving and model code are unchanged. Four unit tests cover valid output, strict default, the explicit incomplete-response case, and propagation of unrelated failures. The original failed evidence is retained.
+
+## Measured four-H100 diagnostics
+
+Each row uses full episodes and global batch8. B8 means eight teacher pairs per forward; B4 is the only alternative runtime knob benchmarked. Representative measurements are warm short-fixture throughput, not a prediction of end-to-end full-corpus wall time. Repeated fixture updates may also include boundary housekeeping.
+
+| Diagnostic | Updates | Seconds/update | Peak GPU reserved GiB | Result |
+|---|---:|---:|---:|---|
+| Mixed, B8 pairs | 3 | 20.49 | 49.92 | pass |
+| Mixed, B4 pairs | 3 | 20.63 | 49.92 | pass |
+| Terminal-only eight-record fixture | 2 | 2.23 | 28.24 | pass; zero auxiliary support |
+| R2R representative | 8 | 12.09 | 35.80 | pass |
+| RxR representative | 8 | 21.51 | 48.42 | pass |
+| R2R longest,183frames | 3 | 25.25 | 46.76 | pass |
+| RxR longest,627frames/199735tokens | 3 | 76.64 | 76.40 | pass |
+
+The B4/B8 timing difference is too small to establish a speed improvement; B8 is retained. At the longest RxR fixture, peak allocated memory was61.79GiB and peak working host memory393.92GiB; no CUDA/cgroup OOM occurred. Total cgroup usage can approach768GiB because clean reclaimable file cache is included; the existing supervisor guards working memory separately. Memory limit/reclaim events occurred, so this is not a claim of unlimited headroom or no cache pressure. No host-wide cache dropping or changes to other users' jobs were performed.
+
+Four-rank distributed-loss validation passed unequal support, all-empty support, and uniform support with GAS2; maximum gradient error versus the single globally normalized reference was2.98e-8.
+
+The supplied checkpoint migration completed all23 state-file hash checks and the trainer's own metadata/data-order/world-size/teacher preflight. Full manifest image checks passed3128624/3128624; all30815 old/new sampling keys matched, with explicit128pair-list and1024query-set comparisons. A canonical-root byte comparison also proves this is the established joint R2R/RxR15deg manifest rather than a different dataset.
+
+## Final qualification and queue
+
+Final GPU regression:371 passed,115 dependency warnings,50.45s. The exact G3+A1 archived production source passed419 tests,118 warnings,49.21s, including its real-H100 fused GDN/GeoAddress tests. Four additional export-diagnostic tests passed in6.61s. No tests were skipped in these final GPU suites. A mixed-extreme three-update stress passed at54.89s/update,61.79GiB allocated/68.42GiB reserved,344.12GiB host working set, zero OOM. This covers heterogeneous sequence-length transitions in addition to repeated longest episodes.
+
+Final serving export: source/export logits are bitwise identical. Seventeen-frame controlled replay gives R2R maximum absolute difference0.59375/RMS0.05543 and RxR0.75/0.04959, within the original0.75 absolute/0.03relative/RMS0.15 protocol. Both datasets pass retry idempotence, exact reset and Window8 eviction. The smoke RxR policy produces a valid greedy response. The smoke R2R policy still lacks a terminator; the diagnostic records `greedy_valid=false` and checks that its failure and every captured logit are identical after reset. This qualification verifies implementation/export equivalence, not navigation quality.
+
+The frozen G1 production checkout is `g1-future-worker2-20261019/production/source-1fcc2af`, commit1fcc2af. Earlier hardware runs recorded dirty development snapshots or55741d0; every recorded `src/` file was hashed against the final frozen source before sealing qualification. The final change after55741d0 affects only the export diagnostic and its tests. The final report/operations commit can therefore be newer than the immutable training checkout without changing the qualified model code. `evidence/future/qualification.json` binds source hashes, all ten passed experiment results, test suites, recovery and export records.
+
+Queue root: `/mnt/data/vmo-ai-task/anhdh35/g3a1-then-g1-future-20261019`. Its persistent controller runs under Slurm step4925.138 on worker-2, within the existing4H100/60CPU/768GiB allocation4925. It survives client SSH disconnection. G3+A1 uses `g3a1-resume-worker2-20261019/production`; G1-future uses a fresh `g1-future-worker2-20261019/production/g1_future_joint_e1`. No original worktree, historical output, shared environment or other user's job was modified.
+
+The queue checks pinned source and input hashes before each stage, records an immutable queue identity, takes one queue lock plus per-run launcher locks, and updates a heartbeat every15s. Restart waits for any surviving owned launcher before deciding whether to skip a completed stage or resume an incomplete one. Transition requires a validated four-rank epoch-boundary checkpoint3852, matching navigation contract, trainer/export global step=max step3852 and epoch>=1, a nonempty final model, and finite final forward reference. A failed child or partial successful exit blocks the next stage. The normal checkpoint auto-resume logic selects only complete snapshots; it does not restart silently from base when recovery files are incomplete.
+
+G3+A1 keeps original source877815e, full optimizer/scheduler/RNG, data order and sampling. G1-future begins independently from base, one complete joint epoch with3852 updates, not from G3+A1 weights. Operational commands and audit scripts are in `operations/`; input hashes/results are in `evidence/`. If the Slurm allocation itself is canceled, both processes stop: resume the same queue on a new four-H100 worker-2 allocation by changing only the `--jobid` in the launch invocation. The controller and checkpoints are restartable; this does not claim the cluster will recreate a canceled interactive allocation automatically.
+
+## Verified full-run continuation
+
+At2026-10-19 01:46:56UTC, all four ranks completed step2115/3852, leaving1737 updates. The first resumed optimizer update was2101. Across the15 completed resumed updates, all120 episode exposures are unique and none overlap the pre-checkpoint2100 exposures. Navigation/state/relation losses are finite, both original auxiliary weights remain0.1, and no CUDA OOM was recorded. Observed peak allocated GPU memory37.31GiB, reserved46.80GiB, and host working set453.57GiB during this initial continuation window. These are initial-window measurements, not whole-epoch maxima or an ETA based on a representative full-corpus sample. The progress bar's rate immediately after resume is misleading because it includes the restored2100 steps; it must not be used for finish-time estimates.
+
+Checkpoint2110 was newly saved and independently audited: all22 recovery inventory files validate, trainer global_step2110/max_steps3852/epoch0.5477673936, all four ZeRO2 optimizer shards have five groups at step2110 with the original beta/epsilon settings and exact scheduler-matching learning rates, DeepSpeed model global_steps2110/world_size4, G3 head plus four GeoAddress tensors present, and all four RNG states present. Training continued beyond the save. Evidence is in `evidence/g3a1/checkpoint2110_audit.json`, `checkpoint2110-RECOVERY_COMPLETE.json`, and `resumed_progress_audit.json`. The persistent queue heartbeat was fresh and its active stage wasG3+A1.
+
+G1-future has not begun the full run yet. Its automatic start follows verified G3+A1 epoch completion; it will then use the already-qualified source, manifest and fresh base initialization. Neither full-run final weights nor navigation results are claimed at this point.
