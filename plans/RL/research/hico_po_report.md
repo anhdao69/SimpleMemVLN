@@ -2,16 +2,19 @@
 
 Status: **IN PROGRESS** (sections marked *pending* are filled as runs finish).
 
-**Current headline (2026-10-15).**
+**Current headline (2026-10-19).**
 - **GRPO+F-B** is GRPO plus memory-snapshot forked sibling credit, with a batch-level contrast scale
   (§5.5).
-- R2R val_unseen: **SR 58.40 / SPL 52.99 / NE 5.06 / OSR 65.42**, vs ActiveVLN GRPO 56.88–57.37 /
-  50.45–51.82 / 5.30–5.31 / 64.22–64.87 (two seeds).
-- It is ahead of both GRPO seeds on every metric. The SR gain is not yet significant on one seed
-  (p = 0.15 / 0.35), and the SPL gain is significant against seed 1 only.
+- R2R val_unseen, two training seeds each: GRPO+F-B **SR 58.40 / 58.08, SPL 52.99 / 53.29, NE 5.06 /
+  5.15**, vs ActiveVLN GRPO SR 56.88 / 57.37, SPL 50.45 / 51.82, NE 5.31 / 5.30.
+- Pooled two seeds vs two seeds (paired over episodes): **SPL +2.00 (95 % CI [+0.7, +3.3], p = 0.002)**,
+  **NE −0.20 m (p = 0.012)**, SR +1.11 ([−0.3, +2.6], p = 0.14, *not significant*), OSR +0.24 (p = 0.74).
+  All four seed pairings have positive ΔSR (+0.7 to +1.5) and ΔSPL (+1.2 to +2.8).
+- So, at matched RL update steps and data, GRPO+F-B **outperforms GRPO on path efficiency (SPL) and
+  navigation error**, and is consistently but not significantly ahead on SR.
 - Its ablation without the batch scale (GRPO+F) is significantly worse (−2.8 SR, p = 0.005).
-- A second GRPO+F-B seed and a matched-environment-step evaluation are queued; the "outperforms GRPO"
-  claim waits on them.
+- GRPO+F-B uses ≈ 2.1× GRPO's simulator steps. The matched-interaction control (GRPO with G = 8) is
+  running; until it is evaluated the result is *matched-update*, not *matched-interaction* (§5.5).
 Branch `RL_research` (from `RL_baseline` @ `96eedf1`). Companion notes:
 `plans/RL/research/literature_update.md` (verified literature and novelty assessment),
 `plans/RL/activevln_grpo_baseline_report.md` (the GRPO baseline this work must beat).
@@ -425,6 +428,7 @@ So the batch scale removes the amplification and keeps the intended credit.
 | GRPO s2 | 57.37 | 51.82 | 5.30 | 64.22 | 10.38 | 84 | 495 | 125 |
 | GRPO+F (s_g) | 55.57 | 50.59 | 5.35 | 62.37 | 10.17 | 122 | 497 | 122 |
 | **GRPO+F-B** | **58.40** | **52.99** | **5.06** | **65.42** | 10.22 | 120 | **450** | 126 |
+| **GRPO+F-B s2** | **58.08** | **53.29** | 5.15 | 64.17 | 9.90 | 106 | 485 | 111 |
 
 Paired tests on the same episodes (`results/grpo_fork_bs_step125_vs_*_comparison.json`):
 
@@ -459,7 +463,7 @@ seeds. The test is a paired bootstrap / sign-flip over episodes:
 | NE (m) | 5.30 | 5.06 | **−0.24** | **[−0.43, −0.05]** | **0.012** |
 
 SPL and NE improve significantly over episodes; SR does not. This test covers episode sampling only, not
-training-seed variance, which needs the second GRPO+F-B seed.
+training-seed variance, which needs the second GRPO+F-B seed (below).
 
 **Where the gain comes from** (vs GRPO s2, `results/grpo_fork_bs_step125_failure_analysis_vs_grpo_s2.json`):
 
@@ -501,16 +505,60 @@ matched-RL-step comparison above is not matched-interaction.
   than on forked siblings.
 - For GRPO+F (s_g), the equivalent check was strongly negative (§5.4: 50.2 SR).
 
-**Seed control.** A second GRPO+F-B training seed (`configs/rl/hico_grpo_fork_bs_r2r1k_seed2.yaml`, seed
-20261111, the same seed as GRPO s2) is queued. A claim of outperforming GRPO requires the two-seed mean
-to exceed GRPO's two-seed mean (57.1 SR / 51.1 SPL) with a pooled paired test. *Pending.* The first
-attempts (2026-10-16 09:11–12:42 UTC) never finished step 0. Each died with CUDA OOM at the first update
+**Seed control (done 2026-10-19).** A second GRPO+F-B training seed
+(`configs/rl/hico_grpo_fork_bs_r2r1k_seed2.yaml`, seed 20261111, the same seed as GRPO s2) was trained
+for 125 steps and evaluated once on val_unseen with the same evaluator (export
+`runs/hico_grpo_fork_bs_r2r1k_seed2/exports/step_0125`, weights `d21bc2d9…`).
+
+Seed 2 alone, paired on the same episodes (`results/grpo_fork_bs_s2_step125_vs_*_comparison.json`):
+
+| GRPO+F-B s2 vs | ΔSR | 95 % CI (SR) | ΔSPL | 95 % CI (SPL) | ΔNE | gained / lost | McNemar p |
+|---|---:|---|---:|---|---:|---:|---:|
+| GRPO s1 | +1.20 | [−0.8, +3.3] | +2.83 | **[+1.0, +4.7]** | −0.16 | 202 / 180 | 0.28 |
+| GRPO s2 | +0.71 | [−1.3, +2.7] | +1.47 | [−0.3, +3.2] | −0.15 | 178 / 165 | 0.52 |
+| GRPO+F (s_g) | **+2.50** | **[+0.5, +4.5]** | **+2.65** | **[+0.9, +4.5]** | −0.20 | 199 / 153 | **0.016** |
+| SFT | +6.53 | [+4.5, +8.6] | +5.65 | [+3.7, +7.6] | −0.66 | 262 / 142 | 2e-9 |
+
+The two GRPO+F-B seeds agree closely (58.40 vs 58.08 SR, 52.99 vs 53.29 SPL); the spread between them
+(0.3 SR) is smaller than that between the GRPO seeds (0.5 SR). The GRPO+F ablation result also
+replicates on seed 2 (+2.5 SR, p = 0.016).
+
+**Pooled two seeds vs two seeds** (`scripts/rl/pooled_compare.py`,
+`results/pooled_grpo2seeds_vs_grpo_fork_bs2seeds.json`). Per-episode outcomes are averaged over the two
+seeds of each method; CI and p are a paired bootstrap / sign-flip over the 1,839 episodes:
+
+| Metric | GRPO (s1, s2) | GRPO+F-B (s1, s2) | Δ of means | the 4 seed-pair Δs | 95 % CI | p |
+|---|---|---|---:|---|---|---:|
+| SR | 56.88, 57.37 | 58.40, 58.08 | +1.11 | +1.5, +1.2, +1.0, +0.7 | [−0.3, +2.6] | 0.14 |
+| SPL | 50.45, 51.82 | 52.99, 53.29 | **+2.00** | +2.5, +2.8, +1.2, +1.5 | **[+0.7, +3.3]** | **0.002** |
+| OSR | 64.87, 64.22 | 65.42, 64.17 | +0.24 | +0.5, −0.7, +1.2, −0.1 | [−1.0, +1.5] | 0.74 |
+| NE (m) | 5.31, 5.30 | 5.06, 5.15 | **−0.20** | −0.24, −0.16, −0.24, −0.15 | **[−0.35, −0.05]** | **0.012** |
+
+**Verdict (matched RL steps, data and initialization).**
+- GRPO+F-B **outperforms ActiveVLN GRPO on SPL (+2.0, p = 0.002) and NE (−0.20 m, p = 0.012)** with two
+  training seeds per method. Every one of the four seed pairings favours GRPO+F-B on SR, SPL and NE.
+- The SR gain (+1.1) is consistent in sign but **not statistically significant** (p = 0.14). We do not
+  claim an SR improvement.
+- OSR is unchanged, so the gain is not more exploration coverage. It is better use of the path:
+  shorter trajectories (TL 9.9–10.2 vs 10.4–10.6 m) that end closer to the goal.
+- With two seeds per method, between-seed variance is visible in the four pairings but cannot be tested
+  formally. The episode-level test above treats the seeds as fixed.
+- On seed 2, the per-horizon pattern of seed 1 only partly replicates. Against GRPO s2, SR is 69.4 vs
+  67.6 (< 40 actions), 62.5 vs 64.4 (40–59), 51.8 vs 48.2 (60–79) and 38.5 vs 34.8 (≥ 80); ≥ 13 m
+  geodesic gives 46.4 vs 43.5. Long-horizon gains replicate, the 40–59 bin is slightly worse, and
+  "never within 3 m" (485) is not reduced on seed 2.
+  (`results/grpo_fork_bs_s2_step125_failure_analysis_vs_grpo_s2.json`.)
+
+**Seed-2 training history.** The first attempts (2026-10-16 09:11–12:42 UTC) never finished step 0. Each died with CUDA OOM at the first update
 because another user's jobs left GPU 0 with less than the ≈ 36 GB rank 0 needs. `scripts/rl/supervise.sh`
 now waits for free GPU memory before each launch. Later attempts got through rollout but hit OOM inside
 the fused AdamW step, which allocates a temporary the size of one flat ZeRO-2 parameter group (1 GiB with
 8 groups). Seed 2 and the G = 8 control therefore use `param_groups: 32` instead of 8. The update is
 unchanged (AdamW is elementwise, every group has the same hyperparameters, and clipping uses the
-global norm); only the temporaries are 4× smaller. Seed 2 restarted from scratch on 2026-10-16 at 15:04 UTC.
+global norm); only the temporaries are 4× smaller. Seed 2 restarted from scratch on 2026-10-16 and,
+after the systems fixes of §7.4, trained without interruption from 20:12 UTC until a host-RAM OOM at
+step 110 on 2026-10-18; it resumed exactly from the step-110 checkpoint and finished on 2026-10-19 at
+00:54 UTC.
 
 ## 6. Diagnostics (STOP credit, SNR, critic)
 
@@ -651,19 +699,24 @@ already ≈ 0. This is consistent with the null effect of both STOP-credit varia
 | GRPO+STOP | 4,988 | 988 | 269.8 k | 2.36 / 3.42 | 2 (one manual for a helper change, one unit OOM; exact resume from step 20 / 30) |
 | GRPO+F | 5,020 | 1,020 | 261 k main + 173 k branch + 135 k replay = 570 k | 3.77 / 16.06 | 1 (external GPU OOM) |
 | GRPO+F-B | 4,956 | 956 | 259 k + 168 k + 133 k = 561 k | 2.20 / 3.37 | 3 (unit host-RAM cap) |
+| GRPO+F-B s2 | 4,940 | 940 | 253 k + 166 k + 126 k = 545 k | 2.31 / 3.59 | 3 resumes (host-RAM OOM from other users' jobs) after 21 failed early launches (systems, below) |
 
 HiCo-PO v3 used 18 % fewer rollouts (no dynamic sampling) and the critic adds < 10 s per step on CPU.
 Its larger gradient norm reflects the batch-level scale (per-group normalisation in GRPO shrinks the
 loss), not instability: clipping at 1.0 is active in all runs and no run diverged. Wall-clock is not
 comparable across runs because the GPUs were shared with other users' jobs.
 
-**GRPO+F-B seed 2 (in progress, 2026-10-16).** Every failed launch so far was a systems failure on the
+**GRPO+F-B seed 2 (finished 2026-10-19).** Mean step scale 5.62, branch success 0.63, 0.88 forks per main
+trajectory, 6,020 training sequences: all within 2 % of seed 1. Median step time was 1,122 s (seed 1:
+582 s) because the GPUs and host RAM were shared with other users' jobs; this is contention, not method
+cost. Every failed launch was a systems failure on the
 shared GPU 0, not a training instability: CUDA OOM at the first or second update, host-RAM thrash, and
 twice the NCCL watchdog aborting a rank that idled in collectives while the other rank waited for memory.
 None of the fixes changes the update (`param_groups: 32`, placement margin, a wait-for-memory gate
 before the update, a per-rank GPU reservation `hold_gpu_gib`, CPU-group polling). The 19:05 UTC launch
 reproduced the step-0 metrics of every earlier attempt exactly and passed step 1 at 19:22 UTC with
-no memory wait. Restart count and step times will be filled in when the run finishes.
+no memory wait. After that, the only interruptions were three host-RAM OOM kills on 2026-10-18 caused
+by other users' processes; each resume continued from the last checkpoint.
 
 **Gradient clipping is always active.** In every run, all 125 updates have a pre-clip gradient norm
 above the clip threshold of 1.0:
@@ -676,6 +729,7 @@ above the clip threshold of 1.0:
 | HiCo v3 | 3.95 | 6.58 |
 | GRPO+F | 1.64 | 3.07 |
 | GRPO+F-B | 1.28 | 2.19 |
+| GRPO+F-B s2 | 1.32 | 2.24 |
 
 Every update is therefore g/‖g‖ before AdamW. This has two consequences for interpreting §5:
 
