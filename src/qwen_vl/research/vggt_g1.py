@@ -21,7 +21,12 @@ def parse_g1(config):
     for key in ('lambda_max','head_lr'):
         v=value[key]
         if not math.isfinite(v) or v<0: raise ValueError(f'Invalid {key}')
-    if value.get('ramp_updates') != 771: raise ValueError('Declared G1 ramp is 771 updates')
+    ramp=value.get('ramp_updates')
+    allowed=(0,771) if run=='G3' else (771,)
+    if type(ramp) is not int or ramp not in allowed:
+        raise ValueError('G1 requires ramp771; G3 permits ramp771 or constant weight (ramp0)')
+    if 'head_seed' in value and (run!='G3' or type(value['head_seed']) is not int or value['head_seed']<0):
+        raise ValueError('head_seed must be a nonnegative G3 integer')
     if value.get('teacher_residency','resident') not in ('resident','cpu_between'):
         raise ValueError('Unsupported online teacher residency')
     batch=value.get('teacher_batch_size',8)
@@ -31,6 +36,8 @@ def parse_g1(config):
 
 
 def auxiliary_weight(update,ramp_updates,maximum):
+    # Zero means constant supervision, including optimizer update zero.
+    if ramp_updates==0:return maximum
     return maximum*min(1.,max(0.,update/ramp_updates))
 
 

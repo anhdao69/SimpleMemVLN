@@ -134,7 +134,7 @@ class SimpleMemVLNForNavigation(nn.Module):
                 text=backbone.config.text_config
                 if (text.linear_num_value_heads,text.linear_key_head_dim,text.linear_value_head_dim)!=(32,128,128):
                     raise ValueError('G3 requires the qualified native 32x128 state heads')
-                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead()})
+                self.research_aux=nn.ModuleDict({'state_head':NativeStateHead(seed=self.g1_spec.get('head_seed',429))})
             else:
                 self.research_aux = nn.ModuleDict({"current_projector": CurrentSpatialProjector()})
             parameter = next(backbone.parameters())
