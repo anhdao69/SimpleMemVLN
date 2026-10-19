@@ -1,0 +1,16 @@
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/mnt/data/vmo-ai-task/anhdh35/g1-future-worker2-20261019/worktree/scripts/vln/check_vggt_export.py", line 94, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/g1-future-worker2-20261019/worktree/scripts/vln/check_vggt_export.py", line 81, in main
+    session.reset('greedy',ep['instruction']);first=session.observe('greedy',0,rgb)
+                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/data/vmo-ai-task/anhdh35/g1-future-worker2-20261019/worktree/src/qwen_vl/stream/session.py", line 220, in observe
+    raise ValueError(
+ValueError: Response limit reached without assistant terminator

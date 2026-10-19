@@ -1,0 +1,10 @@
+............REAL_FUTURE_TEACHER_PASS {'future_relative_change': 0.08729460835456848, 'batch_relative_error': 8.843169894134917e-07, 'peak_allocated_gib': 3.655384063720703}
+.[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+....
+=============================== warnings summary ===============================
+../../SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: 14 warnings
+  /mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+17 passed, 14 warnings in 26.12s
