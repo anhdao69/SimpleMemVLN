@@ -1,5 +1,5 @@
-# Worker-2 continuation of verified HF checkpoint2100. One extra recovery save at2110; science unchanged.
 #!/usr/bin/env bash
+# Worker-2 continuation of verified HF checkpoint2100. One extra recovery save at2110; science unchanged.
 # Continue G3A1 from the run directory prepared by tools/prepare_resume.py on a 4 x H100 node.
 # Same command as the original newton/worker-2 launchers: host-memory supervisor, 4 ranks, GAS 2,
 # recovery saves every 100 updates, --resume_from_checkpoint auto (newest COMPLETE checkpoint).

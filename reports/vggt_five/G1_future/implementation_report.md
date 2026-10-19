@@ -47,3 +47,27 @@ Campaign root: `/mnt/data/vmo-ai-task/anhdh35/g1-future-worker2-20261019`. Separ
 - Four-GPU mixed-episode smoke at pair batch eight: passed three updates, finite losses/gradients, correct frame denominators, zero OOM. Detailed measurements and remaining qualification results follow when complete.
 
 Passing these checks establishes tested implementation behavior, not guaranteed navigation improvement or guaranteed failure-free training. No navigation evaluation of this new model exists yet.
+
+## Follow-up: restoring the uploaded G3+A1 run first
+
+The user confirmed `anhdao69/g3a1_training` as the predecessor. HF revision `47043b9693d30f5f4b423e9fddf780f92a6f189e` contains checkpoint2100, 66.46 GiB including four ZeRO-2 optimizer shards. All SHA256SUMS entries passed. The exact production source is877815e; the provided git bundle's latest260e6d8 adds its report and a diagnostic. This branch is not on GitHub. Latest GitHub refs were fetched, and the G1 base remains6833bee. Resuming an existing optimizer uses its exact packaged source rather than importing unrelated upstream changes.
+
+Checkpoint audit confirms global step2100/3852, epoch0.5451713396, five Adam parameter groups on each of four ranks all at step2100, ZeRO2 partition count4, no saved overflow, expected betas/epsilon, matching scheduler/group LRs, G3 head and four GeoAddress tensors, and four RNG files. Its next backbone LR is2.5308736594e-6. The scheduler is owned by HF and saved in `scheduler.pt`; the DeepSpeed model-state scheduler field is intentionally null. An initial audit incorrectly assumed that field was populated; inspecting the installed Trainer's restoration path confirmed it restores the separate scheduler. No checkpoint data or training code was changed to resolve that audit assumption.
+
+The recipe remains G3+A1: G3 delayed native GDN24 reads plus A1 rank8 GeoAddress adapters, online unpositioned Omega targets, lambda0.1 for each objective, ramp771 already complete, headLR1e-4, adapterLR5e-5, full one-epoch cosine decay3852/116, batch8, full BPTT, Window8/canonical history. There are1752 remaining updates. The supplied preparation tool permits only image-root/teacher-path changes and runtime loader workers2→8. The worker-2 launcher adds an early recovery save at2110, then continues ordinary100-update saves; this does not change optimization.
+
+### Migration hazard found and preserved sampling identity
+
+The original image root is `/groups/yshang/an221229/data/JanusVLN_data`, with images immediately under `R2R/…` and `RxR/…`. The local physical root is `/mnt/data/vmo-ai-task/anhdh35/JanusVLN/data/trajectory_data`. A first preparation using the parent `data` root correctly failed its image-existence check; no training was launched.
+
+More importantly, the frozen source's `collection_trajectory_key` splits path strings at `/trajectory_data/`. The original Newton paths lack that marker and therefore hash the **full original absolute path**. Rebasing directly to the ordinary local root would silently change G3 source/read pairs and A1 query-cell choices. The supplied root-rebase preparation tool does not detect this.
+
+To keep the production source and every original sampling key unchanged, this migration uses an isolated filesystem alias:
+
+```
+<resume-root>/image-alias/trajectory_data//groups/yshang/an221229/data/JanusVLN_data
+```
+
+The directory entry at that location is a symlink to the real local `trajectory_data` directory. The deliberate double slash after the marker makes the sampler's unchanged string split yield the exact original `/groups/…` path, including its leading slash. Image I/O follows the symlink to the existing dataset. Manifest byte hashes and resume contracts pin this spelling: **do not normalize these manifest paths**. The original downloaded checkpoint/manifest remain untouched. Prepared checkpoint metadata is replaced atomically, even when large state files are hardlinked.
+
+Full-corpus sampling and image-existence verification is required before launch. It must show identical trajectory keys for all30815 episodes and identical deterministic sampling inputs; explicit pair/query-cell comparisons cover examples across both datasets. This is a compatibility alias, not a change to the training sampler, targets, data order, or model.
