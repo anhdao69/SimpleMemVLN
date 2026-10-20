@@ -1,6 +1,9 @@
 # HiCo-PO for SimpleMemVLN — research report
 
 Status: **IN PROGRESS** (sections marked *pending* are filled as runs finish).
+Snapshot of 2026-10-20 03:50 UTC: both GRPO+F-B seeds are trained and evaluated (§5.5). The
+matched-interaction control GRPO G = 8 is training (step 53 of 125, not evaluated), and v2a is queued
+after it. No result in this report depends on those two runs.
 
 **Current headline (2026-10-19).**
 - **GRPO+F-B** is GRPO plus memory-snapshot forked sibling credit, with a batch-level contrast scale
