@@ -150,3 +150,16 @@ def test_serializer_metadata_carries_the_full_sweep_contract():
     assert metadata['episodic']['drift_floor_sha256'] == canonical_sha256(FLOOR)
     assert metadata['episodic']['drift_floor'][0] == [2, FLOOR['2']]
     assert metadata['config']['memory']['artifacts']['drift_denominator_floor'] == FLOOR
+
+
+@pytest.mark.parametrize('score', ['S1', 'S6', 'S8N', 'S7', 'C_RECENCY'])
+def test_navigation_metadata_survives_the_resume_json_roundtrip(score):
+    from qwen_vl.data.episode_serializer import EpisodeSerializer
+    import json
+    cfg = _with(arm_memory_config(score, artifacts=_artifacts(score)))
+    serializer = EpisodeSerializer.__new__(EpisodeSerializer)
+    serializer.config, serializer.mode = cfg, 'qwen_text'
+    serializer.template_hash, serializer.action_ids, serializer.eos, serializer.separator = 'h', [[1]], 2, [3]
+    metadata = EpisodeSerializer.metadata(serializer)
+    assert json.loads(json.dumps(metadata)) == metadata          # validate_resume_contract compares JSON
+    assert parse_episodic_spec(json.loads(json.dumps(metadata))['config']) == parse_episodic_spec(cfg)
