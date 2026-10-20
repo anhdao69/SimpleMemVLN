@@ -22,7 +22,9 @@ import torch
 from transformers.masking_utils import create_causal_mask
 from transformers.models.qwen3_5 import modeling_qwen3_5 as native
 from qwen_vl.models.committed_write import CommittedWriteScorer
+from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
 from qwen_vl.stream.episodic import build_layer_plan
+from qwen_vl.stream.gdn_selectors import build_sweep_layer_plan, offline_sweep_plan
 
 NATIVE_FORWARD_SHA256 = 'e56d7184954e7b1fc7f3bcc0120b38ea684c620e0b568fd687f41e1bcf9816db'
 
@@ -90,16 +92,23 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
 
     scorer_layers = {gdn: attention for gdn, attention in spec.scoring_pairs}
     plans = {}
+    # The separately versioned GDN sweep only swaps the plan builder/scorer;
+    # visibility, attention and every native parameter computation are shared.
+    sweep = spec.version == GDN_SWEEP_MODE
     if offline and spec.budget_tokens and not spec.needs_write_scores:
         for attention in spec.attention_layers:
-            plans[attention] = build_layer_plan(spec, episode_uid, attention, layout)
+            plans[attention] = (build_sweep_layer_plan if sweep else build_layer_plan)(
+                spec, episode_uid, attention, layout)
     visual = layout.visual_matrix().to(hidden.device) if offline and spec.needs_write_scores else None
     segments = layout.score_segments() if visual is not None else None
     for index, decoder_layer in enumerate(text_model.layers[:config.num_hidden_layers]):
         kind = config.layer_types[index]
         if index in scorer_layers and spec.needs_write_scores:
             attention = scorer_layers[index]
-            if offline:
+            if offline and sweep:
+                plans[attention] = offline_sweep_plan(spec, episode_uid, attention, decoder_layer,
+                                                      hidden.detach()[0], layout, diagnostics)
+            elif offline:
                 scorer = CommittedWriteScorer(decoder_layer, hidden.device)
                 scores = scorer.score_sequence(hidden.detach()[0], segments)
                 visual_scores = scores[visual]                        # [G, 300] FP32

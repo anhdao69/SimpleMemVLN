@@ -105,9 +105,10 @@ def validate_episode(episode, root=None, check_images=True):
 def validate_config(cfg, world_size=None):
     mode = cfg["model"]["output_mode"]
     memory = cfg["memory"]["mode"]
-    from qwen_vl.research.episodic_contract import EPISODIC_MODE, parse_episodic_spec
+    from qwen_vl.research.episodic_contract import EPISODIC_MODE, GDN_SWEEP_MODE, parse_episodic_spec
 
-    if mode not in SERIALIZERS or memory not in ("full_context", "window8", EPISODIC_MODE):
+    if mode not in SERIALIZERS or memory not in ("full_context", "window8", EPISODIC_MODE,
+                                                 GDN_SWEEP_MODE):
         raise ValueError("Unsupported output or memory mode")
     obs, train = cfg["observations"], cfg["training"]
     window_batch = cfg['runtime'].get('window_attention_batch_steps', 1)
@@ -150,7 +151,7 @@ def validate_config(cfg, world_size=None):
             or not cfg["memory"]["evict_before_new_step"]
         ):
             raise ValueError("Window8 requires matching attention and FIFO policy")
-    elif memory == EPISODIC_MODE:
+    elif memory in (EPISODIC_MODE, GDN_SWEEP_MODE):
         parse_episodic_spec(cfg)
     elif cfg["memory"]["evict_before_new_step"]:
         raise ValueError("FullContext cannot evict")
@@ -163,7 +164,7 @@ def validate_config(cfg, world_size=None):
     from qwen_vl.research.lane_contract import parse_step_lane_spec
 
     parse_step_lane_spec(cfg)
-    if memory != EPISODIC_MODE:
+    if memory not in (EPISODIC_MODE, GDN_SWEEP_MODE):
         parse_episodic_spec(cfg)  # rejects stray episodic keys in legacy modes
     from qwen_vl.research.vggt_g1 import parse_g1
     parse_g1(cfg)

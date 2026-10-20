@@ -45,8 +45,12 @@ class StreamSession:
         self.episodic = None
         spec = getattr(self.model, "episodic_spec", None)
         if spec is not None:
-            from qwen_vl.stream.episodic_cache import EpisodicSessionState
-            self.episodic = EpisodicSessionState(
+            from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
+            if spec.version == GDN_SWEEP_MODE:
+                from qwen_vl.stream.gdn_sweep_state import GdnSweepSessionState as State
+            else:
+                from qwen_vl.stream.episodic_cache import EpisodicSessionState as State
+            self.episodic = State(
                 spec, self.model, episode_uid, device=next(self.model.parameters()).device)
         self._append_with_role(self.serializer.encode_prefix(instruction), 0, kind="prefix")
         self.prefix_length = self.positions.logical_token_count

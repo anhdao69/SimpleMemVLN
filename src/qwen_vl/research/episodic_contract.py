@@ -11,6 +11,9 @@ reload/resume rejects any mismatch.
 from dataclasses import asdict, dataclass
 
 EPISODIC_MODE = 'episodic_window_v1'
+# Separately versioned GDN-only S sweep (research/gdn_sweep_contract.py); it
+# reuses this visibility rule and never changes how v1 configs are parsed.
+GDN_SWEEP_MODE = 'episodic_window_gdn_sweep_v1'
 SCORES = ('none', 'committed_mean_l2_v1', 'random_hash_v1')
 GRANULARITIES = ('token', 'visual_group')
 # FP32 PyTorch WY-block committed-write scan; see models/committed_write.py.
@@ -96,6 +99,9 @@ def derived_kv_guard(config, spec):
 def parse_episodic_spec(config, text_config=None):
     """Return the spec for ``episodic_window_v1``; ``None`` for legacy memory modes."""
     memory = config.get('memory', {})
+    if memory.get('mode') == GDN_SWEEP_MODE:
+        from qwen_vl.research.gdn_sweep_contract import parse_gdn_sweep_spec
+        return parse_gdn_sweep_spec(config, text_config)
     if memory.get('mode') != EPISODIC_MODE:
         for key in memory:
             if key.startswith('episodic_') or key == 'recent_groups_including_current':
