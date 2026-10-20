@@ -1,0 +1,22 @@
+memory:
+  mode: episodic_window_gdn_sweep_v1
+  recent_groups_including_current: 4
+  episodic_budget_tokens: 1200
+  selection_unit: token
+  score_id: S9
+  head_reduction: mean
+  scorer_backend: fp32_torch_unscaled_residual_block64_v1
+  score_segmentation: prefix_obs_response_block64_v1
+  selector_seed: 429
+  evict_before_new_step: true
+  kv_guard_tokens: 4784
+  priority_timing: birth_fixed
+  score_dtype: float32
+  key_normalization: native_additive_eps_1e-6
+  cosine_epsilon: 1.0e-06
+  zero_value_threshold: 1.0e-06
+  state_layout: value_heads_key_by_value
+  attention_backend: episodic_fa2_varlen_gather_fp32acc_v1
+  logical_position_policy: preserve
+  candidate_policy: resident_plus_newly_eligible
+  tie_break: priority_desc_original_id_asc

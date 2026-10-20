@@ -1,0 +1,65 @@
+{
+  "version": "m5_gdn_s_sweep_campaign_v1",
+  "root": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-source-dabf4ad",
+  "source_commit": "dabf4ad085d20512640fe0ba3bda72ad4724dc76",
+  "scientific_baseline": "fde1cbef213e27320920400a826addea8d5e114a",
+  "base": "/mnt/data/vmo-ai-task/anhdh35",
+  "manifest": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+  "manifest_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+  "model": "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "m5_e1": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/publication-m5-epoch1-20261019/epoch-1",
+  "m5_e1_weights_sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+  "m5_e1_published_sums": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/publication-m5-epoch1-20261019/SHA256SUMS.json",
+  "m5_e1_reference_config": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/production/m5_joint_e1/train/resolved_config.json",
+  "fixtures": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures",
+  "seed": 429,
+  "min_free_disk_gib": 220,
+  "recovery_arm": "S1",
+  "screening_arms": [
+    "S0",
+    "S1",
+    "S2",
+    "S3",
+    "S4",
+    "S5",
+    "S6",
+    "S7",
+    "S8N",
+    "S8W",
+    "S9",
+    "C_RECENCY",
+    "C_RANDOM"
+  ],
+  "lanes": {
+    "A": {
+      "job": "5248",
+      "host_guard_gib": 432.0,
+      "qualifies": true,
+      "predecessor": null,
+      "arms": [
+        "S1",
+        "S2",
+        "S9",
+        "S4",
+        "S7"
+      ]
+    },
+    "B": {
+      "job": "4925",
+      "host_guard_gib": 691.2,
+      "qualifies": false,
+      "predecessor": {
+        "state": "/mnt/data/vmo-ai-task/anhdh35/dino-then-m5-seed431-worker2-20261020/queue_state.json",
+        "step": "4925.147"
+      },
+      "arms": [
+        "S3",
+        "S5",
+        "S6",
+        "S8N",
+        "S8W"
+      ]
+    }
+  }
+}

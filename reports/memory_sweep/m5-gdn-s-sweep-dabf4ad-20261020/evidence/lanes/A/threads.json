@@ -1,0 +1,166 @@
+{
+  "arm": "S1",
+  "baseline": {
+    "check": {
+      "grad_norms": [
+        43.08588409423828,
+        43.08810806274414
+      ],
+      "losses": [
+        0.43549585342407227,
+        0.43549585342407227
+      ],
+      "max_process_rss_gib": 58.8395881652832,
+      "passed": true,
+      "peak_reserved_gib": 73.0234375,
+      "problems": []
+    },
+    "per_rank_step_seconds": [
+      1.5379277570173144,
+      1.6333161981310695,
+      1.936364786932245,
+      1.9864567711483687
+    ],
+    "resources": {
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podf16b1000_b339_46e0_b01c_db5bc40a1e72.slice/system.slice/slurmstepd.scope/job_5248",
+      "cgroup_recorded_peak_gib": 176.14646911621094,
+      "cgroup_version": 2,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=4",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/vln_empty.yaml",
+        "--memory_config",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/configs/arm_S1.yaml",
+        "--policy_config",
+        "configs/vggt/g3_joint_one_epoch.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/configs/runtime.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_longest.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/runs/S1_seed429_e1/smoke-omp4/train",
+        "--run-name",
+        "s1_seed429_e1",
+        "--max-optimizer-updates",
+        "2",
+        "--debug-repeat-episodes",
+        "--profile-only"
+      ],
+      "exit_code": 0,
+      "free_disk_gib_at_start": 2717.5576171875,
+      "host_guard_gib": 432.0,
+      "host_guard_triggered": false,
+      "job_limit_gib": 480.0,
+      "new_limit_events": 138435,
+      "new_oom_events": 0,
+      "new_oom_kill_events": 0,
+      "nvidia_smi_peak_used_mib": {
+        "0": 77061,
+        "1": 68881,
+        "2": 68881,
+        "3": 68881
+      },
+      "sampled_peak_anon_gib": 251.17394256591797,
+      "sampled_peak_job_usage_gib": 480.0,
+      "sampled_peak_working_set_gib": 341.1693572998047,
+      "seconds": 239.33396220207214,
+      "start_usage_gib": 283.8950881958008,
+      "status": "PASS"
+    },
+    "step_seconds": 1.7848404925316572,
+    "threads": 4,
+    "update_seconds": 68.33358890097588
+  },
+  "candidate": {
+    "check": {
+      "grad_norms": [
+        43.08940505981445,
+        43.08871841430664
+      ],
+      "losses": [
+        0.43549585342407227,
+        0.43549585342407227
+      ],
+      "max_process_rss_gib": 58.874053955078125,
+      "passed": true,
+      "peak_reserved_gib": 73.0234375,
+      "problems": []
+    },
+    "per_rank_step_seconds": [
+      1.1958180801011622,
+      1.2249182139057666,
+      1.3544713957235217,
+      1.4072151160798967
+    ],
+    "resources": {
+      "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podf16b1000_b339_46e0_b01c_db5bc40a1e72.slice/system.slice/slurmstepd.scope/job_5248",
+      "cgroup_recorded_peak_gib": 169.14977264404297,
+      "cgroup_version": 2,
+      "command": [
+        "torchrun",
+        "--standalone",
+        "--nproc_per_node=4",
+        "-m",
+        "qwen_vl.train.train_qwen",
+        "--vln_config",
+        "configs/episodic/science_common.yaml",
+        "--output_config",
+        "configs/vln_empty.yaml",
+        "--memory_config",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/configs/arm_S1.yaml",
+        "--policy_config",
+        "configs/vggt/g3_joint_one_epoch.yaml",
+        "--runtime_profile",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/configs/runtime.yaml",
+        "--deepspeed",
+        "configs/deepspeed_zero2_cpu_optimizer.json",
+        "--manifest",
+        "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures/rxrce_longest.jsonl",
+        "--model_name_or_path",
+        "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+        "--output_dir",
+        "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/runs/S1_seed429_e1/smoke-omp8/train",
+        "--run-name",
+        "s1_seed429_e1",
+        "--max-optimizer-updates",
+        "2",
+        "--debug-repeat-episodes",
+        "--profile-only"
+      ],
+      "exit_code": 0,
+      "free_disk_gib_at_start": 2717.48828125,
+      "host_guard_gib": 432.0,
+      "host_guard_triggered": false,
+      "job_limit_gib": 480.0,
+      "new_limit_events": 29363,
+      "new_oom_events": 0,
+      "new_oom_kill_events": 0,
+      "nvidia_smi_peak_used_mib": {
+        "0": 77061,
+        "1": 68881,
+        "2": 68881,
+        "3": 68881
+      },
+      "sampled_peak_anon_gib": 254.50127792358398,
+      "sampled_peak_job_usage_gib": 479.99996185302734,
+      "sampled_peak_working_set_gib": 344.6853904724121,
+      "seconds": 234.6330316066742,
+      "start_usage_gib": 176.14667510986328,
+      "status": "PASS"
+    },
+    "step_seconds": 1.2896948048146442,
+    "threads": 8,
+    "update_seconds": 66.49370143003762
+  },
+  "threads": 8
+}

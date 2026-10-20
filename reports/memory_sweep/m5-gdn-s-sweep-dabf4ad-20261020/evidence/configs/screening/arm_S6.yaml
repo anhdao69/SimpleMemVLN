@@ -1,0 +1,98 @@
+memory:
+  mode: episodic_window_gdn_sweep_v1
+  recent_groups_including_current: 4
+  episodic_budget_tokens: 1200
+  selection_unit: token
+  score_id: S6
+  head_reduction: slow_head_mean
+  scorer_backend: fp32_torch_wy_block64_headwise_v1
+  score_segmentation: prefix_obs_response_block64_v1
+  selector_seed: 429
+  evict_before_new_step: true
+  kv_guard_tokens: 4784
+  priority_timing: birth_fixed
+  score_dtype: float32
+  key_normalization: native_additive_eps_1e-6
+  cosine_epsilon: 1.0e-06
+  zero_value_threshold: 1.0e-06
+  state_layout: value_heads_key_by_value
+  attention_backend: episodic_fa2_varlen_gather_fp32acc_v1
+  logical_position_policy: preserve
+  candidate_policy: resident_plus_newly_eligible
+  tie_break: priority_desc_original_id_asc
+  artifacts:
+    slow_head_mask:
+      '10':
+      - 0
+      - 1
+      - 11
+      - 13
+      - 16
+      - 18
+      - 22
+      - 24
+      '14':
+      - 15
+      - 17
+      - 18
+      - 21
+      - 23
+      - 25
+      - 28
+      - 30
+      '18':
+      - 0
+      - 1
+      - 8
+      - 9
+      - 11
+      - 20
+      - 22
+      - 23
+      '2':
+      - 2
+      - 3
+      - 10
+      - 14
+      - 19
+      - 23
+      - 25
+      - 29
+      '22':
+      - 7
+      - 13
+      - 15
+      - 16
+      - 17
+      - 20
+      - 25
+      - 28
+      '26':
+      - 13
+      - 16
+      - 17
+      - 19
+      - 26
+      - 27
+      - 28
+      - 29
+      '30':
+      - 5
+      - 9
+      - 11
+      - 16
+      - 17
+      - 19
+      - 20
+      - 22
+      '6':
+      - 9
+      - 11
+      - 20
+      - 22
+      - 23
+      - 24
+      - 27
+      - 30
+    slow_head_mask_sha256: c2ba42416bf90bebdac14c037937a09862a77999e2bd218abd53b16f8cb627f7
+    calibration_sha256: 293e780914ac105f7ba090716124f5c3c3e3aa55f8cabea14f92a0ea3a043cc8

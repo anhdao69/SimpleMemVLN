@@ -1,0 +1,34 @@
+memory:
+  mode: episodic_window_gdn_sweep_v1
+  recent_groups_including_current: 4
+  episodic_budget_tokens: 1200
+  selection_unit: frame300
+  score_id: S8N
+  head_reduction: full_state_frobenius
+  scorer_backend: fp32_torch_wy_block64_boundary_v1
+  score_segmentation: prefix_obs_response_block64_v1
+  selector_seed: 429
+  evict_before_new_step: true
+  kv_guard_tokens: 4784
+  priority_timing: birth_fixed
+  score_dtype: float32
+  key_normalization: native_additive_eps_1e-6
+  cosine_epsilon: 1.0e-06
+  zero_value_threshold: 1.0e-06
+  state_layout: value_heads_key_by_value
+  attention_backend: episodic_fa2_varlen_gather_fp32acc_v1
+  logical_position_policy: preserve
+  candidate_policy: resident_plus_newly_eligible
+  tie_break: priority_desc_original_id_asc
+  artifacts:
+    drift_denominator_floor:
+      '10': 0.004197894811630249
+      '14': 0.003946574568748474
+      '18': 0.0036241079568862917
+      '2': 0.002814926028251648
+      '22': 0.005562212705612183
+      '26': 0.014644123077392579
+      '30': 0.010751618385314942
+      '6': 0.003170354127883911
+    drift_denominator_floor_sha256: 40620ea74e9a551ac605d850fe6b16a411ab06ee7942e62ab1507245aaec778b
+    calibration_sha256: 293e780914ac105f7ba090716124f5c3c3e3aa55f8cabea14f92a0ea3a043cc8
