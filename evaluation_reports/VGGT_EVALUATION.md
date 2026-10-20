@@ -1,5 +1,65 @@
 # VGGT campaign — R2R evaluation report
 
+**Cross-server report scope:** The refresh below records the `ws_anhdh35` campaign. The preserved October 19 sections later in this file record the six local evaluations from `ws_anhdh35_vinh`, including M5_E1. Historical tables retain their original dates; cross-host results retain their documented simulator and provenance caveats. The 134-episode G3_M5 row below is a separate partial rerun of the same weight SHA-256 `4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f`. The completed 1,839-episode Vinh evaluation with 917 successes remains a final result in its own section.
+
+Current R2R val_unseen refresh: **G3 is the best completed result at 51.984774% SR**. Nine rows below completed all 1,839 episodes; the G3_M5 combined (ws_anhdh35 rerun) run remains a 134-episode partial and is not ranked as a final result. This refresh supersedes the archived 16 October result/status tables later in this document.
+
+## ws_anhdh35 campaign refresh — 2026-10-20 03:26 UTC
+
+All entries are R2R VLN-CE val_unseen from the recorded evaluation artifacts. The full-split runs have 1,839 unique episodes; every listed summary reports zero execution failures and zero invalid responses. The partial G3_M5 result has 134/1,839 episodes and is not a final benchmark score; no active Habitat evaluation process for that run was found at refresh time (a separate diagnostic process using the checkpoint was active). The G3 fixed01, G3A1, A1, and R1 coordinators recorded complete episodes, protocol checks and metric recomputation; G3 fixed01's final SR/SPL also match its independently recomputed summary within 1e-12.
+
+### Current results
+
+| Version | Evaluated / scheduled | Successes | SR (%) | SPL (%) | State |
+|---|---:|---:|---:|---:|---|
+| G1 | 1,839 / 1,839 | 914 | 49.700924 | 46.072125 | FINAL |
+| G3 | 1,839 / 1,839 | 956 | 51.984774 | 48.095941 | FINAL |
+| G3 fixed01 seed430 | 1,839 / 1,839 | 909 | 49.429038 | 45.655180 | FINAL |
+| G3A1 | 1,839 / 1,839 | 877 | 47.688961 | 43.548813 | FINAL |
+| G3_M5 combined (ws_anhdh35 rerun) | 134 / 1,839 | 63 | 47.014925 | 42.563554 | PARTIAL — no final score |
+| A0 | 1,839 / 1,839 | 910 | 49.483415 | 45.394182 | FINAL |
+| A1 | 1,839 / 1,839 | 929 | 50.516585 | 46.873430 | FINAL |
+| R1 | 1,839 / 1,839 | 907 | 49.320283 | 45.825211 | FINAL |
+| Window8-B | 1,839 / 1,839 | 907 | 49.320283 | 45.561094 | FINAL |
+| V0 | 1,839 / 1,839 | 852 | 46.329527 | 41.756802 | FINAL |
+
+### Current navigation and memory measurements
+
+| Version | NE (m) | Oracle success (%) | Mean steps | Forced STOPs | Peak KV rows | Peak allocated GiB |
+|---|---:|---:|---:|---:|---:|---:|
+| G1 | 6.0579 | 55.8999 | 83.84 | 94 | 2718 | 8.668 |
+| G3 | 5.7935 | 58.7819 | 94.51 | 133 | 2718 | 8.670 |
+| G3 fixed01 seed430 | 5.7563 | 56.9875 | 97.30 | 149 | 2718 | 8.670 |
+| G3A1 | 6.2011 | 55.3018 | 97.84 | 137 | 2718 | 8.670 |
+| G3_M5 combined (ws_anhdh35 rerun) | 5.8848 | 55.9701 | 76.63 | 5 | 2596 | 8.681 |
+| A0 | 5.9695 | 55.3018 | 93.42 | 129 | 2718 | 8.670 |
+| A1 | 5.9965 | 57.8032 | 98.80 | 148 | 2718 | 8.670 |
+| R1 | 5.8122 | 55.7368 | 96.14 | 150 | 2718 | 8.710 |
+| Window8-B | 6.0358 | 59.8695 | 115.39 | 212 | 2718 | 8.668 |
+| V0 | 6.4879 | 59.3801 | 126.32 | 240 | 2718 | 8.668 |
+
+R2R protocol, split, ordered episode set, data/config hashes, base assets and action cap match the established campaign contract. In particular, the new G3 fixed01 evaluation used the same R2R protocol as the completed native G3 run. Latency is omitted from this refresh table because measurements were collected under shared GPU load and are not controlled speed comparisons.
+
+### G3 fixed01 seed430: implementation and checkpoint identity
+
+This checkpoint is the original G3 model family with a **constant 0.1 geometry-loss coefficient from update 0** (`ramp_updates=0`) and training/head/pair-sampling seed 430. It keeps G3's native decoder-layer-24 GDN state-readout training design and native Window8 serving; it is not G3A1, G3_M5, PCA, or offline VGGT. The frozen online VGGT-Omega teacher and auxiliary heads are training-only and absent at inference. The exact implementation discussion is in the downloaded branch report at `/data14t/anhdh35/simplememvln_g3_fixed01_seed430_eval/source/reports/vggt_five/G3_fixed01_seed430/implementation_report.md`.
+
+- Hub export: [Streaming_VGGT/G3_fixed01_seed430/epoch-1](https://huggingface.co/anhdao69/Streaming_VGGT/tree/5862ce4fcc96b0b160aff75abed1cd85caaac3b9/G3_fixed01_seed430/epoch-1).
+- Pinned repository revision: `5862ce4fcc96b0b160aff75abed1cd85caaac3b9`; downloaded files passed manifest verification.
+- Weight SHA-256: `5244107fd43fe4c278414d642763c57437acc4bdc6846965f6775fb42dafdbac`.
+- Evaluation source commit: `d683574e242c6caa1dc65c8b4cfe29ee4773ee23`.
+- Result/audit root: `/data14t/anhdh35/simplememvln_g3_fixed01_seed430_eval`; final journal and summary are under `results/full/G3_fixed01_seed430/`.
+
+The G3 fixed01 export passed strict native loading, 64/128-step real-RGB replay (zero token/action disagreements; RMS logit errors 0.028397/0.027595), exact retry/reset checks, and a 520-step bounded-memory test (peak 2,618 KV rows, 4,096 guard). The separate training-only recovery head is not published, so no claim of independent recovery-head reconstruction is made.
+
+### Interpretation
+
+The completed G3 fixed01 result is 2.555736 percentage points below original G3 on this split, but the changed auxiliary-weight schedule and seed mean this is not a single-factor causal comparison. A1 and A0 are now both full runs: A1 is +1.033171 pp SR and +1.479248 pp SPL over A0 on these checkpoints. These are descriptive single-checkpoint differences; no confidence intervals or seed-level uncertainty are claimed. R1's implementation includes a parallel step lane and its own cache contract; its score should be interpreted as a distinct architecture rather than a Window8-only ablation.
+
+Fresh verification of the six newly completed runs and the dated 134-episode G3_M5 prefix is recorded in [WS_R2R_REFRESH_20261020.json](evidence/WS_R2R_REFRESH_20261020.json). The partial journal can advance after the report snapshot.
+
+## Preserved ws_anhdh35_vinh snapshot — 2026-10-19
+
 **October 19 final update:** all six local evaluations below completed 1,839 R2R val_unseen episodes with zero execution failures. **G3 has the highest local SR, 51.984774%; the new plain-M5 control M5_E1 has SR 51.658510% and the highest local SPL, 48.401034%.** The qualified G3_M5 variants score below both references on SR and SPL. L8 remains an unqualified diagnostic because its serving replay failed.
 
 ## Completed local evaluations verified October 19
