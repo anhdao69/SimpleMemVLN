@@ -1,5 +1,45 @@
 # Episodic-memory campaign — R2R evaluation report
 
+**Cross-server report scope:** The refresh below records the `ws_anhdh35` campaign. The preserved October 19 sections later in this file record the six local evaluations from `ws_anhdh35_vinh`, including M5_E1. Historical tables retain their original dates; cross-host results retain their documented simulator and provenance caveats. The seven-row refresh concerns the original episodic arms/reference; the newer M5_E1 checkpoint remains separately documented below.
+
+Current R2R val_unseen refresh: all seven episodic/reference rows below have completed the full 1,839 episodes. **M5 has the highest SR (51.005982%) among these runs.** M1 and M5 c are no longer partial. The result table and status statements in the archived 16 October snapshot later in this document are superseded by this refresh.
+
+## ws_anhdh35 campaign refresh — 2026-10-20 03:26 UTC
+
+All listed summaries report 1,839/1,839 episodes, zero execution failures and zero invalid responses. M1 and M5 c now have complete evaluation journals and final metric checks; the earlier partial-prefix rows below are preserved only as historical evidence.
+
+### Current results
+
+| Version | Evaluated / scheduled | Successes | SR (%) | SPL (%) | State |
+|---|---:|---:|---:|---:|---|
+| V0 | 1,839 / 1,839 | 852 | 46.329527 | 41.756802 | FINAL |
+| M1 | 1,839 / 1,839 | 799 | 43.447526 | 40.204753 | FINAL |
+| M2 | 1,839 / 1,839 | 906 | 49.265905 | 45.877272 | FINAL |
+| M2 c | 1,839 / 1,839 | 848 | 46.112017 | 43.365987 | FINAL |
+| M5 | 1,839 / 1,839 | 938 | 51.005982 | 47.438938 | FINAL |
+| M5 c | 1,839 / 1,839 | 877 | 47.688961 | 43.944998 | FINAL |
+| Window8-B | 1,839 / 1,839 | 907 | 49.320283 | 45.561094 | FINAL |
+
+### Current navigation and memory measurements
+
+| Version | NE (m) | Oracle success (%) | Mean steps | Forced STOPs | Peak KV rows | Peak allocated GiB |
+|---|---:|---:|---:|---:|---:|---:|
+| V0 | 6.4879 | 59.3801 | 126.32 | 240 | 2718 | 8.668 |
+| M1 | 6.7313 | 53.9424 | 117.23 | 222 | 3036 | 8.679 |
+| M2 | 5.7585 | 56.5525 | 102.24 | 176 | 3018 | 8.705 |
+| M2 c | 6.0642 | 52.9636 | 91.58 | 139 | 3018 | 8.678 |
+| M5 | 5.8706 | 57.8032 | 100.03 | 159 | 2646 | 8.693 |
+| M5 c | 6.2144 | 56.4981 | 102.76 | 166 | 2646 | 8.669 |
+| Window8-B | 6.0358 | 59.8695 | 115.39 | 212 | 2718 | 8.668 |
+
+The current completed M5−M5 c aggregate difference is **+3.317021 percentage points SR** and **+3.493940 percentage points SPL**; M2−M2 c remains +3.153888 pp SR and +2.511285 pp SPL. These are descriptive comparisons of the evaluated checkpoints, not statistical significance claims. The full runs make the controls available for the planned paired uncertainty analysis; they do not replace that analysis. No confidence interval, multi-seed robustness result, or final pre-registered gate conclusion is asserted here.
+
+The full M1 result is **43.447526% SR / 40.204753% SPL**; M5 c is **47.688961% / 43.944998%**. M5 remains **51.005982% / 47.438938%**. Checkpoint artifacts and campaign-specific provenance remain at `/data14t/anhdh35/simplememvln_m1_eval`, `/data14t/anhdh35/simplememvln_m5c_eval`, and `/data14t/anhdh35/simplememvln_g3_m5_eval` respectively.
+
+Fresh verification of the six newly completed runs and the dated 134-episode G3_M5 prefix is recorded in [WS_R2R_REFRESH_20261020.json](evidence/WS_R2R_REFRESH_20261020.json). The partial journal can advance after the report snapshot.
+
+## Preserved ws_anhdh35_vinh snapshot — 2026-10-19
+
 **October 19 final update — M5_E1:** the new plain-M5 checkpoint completed all **1,839 R2R val_unseen episodes: 950 successes, SR 51.658510%, SPL 48.401034%, zero execution failures and zero invalid responses**. Learned-weight serving qualification and final aggregation validation passed. Compared with the older M5 checkpoint's completed local rerun, it gains 12 successes, **+0.652529 pp SR and +0.962096 pp SPL**. This is a descriptive comparison of independently trained checkpoints with different LR schedules.
 
 The [M5_E1 final section](#m5_e1-new-matched-one-epoch-control-2026-10-19) below records the checkpoint, completed resume, metrics and paired comparisons. The [six-run local results table](VGGT_EVALUATION.md#completed-local-evaluations-verified-october-19) separates these October 17–19 evaluations from the historical campaign. Fresh journal verification is preserved in [LOCAL_R2R_FINAL_20261019.json](evidence/LOCAL_R2R_FINAL_20261019.json).
