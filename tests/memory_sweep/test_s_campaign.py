@@ -137,3 +137,41 @@ def test_run_arms_continues_after_an_arm_error_and_honors_controls(tmp_path, mon
     assert lane.run_arms() == {} and calls == []
     history = [json.loads(line)['status'] for line in (tmp_path / 'history.jsonl').read_text().splitlines()]
     assert history == ['arm-error', 'lane-complete', 'stopped-by-request']
+
+
+def _replay(arm, dataset, passed=True, rms=0.04, nll=0.3, overlap=None):
+    record = dict(arm=arm, dataset=dataset, passed=passed, rms_logit_error=rms, max_logit_error=0.5,
+                  argmax_agreement=1.0, decoded_actions_match=1.0, plan_comparisons=512, plan_id_mismatches=448,
+                  mean_selected_overlap=0.99, min_selected_overlap=0.98, max_relative_score_error=0.1,
+                  max_resident_kv=2600, kv_guard=4784, action_nll=nll)
+    if arm == 'S0':
+        overlap = dict(mean_overlap=1.0, min_overlap=1.0, p10_overlap=1.0, mean_jaccard=1.0, min_jaccard=1.0)
+    if arm != 'S0_legacy':                     # the reference record has no self-overlap (as in real output)
+        record['overlap_vs_S0_legacy'] = overlap
+    return record
+
+
+def test_replay_policy_requires_exact_s0_parity_and_reports_tolerance_failures():
+    from scripts.memory_sweep.s_campaign import summarize_replay
+    base = []
+    for d in ('r2rce', 'rxrce'):
+        legacy_pass = d == 'r2rce'                  # inherited allclose miss on rxrce
+        base += [_replay('S0_legacy', d, legacy_pass), _replay('S0_legacy', d, legacy_pass),
+                 _replay('S0', d, legacy_pass), _replay('S1', d, d == 'r2rce', overlap=dict(mean_overlap=.5))]
+    summary = summarize_replay(base)
+    assert summary['serving_tolerance_failed'] == ['S1'] and summary['s0_inherited_allclose_failures'] == ['rxrce']
+    assert summary['rms_failed'] == [] and summary['records']['S1/r2rce']['overlap_vs_S0_legacy'] == {'mean_overlap': .5}
+    drift = [dict(r) for r in base]; drift[2]['action_nll'] = 0.31                  # sweep S0 != legacy S0
+    with pytest.raises(RuntimeError, match='Sweep S0 differs'):
+        summarize_replay(drift)
+    shard = [dict(r) for r in base]; shard[1]['rms_logit_error'] = 0.05             # GPU nondeterminism
+    with pytest.raises(RuntimeError, match='deterministic'):
+        summarize_replay(shard)
+    bad = [dict(r) for r in base]
+    for r in bad:
+        if r['arm'] in ('S0', 'S0_legacy') and r['dataset'] == 'rxrce':
+            r['rms_logit_error'] = 0.2
+    with pytest.raises(RuntimeError, match='RMS'):
+        summarize_replay(bad)
+    with pytest.raises(RuntimeError, match='parity'):
+        summarize_replay([r for r in base if r['arm'] != 'S0'])
