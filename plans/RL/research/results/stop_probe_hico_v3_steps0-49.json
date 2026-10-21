@@ -1,0 +1,46 @@
+{
+  "run": "/data/anh/rl_baseline/runs/hico_v3_r2r1k",
+  "steps": 50,
+  "estimators": {
+    "grpo": {
+      "episodes": 1600,
+      "mean": -0.028999915847614865,
+      "std": 0.4322989641522224,
+      "snr": 2.683320410400366,
+      "fraction_nonzero": 0.614375
+    },
+    "rloo_v2a": {
+      "episodes": 1600,
+      "mean": -0.022145420791217348,
+      "std": 0.4556194327969732,
+      "snr": 1.9442033589542245,
+      "fraction_nonzero": 0.614375
+    },
+    "rloo_stop_v2": {
+      "episodes": 1600,
+      "mean": -0.013178731553030782,
+      "std": 0.3650244251468955,
+      "snr": 1.4441479139624491,
+      "fraction_nonzero": 0.62875
+    },
+    "critic_stop_v3": {
+      "episodes": 1568,
+      "mean": -0.007655032538534527,
+      "std": 0.3828223204368109,
+      "snr": 0.7918133484834626,
+      "fraction_nonzero": 0.6262755102040817
+    }
+  },
+  "near_goal_passed_failed": {
+    "episodes": 98,
+    "max_sigma_median": 0.04949176199375209,
+    "frac_max_sigma_above_0_1": 0.4387755102040816,
+    "frac_max_sigma_below_0_01": 0.2653061224489796
+  },
+  "near_goal_succeeded": {
+    "episodes": 908,
+    "max_sigma_median": 0.5327858339891219,
+    "frac_max_sigma_above_0_1": 0.9129955947136564,
+    "frac_max_sigma_below_0_01": 0.006607929515418502
+  }
+}
