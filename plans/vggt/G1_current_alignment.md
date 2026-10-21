@@ -1,0 +1,40 @@
+# G1 — Online VGGT-Omega current-frame supervision
+
+**Active specification, revised 2026-10-13 at the user's request.** This supersedes the offline/PCA G1 sections of the original five-run plan. Other arms remain future proposals. No teacher pre-extraction or PCA is used in G1 training.
+
+## Architecture
+
+Base c2_h2_speed@2430fd2, native Window8 canonical-text policy, no lane or episodic bank, frozen student visual tower/merger, trainable native decoder with full-episode BPTT. At <=16 fixed stratified current frames per collected trajectory, align complete zero-based decoder23 output visual rows. Original image-token order, MRoPE, action targets and sequence lengths are unchanged.
+
+Frozen official VGGT-Omega-1B-512 sourcead02778c and weights SHA256c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934 run ONLINE per rank. Every teacher call is [B,1,3,448,592], single view; only aggregator23 cached.17 special tokens,28x37 patches,2048channels. Heads disabled. Teacher preprocessing follows official balanced512 exactly. CPU loader stages sampled RGB tensors; trainer computes detached targets before student forward. Teacher is never registered in the student optimizer/DDP/checkpoint. Resume binds actual source/weight/preprocessing/dtype hashes.
+
+Teacher features: adaptive average pool grid to15x20; FP32 no-affine LayerNorm2048 eps1e-6. No PCA, no feature cache and no trainable teacher-side compressor. Position term is .5*E0 at width2048, where E0 follows the original G1 normalized-center sin/cos rule, now512frequencies/axis and globalRMS1. Teacher LN makes target RMS approximately1 without fitting a dataset statistic. Position formula is versioned in resume provenance.
+
+### Sampling identity and declared deviation
+
+The audited manifest contains scene, episode ID and ordered RGB paths but no verified cross-instruction physical-trajectory map. G1 therefore defines a collected trajectory by dataset, scene and ordered RGB paths, normalized below `trajectory_data/`. Sampling ignores instruction text and UID, is fixed across epochs, and keeps every navigation episode/action. Identical path references share samples; identical physical paths copied into different episode folders are not merged. This is an explicit adaptation of the original physical-trajectory sampling requirement. It avoids inventing physical aliases from a shared reference path. A future cross-arm comparison that requires aliases must first build and verify a metadata/pose or RGB identity registry; no teacher feature pre-extraction is required for that registry.
+
+## Student dimension conversion — exact SpatialForcing architecture
+
+Follow SpatialForcing-VLN/src/qwen_vl/model/spatial_forcing.py:SpatialForcingProjector:
+
+LayerNorm(2560,elementwise_affine=True,eps=1e-5)
+-> Linear(2560,4096,bias=True) -> GELU -> Linear(4096,2048,bias=True).
+
+18,885,632 trainable parameters. Normal(.02) matrices, zero biases, unit LN weight; CPU-local seed429 without resetting CUDA RNG. The teacher supplies [F,300,2048], student projection matches it directly. This updates the old2560->2048->256 no-affine projector as explicitly requested.
+
+FP32 cosine eps1e-6, average300positions per frame, sum frames. Per-update global rank/GAS denominator. Lambda ramps0->.2 over771updates; headLR1e-4, backboneLR5e-6. Navigation remains global per-action mean with EOS. Log both losses separately.
+
+## Memory and runtime
+
+Active allocation4925,worker-2,4H100; global8 via4ranks*GAS2. Qualification compared resident teacher/GPU optimizer, teacher CPU offload and CPU optimizer offload, then batch/worker/thread variants. Selected: resident FP32 teacher batch16, DeepSpeed CPU AdamW under ZeRO2, attentionbatch32, visionbatch8, OMP/MKLthreads4 and loaderworkers8perrank. Attentionbatch32 does not change Window8. LongestRxR passed at61.79GiB activeGPU and327.92GiB hostRAM; mixedextreme also passed. Fulljoint short-run warmtiming27.54s/update projects29.46h/epoch before checkpoint/initialization overhead and uncertainty. FP32 teacher chosen after BF16-vsFP32 diagnostic mean cosine.97589; FP32 batch-size relativeL2error1.3e-6, independent batch-image replacement exactlyzero. Student remains BF16. Clone teacher targets outside inference_mode. No graph through teacher.
+
+Re-audited longest R2R183frames/58290tokens; RxR627frames/199735tokens. Profile complete longest episodes, near65536threshold, mixed lengths and at least3optimizerupdates. Record allrankGPU/hostpeaks and newOOMcounters. Never truncate or switch toTBPTT to pass.
+
+## Recovery and export
+
+Recovery includes student+projector, optimizer/scheduler/RNG/sampler and exact teacher contract. Strict serving export removes only research_aux and researchconfig; retains all native weights and uses original Window8 path. No Omega process/projector/targets at inference. Verify strict reload and response replay.
+
+## Scope and status
+
+User update on 2026-10-13 explicitly authorizes one full joint R2R+RxR production epoch on four H100s after qualification. Start from Qwen base, not a diagnostic checkpoint. Use the selected resident FP32 Omega / DeepSpeed CPU AdamW runtime. The one-epoch overlay sets epochs1, total3852 and LR warmup116 (3%), with cosine decay to0.1; preserve G1 auxiliary ramp771 (20% of this epoch). Effective batch remains8. The30815records require one final repeated exposure to fill30816slots. This one-epoch schedule is a declared user override, so do not present it as a matched two-epoch quality comparison. Keep periodic100-update checkpoints, an early step10 checkpoint and the epoch-end checkpoint. Launch from a committed source snapshot and retain exact config/teacher/manifest/world/GAS contracts for resume. Diagnostic steps are not production progress. Existing M2job4879 and all existing weights remain untouched.
