@@ -384,6 +384,36 @@ Lane A gates, all **passed**, recorded in [`QUALIFIED.json`](evidence/shared/QUA
   `OMP_NUM_THREADS=4` is only the default; each training subprocess receives the lane's measured thread choice from
   `lanes/<L>/threads.json`.
 
+### 10.1 Hugging Face publication (`anhdao69/M5_S`, public)
+
+Requested on 2026-10-21. Each completed arm becomes one top-level folder (`S1/`, `S2/`, …) holding the serving
+files, `README.md`, `provenance/` and `SHA256SUMS.json`; it loads with
+`qwen_vl.train.vln_runtime.load_checkpoint('<ARM>', base_model_path)` on this branch. S0 is the existing `M5_E1`
+folder of `anhdao69/Streaming_VGGT` and is not repeated.
+
+- **Publisher:** `scripts/memory_sweep/publish_arm.py`, adapted from the M5_E1 and seed-431 publishers. Before any
+  upload it requires:
+  - the lane controller's own `arm-complete` record;
+  - a bound identity equal to the one re-derived from the clean sealed source;
+  - full 4-rank coverage of all 3,852 updates with finite losses (`profile_episodic.verify`);
+  - exposures identical to M5_E1's;
+  - a complete epoch-boundary checkpoint-3852 and a supervisor PASS with zero OOM events.
+
+  It then copies the serving files, checks every tensor bitwise against the checkpoint and strictly reloads the
+  real navigation model on CPU. One Hub commit adds only `<ARM>/`, on an optimistic parent revision, and refuses to
+  overwrite. Every file is then verified by SHA-256 and size at that revision, and all earlier files are checked
+  unchanged.
+- **Watcher:** `scripts/memory_sweep/watch_publish.py`, a detached CPU-only process on login-1 that publishes each arm
+  once its lane declares it complete (3 attempts per arm). Operations folder:
+  `/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-publication-20261021`.
+  - State is in `status.json`, `watcher.log` and `<ARM>-publication.log`, with per-arm `UPLOAD_VERIFIED.json`.
+  - Create `STOP` there to end the watcher.
+  - Publication did not change training speed (S3 0.937× M5_E1 before and during the S1 upload).
+- **S1:** published at Hub revision `0a481ea1d3b84907981d03c028c543aa2d8317e8`.
+  - 21 files; the weights are 10,350,179,723 bytes with LFS SHA-256 `dd5876f50647…`, equal to the local hash.
+  - All 724 serving tensors are bitwise identical to checkpoint-3852.
+  - Action-weighted epoch loss 0.12647 vs M5_E1 0.12658.
+
 ## 11. Deviations, limitations and what is not done
 
 - **Matched training of all S arms**, at the user's request. The plan's economical order screens on the frozen
