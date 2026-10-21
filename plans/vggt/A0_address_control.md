@@ -1,3 +1,5 @@
+> **Execution revision, 2026-10-14:** Shared runtime with direct-Q/K online-Omega A1; A0 is teacher-free. Independent base starts, seed429, one joint R2R+RxR epoch, global batch8 on4H100, nativeLR5e-6/adapterLR5e-5. Native dimensions verified against pinned Transformers5.11.0.
+
 # A0 — GeoAddress architecture control, no VGGT loss
 
 > **For agentic workers:** implement this together with A1's shared runtime module. A0 and A1 must start independently from identical initial weights, not sequential fine-tuning.

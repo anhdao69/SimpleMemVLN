@@ -1,3 +1,5 @@
+> **R1 update (2026-10-15):** `R1_lane_state.md` and `R1_omega_execution.md` supersede historical R1 cache/PCA/dimension/schedule defaults: online frozen FP32 Omega, full2048 regional targets and training-only student MLP, exact registered four-lane R0 architecture, one joint R2R + English RxR15 epoch. R0 E1 used a two-epoch LR schedule; report this confound.
+
 > **G1 update (2026-10-13):** User requests ONLINE VGGT-Omega, no pre-extraction/PCA, the SpatialForcing projector, and4H100 tests. For G1, `G1_current_alignment.md` supersedes conflicting offline/PCA/two-GPU sections below. Other arms are not implemented by this task.
 
 # Resource qualification, existing-baseline reuse and evaluation
