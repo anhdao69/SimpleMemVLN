@@ -1,0 +1,51 @@
+{
+  "episodes": 300,
+  "failures": 1,
+  "sr": 0.5633333333333334,
+  "spl": 0.53060628689356,
+  "navigation_error": 4.951488777945439,
+  "navigation_error_coverage": 300,
+  "navigation_error_undefined": 0,
+  "trajectory_length": 10.020457392885225,
+  "trajectory_length_coverage": 300,
+  "trajectory_length_undefined": 0,
+  "oracle_success": 0.65,
+  "oracle_success_coverage": 300,
+  "oracle_success_undefined": 0,
+  "ndtw": null,
+  "ndtw_coverage": 0,
+  "ndtw_undefined": 300,
+  "forced_stops": 14,
+  "mean_episode_steps": 86.18333333333334,
+  "invalid_responses": 1,
+  "predicted_action_counts": {
+    "3": 3692,
+    "1": 17638,
+    "2": 4240,
+    "0": 285
+  },
+  "executed_action_counts": {
+    "3": 3690,
+    "1": 17626,
+    "2": 4240,
+    "0": 299
+  },
+  "predicted_stops": 285,
+  "failure_reasons": {
+    "ValueError: ValueError: Invalid navigation response: 'TURN_LEFT_LEFT'": 1
+  },
+  "model_latency_p50_seconds": 0.09620391298085451,
+  "model_latency_mean_seconds": 0.11811249013973729,
+  "model_latency_p95_seconds": 0.27620236039510926,
+  "transport_and_model_p50_seconds": 0.10318651999114081,
+  "transport_and_model_mean_seconds": 0.12494419025581936,
+  "transport_and_model_p95_seconds": 0.28270568420703057,
+  "environment_p50_seconds": 0.0023951969924382865,
+  "environment_mean_seconds": 0.003300863197692226,
+  "environment_p95_seconds": 0.006525324707035902,
+  "peak_kv_tokens": 2679,
+  "peak_allocated_gib": 8.644448280334473,
+  "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+  "scheduled_episodes": 300,
+  "complete": true
+}

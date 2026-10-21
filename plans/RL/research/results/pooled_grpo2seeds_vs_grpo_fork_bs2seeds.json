@@ -1,0 +1,115 @@
+{
+ "a": {
+  "name": "grpo",
+  "dirs": [
+   "/data/anh/rl_baseline/evals/grpo_r2r1k-step0125/val_unseen",
+   "/data/anh/rl_baseline/evals/grpo_r2r1k_seed2-step0125/val_unseen"
+  ]
+ },
+ "b": {
+  "name": "grpo_fork_bs",
+  "dirs": [
+   "/data/anh/rl_baseline/evals/hico_grpo_fork_bs_r2r1k-step0125/val_unseen",
+   "/data/anh/rl_baseline/evals/hico_grpo_fork_bs_r2r1k_seed2-step0125/val_unseen"
+  ]
+ },
+ "episodes": 1839,
+ "metrics": {
+  "success": {
+   "a_seeds": [
+    0.5688,
+    0.5737
+   ],
+   "b_seeds": [
+    0.584,
+    0.5808
+   ],
+   "a_mean": 0.5712,
+   "b_mean": 0.5824,
+   "delta": 0.0111,
+   "seed_pair_deltas": [
+    0.0152,
+    0.012,
+    0.0103,
+    0.0071
+   ],
+   "ci95": [
+    -0.0033,
+    0.0258
+   ],
+   "p_signflip": 0.13828861711382887
+  },
+  "spl": {
+   "a_seeds": [
+    0.5045,
+    0.5182
+   ],
+   "b_seeds": [
+    0.5299,
+    0.5329
+   ],
+   "a_mean": 0.5114,
+   "b_mean": 0.5314,
+   "delta": 0.02,
+   "seed_pair_deltas": [
+    0.0253,
+    0.0283,
+    0.0117,
+    0.0147
+   ],
+   "ci95": [
+    0.0073,
+    0.0331
+   ],
+   "p_signflip": 0.0022199778002219978
+  },
+  "osr": {
+   "a_seeds": [
+    0.6487,
+    0.6422
+   ],
+   "b_seeds": [
+    0.6542,
+    0.6417
+   ],
+   "a_mean": 0.6455,
+   "b_mean": 0.6479,
+   "delta": 0.0024,
+   "seed_pair_deltas": [
+    0.0054,
+    -0.0071,
+    0.012,
+    -0.0005
+   ],
+   "ci95": [
+    -0.0103,
+    0.0152
+   ],
+   "p_signflip": 0.7377126228737713
+  },
+  "ne": {
+   "a_seeds": [
+    5.3068,
+    5.3025
+   ],
+   "b_seeds": [
+    5.0633,
+    5.1484
+   ],
+   "a_mean": 5.3047,
+   "b_mean": 5.1058,
+   "delta": -0.1989,
+   "seed_pair_deltas": [
+    -0.2435,
+    -0.1584,
+    -0.2393,
+    -0.1542
+   ],
+   "ci95": [
+    -0.3529,
+    -0.0486
+   ],
+   "p_signflip": 0.011799882001179988
+  }
+ }
+}
