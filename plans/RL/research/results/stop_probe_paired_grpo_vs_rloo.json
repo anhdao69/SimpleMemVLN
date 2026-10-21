@@ -1,0 +1,62 @@
+{
+  "/data/anh/rl_baseline/runs/hico_v3_r2r1k": {
+    "all": {
+      "n": 4000,
+      "grpo_sum": -75.7,
+      "rloo_sum": -2.5,
+      "paired_diff_mean": -0.0183,
+      "paired_t": -5.56
+    },
+    "mixed": {
+      "n": 2108,
+      "grpo_sum": 61.0,
+      "rloo_sum": 54.4,
+      "paired_diff_mean": 0.0031,
+      "paired_t": 0.75
+    },
+    "all_success": {
+      "n": 1296,
+      "grpo_sum": -136.7,
+      "rloo_sum": -56.9,
+      "paired_diff_mean": -0.0616,
+      "paired_t": -8.28
+    },
+    "all_fail": {
+      "n": 596,
+      "grpo_sum": 0.0,
+      "rloo_sum": 0.0,
+      "paired_diff_mean": 0.0,
+      "paired_t": null
+    }
+  },
+  "/data/anh/rl_baseline/runs/hico_grpo_stop_r2r1k": {
+    "all": {
+      "n": 4000,
+      "grpo_sum": 49.9,
+      "rloo_sum": 97.1,
+      "paired_diff_mean": -0.0118,
+      "paired_t": -3.53
+    },
+    "mixed": {
+      "n": 2536,
+      "grpo_sum": 92.0,
+      "rloo_sum": 95.6,
+      "paired_diff_mean": -0.0014,
+      "paired_t": -0.38
+    },
+    "all_success": {
+      "n": 1212,
+      "grpo_sum": -42.1,
+      "rloo_sum": 1.5,
+      "paired_diff_mean": -0.036,
+      "paired_t": -4.61
+    },
+    "all_fail": {
+      "n": 252,
+      "grpo_sum": 0.0,
+      "rloo_sum": 0.0,
+      "paired_diff_mean": 0.0,
+      "paired_t": null
+    }
+  }
+}
