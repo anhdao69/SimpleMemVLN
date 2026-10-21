@@ -1,0 +1,57 @@
+{
+  "observed_at": "2026-10-21 00:25:58 +0700",
+  "capture_summary": {
+    "complete": true,
+    "summary_sha256": "8ca9ff6a88930571a806d4744720129324af85286b6a757268538013533d163d",
+    "marker_sha256": "97b6380a3853ba66dab196b79b7f17506610bdcde1a968c54f88299cff126555",
+    "models": [
+      "M5_E1",
+      "G3_M5",
+      "TRIPLE",
+      "G3",
+      "G1"
+    ],
+    "episodes_per_model": 240,
+    "csv_files": {
+      "eviction_bridge_episodes.csv": {
+        "sha256": "29e7b6a1ac6a967c6f385ec2af093d803333854bdb9f984cf73d3538b79ca408",
+        "bytes": 439838
+      },
+      "attention_steps.csv": {
+        "sha256": "284ef764c275e424664bfe0dbc0e9eb554a2297f3a598726aabec25c7020ac0a",
+        "bytes": 2412843220
+      },
+      "episode_metrics.csv": {
+        "sha256": "353165debedf494e4ebe203818eee504ab18d688d50995537323e151348f15fb",
+        "bytes": 524213321
+      },
+      "selection_steps.csv": {
+        "sha256": "191bdbb967c237f6c24c1d3e4380c8390b56aadb7ba00d9f0e2e1f5372117957",
+        "bytes": 383761986
+      },
+      "cross_selection_steps.csv": {
+        "sha256": "c5bfaefd9c2104c39fda32b5ede8a67b7e71d84e70fb40de9e8dd53b627789d6",
+        "bytes": 24927392
+      },
+      "probe_drift_steps.csv": {
+        "sha256": "4e58ca2b164f0ea394410c717d572ba3a83682d4df64eda4fbb511afbfa758aa",
+        "bytes": 19939391
+      }
+    }
+  },
+  "next_stage": {
+    "name": "apply_ablation_probes",
+    "pid": 298832,
+    "live": true,
+    "io": {
+      "rchar": 23458964924,
+      "wchar": 636,
+      "syscr": 4050,
+      "syscw": 1,
+      "read_bytes": 11719032832,
+      "write_bytes": 4096,
+      "cancelled_write_bytes": 0
+    },
+    "completion_marker_exists": false
+  }
+}

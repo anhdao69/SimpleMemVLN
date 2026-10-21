@@ -1,0 +1,14 @@
+{
+  "episode_id": "1007",
+  "frames": 79,
+  "selected_pairs": 8,
+  "matched_pairs": 7,
+  "conditions": 14,
+  "parameter_versions_unchanged": true,
+  "epsilon_rows": 70,
+  "native_contrasts": 35,
+  "max_delta_identity_error": 0.0,
+  "max_target_control_identity_error": 0.0,
+  "prefix_baseline_contract": "no-removal prefix state at same anchor and truncated sequence length",
+  "population_inference": false
+}

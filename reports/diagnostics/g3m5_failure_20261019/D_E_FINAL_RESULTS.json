@@ -1,0 +1,302 @@
+{
+  "status": "verified",
+  "diagnostic": true,
+  "qualified": false,
+  "panel_sha256": "475d192008a0ef5ab0d0c249aff4769d345cf9cc1879ee720c9ba98e014a3cb1",
+  "aggregation_replay": {
+    "results.json": {
+      "queue_result_sha256": "0b85d4d0ce7c415a1a88868a612584a1cd0eae22952910542794961eb5ad873b",
+      "rerun_sha256": "0b85d4d0ce7c415a1a88868a612584a1cd0eae22952910542794961eb5ad873b",
+      "identical": true
+    },
+    "episodes.csv": {
+      "queue_result_sha256": "bb1ea28603cdefd1133bdd64722dd5b74b674461f730b90b259f4facb6fe97fb",
+      "rerun_sha256": "bb1ea28603cdefd1133bdd64722dd5b74b674461f730b90b259f4facb6fe97fb",
+      "identical": true
+    },
+    "interaction.csv": {
+      "queue_result_sha256": "e35d562b04b8c1ab1800ccdd30c26b9cb2cca1d38237d70d2952281af75c6e9d",
+      "rerun_sha256": "e35d562b04b8c1ab1800ccdd30c26b9cb2cca1d38237d70d2952281af75c6e9d",
+      "identical": true
+    }
+  },
+  "models": {
+    "M5_E1": {
+      "n_episodes": 600,
+      "n_determinism": 60,
+      "sr_score": {
+        "estimate": 0.5133333333333333,
+        "ci95": [
+          0.475,
+          0.5516666666666666
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null
+      },
+      "sr_random": {
+        "estimate": 0.515,
+        "ci95": [
+          0.4766666666666667,
+          0.5533333333333333
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null
+      },
+      "delta_random_minus_score": {
+        "estimate": 0.0016666666666666668,
+        "ci95": [
+          -0.030041666666666664,
+          0.03337499999999977
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null,
+        "contrast": "right - left"
+      },
+      "exact_mcnemar": {
+        "left_only": 48,
+        "right_only": 49,
+        "concordant": 503,
+        "discordant": 97,
+        "n_episodes": 600,
+        "n_undefined": 0,
+        "p_two_sided": 1.0,
+        "undefined_reason": null,
+        "method": "exact conditional binomial, two-sided"
+      },
+      "determinism": {
+        "n_episodes": 60,
+        "success_agreement": 1.0,
+        "metric_agreement": 1.0,
+        "action_sequence_agreement": 1.0,
+        "absolute_metric_tolerance": 1e-06,
+        "success_agree_count": 60,
+        "metric_agree_count": 60,
+        "action_agree_count": 60
+      },
+      "forced_stop_counts": {
+        "score": 53,
+        "random": 48
+      },
+      "execution_failures": {
+        "score": 0,
+        "random": 0
+      }
+    },
+    "G3_M5": {
+      "n_episodes": 600,
+      "n_determinism": 60,
+      "sr_score": {
+        "estimate": 0.47833333333333333,
+        "ci95": [
+          0.44,
+          0.5166666666666667
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null
+      },
+      "sr_random": {
+        "estimate": 0.5033333333333333,
+        "ci95": [
+          0.465,
+          0.5433333333333333
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null
+      },
+      "delta_random_minus_score": {
+        "estimate": 0.025,
+        "ci95": [
+          -0.006666666666666667,
+          0.058333333333333334
+        ],
+        "n_episodes": 600,
+        "n_input": 600,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+          "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null,
+        "contrast": "right - left"
+      },
+      "exact_mcnemar": {
+        "left_only": 43,
+        "right_only": 58,
+        "concordant": 499,
+        "discordant": 101,
+        "n_episodes": 600,
+        "n_undefined": 0,
+        "p_two_sided": 0.16327926185142788,
+        "undefined_reason": null,
+        "method": "exact conditional binomial, two-sided"
+      },
+      "determinism": {
+        "n_episodes": 60,
+        "success_agreement": 1.0,
+        "metric_agreement": 1.0,
+        "action_sequence_agreement": 1.0,
+        "absolute_metric_tolerance": 1e-06,
+        "success_agree_count": 60,
+        "metric_agree_count": 60,
+        "action_agree_count": 60
+      },
+      "forced_stop_counts": {
+        "score": 53,
+        "random": 46
+      },
+      "execution_failures": {
+        "score": 0,
+        "random": 0
+      }
+    }
+  },
+  "interaction": {
+    "estimate": 0.023333333333333334,
+    "ci95": [
+      -0.02,
+      0.06666666666666667
+    ],
+    "n_episodes": 600,
+    "n_input": 600,
+    "n_undefined": 0,
+    "undefined_episode_ids": [],
+    "scene_counts": {
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 82,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/8194nk5LbLH/8194nk5LbLH.glb": 13,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 43,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 83,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 86,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 46,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 52,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 58,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 6,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 33,
+      "/media/vmo-perception/disk_2/anhdh35/JanusVLN/data/scene_datasets/mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 98
+    },
+    "resamples": 2000,
+    "seed": 20261019,
+    "unit": "episode",
+    "method": "within-scene episode bootstrap; percentile linear quantiles",
+    "undefined_reason": null,
+    "contrast": "right - left",
+    "definition": "delta_SR(G3_M5 random-score) - delta_SR(M5_E1 random-score)"
+  },
+  "selector_results_sha256": "0b85d4d0ce7c415a1a88868a612584a1cd0eae22952910542794961eb5ad873b",
+  "episodes_csv_sha256": "bb1ea28603cdefd1133bdd64722dd5b74b674461f730b90b259f4facb6fe97fb",
+  "interaction_csv_sha256": "e35d562b04b8c1ab1800ccdd30c26b9cb2cca1d38237d70d2952281af75c6e9d",
+  "queue_status_sha256": "2a4285c6117328ae5e2675d4d04b9f2f2a416abf974dfc2ea4634ca5daa680f3"
+}

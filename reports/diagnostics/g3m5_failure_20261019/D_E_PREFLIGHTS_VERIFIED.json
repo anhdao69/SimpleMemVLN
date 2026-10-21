@@ -1,0 +1,57 @@
+{
+  "verified_at": "2026-10-21 00:57:02 +0700",
+  "status": "all_passed",
+  "environment": "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+  "method": "scripts.diag.selector_eval --preflight-only",
+  "models": [
+    "M5_E1",
+    "G3_M5"
+  ],
+  "conditions": [
+    "random",
+    "score"
+  ],
+  "results": [
+    {
+      "model": "M5_E1",
+      "condition": "random",
+      "passed": true,
+      "baseline_episodes_verified": 600,
+      "model_loaded": false,
+      "simulator_created": false,
+      "preflight_sha256": "63a70e373e007201ad195e4f73873ab173e7389830428ffdbe5dca45ffe85afe",
+      "evaluation_contract_sha256": "99504fc32dfac65ad3a1d33400d487dffa23d338454f62457a4a254cd646a5cb"
+    },
+    {
+      "model": "M5_E1",
+      "condition": "score",
+      "passed": true,
+      "baseline_episodes_verified": 600,
+      "model_loaded": false,
+      "simulator_created": false,
+      "preflight_sha256": "a0e007271f6f8d23e220438a41820800a8c6a5fbd0168a8618e1d5911de18dee",
+      "evaluation_contract_sha256": "d3a0a54fdfa7c80c2962fa97e085286dbf71e8ada2c104f9313c3a1fa8a03057"
+    },
+    {
+      "model": "G3_M5",
+      "condition": "random",
+      "passed": true,
+      "baseline_episodes_verified": 600,
+      "model_loaded": false,
+      "simulator_created": false,
+      "preflight_sha256": "63a70e373e007201ad195e4f73873ab173e7389830428ffdbe5dca45ffe85afe",
+      "evaluation_contract_sha256": "750483dccdeb7eb3945b7789de155ce1dd753c300bfb408669098cfdf0c1e31f"
+    },
+    {
+      "model": "G3_M5",
+      "condition": "score",
+      "passed": true,
+      "baseline_episodes_verified": 600,
+      "model_loaded": false,
+      "simulator_created": false,
+      "preflight_sha256": "a0e007271f6f8d23e220438a41820800a8c6a5fbd0168a8618e1d5911de18dee",
+      "evaluation_contract_sha256": "ebbbfc2c4f3b683f1e24665fb0ae25236b3847505fbb0d2e16276275765a3b55"
+    }
+  ],
+  "interpretation": "Input/contract validation only; no policy loaded and no Habitat simulator created."
+}

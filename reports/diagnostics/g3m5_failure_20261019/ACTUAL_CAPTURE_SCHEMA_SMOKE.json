@@ -1,0 +1,177 @@
+{
+  "status": "passed_partial_schema_smoke",
+  "scope": "one completed actual episode only; not full-panel completion or hypothesis evidence",
+  "model": "M5_E1",
+  "episode_id": "1007",
+  "episode_uid": "r2rce:val_unseen:mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb:1007:1007",
+  "frames": 79,
+  "episode_complete_sha256": "760e8e964e9f22852b531789da86b095d8e8cfc06b2397c78cca16da8e6b1024",
+  "verified_capture_files": 26,
+  "helpers": [
+    "recall_episode",
+    "attention_episode",
+    "selection_episode",
+    "pair_metadata",
+    "pair_features",
+    "load_tensor"
+  ],
+  "raw_csv_rows": {
+    "attention": 22752,
+    "selection": 632,
+    "bridge": 8
+  },
+  "csv_fields": {
+    "attention": [
+      "model",
+      "episode_id",
+      "scene_id",
+      "layer",
+      "step",
+      "role",
+      "category",
+      "mass",
+      "mass_per_token",
+      "n_queries",
+      "n_query_heads",
+      "n_defined_query_heads",
+      "n_visible_tokens",
+      "n_token_head_visits",
+      "n_undefined_queries"
+    ],
+    "selection": [
+      "model",
+      "episode_id",
+      "scene_id",
+      "attention_layer",
+      "scorer_layer",
+      "step",
+      "candidate_cv",
+      "normalized_cutoff_margin",
+      "selected_gini",
+      "distinct_source_groups",
+      "fraction_from_steps_0_2",
+      "mean_age_groups",
+      "turnover",
+      "border_share",
+      "max_source_share",
+      "candidate_count",
+      "selected_count",
+      "spatial_histogram_json",
+      "undefined_reasons_json"
+    ],
+    "bridge": [
+      "model",
+      "episode_id",
+      "scene_id",
+      "scorer_layer",
+      "value",
+      "n_tokens",
+      "n_undefined",
+      "undefined_reason"
+    ]
+  },
+  "native_pairs_per_layer": 651,
+  "native_region_rows_per_layer": 3255,
+  "attention_blocks": 632,
+  "attention_queries": 20856,
+  "metric2_pairs_by_group": {
+    "A": 116,
+    "B": 148,
+    "C": 347
+  },
+  "feature_shapes": {
+    "control_layer_24": {
+      "frame_shape": [
+        79,
+        20480
+      ],
+      "pair_feature_shapes": {
+        "A": [
+          116,
+          20496
+        ],
+        "B": [
+          148,
+          20496
+        ],
+        "C": [
+          347,
+          20496
+        ]
+      }
+    },
+    "state_layer_22": {
+      "frame_shape": [
+        79,
+        4096
+      ],
+      "pair_feature_shapes": {
+        "A": [
+          116,
+          4112
+        ],
+        "B": [
+          148,
+          4112
+        ],
+        "C": [
+          347,
+          4112
+        ]
+      }
+    },
+    "state_layer_24": {
+      "frame_shape": [
+        79,
+        4096
+      ],
+      "pair_feature_shapes": {
+        "A": [
+          116,
+          4112
+        ],
+        "B": [
+          148,
+          4112
+        ],
+        "C": [
+          347,
+          4112
+        ]
+      }
+    },
+    "state_layer_26": {
+      "frame_shape": [
+        79,
+        4096
+      ],
+      "pair_feature_shapes": {
+        "A": [
+          116,
+          4112
+        ],
+        "B": [
+          148,
+          4112
+        ],
+        "C": [
+          347,
+          4112
+        ]
+      }
+    }
+  },
+  "teacher_shape": [
+    79,
+    5,
+    2048
+  ],
+  "teacher_file_sha256": "c045fb11e211469cd73bc40b8ec49779c6f4ea6888572d8d305f4d92f33c2580",
+  "collector_groups": 1597,
+  "gpu_used": false,
+  "models_launched": false,
+  "probes_fitted": false,
+  "bootstrap_or_hypothesis_decisions_run": false,
+  "temporary_csv_outputs_removed": true,
+  "seconds": 3.360363483428955
+}

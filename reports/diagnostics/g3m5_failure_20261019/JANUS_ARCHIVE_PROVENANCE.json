@@ -1,0 +1,38 @@
+{
+  "official_readme": "https://github.com/MIV-XJTU/JanusVLN",
+  "official_archive_api": "https://modelscope.cn/api/v1/datasets/misstl/JanusVLN_Trajectory_Data/repo/tree",
+  "files": [
+    {
+      "Id": null,
+      "Name": "R2R-CE-640x480.tar.gz.part00",
+      "Type": "blob",
+      "Path": "trajectory_data/R2R-CE-640x480.tar.gz.part00",
+      "Mode": "33188",
+      "CommitId": null,
+      "CommitMessage": "Upload to misstl/JanusVLN_Trajectory_Data on ModelScope hub (batch 1/1)",
+      "CommitterName": "misstl",
+      "CommittedDate": 1761474006,
+      "Revision": "17c1e24da636b7affd96abad58a9af8dc8b07d8c",
+      "IsLFS": true,
+      "Size": 96636764160,
+      "InCheck": false,
+      "Sha256": "ef36d42bbaf7f3d5182786759eb9a47accbcf4aadc5b18544015af57204085c8"
+    },
+    {
+      "Id": null,
+      "Name": "R2R-CE-640x480.tar.gz.part01",
+      "Type": "blob",
+      "Path": "trajectory_data/R2R-CE-640x480.tar.gz.part01",
+      "Mode": "33188",
+      "CommitId": null,
+      "CommitMessage": "Upload to misstl/JanusVLN_Trajectory_Data on ModelScope hub (batch 1/1)",
+      "CommitterName": "misstl",
+      "CommittedDate": 1761474006,
+      "Revision": "17c1e24da636b7affd96abad58a9af8dc8b07d8c",
+      "IsLFS": true,
+      "Size": 64847844634,
+      "InCheck": false,
+      "Sha256": "302ebad8f51755eb3b8840249f4d60039697226088ae56856e2c66521feab119"
+    }
+  ]
+}

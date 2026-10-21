@@ -1,0 +1,156 @@
+import hashlib, json, os, signal, subprocess, sys, time
+from datetime import datetime, timezone
+from pathlib import Path
+
+ASSETS=Path('/data14t/anhdh35/diag_g3m5_20261019_assets')
+SOURCE=Path('/data14t/anhdh35/simplememvln_diag_g3m5_20261019')
+OUTPUT=ASSETS/'panel_measurements'
+STATUS=OUTPUT/'queue_status.json'
+PANEL=SOURCE/'reports/diagnostics/g3m5_failure_20261019/panel_ids.json'
+SUPERVISOR_PID=188899
+TRIPLE_PID=237179
+MODELS=['M5_E1','G3_M5','TRIPLE','G3','G1']
+
+
+def sha(path):
+    h=hashlib.sha256()
+    with Path(path).open('rb') as f:
+        for chunk in iter(lambda:f.read(1024*1024),b''): h.update(chunk)
+    return h.hexdigest()
+
+
+def proc_state(pid):
+    try:
+        raw=Path(f'/proc/{pid}/stat').read_text()
+        return raw[raw.rfind(')')+2:].split()[0]
+    except FileNotFoundError:
+        return None
+
+
+def write_status(data):
+    data['updated_unix']=time.time()
+    tmp=STATUS.with_suffix('.json.tmp')
+    tmp.write_text(json.dumps(data,indent=2)+'\n')
+    tmp.replace(STATUS)
+
+
+def validate_model(name,expected_ids):
+    root=OUTPUT/name
+    complete=json.loads((root/'COMPLETE.json').read_text())
+    journal=root/'episodes.jsonl'
+    if complete.get('episodes')!=240 or complete.get('parameter_versions_unchanged') is not True:
+        raise RuntimeError(f'{name}: incomplete or parameter-mutation guard failed')
+    if complete.get('journal_sha256')!=sha(journal):
+        raise RuntimeError(f'{name}: journal hash mismatch')
+    rows=[json.loads(s) for s in journal.read_text().splitlines() if s.strip()]
+    if len(rows)!=240 or [str(x['episode_id']) for x in rows]!=expected_ids:
+        raise RuntimeError(f'{name}: journal does not exactly match frozen 240-episode panel')
+    prov=json.loads((root/'provenance.json').read_text())
+    registered={x['model']:x for x in json.loads((SOURCE/'scripts/diag/gate_models.json').read_text())}[name]
+    if (prov.get('model')!=name or prov.get('navigation_training') is not False or prov.get('model_eval') is not True
+        or complete.get('weights_sha256')!=registered['weights_sha256'] or prov.get('weights_sha256')!=registered['weights_sha256']):
+        raise RuntimeError(f'{name}: model/checkpoint provenance or frozen-parameter guard mismatch')
+    return {'episodes':240,'journal_sha256':complete['journal_sha256'],'weights_sha256':complete['weights_sha256']}
+
+
+def main():
+    status=json.loads(STATUS.read_text())
+    if status.get('pid')!=SUPERVISOR_PID or status.get('child_pid')!=TRIPLE_PID or status.get('current_model')!='TRIPLE':
+        raise RuntimeError('Serial queue state changed; refusing handoff')
+    expected_ids=[str(e['episode_id']) for e in json.loads(PANEL.read_text())['episodes']]
+    if len(expected_ids)!=240: raise RuntimeError('Frozen panel is not 240 episodes')
+    commands=json.loads((OUTPUT/'commands.json').read_text())
+    by_name={x['model']:x['command'] for x in commands}
+    for name in ('G3','G1'):
+        outarg=by_name[name][by_name[name].index('--output')+1]
+        if Path(outarg)!=OUTPUT/name or (OUTPUT/name).exists():
+            raise RuntimeError(f'{name}: expected clean official output root {OUTPUT/name}')
+    if proc_state(SUPERVISOR_PID) not in ('S','R') or proc_state(TRIPLE_PID) not in ('R','S','D'):
+        raise RuntimeError('Expected live serial supervisor and TRIPLE capture process')
+
+    # Freeze only the serial controller: the already-running model child is untouched.
+    os.kill(SUPERVISOR_PID,signal.SIGSTOP)
+    deadline=time.time()+10
+    while proc_state(SUPERVISOR_PID) not in ('T','t') and time.time()<deadline: time.sleep(.1)
+    if proc_state(SUPERVISOR_PID) not in ('T','t'):
+        os.kill(SUPERVISOR_PID,signal.SIGCONT)
+        raise RuntimeError('Could not pause serial controller safely')
+
+    env=dict(os.environ,PYTHONPATH=os.pathsep.join((str(SOURCE/'src'),str(SOURCE))),
+        OMP_NUM_THREADS='4',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='4',
+        TOKENIZERS_PARALLELISM='false',HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',
+        PYTHONDONTWRITEBYTECODE='1',HABITAT_SIM_LOG='quiet',MAGNUM_LOG='quiet')
+    logdir=ASSETS/'parallel_capture_logs'; logdir.mkdir(exist_ok=True)
+    processes={}
+    try:
+        for name in ('G3','G1'):
+            log=(logdir/f'{name}.log').open('x')
+            try:
+                processes[name]=subprocess.Popen(by_name[name],cwd=SOURCE,env=env,stdout=log,stderr=subprocess.STDOUT,start_new_session=True)
+            finally: log.close()
+        status.update(status='running',current_model='TRIPLE+G3+G1',
+            parallel_capture_pids={n:p.pid for n,p in processes.items()},
+            parallel_capture_started_unix=time.time(),
+            parallel_capture_method='G3 and G1 run concurrently in their registered output roots; TRIPLE continues unchanged')
+        write_status(status)
+        manifest={'started_utc':datetime.now(timezone.utc).isoformat(),'serial_controller_pid':SUPERVISOR_PID,
+            'triple_pid':TRIPLE_PID,'parallel_processes':{n:{'pid':p.pid,'command':by_name[n]} for n,p in processes.items()},
+            'output_roots':{n:str(OUTPUT/n) for n in processes},'panel_sha256':sha(PANEL),
+            'commands_sha256':sha(OUTPUT/'commands.json'),'code_sha256':{str(p.relative_to(SOURCE)):sha(p) for p in sorted((SOURCE/'scripts/diag').glob('*.py'))}}
+        (ASSETS/'parallel_capture_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+        completed=set(status.get('models_completed',[]))
+        while True:
+            for name,p in processes.items():
+                code=p.poll()
+                if code is not None and code!=0:
+                    raise RuntimeError(f'{name} capture exited {code}; see {logdir/name}.log')
+                if code==0 and name not in completed:
+                    validated=validate_model(name,expected_ids)
+                    completed.add(name); status.setdefault('models_completed',[]).append(name)
+                    status.setdefault('parallel_capture_results',{})[name]=validated
+                    write_status(status)
+            # TRIPLE was created by the stopped serial controller; it becomes a zombie until that controller is reaped.
+            triple_state=proc_state(TRIPLE_PID)
+            triple_complete=(OUTPUT/'TRIPLE'/'COMPLETE.json').exists()
+            triple_done=triple_state in (None,'Z') and triple_complete
+            if triple_state is None and not triple_complete:
+                raise RuntimeError('TRIPLE process vanished without a completion record')
+            if all(p.poll()==0 for p in processes.values()) and triple_done:
+                validations={n:validate_model(n,expected_ids) for n in MODELS}
+                status.update(status='complete',current_model=None,child_pid=None,
+                    models_completed=MODELS,finished_unix=time.time(),
+                    final_capture_validations=validations)
+                write_status(status)
+                manifest['finished_utc']=datetime.now(timezone.utc).isoformat()
+                manifest['final_capture_validations']=validations
+                (ASSETS/'parallel_capture_manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+                # Prevent the paused serial controller from launching duplicate G3/G1 jobs.
+                os.kill(SUPERVISOR_PID,signal.SIGTERM); os.kill(SUPERVISOR_PID,signal.SIGCONT)
+                print('ALL_FIVE_CAPTURES_COMPLETE_AND_VALIDATED',flush=True)
+                return
+            status['updated_unix']=time.time(); write_status(status)
+            time.sleep(15)
+    except BaseException as exc:
+        for name,p in processes.items():
+            if p.poll() is None:
+                try: os.killpg(p.pid,signal.SIGTERM)
+                except ProcessLookupError: pass
+        for p in processes.values():
+            if p.poll() is None:
+                try: p.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    try: os.killpg(p.pid,signal.SIGKILL)
+                    except ProcessLookupError: pass
+                    p.wait()
+        archive=ASSETS/'parallel_capture_failed_outputs'; archive.mkdir(exist_ok=True)
+        for name in ('G3','G1'):
+            root=OUTPUT/name
+            if root.exists(): root.rename(archive/f'{name}_{int(time.time())}')
+        status=json.loads(STATUS.read_text())
+        status.update(status='running',current_model='TRIPLE',child_pid=TRIPLE_PID,
+            parallel_handoff_error=repr(exc),parallel_capture_pids={})
+        write_status(status)
+        os.kill(SUPERVISOR_PID,signal.SIGCONT)
+        raise
+
+if __name__=='__main__': main()

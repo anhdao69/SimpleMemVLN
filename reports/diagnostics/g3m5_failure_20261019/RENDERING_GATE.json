@@ -1,0 +1,3906 @@
+{
+  "status": "failed_rendering_parity_stop",
+  "passed": false,
+  "episodes": [
+    {
+      "episode_id": "4991",
+      "scene_id": "/storage/anhdh35/JanusVLN/data/scene_datasets_full/mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "frame_count": 64,
+      "pixels_per_channel": 19660800,
+      "mae_per_channel": [
+        0.07888792130214715,
+        0.08460123059640523,
+        0.0953920068678513
+      ],
+      "mean_absolute_error": 0.08629371958880123,
+      "max_abs_pixel": 255,
+      "nonidentical_channel_values": 55681694,
+      "frame_mae_percentiles_per_channel": {
+        "0": [
+          0.034768752553104576,
+          0.03597552849264706,
+          0.04311012816584967
+        ],
+        "50": [
+          0.07305570874183007,
+          0.07591935380923204,
+          0.08578749872344771
+        ],
+        "90": [
+          0.118897163500817,
+          0.13281984528186275,
+          0.1482143714256536
+        ],
+        "95": [
+          0.12503036471098855,
+          0.14174473932802287,
+          0.1638268586601307
+        ],
+        "99": [
+          0.19983471341401143,
+          0.20504325482536762,
+          0.20862053130106206
+        ],
+        "100": [
+          0.20360174121732025,
+          0.20878848805147057,
+          0.2118926291870915
+        ]
+      },
+      "passed": false,
+      "frames": [
+        {
+          "mae_per_channel": [
+            0.19762233200571896,
+            0.20284367340686274,
+            0.20669882301879083
+          ],
+          "mean_absolute_error": 0.20238827614379085,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            15480943,
+            15889962,
+            16191959
+          ],
+          "nonidentical_channel_values": 884038,
+          "step": 0,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0000_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0000_TURN_RIGHT.png",
+          "rendered_sha256": "b4e21dc1f4d1b8c3f89493751fb2a29ad81c66f5e4bc33c3854b4bf63c0b2735"
+        },
+        {
+          "mae_per_channel": [
+            0.20360174121732025,
+            0.20878848805147057,
+            0.2118926291870915
+          ],
+          "mean_absolute_error": 0.2080942861519608,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            15949346,
+            16355655,
+            16598821
+          ],
+          "nonidentical_channel_values": 883031,
+          "step": 1,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0001_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0001_TURN_RIGHT.png",
+          "rendered_sha256": "e5c34cba19012aac85c4ec2965034dd4cd2e02e3bc860ad20e708a57ed4e520c"
+        },
+        {
+          "mae_per_channel": [
+            0.11904704095179738,
+            0.12716468801062092,
+            0.13562080014297387
+          ],
+          "mean_absolute_error": 0.12727750970179738,
+          "max_abs_pixel": 248,
+          "absolute_error_sum_per_channel": [
+            9325669,
+            9961573,
+            10623991
+          ],
+          "nonidentical_channel_values": 888277,
+          "step": 2,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0002_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0002_TURN_RIGHT.png",
+          "rendered_sha256": "a0a0e66c288601842e35a9bd3f30147526bdf9aa173bbaf3fe148c53911c9a37"
+        },
+        {
+          "mae_per_channel": [
+            0.08722035845588236,
+            0.09207677185457516,
+            0.09878497753267974
+          ],
+          "mean_absolute_error": 0.09269403594771242,
+          "max_abs_pixel": 205,
+          "absolute_error_sum_per_channel": [
+            6832494,
+            7212926,
+            7738420
+          ],
+          "nonidentical_channel_values": 881938,
+          "step": 3,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0003_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0003_TURN_RIGHT.png",
+          "rendered_sha256": "86b66078276d78a17aa867a0ad979bd4af7e7c9a81110716e766e44c78512fa6"
+        },
+        {
+          "mae_per_channel": [
+            0.11096772875816993,
+            0.1145815078635621,
+            0.1200091273488562
+          ],
+          "mean_absolute_error": 0.11518612132352941,
+          "max_abs_pixel": 254,
+          "absolute_error_sum_per_channel": [
+            8692768,
+            8975857,
+            9401035
+          ],
+          "nonidentical_channel_values": 884244,
+          "step": 4,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0004_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0004_TURN_RIGHT.png",
+          "rendered_sha256": "aa4b4efe60b80c39b482fe715a925801b9e3800e11c0f0da58fd0e0715bf3242"
+        },
+        {
+          "mae_per_channel": [
+            0.1255431347017974,
+            0.13000243821486926,
+            0.13778229677287582
+          ],
+          "mean_absolute_error": 0.13110928989651416,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            9834547,
+            10183871,
+            10793314
+          ],
+          "nonidentical_channel_values": 885194,
+          "step": 5,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0005_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0005_TURN_RIGHT.png",
+          "rendered_sha256": "645f6dbf1f204e4c1ac87b0f1f0e90ab5d54b981da6cacae0aac24b6d1b5c879"
+        },
+        {
+          "mae_per_channel": [
+            0.11978819444444445,
+            0.12109921364379085,
+            0.1274663756127451
+          ],
+          "mean_absolute_error": 0.12278459456699346,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            9383728,
+            9486428,
+            9985206
+          ],
+          "nonidentical_channel_values": 885861,
+          "step": 6,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0006_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0006_TURN_RIGHT.png",
+          "rendered_sha256": "10e095fb80a6ccf38a56bf334a64dbeda8bb43fae2d9bb1b3a15c1ed02f955e1"
+        },
+        {
+          "mae_per_channel": [
+            0.10076159109477123,
+            0.10248710682189544,
+            0.10608175040849672
+          ],
+          "mean_absolute_error": 0.10311014944172113,
+          "max_abs_pixel": 254,
+          "absolute_error_sum_per_channel": [
+            7893260,
+            8028430,
+            8310020
+          ],
+          "nonidentical_channel_values": 880882,
+          "step": 7,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0007_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0007_TURN_RIGHT.png",
+          "rendered_sha256": "3c3a5e6bcc0de5e0aa7fe91036dfd7aa3dde3cd3661a9109099806860ca3893f"
+        },
+        {
+          "mae_per_channel": [
+            0.10804147518382354,
+            0.10796943933823529,
+            0.10871733302696078
+          ],
+          "mean_absolute_error": 0.10824274918300654,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8463537,
+            8457894,
+            8516481
+          ],
+          "nonidentical_channel_values": 888435,
+          "step": 8,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0008_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0008_TURN_RIGHT.png",
+          "rendered_sha256": "db9bd53e475d7b64baacbe4ea3a4c3f472035ac8e66628819f4c746020c1fc67"
+        },
+        {
+          "mae_per_channel": [
+            0.1338961141748366,
+            0.1409403339460784,
+            0.1496476970996732
+          ],
+          "mean_absolute_error": 0.1414947150735294,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            10488886,
+            11040702,
+            11722802
+          ],
+          "nonidentical_channel_values": 903069,
+          "step": 9,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0009_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0009_TURN_RIGHT.png",
+          "rendered_sha256": "744767e50b153a37e8390457f41664d13f7cb1843a1294647f8d74c4e0ef29f2"
+        },
+        {
+          "mae_per_channel": [
+            0.09954088796977123,
+            0.1032175372753268,
+            0.11185017105800653
+          ],
+          "mean_absolute_error": 0.10486953210103485,
+          "max_abs_pixel": 252,
+          "absolute_error_sum_per_channel": [
+            7797635,
+            8085649,
+            8761895
+          ],
+          "nonidentical_channel_values": 877676,
+          "step": 10,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0010_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0010_MOVE_FORWARD.png",
+          "rendered_sha256": "3913026defd3c1d8da48dd902e448783d7bc6f2c3acc8712b7a62454cc84df49"
+        },
+        {
+          "mae_per_channel": [
+            0.09646719260620915,
+            0.10029858558006537,
+            0.10921269914215685
+          ],
+          "mean_absolute_error": 0.10199282577614378,
+          "max_abs_pixel": 252,
+          "absolute_error_sum_per_channel": [
+            7556854,
+            7856990,
+            8555286
+          ],
+          "nonidentical_channel_values": 882850,
+          "step": 11,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0011_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0011_MOVE_FORWARD.png",
+          "rendered_sha256": "d01fdbb42b3b8a3284b652855e08eb5c2af3d876978110290295510ab7c0a8b0"
+        },
+        {
+          "mae_per_channel": [
+            0.10137262561274508,
+            0.10550619127859477,
+            0.1149807878880719
+          ],
+          "mean_absolute_error": 0.1072865349264706,
+          "max_abs_pixel": 252,
+          "absolute_error_sum_per_channel": [
+            7941126,
+            8264933,
+            9007135
+          ],
+          "nonidentical_channel_values": 890739,
+          "step": 12,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0012_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0012_TURN_RIGHT.png",
+          "rendered_sha256": "acc7d9febaf1c7a05d9506a80d8ecb72df0cc79e05165e00c9d73ea067f07a82"
+        },
+        {
+          "mae_per_channel": [
+            0.07713364225898692,
+            0.08067478553921568,
+            0.09192897263071895
+          ],
+          "mean_absolute_error": 0.08324580014297385,
+          "max_abs_pixel": 252,
+          "absolute_error_sum_per_channel": [
+            6042341,
+            6319740,
+            7201348
+          ],
+          "nonidentical_channel_values": 864397,
+          "step": 13,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0013_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0013_MOVE_FORWARD.png",
+          "rendered_sha256": "f03409ebd80f6d8e5dc826b9765541dc1de83fd6c8a2c100fe7977aa9cd4e6da"
+        },
+        {
+          "mae_per_channel": [
+            0.07720572916666667,
+            0.07946934997957517,
+            0.08851933976715685
+          ],
+          "mean_absolute_error": 0.08173147297113291,
+          "max_abs_pixel": 249,
+          "absolute_error_sum_per_channel": [
+            6047988,
+            6225311,
+            6934251
+          ],
+          "nonidentical_channel_values": 860899,
+          "step": 14,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0014_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0014_MOVE_FORWARD.png",
+          "rendered_sha256": "fb02a5e74cab4134bdc47eef0394bc3ebefb7269adb5a40f21b50afe6ac677d6"
+        },
+        {
+          "mae_per_channel": [
+            0.08112996578839869,
+            0.08411672794117647,
+            0.09361689389297385
+          ],
+          "mean_absolute_error": 0.08628786254084968,
+          "max_abs_pixel": 248,
+          "absolute_error_sum_per_channel": [
+            6355397,
+            6589368,
+            7333573
+          ],
+          "nonidentical_channel_values": 862232,
+          "step": 15,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0015_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0015_TURN_RIGHT.png",
+          "rendered_sha256": "90b8a5c1c0b7052c5732cedcf6df7f8d2850d676d8182b66177123fa08801676"
+        },
+        {
+          "mae_per_channel": [
+            0.07741030943627451,
+            0.08493250868055556,
+            0.10187969771241831
+          ],
+          "mean_absolute_error": 0.0880741719430828,
+          "max_abs_pixel": 232,
+          "absolute_error_sum_per_channel": [
+            6064014,
+            6653273,
+            7980848
+          ],
+          "nonidentical_channel_values": 854858,
+          "step": 16,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0016_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0016_MOVE_FORWARD.png",
+          "rendered_sha256": "7a70f2f4b37f8d8fefdbddc18deb92d2b42791753a55c84010b6e8088bb795cb"
+        },
+        {
+          "mae_per_channel": [
+            0.07141627093545752,
+            0.0745133527369281,
+            0.08379102839052287
+          ],
+          "mean_absolute_error": 0.07657355068763616,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            5594465,
+            5837078,
+            6563854
+          ],
+          "nonidentical_channel_values": 840353,
+          "step": 17,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0017_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0017_MOVE_FORWARD.png",
+          "rendered_sha256": "743b8e06a7fa81c30338c3e5e192e8e74e708f4f5850e76c10e3dc79603971bd"
+        },
+        {
+          "mae_per_channel": [
+            0.07469514654820261,
+            0.07732535488153595,
+            0.0859047691993464
+          ],
+          "mean_absolute_error": 0.07930842354302832,
+          "max_abs_pixel": 232,
+          "absolute_error_sum_per_channel": [
+            5851319,
+            6057359,
+            6729436
+          ],
+          "nonidentical_channel_values": 829597,
+          "step": 18,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0018_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0018_MOVE_FORWARD.png",
+          "rendered_sha256": "bb63b6848885b99edbd104d395d06d631ef2a483d4c246f7aef9304ad051f35b"
+        },
+        {
+          "mae_per_channel": [
+            0.08084756689133987,
+            0.08458390778186274,
+            0.09469790390114378
+          ],
+          "mean_absolute_error": 0.08670979285811548,
+          "max_abs_pixel": 234,
+          "absolute_error_sum_per_channel": [
+            6333275,
+            6625965,
+            7418255
+          ],
+          "nonidentical_channel_values": 816856,
+          "step": 19,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0019_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0019_MOVE_FORWARD.png",
+          "rendered_sha256": "50a1cdd9d5c80e8adda0035269493c7e1638800a8d8ed8c306c94b971d39ba4b"
+        },
+        {
+          "mae_per_channel": [
+            0.08255439389297385,
+            0.0888584686478758,
+            0.10202480341094772
+          ],
+          "mean_absolute_error": 0.09114588865059912,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            6466981,
+            6960817,
+            7992215
+          ],
+          "nonidentical_channel_values": 824570,
+          "step": 20,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0020_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0020_MOVE_FORWARD.png",
+          "rendered_sha256": "6077555dff4fe32b69dac25830fe2abef7be0668a2ebfb73d6083101f22e988c"
+        },
+        {
+          "mae_per_channel": [
+            0.0837909645629085,
+            0.09183439287173202,
+            0.10633796721813726
+          ],
+          "mean_absolute_error": 0.09398777488425926,
+          "max_abs_pixel": 244,
+          "absolute_error_sum_per_channel": [
+            6563849,
+            7193939,
+            8330091
+          ],
+          "nonidentical_channel_values": 836621,
+          "step": 21,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0021_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0021_MOVE_FORWARD.png",
+          "rendered_sha256": "f9accf358456e2cdd3770b027e1ddd40a899c159ffd55366241e3f383d7e08a7"
+        },
+        {
+          "mae_per_channel": [
+            0.08677826286764706,
+            0.09657509957107843,
+            0.11111598754084967
+          ],
+          "mean_absolute_error": 0.09815644999319173,
+          "max_abs_pixel": 245,
+          "absolute_error_sum_per_channel": [
+            6797862,
+            7565307,
+            8704382
+          ],
+          "nonidentical_channel_values": 850424,
+          "step": 22,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0022_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0022_TURN_LEFT.png",
+          "rendered_sha256": "c7b9a276907b489a36ef42b510758b8b53a4d0066faaf6e78027d87c3f8259f4"
+        },
+        {
+          "mae_per_channel": [
+            0.09134553717320262,
+            0.10097514552696078,
+            0.11853930504493464
+          ],
+          "mean_absolute_error": 0.10361999591503268,
+          "max_abs_pixel": 229,
+          "absolute_error_sum_per_channel": [
+            7155644,
+            7909989,
+            9285895
+          ],
+          "nonidentical_channel_values": 895628,
+          "step": 23,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0023_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0023_MOVE_FORWARD.png",
+          "rendered_sha256": "6b95221084aba7802cb3c0162a9e9cad2328ceb8ec7299ca5595d234f5e38070"
+        },
+        {
+          "mae_per_channel": [
+            0.12212466809640522,
+            0.14013844209558823,
+            0.15939209303513072
+          ],
+          "mean_absolute_error": 0.14055173440904137,
+          "max_abs_pixel": 244,
+          "absolute_error_sum_per_channel": [
+            9566758,
+            10977885,
+            12486139
+          ],
+          "nonidentical_channel_values": 899829,
+          "step": 24,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0024_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0024_TURN_RIGHT.png",
+          "rendered_sha256": "53da945fd8e1bf4d22464f26fc2fa28e97b2404e2c1cbdf5c36020e750d85784"
+        },
+        {
+          "mae_per_channel": [
+            0.10829863664215686,
+            0.12442101970996731,
+            0.1429754008374183
+          ],
+          "mean_absolute_error": 0.12523168572984747,
+          "max_abs_pixel": 230,
+          "absolute_error_sum_per_channel": [
+            8483682,
+            9746645,
+            11200121
+          ],
+          "nonidentical_channel_values": 883061,
+          "step": 25,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0025_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0025_MOVE_FORWARD.png",
+          "rendered_sha256": "aa1488f2ab78d3ebb4704ba6ee160182628df3064a63576bb63720d1c7c84852"
+        },
+        {
+          "mae_per_channel": [
+            0.11854744944852941,
+            0.14240171823937908,
+            0.1654074627246732
+          ],
+          "mean_absolute_error": 0.14211887680419388,
+          "max_abs_pixel": 217,
+          "absolute_error_sum_per_channel": [
+            9286533,
+            11155181,
+            12957359
+          ],
+          "nonidentical_channel_values": 901121,
+          "step": 26,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0026_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0026_MOVE_FORWARD.png",
+          "rendered_sha256": "84384481c921e47aeeaf6b07e2439025f1b9bba4ff4889b4eba13d1bb07a770c"
+        },
+        {
+          "mae_per_channel": [
+            0.11185563470179738,
+            0.13402730545343136,
+            0.15432064440359478
+          ],
+          "mean_absolute_error": 0.1334011948529412,
+          "max_abs_pixel": 205,
+          "absolute_error_sum_per_channel": [
+            8762323,
+            10499163,
+            12088862
+          ],
+          "nonidentical_channel_values": 899468,
+          "step": 27,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0027_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0027_MOVE_FORWARD.png",
+          "rendered_sha256": "441e3d92d1bf29337964aaa99c26802e654ef9780ca1544edf23bd3bad34e457"
+        },
+        {
+          "mae_per_channel": [
+            0.11736611519607842,
+            0.14188669321895425,
+            0.16460946435866014
+          ],
+          "mean_absolute_error": 0.14128742425789761,
+          "max_abs_pixel": 196,
+          "absolute_error_sum_per_channel": [
+            9193992,
+            11114836,
+            12894847
+          ],
+          "nonidentical_channel_values": 896019,
+          "step": 28,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0028_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0028_TURN_RIGHT.png",
+          "rendered_sha256": "3eadebe5c6c4b30a8a9a878f5ef00bcd115ee609cdbdd0fa0eb8184cb91cbf9a"
+        },
+        {
+          "mae_per_channel": [
+            0.09849463848039215,
+            0.11887023845996732,
+            0.13536311529820264
+          ],
+          "mean_absolute_error": 0.11757599741285403,
+          "max_abs_pixel": 205,
+          "absolute_error_sum_per_channel": [
+            7715676,
+            9311819,
+            10603805
+          ],
+          "nonidentical_channel_values": 893375,
+          "step": 29,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0029_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0029_MOVE_FORWARD.png",
+          "rendered_sha256": "6a01c7ba64f052a000d3cc79f6eb576560893d7e42ffea245b97177d5c4be2cf"
+        },
+        {
+          "mae_per_channel": [
+            0.09050769761029412,
+            0.10855546619689543,
+            0.12386847681781046
+          ],
+          "mean_absolute_error": 0.10764388020833333,
+          "max_abs_pixel": 225,
+          "absolute_error_sum_per_channel": [
+            7090011,
+            8503801,
+            9703361
+          ],
+          "nonidentical_channel_values": 890122,
+          "step": 30,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0030_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0030_MOVE_FORWARD.png",
+          "rendered_sha256": "a52f77e9d37b58180d7ce32a179a444d351cb0a968a455db5b5de4f0faebddb4"
+        },
+        {
+          "mae_per_channel": [
+            0.10399499591503268,
+            0.12697547743055557,
+            0.1448699448529412
+          ],
+          "mean_absolute_error": 0.1252801393995098,
+          "max_abs_pixel": 213,
+          "absolute_error_sum_per_channel": [
+            8146552,
+            9946751,
+            11348532
+          ],
+          "nonidentical_channel_values": 892650,
+          "step": 31,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0031_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0031_MOVE_FORWARD.png",
+          "rendered_sha256": "cc901101f4e2434728bab0289365a1ed55bcf206a4bfd66339132ef14dbfcf31"
+        },
+        {
+          "mae_per_channel": [
+            0.07870915032679739,
+            0.08686465992647058,
+            0.09768308312908497
+          ],
+          "mean_absolute_error": 0.08775229779411764,
+          "max_abs_pixel": 203,
+          "absolute_error_sum_per_channel": [
+            6165760,
+            6804630,
+            7652102
+          ],
+          "nonidentical_channel_values": 884723,
+          "step": 32,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0032_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0032_MOVE_FORWARD.png",
+          "rendered_sha256": "2d28453b1aee6cdc9224972bd66870c68ca51a4eebf4fa1c409e85c44e885180"
+        },
+        {
+          "mae_per_channel": [
+            0.05979516441993464,
+            0.0647261922998366,
+            0.07681436376633986
+          ],
+          "mean_absolute_error": 0.0671119068287037,
+          "max_abs_pixel": 216,
+          "absolute_error_sum_per_channel": [
+            4684114,
+            5070391,
+            6017330
+          ],
+          "nonidentical_channel_values": 875387,
+          "step": 33,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0033_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0033_TURN_RIGHT.png",
+          "rendered_sha256": "478b336dea29d274bac0d25a46b9e041e8af5eb2d77e07ece3c7e9fa9bb94544"
+        },
+        {
+          "mae_per_channel": [
+            0.06126101664624183,
+            0.06553030535130719,
+            0.07670980136846405
+          ],
+          "mean_absolute_error": 0.06783370778867102,
+          "max_abs_pixel": 208,
+          "absolute_error_sum_per_channel": [
+            4798943,
+            5133382,
+            6009139
+          ],
+          "nonidentical_channel_values": 881923,
+          "step": 34,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0034_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0034_MOVE_FORWARD.png",
+          "rendered_sha256": "0eb5b3e264a2c6760545d7b2ffc8ac8ea8fd09bfceb9f272b5d398d6e034b1f2"
+        },
+        {
+          "mae_per_channel": [
+            0.0618137637867647,
+            0.06662327665441176,
+            0.07861121323529412
+          ],
+          "mean_absolute_error": 0.06901608455882352,
+          "max_abs_pixel": 202,
+          "absolute_error_sum_per_channel": [
+            4842243,
+            5219001,
+            6158088
+          ],
+          "nonidentical_channel_values": 880597,
+          "step": 35,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0035_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0035_MOVE_FORWARD.png",
+          "rendered_sha256": "8800effa46d6a1458dcdadc862aba693c052bb0e80a9d83c2ee4c6f689138abb"
+        },
+        {
+          "mae_per_channel": [
+            0.061517590890522875,
+            0.06794498059640523,
+            0.08169476358251633
+          ],
+          "mean_absolute_error": 0.07038577835648148,
+          "max_abs_pixel": 204,
+          "absolute_error_sum_per_channel": [
+            4819042,
+            5322538,
+            6399641
+          ],
+          "nonidentical_channel_values": 875807,
+          "step": 36,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0036_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0036_MOVE_FORWARD.png",
+          "rendered_sha256": "27b2d263f02822f1bfcbe90e1405db2898af49a2dfb5da08c0815ae743e9ce3e"
+        },
+        {
+          "mae_per_channel": [
+            0.0630540492238562,
+            0.07009954554738562,
+            0.08567022824754901
+          ],
+          "mean_absolute_error": 0.07294127433959695,
+          "max_abs_pixel": 217,
+          "absolute_error_sum_per_channel": [
+            4939402,
+            5491318,
+            6711063
+          ],
+          "nonidentical_channel_values": 863721,
+          "step": 37,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0037_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0037_TURN_LEFT.png",
+          "rendered_sha256": "69a63a96ff352aac746633f89014aee8fa8e23bd402ec6ee31df27b174b37e92"
+        },
+        {
+          "mae_per_channel": [
+            0.05907647824754902,
+            0.06487708078022876,
+            0.08080600234885621
+          ],
+          "mean_absolute_error": 0.06825318712554466,
+          "max_abs_pixel": 200,
+          "absolute_error_sum_per_channel": [
+            4627815,
+            5082211,
+            6330019
+          ],
+          "nonidentical_channel_values": 885689,
+          "step": 38,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0038_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0038_MOVE_FORWARD.png",
+          "rendered_sha256": "6b4648ac64ab9f4e16904529fae6d0736cc4e7c1deab8832ab0fdf8a89c002cb"
+        },
+        {
+          "mae_per_channel": [
+            0.060918262357026146,
+            0.06335460069444444,
+            0.07436468545751634
+          ],
+          "mean_absolute_error": 0.06621251616966231,
+          "max_abs_pixel": 206,
+          "absolute_error_sum_per_channel": [
+            4772093,
+            4962946,
+            5825432
+          ],
+          "nonidentical_channel_values": 876284,
+          "step": 39,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0039_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0039_MOVE_FORWARD.png",
+          "rendered_sha256": "c0a6e9328116fb73d7e698040940445b05fb09274ef09a2248f4c6144ff25b44"
+        },
+        {
+          "mae_per_channel": [
+            0.049925206801470584,
+            0.05306401909722222,
+            0.06627509701797386
+          ],
+          "mean_absolute_error": 0.056421440972222216,
+          "max_abs_pixel": 222,
+          "absolute_error_sum_per_channel": [
+            3910941,
+            4156823,
+            5191726
+          ],
+          "nonidentical_channel_values": 869125,
+          "step": 40,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0040_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0040_MOVE_FORWARD.png",
+          "rendered_sha256": "fd36f4a513e5948952d07ff2a2fe527d7020a2dd6ae931f2c070c4cd30a4bd62"
+        },
+        {
+          "mae_per_channel": [
+            0.04766796875,
+            0.05156953380310457,
+            0.06536533649918301
+          ],
+          "mean_absolute_error": 0.054867613017429186,
+          "max_abs_pixel": 201,
+          "absolute_error_sum_per_channel": [
+            3734118,
+            4039751,
+            5120459
+          ],
+          "nonidentical_channel_values": 859690,
+          "step": 41,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0041_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0041_TURN_LEFT.png",
+          "rendered_sha256": "34d5a059be5d51f2dd4ad23150701d0c5b3ac18fc81361840d19bf1c6099c910"
+        },
+        {
+          "mae_per_channel": [
+            0.03888902930964052,
+            0.03948803870506536,
+            0.04813361672794118
+          ],
+          "mean_absolute_error": 0.04217022824754902,
+          "max_abs_pixel": 217,
+          "absolute_error_sum_per_channel": [
+            3046411,
+            3093335,
+            3770595
+          ],
+          "nonidentical_channel_values": 837901,
+          "step": 42,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0042_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0042_MOVE_FORWARD.png",
+          "rendered_sha256": "dd1bf6e6c547d0aeef67a3a4b48cb27657e22ae677d5f4455e763835e9d172e3"
+        },
+        {
+          "mae_per_channel": [
+            0.03766033496732026,
+            0.037095601000817,
+            0.04487355749591503
+          ],
+          "mean_absolute_error": 0.03987649782135077,
+          "max_abs_pixel": 219,
+          "absolute_error_sum_per_channel": [
+            2950160,
+            2905921,
+            3515215
+          ],
+          "nonidentical_channel_values": 807355,
+          "step": 43,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0043_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0043_MOVE_FORWARD.png",
+          "rendered_sha256": "bba652868d4ee2def868e559f7258291a3736f7963d104a8bf801d6ed3081932"
+        },
+        {
+          "mae_per_channel": [
+            0.04689767156862745,
+            0.0483203635620915,
+            0.05686827256944444
+          ],
+          "mean_absolute_error": 0.050695435900054465,
+          "max_abs_pixel": 233,
+          "absolute_error_sum_per_channel": [
+            3673776,
+            3785224,
+            4454833
+          ],
+          "nonidentical_channel_values": 835056,
+          "step": 44,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0044_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0044_MOVE_FORWARD.png",
+          "rendered_sha256": "b1281fb34afb2bbf1019ff22df05ffb56b43a1c1d0e38dcff7488d311c720c4c"
+        },
+        {
+          "mae_per_channel": [
+            0.06071079707924837,
+            0.0624300577001634,
+            0.06891550500408497
+          ],
+          "mean_absolute_error": 0.0640187865944989,
+          "max_abs_pixel": 234,
+          "absolute_error_sum_per_channel": [
+            4755841,
+            4890521,
+            5398565
+          ],
+          "nonidentical_channel_values": 877045,
+          "step": 45,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0045_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0045_MOVE_FORWARD.png",
+          "rendered_sha256": "fa124318b540f6ebc8f7bd492ff6913c2494ff98053963198f9181e72380a510"
+        },
+        {
+          "mae_per_channel": [
+            0.06326494842728758,
+            0.06512999131944444,
+            0.07193284058415032
+          ],
+          "mean_absolute_error": 0.06677592677696077,
+          "max_abs_pixel": 221,
+          "absolute_error_sum_per_channel": [
+            4955923,
+            5102023,
+            5634931
+          ],
+          "nonidentical_channel_values": 873581,
+          "step": 46,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0046_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0046_MOVE_FORWARD.png",
+          "rendered_sha256": "c50fc6713e1d181546afcc30c08010192b43f46a0332ba18d3c7f5cc92e799db"
+        },
+        {
+          "mae_per_channel": [
+            0.06144127859477124,
+            0.06338052747140523,
+            0.07041454758986929
+          ],
+          "mean_absolute_error": 0.06507878455201525,
+          "max_abs_pixel": 218,
+          "absolute_error_sum_per_channel": [
+            4813064,
+            4964977,
+            5515994
+          ],
+          "nonidentical_channel_values": 873755,
+          "step": 47,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0047_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0047_MOVE_FORWARD.png",
+          "rendered_sha256": "f3e2b72fb0c1d5e4159b5f7a0e45e1653a3bb21a74213c128d2b525f88d00596"
+        },
+        {
+          "mae_per_channel": [
+            0.05775965073529412,
+            0.05863809742647059,
+            0.06550099571078431
+          ],
+          "mean_absolute_error": 0.060632914624183,
+          "max_abs_pixel": 216,
+          "absolute_error_sum_per_channel": [
+            4524660,
+            4593474,
+            5131086
+          ],
+          "nonidentical_channel_values": 871591,
+          "step": 48,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0048_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0048_MOVE_FORWARD.png",
+          "rendered_sha256": "1b34294dc9a0045f73c5f69aa701efe469a99f5cf33aa7582dad619643d8477f"
+        },
+        {
+          "mae_per_channel": [
+            0.06095249948937908,
+            0.06202906709558824,
+            0.07114624183006535
+          ],
+          "mean_absolute_error": 0.06470926947167756,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            4774775,
+            4859109,
+            5573312
+          ],
+          "nonidentical_channel_values": 872226,
+          "step": 49,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0049_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0049_TURN_LEFT.png",
+          "rendered_sha256": "23276b49d3330ab0fd5d83f02ebb9deed9156652b034a6b01d8efa174fd3b110"
+        },
+        {
+          "mae_per_channel": [
+            0.0590073912377451,
+            0.060960580065359475,
+            0.07282798457924837
+          ],
+          "mean_absolute_error": 0.06426531862745098,
+          "max_abs_pixel": 217,
+          "absolute_error_sum_per_channel": [
+            4622403,
+            4775408,
+            5705053
+          ],
+          "nonidentical_channel_values": 859418,
+          "step": 50,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0050_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0050_TURN_LEFT.png",
+          "rendered_sha256": "8e299fea6f4499ca37a4c09cb5642093fe997dd62f8150adb2f4333fef7db25b"
+        },
+        {
+          "mae_per_channel": [
+            0.04851230596405229,
+            0.05062568933823529,
+            0.06140405433006536
+          ],
+          "mean_absolute_error": 0.053514016544117644,
+          "max_abs_pixel": 214,
+          "absolute_error_sum_per_channel": [
+            3800260,
+            3965814,
+            4810148
+          ],
+          "nonidentical_channel_values": 870750,
+          "step": 51,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0051_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0051_TURN_LEFT.png",
+          "rendered_sha256": "3d1eeb234c6edcecb86560cb25d5b4e0e5a15f3f6b5cde0f13db3f8a14dc6547"
+        },
+        {
+          "mae_per_channel": [
+            0.04709614991830065,
+            0.05027270986519607,
+            0.056222771139705884
+          ],
+          "mean_absolute_error": 0.0511972103077342,
+          "max_abs_pixel": 147,
+          "absolute_error_sum_per_channel": [
+            3689324,
+            3938163,
+            4404267
+          ],
+          "nonidentical_channel_values": 870652,
+          "step": 52,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0052_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0052_MOVE_FORWARD.png",
+          "rendered_sha256": "656ebe8553af2e7b794805363bffa61c5c4eb6ab0ea0e4a55fbf1550d596fde8"
+        },
+        {
+          "mae_per_channel": [
+            0.034768752553104576,
+            0.03597552849264706,
+            0.04311012816584967
+          ],
+          "mean_absolute_error": 0.037951469737200434,
+          "max_abs_pixel": 187,
+          "absolute_error_sum_per_channel": [
+            2723645,
+            2818179,
+            3377075
+          ],
+          "nonidentical_channel_values": 867351,
+          "step": 53,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0053_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0053_TURN_RIGHT.png",
+          "rendered_sha256": "85ddd80407d5b33226dfa1ae4d3b8e6095ff22dea400e0e56140c7751f5c6185"
+        },
+        {
+          "mae_per_channel": [
+            0.041082158905228754,
+            0.0428350949754902,
+            0.05150970179738562
+          ],
+          "mean_absolute_error": 0.0451423185593682,
+          "max_abs_pixel": 179,
+          "absolute_error_sum_per_channel": [
+            3218212,
+            3355530,
+            4035064
+          ],
+          "nonidentical_channel_values": 859118,
+          "step": 54,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0054_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0054_MOVE_FORWARD.png",
+          "rendered_sha256": "0608f60b3e43041718a19d0d870907be6ac108f1e11e9b3d8e1ccb15db2de234"
+        },
+        {
+          "mae_per_channel": [
+            0.03922589869281046,
+            0.04121072048611111,
+            0.052112106821895425
+          ],
+          "mean_absolute_error": 0.044182908666939,
+          "max_abs_pixel": 186,
+          "absolute_error_sum_per_channel": [
+            3072800,
+            3228283,
+            4082254
+          ],
+          "nonidentical_channel_values": 860374,
+          "step": 55,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0055_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0055_TURN_LEFT.png",
+          "rendered_sha256": "54f751ea707c6d39356bca1b55486fe205e87b4347ac7bc15dbc5eaf46699ccd"
+        },
+        {
+          "mae_per_channel": [
+            0.04144398488562091,
+            0.04334912428513072,
+            0.04922190308415033
+          ],
+          "mean_absolute_error": 0.044671670751633995,
+          "max_abs_pixel": 187,
+          "absolute_error_sum_per_channel": [
+            3246556,
+            3395797,
+            3855847
+          ],
+          "nonidentical_channel_values": 852886,
+          "step": 56,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0056_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0056_MOVE_FORWARD.png",
+          "rendered_sha256": "edd618efa98e413aa610ae26750a7740285dc59e97bc491fe7b6abb8a6d53708"
+        },
+        {
+          "mae_per_channel": [
+            0.040826746323529416,
+            0.042604600694444446,
+            0.05140895629084967
+          ],
+          "mean_absolute_error": 0.04494676776960784,
+          "max_abs_pixel": 192,
+          "absolute_error_sum_per_channel": [
+            3198204,
+            3337474,
+            4027172
+          ],
+          "nonidentical_channel_values": 836775,
+          "step": 57,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0057_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0057_MOVE_FORWARD.png",
+          "rendered_sha256": "226ace517331086db843909c2394e8445b56846bb7f3657dc3133ddd57045ca5"
+        },
+        {
+          "mae_per_channel": [
+            0.062010097528594765,
+            0.06665798611111111,
+            0.07972052440767974
+          ],
+          "mean_absolute_error": 0.06946286934912854,
+          "max_abs_pixel": 181,
+          "absolute_error_sum_per_channel": [
+            4857623,
+            5221720,
+            6244987
+          ],
+          "nonidentical_channel_values": 867236,
+          "step": 58,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0058_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0058_TURN_LEFT.png",
+          "rendered_sha256": "abe8d0f4b7b7df8c1f1b4e963b18b0d393236ed90590d78ff64c7c0484736884"
+        },
+        {
+          "mae_per_channel": [
+            0.03709210324754902,
+            0.03876171874999999,
+            0.048815793504901964
+          ],
+          "mean_absolute_error": 0.04155653850081699,
+          "max_abs_pixel": 173,
+          "absolute_error_sum_per_channel": [
+            2905647,
+            3036438,
+            3824034
+          ],
+          "nonidentical_channel_values": 857842,
+          "step": 59,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0059_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0059_MOVE_FORWARD.png",
+          "rendered_sha256": "f2d34a25c5a322c59ad622a85b54dfc60ff83e077af228356e514886cdf79de4"
+        },
+        {
+          "mae_per_channel": [
+            0.051206980187908493,
+            0.056925194035947715,
+            0.0695318882761438
+          ],
+          "mean_absolute_error": 0.05922135416666666,
+          "max_abs_pixel": 176,
+          "absolute_error_sum_per_channel": [
+            4011350,
+            4459292,
+            5446850
+          ],
+          "nonidentical_channel_values": 872876,
+          "step": 60,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0060_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0060_MOVE_FORWARD.png",
+          "rendered_sha256": "fda812694395d8898a31b868925754f1a939de4a56dd7eb9e2db04622bd85793"
+        },
+        {
+          "mae_per_channel": [
+            0.04438731872957516,
+            0.046662939133986926,
+            0.056268101511437914
+          ],
+          "mean_absolute_error": 0.04910611979166666,
+          "max_abs_pixel": 174,
+          "absolute_error_sum_per_channel": [
+            3477125,
+            3655388,
+            4407818
+          ],
+          "nonidentical_channel_values": 867614,
+          "step": 61,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0061_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0061_TURN_LEFT.png",
+          "rendered_sha256": "dc2d5cb7ff15dd6e3779aac76d2c714dc90473a2c8f388ccb235169def3c5e78"
+        },
+        {
+          "mae_per_channel": [
+            0.06123576644199347,
+            0.05908648641748366,
+            0.06538999948937908
+          ],
+          "mean_absolute_error": 0.061904084116285396,
+          "max_abs_pixel": 172,
+          "absolute_error_sum_per_channel": [
+            4796965,
+            4628599,
+            5122391
+          ],
+          "nonidentical_channel_values": 869887,
+          "step": 62,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0062_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0062_MOVE_FORWARD.png",
+          "rendered_sha256": "b8fc590fb694bb8462fca2219cb7ee4e02ce2818859e2de5782df7d3d5100941"
+        },
+        {
+          "mae_per_channel": [
+            0.05024840430964052,
+            0.0492730162377451,
+            0.05785563470179739
+          ],
+          "mean_absolute_error": 0.05245901841639433,
+          "max_abs_pixel": 177,
+          "absolute_error_sum_per_channel": [
+            3936259,
+            3859851,
+            4532179
+          ],
+          "nonidentical_channel_values": 859145,
+          "step": 63,
+          "action_id": 0,
+          "action_name": "STOP",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0063_STOP.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/4991/step_0063_STOP.png",
+          "rendered_sha256": "d8f8687688b1198a61e8c4dd8ceaf27ec6710a5a5e7c972f24bd2563a8556210"
+        }
+      ]
+    },
+    {
+      "episode_id": "7880",
+      "scene_id": "/storage/anhdh35/JanusVLN/data/scene_datasets_full/mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "frame_count": 58,
+      "pixels_per_channel": 17817600,
+      "mae_per_channel": [
+        0.07494611210594151,
+        0.0820290017273073,
+        0.0986603602782708
+      ],
+      "mean_absolute_error": 0.08521182470383987,
+      "max_abs_pixel": 255,
+      "nonidentical_channel_values": 50056415,
+      "frame_mae_percentiles_per_channel": {
+        "0": [
+          0.04578081597222222,
+          0.04732544424019608,
+          0.05700455729166667
+        ],
+        "50": [
+          0.06906673815359476,
+          0.0769071435866013,
+          0.09166202001633986
+        ],
+        "90": [
+          0.10641494842728759,
+          0.11885446537990196,
+          0.14203320440155232
+        ],
+        "95": [
+          0.11187874987234477,
+          0.1291357434640523,
+          0.15485272607741013
+        ],
+        "99": [
+          0.12258794002757353,
+          0.14282202435661767,
+          0.17148048534517973
+        ],
+        "100": [
+          0.12452278645833333,
+          0.14560646446078432,
+          0.17395815461601305
+        ]
+      },
+      "passed": false,
+      "frames": [
+        {
+          "mae_per_channel": [
+            0.10674394914215686,
+            0.10255919372957517,
+            0.10761326848447712
+          ],
+          "mean_absolute_error": 0.10563880378540304,
+          "max_abs_pixel": 253,
+          "absolute_error_sum_per_channel": [
+            8361894,
+            8034077,
+            8429993
+          ],
+          "nonidentical_channel_values": 889249,
+          "step": 0,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0000_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0000_TURN_RIGHT.png",
+          "rendered_sha256": "3bb79d193655c075382381e2738ec78c7ad2c27904201f9e8612c0cc9b7c5487"
+        },
+        {
+          "mae_per_channel": [
+            0.08126170598447713,
+            0.07837697865604575,
+            0.09168202359068627
+          ],
+          "mean_absolute_error": 0.08377356941040305,
+          "max_abs_pixel": 234,
+          "absolute_error_sum_per_channel": [
+            6365717,
+            6139739,
+            7182003
+          ],
+          "nonidentical_channel_values": 883217,
+          "step": 1,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0001_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0001_TURN_RIGHT.png",
+          "rendered_sha256": "71e10aec1808c46981f8e83c4caab8f7d7654086fed268dc58956d98ba46cabd"
+        },
+        {
+          "mae_per_channel": [
+            0.0657141544117647,
+            0.06553764552696079,
+            0.07813562091503268
+          ],
+          "mean_absolute_error": 0.06979580695125272,
+          "max_abs_pixel": 232,
+          "absolute_error_sum_per_channel": [
+            5147784,
+            5133957,
+            6120832
+          ],
+          "nonidentical_channel_values": 874899,
+          "step": 2,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0002_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0002_TURN_RIGHT.png",
+          "rendered_sha256": "0110698ca9e92cc4da8c5f120dc60c245eab3850f1ef5e15900213809715b129"
+        },
+        {
+          "mae_per_channel": [
+            0.06855461090686274,
+            0.06784075010212419,
+            0.07931710835375817
+          ],
+          "mean_absolute_error": 0.07190415645424836,
+          "max_abs_pixel": 225,
+          "absolute_error_sum_per_channel": [
+            5370294,
+            5314373,
+            6213385
+          ],
+          "nonidentical_channel_values": 872722,
+          "step": 3,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0003_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0003_MOVE_FORWARD.png",
+          "rendered_sha256": "40826aff4e27a115fbce9d0d94968a3494bdfe78a3f1253738e02bd7b70a052c"
+        },
+        {
+          "mae_per_channel": [
+            0.06456359783496733,
+            0.0646085324754902,
+            0.07630458537581698
+          ],
+          "mean_absolute_error": 0.06849223856209151,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            5057654,
+            5061174,
+            5977396
+          ],
+          "nonidentical_channel_values": 868226,
+          "step": 4,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0004_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0004_TURN_RIGHT.png",
+          "rendered_sha256": "8fe72d2a20196fdaf59875c467ca68f87bb0ced51d5936ec4c673ce1b1abb488"
+        },
+        {
+          "mae_per_channel": [
+            0.06320705678104575,
+            0.06402090992647058,
+            0.07852779054330065
+          ],
+          "mean_absolute_error": 0.06858525241693901,
+          "max_abs_pixel": 219,
+          "absolute_error_sum_per_channel": [
+            4951388,
+            5015142,
+            6151553
+          ],
+          "nonidentical_channel_values": 835923,
+          "step": 5,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0005_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0005_MOVE_FORWARD.png",
+          "rendered_sha256": "ba5bf333f895f2d510c16749c9c9ea0a40ab0c5abb8431043f8b34b6d30a285d"
+        },
+        {
+          "mae_per_channel": [
+            0.05573349417892157,
+            0.05887863817401961,
+            0.07650859119689542
+          ],
+          "mean_absolute_error": 0.06370690784994554,
+          "max_abs_pixel": 214,
+          "absolute_error_sum_per_channel": [
+            4365939,
+            4612317,
+            5993377
+          ],
+          "nonidentical_channel_values": 830208,
+          "step": 6,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0006_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0006_MOVE_FORWARD.png",
+          "rendered_sha256": "b7fe6ce138946019728461112c57384759b178794555dcfd1e7c5af268347060"
+        },
+        {
+          "mae_per_channel": [
+            0.05052436938316994,
+            0.05378700725081699,
+            0.07189127604166666
+          ],
+          "mean_absolute_error": 0.058734217558551204,
+          "max_abs_pixel": 216,
+          "absolute_error_sum_per_channel": [
+            3957877,
+            4213459,
+            5631675
+          ],
+          "nonidentical_channel_values": 825828,
+          "step": 7,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0007_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0007_MOVE_FORWARD.png",
+          "rendered_sha256": "3fac33b11bcf8d0a8c14a58a4052a2a0d8bb1cef4c50e3c9ebb58aac60807b53"
+        },
+        {
+          "mae_per_channel": [
+            0.04924522569444444,
+            0.05170474622140523,
+            0.0681006689133987
+          ],
+          "mean_absolute_error": 0.056350213609749455,
+          "max_abs_pixel": 232,
+          "absolute_error_sum_per_channel": [
+            3857674,
+            4050343,
+            5334734
+          ],
+          "nonidentical_channel_values": 821168,
+          "step": 8,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0008_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0008_MOVE_FORWARD.png",
+          "rendered_sha256": "6808a18ea4b57bcaa83c04178abec31defc9c600077d5a60f97ec28f5d698c8a"
+        },
+        {
+          "mae_per_channel": [
+            0.04578081597222222,
+            0.04732544424019608,
+            0.06235152420343137
+          ],
+          "mean_absolute_error": 0.051819261471949894,
+          "max_abs_pixel": 214,
+          "absolute_error_sum_per_channel": [
+            3586286,
+            3707286,
+            4884369
+          ],
+          "nonidentical_channel_values": 823386,
+          "step": 9,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0009_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0009_MOVE_FORWARD.png",
+          "rendered_sha256": "9648de33e8fcad1fa407e8f3cacb39d335a96c26bf73aabfa517569f53b70bfd"
+        },
+        {
+          "mae_per_channel": [
+            0.04608065257352941,
+            0.04769366574754902,
+            0.06282065716911764
+          ],
+          "mean_absolute_error": 0.052198325163398694,
+          "max_abs_pixel": 222,
+          "absolute_error_sum_per_channel": [
+            3609774,
+            3736131,
+            4921119
+          ],
+          "nonidentical_channel_values": 823933,
+          "step": 10,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0010_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0010_MOVE_FORWARD.png",
+          "rendered_sha256": "20ab60cfdb23852300f09a17a092ed48db4aec3fab9a08f6d2d55d992433e283"
+        },
+        {
+          "mae_per_channel": [
+            0.04747375408496732,
+            0.0492269837622549,
+            0.0635476154003268
+          ],
+          "mean_absolute_error": 0.053416117749183006,
+          "max_abs_pixel": 224,
+          "absolute_error_sum_per_channel": [
+            3718904,
+            3856245,
+            4978066
+          ],
+          "nonidentical_channel_values": 826393,
+          "step": 11,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0011_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0011_MOVE_FORWARD.png",
+          "rendered_sha256": "edbf12d3e3ba404c83e1ccb5e152776fd3860dcc86f469e24ce639c5a4ca3f72"
+        },
+        {
+          "mae_per_channel": [
+            0.04916007965686275,
+            0.05157441023284314,
+            0.06637205116421568
+          ],
+          "mean_absolute_error": 0.055702180351307196,
+          "max_abs_pixel": 228,
+          "absolute_error_sum_per_channel": [
+            3851004,
+            4040133,
+            5199321
+          ],
+          "nonidentical_channel_values": 814158,
+          "step": 12,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0012_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0012_MOVE_FORWARD.png",
+          "rendered_sha256": "976010d24b3508f35b14b8d0536f00a7fb3513cd1b378042b04cbb4864e2e8f6"
+        },
+        {
+          "mae_per_channel": [
+            0.05004960682189542,
+            0.05253760723039216,
+            0.06604040287990197
+          ],
+          "mean_absolute_error": 0.056209205644063176,
+          "max_abs_pixel": 223,
+          "absolute_error_sum_per_channel": [
+            3920686,
+            4115586,
+            5173341
+          ],
+          "nonidentical_channel_values": 810550,
+          "step": 13,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0013_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0013_TURN_LEFT.png",
+          "rendered_sha256": "9c43252b47d0e331aeb4254b0b3cbc719271fa883808c330e0d94884adee31db"
+        },
+        {
+          "mae_per_channel": [
+            0.048614493974673205,
+            0.04922538807189543,
+            0.0631244127859477
+          ],
+          "mean_absolute_error": 0.053654764944172116,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            3808265,
+            3856120,
+            4944914
+          ],
+          "nonidentical_channel_values": 845336,
+          "step": 14,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0014_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0014_MOVE_FORWARD.png",
+          "rendered_sha256": "96a385446015d19f3a74c144ed215ae7e9c1e00a824140354b7c2e759b4fd945"
+        },
+        {
+          "mae_per_channel": [
+            0.05262091503267974,
+            0.0531796875,
+            0.06734428615196078
+          ],
+          "mean_absolute_error": 0.05771496289488017,
+          "max_abs_pixel": 249,
+          "absolute_error_sum_per_channel": [
+            4122112,
+            4165884,
+            5275482
+          ],
+          "nonidentical_channel_values": 840800,
+          "step": 15,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0015_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0015_MOVE_FORWARD.png",
+          "rendered_sha256": "08dc17aaf9ad0945e7a303234efad33f3460271a6680a4a02f02f806cafcfb0d"
+        },
+        {
+          "mae_per_channel": [
+            0.056897390727124186,
+            0.05752713950163398,
+            0.07145634191176471
+          ],
+          "mean_absolute_error": 0.061960290713507636,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            4457114,
+            4506446,
+            5597604
+          ],
+          "nonidentical_channel_values": 842697,
+          "step": 16,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0016_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0016_MOVE_FORWARD.png",
+          "rendered_sha256": "bf02a3bfe0220f78730082869da94c638c89b79bde1f8e6d0b6d9c35b647a100"
+        },
+        {
+          "mae_per_channel": [
+            0.056672564338235296,
+            0.05715866268382353,
+            0.06866619434232026
+          ],
+          "mean_absolute_error": 0.06083247378812636,
+          "max_abs_pixel": 226,
+          "absolute_error_sum_per_channel": [
+            4439502,
+            4477581,
+            5379035
+          ],
+          "nonidentical_channel_values": 843058,
+          "step": 17,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0017_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0017_MOVE_FORWARD.png",
+          "rendered_sha256": "e2518620c91c2a170389e03185b8b6b7ad70796e85caac51b2383bb8fd5079e0"
+        },
+        {
+          "mae_per_channel": [
+            0.05981786151960784,
+            0.06111007710375817,
+            0.07047176266339869
+          ],
+          "mean_absolute_error": 0.06379990042892157,
+          "max_abs_pixel": 245,
+          "absolute_error_sum_per_channel": [
+            4685892,
+            4787119,
+            5520476
+          ],
+          "nonidentical_channel_values": 826544,
+          "step": 18,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0018_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0018_MOVE_FORWARD.png",
+          "rendered_sha256": "58f5742fc05aa9be55685ea8afaef42de3bb67266f780d0fb7a6c4b1d1082fdc"
+        },
+        {
+          "mae_per_channel": [
+            0.063177734375,
+            0.06564453125,
+            0.07509029054330066
+          ],
+          "mean_absolute_error": 0.06797085205610022,
+          "max_abs_pixel": 222,
+          "absolute_error_sum_per_channel": [
+            4949091,
+            5142330,
+            5882273
+          ],
+          "nonidentical_channel_values": 832137,
+          "step": 19,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0019_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0019_TURN_LEFT.png",
+          "rendered_sha256": "a536fb8e0117f5ca774ec81a55572ce589fd6bffb96dd9ea76813800908f11d4"
+        },
+        {
+          "mae_per_channel": [
+            0.06976168045343137,
+            0.07195526960784314,
+            0.08185474111519608
+          ],
+          "mean_absolute_error": 0.07452389705882352,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            5464851,
+            5636688,
+            6412173
+          ],
+          "nonidentical_channel_values": 849699,
+          "step": 20,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0020_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0020_MOVE_FORWARD.png",
+          "rendered_sha256": "c7e98cfa7ba63e3b76e9f787c749bef48b299a2bb64e122e3a946aba55a22eb7"
+        },
+        {
+          "mae_per_channel": [
+            0.0730657807393791,
+            0.07543730851715685,
+            0.08597880923202614
+          ],
+          "mean_absolute_error": 0.0781606328295207,
+          "max_abs_pixel": 253,
+          "absolute_error_sum_per_channel": [
+            5723681,
+            5909457,
+            6735236
+          ],
+          "nonidentical_channel_values": 860387,
+          "step": 21,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0021_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0021_MOVE_FORWARD.png",
+          "rendered_sha256": "4881ab73c55dafa2a13d4d39a5de5a8ba34a5e7c29d15798ee89c6208e085572"
+        },
+        {
+          "mae_per_channel": [
+            0.07903086703431372,
+            0.08167750459558824,
+            0.09347192861519607
+          ],
+          "mean_absolute_error": 0.08472676674836603,
+          "max_abs_pixel": 248,
+          "absolute_error_sum_per_channel": [
+            6190962,
+            6398289,
+            7322217
+          ],
+          "nonidentical_channel_values": 866533,
+          "step": 22,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0022_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0022_MOVE_FORWARD.png",
+          "rendered_sha256": "08405991d67c7ec6dc9da7c35d633ee17802b3e9327eb7cec2af99fad999712d"
+        },
+        {
+          "mae_per_channel": [
+            0.08274126838235295,
+            0.08796259701797386,
+            0.10039730136846405
+          ],
+          "mean_absolute_error": 0.09036705558959696,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            6481620,
+            6890638,
+            7864723
+          ],
+          "nonidentical_channel_values": 860879,
+          "step": 23,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0023_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0023_MOVE_FORWARD.png",
+          "rendered_sha256": "c96a96216b8485704ca51b691c5be47311eecf10fee4e4f73e756c261d436fd3"
+        },
+        {
+          "mae_per_channel": [
+            0.09247649867238562,
+            0.10043358098447712,
+            0.11450473600898692
+          ],
+          "mean_absolute_error": 0.10247160522194988,
+          "max_abs_pixel": 246,
+          "absolute_error_sum_per_channel": [
+            7244239,
+            7867565,
+            8969843
+          ],
+          "nonidentical_channel_values": 865546,
+          "step": 24,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0024_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0024_TURN_RIGHT.png",
+          "rendered_sha256": "5cfcf1e1e8b8fd0583324b82795d3e355574eddb55a87e1f2bdbd7e847169395"
+        },
+        {
+          "mae_per_channel": [
+            0.08508560559640523,
+            0.09345486111111112,
+            0.1076253191380719
+          ],
+          "mean_absolute_error": 0.09538859528186273,
+          "max_abs_pixel": 221,
+          "absolute_error_sum_per_channel": [
+            6665266,
+            7320880,
+            8430937
+          ],
+          "nonidentical_channel_values": 860051,
+          "step": 25,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0025_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0025_MOVE_FORWARD.png",
+          "rendered_sha256": "8a6675de47f7d57ca41485b8efa79ec1b7e1aed69a02398857a10940281836a9"
+        },
+        {
+          "mae_per_channel": [
+            0.0878742595996732,
+            0.09584811580882353,
+            0.10983580984477125
+          ],
+          "mean_absolute_error": 0.097852728417756,
+          "max_abs_pixel": 226,
+          "absolute_error_sum_per_channel": [
+            6883718,
+            7508358,
+            8604098
+          ],
+          "nonidentical_channel_values": 843446,
+          "step": 26,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0026_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0026_MOVE_FORWARD.png",
+          "rendered_sha256": "ddae4c3345814e0ae8a230c8a5f3b38ffbedce45ebb87f54b6a98c00b34ebe37"
+        },
+        {
+          "mae_per_channel": [
+            0.09161620455473857,
+            0.10163828890931373,
+            0.1173511412377451
+          ],
+          "mean_absolute_error": 0.10353521156726579,
+          "max_abs_pixel": 242,
+          "absolute_error_sum_per_channel": [
+            7176847,
+            7961937,
+            9192819
+          ],
+          "nonidentical_channel_values": 845727,
+          "step": 27,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0027_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0027_TURN_LEFT.png",
+          "rendered_sha256": "662a87e2bd9683f6c1a95b8598b7db077c359fea1eb081c0ddc2b3aa97fba898"
+        },
+        {
+          "mae_per_channel": [
+            0.10627394812091503,
+            0.11865372242647058,
+            0.136158203125
+          ],
+          "mean_absolute_error": 0.1203619578907952,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            8325076,
+            9294858,
+            10666089
+          ],
+          "nonidentical_channel_values": 879554,
+          "step": 28,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0028_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0028_TURN_LEFT.png",
+          "rendered_sha256": "155be309a45d711fa14e3af905432545d684766e2db7c02f8c257a77d1f8f33e"
+        },
+        {
+          "mae_per_channel": [
+            0.10617012612336602,
+            0.11932286560457517,
+            0.140197469873366
+          ],
+          "mean_absolute_error": 0.12189682053376906,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            8316943,
+            9347276,
+            10982509
+          ],
+          "nonidentical_channel_values": 887813,
+          "step": 29,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0029_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0029_MOVE_FORWARD.png",
+          "rendered_sha256": "bc086b9735896f85dde4969524ad4b6e78839c264e0bb9788c8f9741c42927bb"
+        },
+        {
+          "mae_per_channel": [
+            0.1030079656862745,
+            0.11512346813725491,
+            0.13609685202205882
+          ],
+          "mean_absolute_error": 0.11807609528186273,
+          "max_abs_pixel": 242,
+          "absolute_error_sum_per_channel": [
+            8069232,
+            9018312,
+            10661283
+          ],
+          "nonidentical_channel_values": 889096,
+          "step": 30,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0030_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0030_MOVE_FORWARD.png",
+          "rendered_sha256": "8bf475a1f9f677f95fb078b3712893cbc4086cc9756957d8090d02588887abde"
+        },
+        {
+          "mae_per_channel": [
+            0.1009994766135621,
+            0.11394845281862745,
+            0.1372042866625817
+          ],
+          "mean_absolute_error": 0.1173840720315904,
+          "max_abs_pixel": 243,
+          "absolute_error_sum_per_channel": [
+            7911895,
+            8926266,
+            10748035
+          ],
+          "nonidentical_channel_values": 888957,
+          "step": 31,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0031_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0031_TURN_RIGHT.png",
+          "rendered_sha256": "11b1d17803250e455472b8b1b73ba21d8e511826aea24395dbbf6db7dd6ac6f2"
+        },
+        {
+          "mae_per_channel": [
+            0.11419043607026143,
+            0.128341694750817,
+            0.1507879646650327
+          ],
+          "mean_absolute_error": 0.13110669849537038,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8945222,
+            10053775,
+            11812126
+          ],
+          "nonidentical_channel_values": 890340,
+          "step": 32,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0032_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0032_MOVE_FORWARD.png",
+          "rendered_sha256": "bb7d2c946487a026b6414a0905910fa6b436eab4af0f6733f46c17236e9d2d3b"
+        },
+        {
+          "mae_per_channel": [
+            0.11147080524918301,
+            0.127421670751634,
+            0.15309387765522878
+          ],
+          "mean_absolute_error": 0.1306621178853486,
+          "max_abs_pixel": 241,
+          "absolute_error_sum_per_channel": [
+            8732177,
+            9981704,
+            11992762
+          ],
+          "nonidentical_channel_values": 892215,
+          "step": 33,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0033_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0033_TURN_LEFT.png",
+          "rendered_sha256": "f7d67c26d7ec4056e09b27e15cc2d21a0eccb8ff79907b9d69b8ddc271f99f24"
+        },
+        {
+          "mae_per_channel": [
+            0.10021599264705883,
+            0.11353372651143791,
+            0.13974765114379087
+          ],
+          "mean_absolute_error": 0.11783245676742919,
+          "max_abs_pixel": 241,
+          "absolute_error_sum_per_channel": [
+            7850520,
+            8893778,
+            10947272
+          ],
+          "nonidentical_channel_values": 890119,
+          "step": 34,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0034_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0034_MOVE_FORWARD.png",
+          "rendered_sha256": "4cd4a36e527aef50513dfd7c40181464e212887407a86b90c3e23dc6e3d7ff48"
+        },
+        {
+          "mae_per_channel": [
+            0.10148717064950981,
+            0.11748221762663398,
+            0.14631658496732028
+          ],
+          "mean_absolute_error": 0.1217619910811547,
+          "max_abs_pixel": 245,
+          "absolute_error_sum_per_channel": [
+            7950099,
+            9203087,
+            11461856
+          ],
+          "nonidentical_channel_values": 891828,
+          "step": 35,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0035_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0035_TURN_RIGHT.png",
+          "rendered_sha256": "5321d40a5678063fc80775b00c59a63ddcbe7f7d5ce47bd2d6761ab72d3546f6"
+        },
+        {
+          "mae_per_channel": [
+            0.12112831903594772,
+            0.14072148182189545,
+            0.16961136642156863
+          ],
+          "mean_absolute_error": 0.14382038909313724,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            9488708,
+            11023558,
+            13286676
+          ],
+          "nonidentical_channel_values": 897247,
+          "step": 36,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0036_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0036_MOVE_FORWARD.png",
+          "rendered_sha256": "81656ce991140018325741312253683f110da46e1c08cdfe662778d2ac3e73a6"
+        },
+        {
+          "mae_per_channel": [
+            0.12452278645833333,
+            0.14560646446078432,
+            0.17395815461601305
+          ],
+          "mean_absolute_error": 0.1480291351783769,
+          "max_abs_pixel": 253,
+          "absolute_error_sum_per_channel": [
+            9754617,
+            11406228,
+            13627186
+          ],
+          "nonidentical_channel_values": 898859,
+          "step": 37,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0037_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0037_MOVE_FORWARD.png",
+          "rendered_sha256": "4c7a8b4b7345be503772ae9ae967cc8f085685e15d8e0bcc1be4b98687376876"
+        },
+        {
+          "mae_per_channel": [
+            0.11091750919117646,
+            0.13363535283905228,
+            0.16481953380310457
+          ],
+          "mean_absolute_error": 0.13645746527777777,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            8688834,
+            10468459,
+            12911303
+          ],
+          "nonidentical_channel_values": 897377,
+          "step": 38,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0038_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0038_MOVE_FORWARD.png",
+          "rendered_sha256": "68cd304264a3e0c55dad939465c90645291ca073d8d06d665b7f27994c26adf0"
+        },
+        {
+          "mae_per_channel": [
+            0.09493007046568627,
+            0.11270218035130719,
+            0.1386696027369281
+          ],
+          "mean_absolute_error": 0.11543395118464052,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            7436442,
+            8828638,
+            10862822
+          ],
+          "nonidentical_channel_values": 891659,
+          "step": 39,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0039_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0039_MOVE_FORWARD.png",
+          "rendered_sha256": "6cae2c989c6773407836b216313cdbe12973799c7c7e68bca0dd2ba6199d2eeb"
+        },
+        {
+          "mae_per_channel": [
+            0.08743231719771243,
+            0.10188817401960784,
+            0.1235146165236928
+          ],
+          "mean_absolute_error": 0.10427836924700436,
+          "max_abs_pixel": 253,
+          "absolute_error_sum_per_channel": [
+            6849098,
+            7981512,
+            9675641
+          ],
+          "nonidentical_channel_values": 885689,
+          "step": 40,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0040_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0040_MOVE_FORWARD.png",
+          "rendered_sha256": "11abfeacb2ff1aa7709a09ce322ab822b67007c5e04f14b1f38d54429c862bc9"
+        },
+        {
+          "mae_per_channel": [
+            0.09339556525735294,
+            0.10900725081699346,
+            0.13153135212418302
+          ],
+          "mean_absolute_error": 0.1113113893995098,
+          "max_abs_pixel": 242,
+          "absolute_error_sum_per_channel": [
+            7316235,
+            8539192,
+            10303640
+          ],
+          "nonidentical_channel_values": 884334,
+          "step": 41,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0041_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0041_MOVE_FORWARD.png",
+          "rendered_sha256": "5936bfaa434ad0149f8123cba6ab92b491f5455c92b0abec72036a7438e7527e"
+        },
+        {
+          "mae_per_channel": [
+            0.07549632352941175,
+            0.07990521599264705,
+            0.09476553564133987
+          ],
+          "mean_absolute_error": 0.08338902505446623,
+          "max_abs_pixel": 253,
+          "absolute_error_sum_per_channel": [
+            5914080,
+            6259455,
+            7423553
+          ],
+          "nonidentical_channel_values": 882603,
+          "step": 42,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0042_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0042_MOVE_FORWARD.png",
+          "rendered_sha256": "d9372fa6126e96949d7b390e1b23df615a7c79d03ac8c6be01cea9b1963bbee2"
+        },
+        {
+          "mae_per_channel": [
+            0.056278530943627454,
+            0.057670726102941175,
+            0.07212848498774509
+          ],
+          "mean_absolute_error": 0.0620259140114379,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4408635,
+            4517694,
+            5650257
+          ],
+          "nonidentical_channel_values": 876512,
+          "step": 43,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0043_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0043_MOVE_FORWARD.png",
+          "rendered_sha256": "ad5a67315491df8a712aeb0a804421974210e12ac30e59dca178df191d3f432f"
+        },
+        {
+          "mae_per_channel": [
+            0.05526408037173203,
+            0.05621193321078431,
+            0.07082243157679738
+          ],
+          "mean_absolute_error": 0.0607661483864379,
+          "max_abs_pixel": 247,
+          "absolute_error_sum_per_channel": [
+            4329167,
+            4403418,
+            5547946
+          ],
+          "nonidentical_channel_values": 867607,
+          "step": 44,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0044_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0044_TURN_RIGHT.png",
+          "rendered_sha256": "4a5b8314fb304f25eac9df8a03f8806c6d623eff0bbc5ac8f664262add758baa"
+        },
+        {
+          "mae_per_channel": [
+            0.059312206392973854,
+            0.06473787275326798,
+            0.08240613511029411
+          ],
+          "mean_absolute_error": 0.06881873808551198,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4646281,
+            5071306,
+            6455367
+          ],
+          "nonidentical_channel_values": 866918,
+          "step": 45,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0045_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0045_TURN_RIGHT.png",
+          "rendered_sha256": "d1d1136ecf6dc0715c7d7174e36cfe65bf77399da8bc6ac8aff734908f797c68"
+        },
+        {
+          "mae_per_channel": [
+            0.07767109630310456,
+            0.09404617289624183,
+            0.11970252502042483
+          ],
+          "mean_absolute_error": 0.0971399314065904,
+          "max_abs_pixel": 240,
+          "absolute_error_sum_per_channel": [
+            6084443,
+            7367201,
+            9377017
+          ],
+          "nonidentical_channel_values": 881304,
+          "step": 46,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0046_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0046_TURN_RIGHT.png",
+          "rendered_sha256": "b7580176bd4bfa84c8ff42aeb979b1d1f2ce17749a3c1cbd5f824b56ec22bcfe"
+        },
+        {
+          "mae_per_channel": [
+            0.06145298457924836,
+            0.07472569444444445,
+            0.09998588133169933
+          ],
+          "mean_absolute_error": 0.07872152011846405,
+          "max_abs_pixel": 213,
+          "absolute_error_sum_per_channel": [
+            4813981,
+            5853712,
+            7832494
+          ],
+          "nonidentical_channel_values": 877314,
+          "step": 47,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0047_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0047_MOVE_FORWARD.png",
+          "rendered_sha256": "95cfe2b32d5a64232984e82977cb94293f270186964dc3fe9ed3ae4812592fff"
+        },
+        {
+          "mae_per_channel": [
+            0.06410532832924837,
+            0.08105555555555555,
+            0.10835097528594771
+          ],
+          "mean_absolute_error": 0.08450395305691721,
+          "max_abs_pixel": 205,
+          "absolute_error_sum_per_channel": [
+            5021755,
+            6349568,
+            8487782
+          ],
+          "nonidentical_channel_values": 879531,
+          "step": 48,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0048_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0048_MOVE_FORWARD.png",
+          "rendered_sha256": "0fd5c9a8757a5e28f12cb2dc42d851165ca3aa8db6c67e2c9702d8b3194c8919"
+        },
+        {
+          "mae_per_channel": [
+            0.0695788654003268,
+            0.08102661611519607,
+            0.09739325469771243
+          ],
+          "mean_absolute_error": 0.08266624540441177,
+          "max_abs_pixel": 204,
+          "absolute_error_sum_per_channel": [
+            5450530,
+            6347301,
+            7629398
+          ],
+          "nonidentical_channel_values": 873014,
+          "step": 49,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0049_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0049_TURN_RIGHT.png",
+          "rendered_sha256": "86329de56719c5ff765992d7dc3d4f0bc68bcd27727f6b9f58ae1984f6f998ae"
+        },
+        {
+          "mae_per_channel": [
+            0.06647811989379085,
+            0.0819733966503268,
+            0.10552283752042484
+          ],
+          "mean_absolute_error": 0.08465811802151417,
+          "max_abs_pixel": 187,
+          "absolute_error_sum_per_channel": [
+            5207630,
+            6421468,
+            8266237
+          ],
+          "nonidentical_channel_values": 878455,
+          "step": 50,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0050_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0050_MOVE_FORWARD.png",
+          "rendered_sha256": "26b8dcd096e20ca386590616e6e227472fb4b812e158a029628268fd8d1ba10d"
+        },
+        {
+          "mae_per_channel": [
+            0.06028806678921569,
+            0.06619278492647059,
+            0.07632312091503267
+          ],
+          "mean_absolute_error": 0.06760132421023964,
+          "max_abs_pixel": 199,
+          "absolute_error_sum_per_channel": [
+            4722726,
+            5185278,
+            5978848
+          ],
+          "nonidentical_channel_values": 862215,
+          "step": 51,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0051_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0051_MOVE_FORWARD.png",
+          "rendered_sha256": "8ccabfc2491dbb26593a257bdd9d0522210c55210d8b35de099cc29ee89e7def"
+        },
+        {
+          "mae_per_channel": [
+            0.07192315155228758,
+            0.07899913194444445,
+            0.09164201644199346
+          ],
+          "mean_absolute_error": 0.08085476664624183,
+          "max_abs_pixel": 197,
+          "absolute_error_sum_per_channel": [
+            5634172,
+            6188476,
+            7178869
+          ],
+          "nonidentical_channel_values": 888804,
+          "step": 52,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0052_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0052_TURN_RIGHT.png",
+          "rendered_sha256": "99d2fb76944d427d041a228a9f8a04aad52a632d379ec648f6158fa016904810"
+        },
+        {
+          "mae_per_channel": [
+            0.06313262101715686,
+            0.06719064031862745,
+            0.07952020782271242
+          ],
+          "mean_absolute_error": 0.06994782305283224,
+          "max_abs_pixel": 211,
+          "absolute_error_sum_per_channel": [
+            4945557,
+            5263446,
+            6229295
+          ],
+          "nonidentical_channel_values": 854900,
+          "step": 53,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0053_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0053_TURN_RIGHT.png",
+          "rendered_sha256": "08ce92e6dea83d2e913c3414937290f75e6d74a96e33e0679ca0b846558f7600"
+        },
+        {
+          "mae_per_channel": [
+            0.04875174887663399,
+            0.05164677798202614,
+            0.05700455729166667
+          ],
+          "mean_absolute_error": 0.0524676947167756,
+          "max_abs_pixel": 184,
+          "absolute_error_sum_per_channel": [
+            3819017,
+            4045802,
+            4465509
+          ],
+          "nonidentical_channel_values": 833519,
+          "step": 54,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0054_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0054_MOVE_FORWARD.png",
+          "rendered_sha256": "c4b460755c1a1bd4b40c7fa6a73d9326bb10a1e30e9f85e46a3a02253b2c2178"
+        },
+        {
+          "mae_per_channel": [
+            0.05215233098447712,
+            0.05784304789624183,
+            0.06378147977941176
+          ],
+          "mean_absolute_error": 0.057925619553376904,
+          "max_abs_pixel": 187,
+          "absolute_error_sum_per_channel": [
+            4085405,
+            4531193,
+            4996386
+          ],
+          "nonidentical_channel_values": 845412,
+          "step": 55,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0055_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0055_TURN_LEFT.png",
+          "rendered_sha256": "60a78e213c12995d324395dbe65d82707bd0ea181a7a7107e765374371033b52"
+        },
+        {
+          "mae_per_channel": [
+            0.06806200214460784,
+            0.07425967626633988,
+            0.0874048713235294
+          ],
+          "mean_absolute_error": 0.07657551657815904,
+          "max_abs_pixel": 204,
+          "absolute_error_sum_per_channel": [
+            5331705,
+            5817206,
+            6846948
+          ],
+          "nonidentical_channel_values": 862660,
+          "step": 56,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0056_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0056_MOVE_FORWARD.png",
+          "rendered_sha256": "0dcddd745dc79d6a383341f36197cecbc481af7a62127edbc057d3969bb76b7d"
+        },
+        {
+          "mae_per_channel": [
+            0.07723835784313725,
+            0.08488260825163398,
+            0.0974528058619281
+          ],
+          "mean_absolute_error": 0.08652459065223311,
+          "max_abs_pixel": 232,
+          "absolute_error_sum_per_channel": [
+            6050544,
+            6649364,
+            7634063
+          ],
+          "nonidentical_channel_values": 877860,
+          "step": 57,
+          "action_id": 0,
+          "action_name": "STOP",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0057_STOP.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/7880/step_0057_STOP.png",
+          "rendered_sha256": "fcfe52574f4299ae9e02e99cf2508f34639edb9a79e2ce4805812c9a4185874e"
+        }
+      ]
+    },
+    {
+      "episode_id": "3871",
+      "scene_id": "/storage/anhdh35/JanusVLN/data/scene_datasets_full/mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "frame_count": 53,
+      "pixels_per_channel": 16281600,
+      "mae_per_channel": [
+        0.0799242308411179,
+        0.08234413609685226,
+        0.09333209555933222
+      ],
+      "mean_absolute_error": 0.08520015416576747,
+      "max_abs_pixel": 255,
+      "nonidentical_channel_values": 45637547,
+      "frame_mae_percentiles_per_channel": {
+        "0": [
+          0.04493612132352941,
+          0.04502286305147059,
+          0.05698644301470588
+        ],
+        "50": [
+          0.07844849111519608,
+          0.07915543300653595,
+          0.08813822508169934
+        ],
+        "90": [
+          0.10472000612745098,
+          0.10856741727941177,
+          0.11798513071895425
+        ],
+        "95": [
+          0.10664311683006536,
+          0.11049960937499999,
+          0.1205130335988562
+        ],
+        "99": [
+          0.10951595486111111,
+          0.11487391544117645,
+          0.12687119791666662
+        ],
+        "100": [
+          0.10963864634395425,
+          0.11708504391339869,
+          0.13271663092320263
+        ]
+      },
+      "passed": false,
+      "frames": [
+        {
+          "mae_per_channel": [
+            0.08879988766339869,
+            0.09795372497957516,
+            0.11637332771650326
+          ],
+          "mean_absolute_error": 0.10104231345315905,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            6956228,
+            7673303,
+            9116221
+          ],
+          "nonidentical_channel_values": 870051,
+          "step": 0,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0000_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0000_MOVE_FORWARD.png",
+          "rendered_sha256": "a965d4e0788207ec128d1b0da54fcdd2d9207d88272b651b1b737e62fa1851e4"
+        },
+        {
+          "mae_per_channel": [
+            0.09008274611928105,
+            0.09773117085375817,
+            0.11509895833333333
+          ],
+          "mean_absolute_error": 0.10097095843545752,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            7056722,
+            7655869,
+            9016392
+          ],
+          "nonidentical_channel_values": 867864,
+          "step": 1,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0001_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0001_MOVE_FORWARD.png",
+          "rendered_sha256": "baf95cc66b65a98de294503f217c1c143df96866a7d1a10ba47565b67aaa2327"
+        },
+        {
+          "mae_per_channel": [
+            0.08970200163398694,
+            0.09718821486928104,
+            0.11413576133578432
+          ],
+          "mean_absolute_error": 0.10034199261301742,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            7026896,
+            7613336,
+            8940939
+          ],
+          "nonidentical_channel_values": 868181,
+          "step": 2,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0002_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0002_MOVE_FORWARD.png",
+          "rendered_sha256": "52572add775cc3eb1415c11b69551ecad9f68fb36a1de90bea70dee4b6e7a732"
+        },
+        {
+          "mae_per_channel": [
+            0.08359154156454247,
+            0.09057668249591504,
+            0.10731801470588236
+          ],
+          "mean_absolute_error": 0.09382874625544663,
+          "max_abs_pixel": 237,
+          "absolute_error_sum_per_channel": [
+            6548227,
+            7095415,
+            8406864
+          ],
+          "nonidentical_channel_values": 866972,
+          "step": 3,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0003_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0003_TURN_LEFT.png",
+          "rendered_sha256": "f28b2ad43d2b45f8c147fa951d3d4a94ea8ff10e5cd4d449bc398fe9b08ac598"
+        },
+        {
+          "mae_per_channel": [
+            0.07161361315359477,
+            0.07257889093137254,
+            0.08214522058823528
+          ],
+          "mean_absolute_error": 0.07544590822440086,
+          "max_abs_pixel": 228,
+          "absolute_error_sum_per_channel": [
+            5609924,
+            5685540,
+            6434928
+          ],
+          "nonidentical_channel_values": 861346,
+          "step": 4,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0004_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0004_MOVE_FORWARD.png",
+          "rendered_sha256": "fa1b626154b4018d132e2f152dd9a44546292a4279390f2b3b6fc31cac08ee39"
+        },
+        {
+          "mae_per_channel": [
+            0.06973163041258171,
+            0.07189694393382352,
+            0.0820250204248366
+          ],
+          "mean_absolute_error": 0.07455119825708062,
+          "max_abs_pixel": 237,
+          "absolute_error_sum_per_channel": [
+            5462497,
+            5632119,
+            6425512
+          ],
+          "nonidentical_channel_values": 866381,
+          "step": 5,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0005_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0005_MOVE_FORWARD.png",
+          "rendered_sha256": "0d966022d345deb2a5208983586f95434f147ea692529d8b6d9894c85f19e34a"
+        },
+        {
+          "mae_per_channel": [
+            0.06316771343954249,
+            0.0658055300245098,
+            0.07796905637254901
+          ],
+          "mean_absolute_error": 0.06898076661220043,
+          "max_abs_pixel": 229,
+          "absolute_error_sum_per_channel": [
+            4948306,
+            5154942,
+            6107784
+          ],
+          "nonidentical_channel_values": 869959,
+          "step": 6,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0006_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0006_MOVE_FORWARD.png",
+          "rendered_sha256": "f1e6aba69a895a529d8d42927e8b441b4298b8e37cfcbdae7f1048f2f07b17ad"
+        },
+        {
+          "mae_per_channel": [
+            0.0622019633374183,
+            0.06550574448529412,
+            0.07915954350490195
+          ],
+          "mean_absolute_error": 0.06895575044253811,
+          "max_abs_pixel": 229,
+          "absolute_error_sum_per_channel": [
+            4872653,
+            5131458,
+            6201042
+          ],
+          "nonidentical_channel_values": 870349,
+          "step": 7,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0007_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0007_MOVE_FORWARD.png",
+          "rendered_sha256": "665cfbbd11c8a31443156a748f638e548be247c030094c76aff69b57d9847a64"
+        },
+        {
+          "mae_per_channel": [
+            0.06475422538807189,
+            0.06915227992238562,
+            0.08426183363970588
+          ],
+          "mean_absolute_error": 0.07272277965005446,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            5072587,
+            5417113,
+            6600735
+          ],
+          "nonidentical_channel_values": 871741,
+          "step": 8,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0008_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0008_MOVE_FORWARD.png",
+          "rendered_sha256": "8d38afe28805f2691f219cac1a1007d1fa4e9ba4a2a3e464f77c89a12a607d12"
+        },
+        {
+          "mae_per_channel": [
+            0.07139483762254901,
+            0.0752298304738562,
+            0.09243235549428105
+          ],
+          "mean_absolute_error": 0.07968567453022876,
+          "max_abs_pixel": 230,
+          "absolute_error_sum_per_channel": [
+            5592786,
+            5893204,
+            7240781
+          ],
+          "nonidentical_channel_values": 877461,
+          "step": 9,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0009_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0009_MOVE_FORWARD.png",
+          "rendered_sha256": "de8b202c8c5e9f1363242adaa271a8b3d95d4971a19ca965557ffaf75863fb2e"
+        },
+        {
+          "mae_per_channel": [
+            0.0860053359885621,
+            0.09036730238970588,
+            0.10682304432189543
+          ],
+          "mean_absolute_error": 0.09439856090005445,
+          "max_abs_pixel": 237,
+          "absolute_error_sum_per_channel": [
+            6737314,
+            7079013,
+            8368090
+          ],
+          "nonidentical_channel_values": 881996,
+          "step": 10,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0010_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0010_MOVE_FORWARD.png",
+          "rendered_sha256": "5189d58260abebba493da64d7599e7524712976c030bbd03387148360a96bfd8"
+        },
+        {
+          "mae_per_channel": [
+            0.09201122089460785,
+            0.09516367953431372,
+            0.10790233098447712
+          ],
+          "mean_absolute_error": 0.09835907713779957,
+          "max_abs_pixel": 236,
+          "absolute_error_sum_per_channel": [
+            7207791,
+            7454742,
+            8452637
+          ],
+          "nonidentical_channel_values": 882466,
+          "step": 11,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0011_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0011_MOVE_FORWARD.png",
+          "rendered_sha256": "5ecec91e3e4e2c8f5a4ffb73f9f5779ea2429379fc92391dfcfc97477b71ac94"
+        },
+        {
+          "mae_per_channel": [
+            0.09132813776552287,
+            0.09516239021650327,
+            0.10921900531045751
+          ],
+          "mean_absolute_error": 0.09856984443082789,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            7154281,
+            7454641,
+            8555780
+          ],
+          "nonidentical_channel_values": 879520,
+          "step": 12,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0012_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0012_TURN_LEFT.png",
+          "rendered_sha256": "01d20ded51a0eb120c54576cb217be56a2a9d6adf4ee41d43b434bb77d805526"
+        },
+        {
+          "mae_per_channel": [
+            0.10429661968954249,
+            0.10653068831699347,
+            0.11811039624183006
+          ],
+          "mean_absolute_error": 0.109645901416122,
+          "max_abs_pixel": 233,
+          "absolute_error_sum_per_channel": [
+            8170180,
+            8345188,
+            9252296
+          ],
+          "nonidentical_channel_values": 875816,
+          "step": 13,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0013_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0013_MOVE_FORWARD.png",
+          "rendered_sha256": "f1dc969ec4ea275ef52f72b9137c5f81f4475dc6a9aed230b1d63bc3bce4add1"
+        },
+        {
+          "mae_per_channel": [
+            0.10740991370506536,
+            0.10944371680964052,
+            0.12002156096813725
+          ],
+          "mean_absolute_error": 0.11229173049428104,
+          "max_abs_pixel": 233,
+          "absolute_error_sum_per_channel": [
+            8414063,
+            8573383,
+            9402009
+          ],
+          "nonidentical_channel_values": 871841,
+          "step": 14,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0014_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0014_MOVE_FORWARD.png",
+          "rendered_sha256": "9305d591465257d39eb4e6cbcd6245f11baaf4daa1d0729735a529cc5fa152e2"
+        },
+        {
+          "mae_per_channel": [
+            0.09776950571895425,
+            0.09538562091503268,
+            0.09837008527369281
+          ],
+          "mean_absolute_error": 0.09717507063589326,
+          "max_abs_pixel": 237,
+          "absolute_error_sum_per_channel": [
+            7658872,
+            7472128,
+            7705919
+          ],
+          "nonidentical_channel_values": 865007,
+          "step": 15,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0015_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0015_MOVE_FORWARD.png",
+          "rendered_sha256": "fb2dac5ac8626a52fa32b62e9fe260e8ca236f288d09abaf5d35193f8260f587"
+        },
+        {
+          "mae_per_channel": [
+            0.08740147569444445,
+            0.082935648999183,
+            0.08308838848039216
+          ],
+          "mean_absolute_error": 0.08447517105800655,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            6846682,
+            6496847,
+            6508812
+          ],
+          "nonidentical_channel_values": 857469,
+          "step": 16,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0016_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0016_MOVE_FORWARD.png",
+          "rendered_sha256": "62ab411173bb7b8276af86a7b023faebf19d303423bfea3d5406daba25a29306"
+        },
+        {
+          "mae_per_channel": [
+            0.09259920087826798,
+            0.08693018535539215,
+            0.08519226154003268
+          ],
+          "mean_absolute_error": 0.0882405492578976,
+          "max_abs_pixel": 238,
+          "absolute_error_sum_per_channel": [
+            7253851,
+            6809763,
+            6673621
+          ],
+          "nonidentical_channel_values": 861406,
+          "step": 17,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0017_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0017_TURN_RIGHT.png",
+          "rendered_sha256": "db3bef168b268cfce9149ad8bc5c76fc545e51d0fec6dbe0d953e142b4da732f"
+        },
+        {
+          "mae_per_channel": [
+            0.0747554381127451,
+            0.07335600490196079,
+            0.08197398386437908
+          ],
+          "mean_absolute_error": 0.07669514229302832,
+          "max_abs_pixel": 238,
+          "absolute_error_sum_per_channel": [
+            5856042,
+            5746416,
+            6421514
+          ],
+          "nonidentical_channel_values": 866060,
+          "step": 18,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0018_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0018_MOVE_FORWARD.png",
+          "rendered_sha256": "4543312e391f1f54321471bf9eca9d41adb80698d98b1b377af6105ef628baa5"
+        },
+        {
+          "mae_per_channel": [
+            0.06862534466911765,
+            0.06718720639297385,
+            0.07512143841911764
+          ],
+          "mean_absolute_error": 0.07031132982706971,
+          "max_abs_pixel": 238,
+          "absolute_error_sum_per_channel": [
+            5375835,
+            5263177,
+            5884713
+          ],
+          "nonidentical_channel_values": 860176,
+          "step": 19,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0019_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0019_TURN_LEFT.png",
+          "rendered_sha256": "c48d4fc749ce7e08792c5e7e61b8e5aaf6d5e02e37f9275c962d2ae5ba80cde2"
+        },
+        {
+          "mae_per_channel": [
+            0.09365515216503269,
+            0.08780476409313726,
+            0.08608829912173203
+          ],
+          "mean_absolute_error": 0.08918273845996733,
+          "max_abs_pixel": 238,
+          "absolute_error_sum_per_channel": [
+            7336570,
+            6878274,
+            6743813
+          ],
+          "nonidentical_channel_values": 857190,
+          "step": 20,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0020_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0020_TURN_LEFT.png",
+          "rendered_sha256": "5a5d381dc870917ab076df27204059e13af34c1ee76cd3f5e6dd453599cc26e5"
+        },
+        {
+          "mae_per_channel": [
+            0.09105117698120915,
+            0.08565639042075164,
+            0.08654295598447713
+          ],
+          "mean_absolute_error": 0.08775017446214599,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            7132585,
+            6709979,
+            6779429
+          ],
+          "nonidentical_channel_values": 837445,
+          "step": 21,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0021_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0021_MOVE_FORWARD.png",
+          "rendered_sha256": "3f19700a08c2c19d34ae2f8df05154ae17c022de361437cdd18e110b986ce490"
+        },
+        {
+          "mae_per_channel": [
+            0.08212442555147059,
+            0.07924337469362745,
+            0.08287941687091503
+          ],
+          "mean_absolute_error": 0.08141573903867104,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            6433299,
+            6207609,
+            6492442
+          ],
+          "nonidentical_channel_values": 833005,
+          "step": 22,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0022_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0022_MOVE_FORWARD.png",
+          "rendered_sha256": "73626d87fe5daa1b537823a0c44829ed75e0df039e416bc135823b4a405ba3bb"
+        },
+        {
+          "mae_per_channel": [
+            0.07731475949754903,
+            0.07474752348856209,
+            0.07968734681372548
+          ],
+          "mean_absolute_error": 0.07724987659994553,
+          "max_abs_pixel": 239,
+          "absolute_error_sum_per_channel": [
+            6056529,
+            5855422,
+            6242388
+          ],
+          "nonidentical_channel_values": 830420,
+          "step": 23,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0023_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0023_MOVE_FORWARD.png",
+          "rendered_sha256": "d4524c113c5448ed61aef1d1bf1aa506e1eece5ff666d843b14bc1ba51b79327"
+        },
+        {
+          "mae_per_channel": [
+            0.07752715226715685,
+            0.07462754033905228,
+            0.08046258425245098
+          ],
+          "mean_absolute_error": 0.07753909228622004,
+          "max_abs_pixel": 234,
+          "absolute_error_sum_per_channel": [
+            6073167,
+            5846023,
+            6303117
+          ],
+          "nonidentical_channel_values": 825558,
+          "step": 24,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0024_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0024_MOVE_FORWARD.png",
+          "rendered_sha256": "5ae5388b08b9f53d81155c405c8d5ef91535dd7c09016c0867b4f631ac7742c9"
+        },
+        {
+          "mae_per_channel": [
+            0.07763902930964052,
+            0.07597486468545751,
+            0.08344199346405229
+          ],
+          "mean_absolute_error": 0.07901862915305011,
+          "max_abs_pixel": 235,
+          "absolute_error_sum_per_channel": [
+            6081931,
+            5951567,
+            6536512
+          ],
+          "nonidentical_channel_values": 833135,
+          "step": 25,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0025_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0025_MOVE_FORWARD.png",
+          "rendered_sha256": "3afe3f6312df427b5d3d054e743dbaffd25461c82e9b5fd3775fc359448798cd"
+        },
+        {
+          "mae_per_channel": [
+            0.05795483558006536,
+            0.057543300653594774,
+            0.06534025224673203
+          ],
+          "mean_absolute_error": 0.060279462826797386,
+          "max_abs_pixel": 195,
+          "absolute_error_sum_per_channel": [
+            4539950,
+            4507712,
+            5118494
+          ],
+          "nonidentical_channel_values": 807626,
+          "step": 26,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0026_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0026_MOVE_FORWARD.png",
+          "rendered_sha256": "c34748b70c5944fe66643988ea118caf30ea1bf1c445643eb9feffc9ef2078c9"
+        },
+        {
+          "mae_per_channel": [
+            0.04510871119281046,
+            0.04502286305147059,
+            0.05698644301470588
+          ],
+          "mean_absolute_error": 0.04903933908632898,
+          "max_abs_pixel": 197,
+          "absolute_error_sum_per_channel": [
+            3533636,
+            3526911,
+            4464090
+          ],
+          "nonidentical_channel_values": 803965,
+          "step": 27,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0027_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0027_MOVE_FORWARD.png",
+          "rendered_sha256": "28abcd4e251511fc13565fa316e01d7b54d030b6484a837b18138284914ea933"
+        },
+        {
+          "mae_per_channel": [
+            0.04493612132352941,
+            0.045389054840686276,
+            0.06055755974264706
+          ],
+          "mean_absolute_error": 0.05029424530228758,
+          "max_abs_pixel": 224,
+          "absolute_error_sum_per_channel": [
+            3520116,
+            3555597,
+            4743837
+          ],
+          "nonidentical_channel_values": 814696,
+          "step": 28,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0028_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0028_TURN_LEFT.png",
+          "rendered_sha256": "bd57230818ea15b7fce4c992c60f596ddd04c1081f526821abe0fb0d970e401e"
+        },
+        {
+          "mae_per_channel": [
+            0.07654030075571897,
+            0.07592999387254902,
+            0.08915109272875818
+          ],
+          "mean_absolute_error": 0.08054046245234206,
+          "max_abs_pixel": 222,
+          "absolute_error_sum_per_channel": [
+            5995861,
+            5948052,
+            6983740
+          ],
+          "nonidentical_channel_values": 879312,
+          "step": 29,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0029_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0029_MOVE_FORWARD.png",
+          "rendered_sha256": "7f20aa4a133c83f85dcbe6b9bff7ca5cebe070190c787e866d9fe2c0654cb6d8"
+        },
+        {
+          "mae_per_channel": [
+            0.07844849111519608,
+            0.07915543300653595,
+            0.08942012612336601
+          ],
+          "mean_absolute_error": 0.08234135008169935,
+          "max_abs_pixel": 226,
+          "absolute_error_sum_per_channel": [
+            6145341,
+            6200720,
+            7004815
+          ],
+          "nonidentical_channel_values": 873475,
+          "step": 30,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0030_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0030_MOVE_FORWARD.png",
+          "rendered_sha256": "fe901be017918dacc9a3c264f8d21800511f16ea94bd8ad649b81190f439536e"
+        },
+        {
+          "mae_per_channel": [
+            0.07185484323937909,
+            0.07370243566176471,
+            0.08963685917075163
+          ],
+          "mean_absolute_error": 0.07839804602396515,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            5628821,
+            5773554,
+            7021793
+          ],
+          "nonidentical_channel_values": 887095,
+          "step": 31,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0031_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0031_MOVE_FORWARD.png",
+          "rendered_sha256": "a1eac32d458e58ce64b4bc93d0b0fbbc32118281e041fea2bfb0b3c61212d5b7"
+        },
+        {
+          "mae_per_channel": [
+            0.1003831316380719,
+            0.10752936070261437,
+            0.13271663092320263
+          ],
+          "mean_absolute_error": 0.11354304108796297,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            7863613,
+            8423420,
+            10396490
+          ],
+          "nonidentical_channel_values": 891855,
+          "step": 32,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0032_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0032_TURN_LEFT.png",
+          "rendered_sha256": "2432bc5f74f2de6f169c7b3d4026f6ac93270ad5cb8826ff7f4ce59e77b1a0af"
+        },
+        {
+          "mae_per_channel": [
+            0.0861476970996732,
+            0.08898277930964053,
+            0.10596058006535948
+          ],
+          "mean_absolute_error": 0.09369701882489107,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            6748466,
+            6970555,
+            8300528
+          ],
+          "nonidentical_channel_values": 882776,
+          "step": 33,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0033_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0033_MOVE_FORWARD.png",
+          "rendered_sha256": "e09d4e5eb631d7b1edb43ba253e05ecfa0af184234e5e90105f367f029cf0b93"
+        },
+        {
+          "mae_per_channel": [
+            0.06256004901960785,
+            0.06828122446895425,
+            0.08813822508169934
+          ],
+          "mean_absolute_error": 0.07299316619008715,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4900704,
+            5348878,
+            6904396
+          ],
+          "nonidentical_channel_values": 864513,
+          "step": 34,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0034_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0034_TURN_LEFT.png",
+          "rendered_sha256": "b3100c7f4b7bdc196acd88762aa2b8332add651babf8acd74d974f81759b365f"
+        },
+        {
+          "mae_per_channel": [
+            0.06814973958333333,
+            0.0724092626633987,
+            0.09244621885212419
+          ],
+          "mean_absolute_error": 0.07766840703295207,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            5338578,
+            5672252,
+            7241867
+          ],
+          "nonidentical_channel_values": 832119,
+          "step": 35,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0035_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0035_MOVE_FORWARD.png",
+          "rendered_sha256": "5a5f0608c96e21f0a779fff276a81be82b3e12f2bd43c6e378d9b1bcad75b172"
+        },
+        {
+          "mae_per_channel": [
+            0.05578717320261438,
+            0.058046772875817,
+            0.07217459405637255
+          ],
+          "mean_absolute_error": 0.06200284671160131,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4370144,
+            4547152,
+            5653869
+          ],
+          "nonidentical_channel_values": 845386,
+          "step": 36,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0036_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0036_TURN_RIGHT.png",
+          "rendered_sha256": "805565a8818912f24fcfe33dd41c802ac81a7e09f756c7f0dec146f601e93ad0"
+        },
+        {
+          "mae_per_channel": [
+            0.05617654718137255,
+            0.05734377553104575,
+            0.06609529462826798
+          ],
+          "mean_absolute_error": 0.05987187244689542,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4400646,
+            4492082,
+            5177641
+          ],
+          "nonidentical_channel_values": 877351,
+          "step": 37,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0037_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0037_MOVE_FORWARD.png",
+          "rendered_sha256": "5a5248a0eb83b244f590b62b96540d9c5018c0b1fac36fb80db58c4740385b82"
+        },
+        {
+          "mae_per_channel": [
+            0.06088391033496732,
+            0.06186328125,
+            0.07104944087009804
+          ],
+          "mean_absolute_error": 0.06459887748502179,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            4769402,
+            4846122,
+            5565729
+          ],
+          "nonidentical_channel_values": 873079,
+          "step": 38,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0038_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0038_MOVE_FORWARD.png",
+          "rendered_sha256": "c64f1561da1a57235e86016f66a46cfe5b0d0e28c63aec4e241f6a9e3567e442"
+        },
+        {
+          "mae_per_channel": [
+            0.06717154309640522,
+            0.06887736162173203,
+            0.07896149918300653
+          ],
+          "mean_absolute_error": 0.07167013463371459,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            5261950,
+            5395577,
+            6185528
+          ],
+          "nonidentical_channel_values": 854535,
+          "step": 39,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0039_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0039_TURN_RIGHT.png",
+          "rendered_sha256": "575d97caac4c4748cfbdd804d36db8111a270b1cfca778a4f91c1f17295aa35f"
+        },
+        {
+          "mae_per_channel": [
+            0.07181558925653594,
+            0.07533109936683006,
+            0.08597834967320261
+          ],
+          "mean_absolute_error": 0.0777083460988562,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            5625746,
+            5901137,
+            6735200
+          ],
+          "nonidentical_channel_values": 843524,
+          "step": 40,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0040_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0040_MOVE_FORWARD.png",
+          "rendered_sha256": "37fd4c471ae17b5f9ef7304c32ac658f9f426822b6f4109289bec852825a13a1"
+        },
+        {
+          "mae_per_channel": [
+            0.08911190257352941,
+            0.09292105800653594,
+            0.10223082618464052
+          ],
+          "mean_absolute_error": 0.09475459558823529,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            6980670,
+            7279064,
+            8008354
+          ],
+          "nonidentical_channel_values": 880666,
+          "step": 41,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0041_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0041_MOVE_FORWARD.png",
+          "rendered_sha256": "225da510a04a70ff984e7a6d1e09fea82f128e58451552f92bac845fcfcc96da"
+        },
+        {
+          "mae_per_channel": [
+            0.1061319189133987,
+            0.10930073018790849,
+            0.11660903033088235
+          ],
+          "mean_absolute_error": 0.11068055981072984,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8313950,
+            8562182,
+            9134685
+          ],
+          "nonidentical_channel_values": 881810,
+          "step": 42,
+          "action_id": 2,
+          "action_name": "TURN_LEFT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0042_TURN_LEFT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0042_TURN_LEFT.png",
+          "rendered_sha256": "3598ab5f134580e14b664d039ebffe416c6b970b513af6dd9e3a6ab54afa0708"
+        },
+        {
+          "mae_per_channel": [
+            0.1039404616013072,
+            0.10865710529003268,
+            0.12125024254493465
+          ],
+          "mean_absolute_error": 0.11128260314542483,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8142280,
+            8511763,
+            9498259
+          ],
+          "nonidentical_channel_values": 883085,
+          "step": 43,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0043_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0043_MOVE_FORWARD.png",
+          "rendered_sha256": "8ba0a9ee68e5514eb85928fa1505e1310f0bb27f1372781d0a643f4406fc06db"
+        },
+        {
+          "mae_per_channel": [
+            0.1048258527369281,
+            0.10820866523692811,
+            0.11238203380310458
+          ],
+          "mean_absolute_error": 0.1084721839256536,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8211638,
+            8476634,
+            8803559
+          ],
+          "nonidentical_channel_values": 881172,
+          "step": 44,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0044_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0044_TURN_RIGHT.png",
+          "rendered_sha256": "bfe328daa98b36e5f0eb60c409993a88fe4f2b24c3d6cb27028d275a9a08e360"
+        },
+        {
+          "mae_per_channel": [
+            0.10940270118464053,
+            0.1128328737745098,
+            0.11969948682598039
+          ],
+          "mean_absolute_error": 0.11397835392837691,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8570170,
+            8838876,
+            9376779
+          ],
+          "nonidentical_channel_values": 885257,
+          "step": 45,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0045_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0045_MOVE_FORWARD.png",
+          "rendered_sha256": "9067454f48564ef664450811c282ff95d48fbe1b088f5b0849c2059bfffe56ec"
+        },
+        {
+          "mae_per_channel": [
+            0.10393706597222221,
+            0.10778788807189543,
+            0.1141743004493464
+          ],
+          "mean_absolute_error": 0.10863308483115468,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8142014,
+            8443672,
+            8943958
+          ],
+          "nonidentical_channel_values": 884691,
+          "step": 46,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0046_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0046_MOVE_FORWARD.png",
+          "rendered_sha256": "774c4299297754e22ae7f3cfe60d59bc3a5f17180fca44dd1902f50639cc9587"
+        },
+        {
+          "mae_per_channel": [
+            0.10963864634395425,
+            0.11708504391339869,
+            0.12147541360294117
+          ],
+          "mean_absolute_error": 0.11606636795343138,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8588653,
+            9171974,
+            9515898
+          ],
+          "nonidentical_channel_values": 887407,
+          "step": 47,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0047_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0047_MOVE_FORWARD.png",
+          "rendered_sha256": "a0a15bf5e1499964b76dfed23b031cf759d3bd47b0b04a01921d90814d5384d8"
+        },
+        {
+          "mae_per_channel": [
+            0.10534274152369281,
+            0.11208344822303921,
+            0.11748406862745098
+          ],
+          "mean_absolute_error": 0.11163675279139433,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            8252129,
+            8780169,
+            9203232
+          ],
+          "nonidentical_channel_values": 867669,
+          "step": 48,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0048_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0048_TURN_RIGHT.png",
+          "rendered_sha256": "185469be06651cb475d0cf08f94605ad1cccb78f7e7c7c01f3d9ec722885f2e4"
+        },
+        {
+          "mae_per_channel": [
+            0.08599373212826798,
+            0.09426738664215686,
+            0.10315511386846406
+          ],
+          "mean_absolute_error": 0.09447207754629629,
+          "max_abs_pixel": 255,
+          "absolute_error_sum_per_channel": [
+            6736405,
+            7384530,
+            8080759
+          ],
+          "nonidentical_channel_values": 855824,
+          "step": 49,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0049_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0049_TURN_RIGHT.png",
+          "rendered_sha256": "2daddcaa5ae290a9f87164340ce2987d86a4bd2930dcb3bfc0726f6331f7de91"
+        },
+        {
+          "mae_per_channel": [
+            0.05723029003267974,
+            0.06697602634803922,
+            0.08521138429330066
+          ],
+          "mean_absolute_error": 0.0698059002246732,
+          "max_abs_pixel": 221,
+          "absolute_error_sum_per_channel": [
+            4483192,
+            5246634,
+            6675119
+          ],
+          "nonidentical_channel_values": 836547,
+          "step": 50,
+          "action_id": 3,
+          "action_name": "TURN_RIGHT",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0050_TURN_RIGHT.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0050_TURN_RIGHT.png",
+          "rendered_sha256": "c838a42e8c1fa0d476bd6fa31a8093557d7baebe04464455a013734eeac0e498"
+        },
+        {
+          "mae_per_channel": [
+            0.050999374489379086,
+            0.05686421313316994,
+            0.07472310304330065
+          ],
+          "mean_absolute_error": 0.06086223022194989,
+          "max_abs_pixel": 221,
+          "absolute_error_sum_per_channel": [
+            3995087,
+            4454515,
+            5853509
+          ],
+          "nonidentical_channel_values": 833095,
+          "step": 51,
+          "action_id": 1,
+          "action_name": "MOVE_FORWARD",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0051_MOVE_FORWARD.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0051_MOVE_FORWARD.png",
+          "rendered_sha256": "2e830ef47e8c0e1b64ba9c7b4b8b3efebc701b3c21b94da90fa4e6e568d43562"
+        },
+        {
+          "mae_per_channel": [
+            0.04895681423611111,
+            0.05771086090686274,
+            0.07774871068218954
+          ],
+          "mean_absolute_error": 0.0614721286083878,
+          "max_abs_pixel": 224,
+          "absolute_error_sum_per_channel": [
+            3835081,
+            4520838,
+            6090523
+          ],
+          "nonidentical_channel_values": 820202,
+          "step": 52,
+          "action_id": 0,
+          "action_name": "STOP",
+          "reference": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0052_STOP.png",
+          "rendered": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/train/3871/step_0052_STOP.png",
+          "rendered_sha256": "b13b5f967c9b5bb578c91efd0756b00826d07ef5a1adea25b53fa8661d52225e"
+        }
+      ]
+    }
+  ],
+  "threshold_per_channel": 0.00392156862745098,
+  "definition": "Mean absolute difference /255 over every pixel and frame separately for R,G,B; all channels in all 3 episodes must pass",
+  "sequencing": "Compare observation before its labeled action; include STOP frame and then execute STOP",
+  "reproduction_command": [
+    "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+    "-m",
+    "scripts.diag.render_panel"
+  ],
+  "environment_selection": "janusvln_host has no habitat; use spatialstack_dagger as recorded in prior combined evaluation campaign.py",
+  "alternate_definitions_or_camera_tuning": false,
+  "environment": {
+    "python": "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+    "python_version": "3.10.20",
+    "habitat_lab": "0.2.4",
+    "habitat_sim": "0.2.4"
+  },
+  "provenance": {
+    "dataset": {
+      "path": "/storage/anhdh35/JanusVLN/data/datasets/r2r/train/train.json.gz",
+      "sha256": "340a80133b2157520354ab055a91d98feb2f42e4bbda17b200c911f8788492ea"
+    },
+    "ground_truth": {
+      "path": "/storage/anhdh35/JanusVLN/data/datasets/r2r/train/train_gt.json.gz",
+      "sha256": "b63fa10e5c57d1b80b241c49bdeddc3d481bbe54b41ca0d59f9584c10da7bd5d"
+    },
+    "reference_recovery": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/TRAINING_REFERENCE_RECOVERY.json",
+      "sha256": "88cab91945006366ce247da8c6c76dc2d99ef1bedc039225e977d38ebcb885da"
+    },
+    "habitat_config": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/configs/eval/vln_r2r.yaml",
+      "sha256": "dd20dd0e43e6dff3e552b63e9bc70c74062170c39352564758835c313bcf468f"
+    },
+    "resolved_config": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/resolved_config.yaml",
+      "sha256": "b8cdfed0a5aebd325f652dbeb2a156015a630b5e6e6f62f2b873343c9b3f53b9"
+    },
+    "evaluation_source": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/src/qwen_vl/eval/habitat_r2r.py",
+      "sha256": "3494770ee7080f6e49df8f6bf1a2137ed5a66a595eb530675ebacd972a32f19d"
+    },
+    "renderer": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/render_panel.py",
+      "sha256": "beae599da75277e8c74a97f69dbfb44226fc583fc6899b44a71932b580d930a2"
+    }
+  },
+  "camera_action_contract": {
+    "width": 640,
+    "height": 480,
+    "hfov": 79,
+    "sensor_position": [
+      0.0,
+      1.25,
+      0.0
+    ],
+    "agent_height": 1.5,
+    "agent_radius": 0.1,
+    "forward_step_size": 0.25,
+    "turn_angle": 15,
+    "seed": 42
+  },
+  "scene_assets": [
+    {
+      "path": "/storage/anhdh35/JanusVLN/data/scene_datasets_full/mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "sha256": "e774f630a73b9b1e823975a2c89c987998f03b88429dc99a45cf1728ab34bc3f",
+      "navmesh_sha256": "0edba8ae055399926d883fb2388d378b042bfb7a1e47d6a5636e82d4e484f527"
+    }
+  ],
+  "cpu_tests": {
+    "command": "/storage/anhdh35/miniconda3/envs/janusvln_host/bin/python -m unittest scripts.diag.test_render_panel -v",
+    "passed": true,
+    "count": 7,
+    "log": "/data14t/anhdh35/diag_g3m5_20261019_assets/rendering_gate/cpu_tests.log",
+    "log_sha256": "fc5b7fd67f0c14af7cfe97df81f8c0d161d0ebdb9aaf9f6680de5c325f5ce249",
+    "red_phase": "Before implementation, the new test module failed import because scripts.diag.render_panel did not exist."
+  },
+  "execution_log": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/render_gate.log",
+  "required_next_action": "STOP dependent diagnostics; report failed fixed rendering parity without alternative definitions or camera tuning."
+}

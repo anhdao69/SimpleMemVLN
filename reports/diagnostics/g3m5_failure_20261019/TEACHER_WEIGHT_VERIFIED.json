@@ -1,0 +1,10 @@
+{
+  "repo": "1kaiser/vggt-omega-jax",
+  "kind": "model",
+  "revision": "a8c3a718e0cf78e9e4c6847229efea793d37f060",
+  "file": "vggt_omega_1b_512.pt",
+  "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+  "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt",
+  "verified": true,
+  "verified_utc": "2026-10-19T17:10:33.924659+00:00"
+}

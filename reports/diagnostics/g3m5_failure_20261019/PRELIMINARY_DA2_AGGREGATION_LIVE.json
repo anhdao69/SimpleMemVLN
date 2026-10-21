@@ -1,0 +1,15 @@
+{
+  "started_by_pid": 304015,
+  "command": "scripts.diag.report.aggregate_probes",
+  "status": "complete",
+  "observed_at": "2026-10-21 01:45:12 +0700",
+  "output": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION.json",
+  "purpose": "aggregate original held-out D-a Metric 2 fits without refitting",
+  "completed_observed_at": "2026-10-21 01:46:05 +0700",
+  "output_sha256": "772edb79a8c5bf441e9f31863def907483e8143ad44bbd54cdf31f1e4aea29f3",
+  "summary_rows": 5616,
+  "paired_contrasts": 3024,
+  "source_files": 66,
+  "read_bytes_at_last_poll": 96608690176,
+  "write_bytes_at_last_poll": 0
+}

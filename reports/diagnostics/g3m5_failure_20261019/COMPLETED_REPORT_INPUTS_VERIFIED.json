@@ -1,0 +1,36 @@
+{
+  "status": "verified_completed_inputs_only",
+  "utc": "2026-10-20T19:29:10.005706+00:00",
+  "prerequisite_sources_checked": 506,
+  "all_prerequisite_hashes_match": true,
+  "probe_complete": {
+    "models": [
+      "M5_E1",
+      "G3_M5",
+      "TRIPLE",
+      "G3",
+      "G1"
+    ],
+    "lag_groups": [
+      "A",
+      "B",
+      "C"
+    ],
+    "status": "complete"
+  },
+  "ablation_complete": {
+    "models": [
+      "M5_E1",
+      "G3_M5",
+      "TRIPLE"
+    ],
+    "refitted": false,
+    "status": "complete",
+    "summary_sha256": "0140d8a028c588824fccefa08f4f1bea63cf895f4bc4406cf8e3c17fe5aa302d"
+  },
+  "ablation_coverage": 720,
+  "ablation_probe_identity_matches": true,
+  "ablation_panel_matches": true,
+  "D_e": "pending live workers",
+  "full_report_complete": false
+}

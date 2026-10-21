@@ -1,0 +1,156 @@
+{
+  "time_unix": 1792434650.3923798,
+  "authorization": "User instructed cancel processes unrelated to SimpleMemVLN with sudo",
+  "signal": "SIGTERM",
+  "process_groups": [
+    183190,
+    190021
+  ],
+  "processes": [
+    {
+      "user": "namdp15",
+      "pid": 183199,
+      "ppid": 1,
+      "pgid": 183190,
+      "command": "/bin/sh -c RUN_ID=lodo-v1 MEM_GB=11 .venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 183200,
+      "ppid": 183199,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 183769,
+      "ppid": 1,
+      "pgid": 183190,
+      "command": "/bin/sh -c RUN_ID=lodo-v1 MEM_GB=11 .venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 183770,
+      "ppid": 183769,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 190021,
+      "ppid": 1,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python scripts/sweep.py logs/campaigns/lodo-v1-C.txt --workers 4 --gpu-gb 34 --ram-gb 6"
+    },
+    {
+      "user": "namdp15",
+      "pid": 190025,
+      "ppid": 190021,
+      "pgid": 190021,
+      "command": "/bin/sh -c RUN_ID=lodo-v1 MEM_GB=11 .venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 190026,
+      "ppid": 190025,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193161,
+      "ppid": 183770,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193162,
+      "ppid": 183770,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193163,
+      "ppid": 183770,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193164,
+      "ppid": 183770,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 0 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193233,
+      "ppid": 183200,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193234,
+      "ppid": 183200,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193235,
+      "ppid": 183200,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193236,
+      "ppid": 183200,
+      "pgid": 183190,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_litt3200.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_litt3200 --selection fixed --report_epochs 50 --seed 4 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193252,
+      "ppid": 190026,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193253,
+      "ppid": 190026,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193258,
+      "ppid": 190026,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    },
+    {
+      "user": "namdp15",
+      "pid": 193261,
+      "ppid": 190026,
+      "pgid": 190021,
+      "command": ".venv-train/bin/python -m src.training.patchmix_cl.main --config experiments/train/base.yaml,experiments/train/encoder_beats.yaml,experiments/train/grid/patchmix_cl.yaml,experiments/train/sc.yaml,experiments/train/sc_static.yaml,experiments/train/lodo_meditron.yaml --cell beats+ft+patchmix_cl+sc+sc_static+lodo_meditron --selection fixed --report_epochs 50 --seed 1 --num_workers 4"
+    }
+  ],
+  "returncode": 0,
+  "stderr": "",
+  "verification": {
+    "terminated_gpu_pids": [
+      183200,
+      183770,
+      190026
+    ],
+    "terminated_controller_pid": 190021,
+    "preserved_simplememvln_pid": 156211,
+    "live_teacher_pid": 192945
+  }
+}

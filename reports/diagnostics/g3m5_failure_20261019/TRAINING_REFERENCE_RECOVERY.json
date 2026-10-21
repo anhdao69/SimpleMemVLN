@@ -1,0 +1,2387 @@
+{
+  "status": "three_reference_episodes_recovered_renderer_parity_pending",
+  "selection": "First three complete usable train episode folders encountered in deterministic archive order; no evaluation measurements consulted",
+  "archive_parts": [
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/janus_training_archives/trajectory_data/R2R-CE-640x480.tar.gz.part00",
+      "size_bytes": 96636764160
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/janus_training_archives/trajectory_data/R2R-CE-640x480.tar.gz.part01",
+      "size_bytes": 64847844634
+    }
+  ],
+  "script": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/recover_references.py",
+  "reproduce_command": "/storage/anhdh35/miniconda3/envs/janusvln_host/bin/python /data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/recover_references.py",
+  "official_metadata": [
+    {
+      "path": "/storage/anhdh35/JanusVLN/data/datasets/r2r/train/train.json.gz",
+      "sha256": "340a80133b2157520354ab055a91d98feb2f42e4bbda17b200c911f8788492ea"
+    },
+    {
+      "path": "/storage/anhdh35/JanusVLN/data/datasets/r2r/train/train_gt.json.gz",
+      "sha256": "b63fa10e5c57d1b80b241c49bdeddc3d481bbe54b41ca0d59f9584c10da7bd5d"
+    }
+  ],
+  "action_mapping": {
+    "0": "STOP",
+    "1": "MOVE_FORWARD",
+    "2": "TURN_LEFT",
+    "3": "TURN_RIGHT"
+  },
+  "frame_layout": "RGB PNG, width 640 height 480; one contiguous zero-based frame per train_gt action, including terminal STOP",
+  "action_timing": "Filename step/action matches train_gt.actions at identical index. Pre-action versus post-action pixel timing is NOT established by extraction/labels; renderer parity must establish it.",
+  "renderer_parity": {
+    "status": "not_run",
+    "required_episode_count": 3,
+    "maximum_normalized_mae": 0.00392156862745098
+  },
+  "episodes": [
+    {
+      "episode_id": "4991",
+      "scene_id": "mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "trajectory_id": 3279,
+      "start_position": [
+        10.257800102233887,
+        0.09358400106430054,
+        -2.379739999771118
+      ],
+      "start_rotation": [
+        -0.0,
+        0.49999999999999994,
+        -0.0,
+        -0.8660254037844387
+      ],
+      "frame_count": 64,
+      "actions_match_train_gt": true,
+      "contiguous_steps": true,
+      "last_action": "STOP",
+      "directory": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991",
+      "frames": [
+        {
+          "filename": "step_0000_TURN_RIGHT.png",
+          "step": 0,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 246652,
+          "sha256": "52325eb507968b34b2c3887b81b7ef0e874c096d58b6731a3d76446bfc3627a1",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0000_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0001_TURN_RIGHT.png",
+          "step": 1,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 254230,
+          "sha256": "a7dd96f84ac889a6a44834e5cbdded706fd5dbb7cef16ce8501564b5b115e7e6",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0001_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0002_TURN_RIGHT.png",
+          "step": 2,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 212677,
+          "sha256": "4e9bd871b8429ac31ad8adb5234f0ed0318779df65277190a34b4709b7415c45",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0002_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0003_TURN_RIGHT.png",
+          "step": 3,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 192552,
+          "sha256": "d09decf12aaf5bd48efa443b932165b5219160bc506f57b45ebadccfa4ddcab1",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0003_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0004_TURN_RIGHT.png",
+          "step": 4,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 241828,
+          "sha256": "07ad784914421cbd8d3e061862515f3460487f33f04f205200c82ba692891a87",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0004_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0005_TURN_RIGHT.png",
+          "step": 5,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 290531,
+          "sha256": "88539f2e4f6b515c2698323325a6b5a02d7604af29fc2a49c3069611c7e68b5f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0005_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0006_TURN_RIGHT.png",
+          "step": 6,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 280742,
+          "sha256": "7e2936812f27a021d8ed403e663cc4d4de4801e2eeb584b24e280f21c3d7b39d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0006_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0007_TURN_RIGHT.png",
+          "step": 7,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 251004,
+          "sha256": "9dc5226228ad20f9505da59cde1e0b883cdf52219ef0fe0aee6ec33f64b04361",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0007_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0008_TURN_RIGHT.png",
+          "step": 8,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 268977,
+          "sha256": "4f43db72e206973cf1647f8ef31518967c5bcdb159988ec4ed6300c97516c2ce",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0008_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0009_TURN_RIGHT.png",
+          "step": 9,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 282226,
+          "sha256": "145223d42aa01c02c7d755c9069eea2fc086b6448131db6b412129cf8e49d14b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0009_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0010_MOVE_FORWARD.png",
+          "step": 10,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 261774,
+          "sha256": "967c04fa0015b76526671b942293539d20ed903ee6568066777c368b8c6fc3be",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0010_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0011_MOVE_FORWARD.png",
+          "step": 11,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 257530,
+          "sha256": "11bdfdf1ec4d26fdbe80df0bf47f1b4c3635d545fa4cfcd687a5829687d83c64",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0011_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0012_TURN_RIGHT.png",
+          "step": 12,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 258944,
+          "sha256": "110cf62333c4591e6b65296e5e17240ac426fa27fc24ff40ecaa62f752f10b9b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0012_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0013_MOVE_FORWARD.png",
+          "step": 13,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230177,
+          "sha256": "b8dbf0cd77e91b17366fdac3c814c37021c7e82a0c72938c26cb264586c332c5",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0013_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0014_MOVE_FORWARD.png",
+          "step": 14,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230288,
+          "sha256": "82a376c2a9093f011c24e0f4577ebc821dcf20a4ad0da9eaf35c1b7f3e17c0f7",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0014_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0015_TURN_RIGHT.png",
+          "step": 15,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 232160,
+          "sha256": "cbf2ec69c3ce49abe3ef090f7c82bed13903e51f5c1495850bee2488d876ae8a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0015_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0016_MOVE_FORWARD.png",
+          "step": 16,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 210374,
+          "sha256": "c429f3f6f8fa8f1f753f47b2363a527d9e5c27687dfe58be884e0f275fd48375",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0016_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0017_MOVE_FORWARD.png",
+          "step": 17,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 202543,
+          "sha256": "dd7bb433c389f3909067dedcd5f11135307595038faf96a14d63e8c27d285f90",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0017_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0018_MOVE_FORWARD.png",
+          "step": 18,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 205770,
+          "sha256": "6757d9deec450962ff239ddae54da7c599002997c3c1c0c779245a4aa9907786",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0018_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0019_MOVE_FORWARD.png",
+          "step": 19,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 217205,
+          "sha256": "31af6e7b1e6401d801a683412245bce172f86780ba07645da0895618fcbcda03",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0019_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0020_MOVE_FORWARD.png",
+          "step": 20,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 221901,
+          "sha256": "fbeae29cd100567f67bc770c76046cd643e9187e90e5d07605ba04f640e14616",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0020_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0021_MOVE_FORWARD.png",
+          "step": 21,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 218314,
+          "sha256": "af9c98a6d168249c48337fa8a00e83b4388e2136d4a86bc60301b1f35cf8fa83",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0021_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0022_TURN_LEFT.png",
+          "step": 22,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 210333,
+          "sha256": "77b88ace7f5bf5ffeb09d2814ee87489dea4bcd22e8f94615708586cb22d8a90",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0022_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0023_MOVE_FORWARD.png",
+          "step": 23,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 234139,
+          "sha256": "84f7903c760dc192c4f18136e953481e5f1e62ffcbea4afaa7769905f5687b65",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0023_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0024_TURN_RIGHT.png",
+          "step": 24,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 264070,
+          "sha256": "244801da44fece2fadf1e915e5980a5923a24981bfeec61337fb1d6819c3154f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0024_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0025_MOVE_FORWARD.png",
+          "step": 25,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230763,
+          "sha256": "ca42563402efb649f99a5ea0a4c4dadbd1d08aff9aa4f72babc7f123a35f7af0",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0025_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0026_MOVE_FORWARD.png",
+          "step": 26,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 239675,
+          "sha256": "ce642e8efcfc99d657c7a09f90fdf9fb53d02c98f32411d38a8d156d7c3397af",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0026_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0027_MOVE_FORWARD.png",
+          "step": 27,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 219401,
+          "sha256": "a1e55af20f590e0697b9d2ae44c233c3a0b6ea15b04ff6f7f0bbb13f2325aa44",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0027_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0028_TURN_RIGHT.png",
+          "step": 28,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 222204,
+          "sha256": "c1f7dd8c3a5dfc969bf0cc7fb8f007ae8de527eb289ab63d79ae844292f9d15f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0028_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0029_MOVE_FORWARD.png",
+          "step": 29,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 220325,
+          "sha256": "1cd8b12ea6c17b20ebc4fbdc8871d713b570295d8605200309bd5d050ad7540f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0029_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0030_MOVE_FORWARD.png",
+          "step": 30,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 202858,
+          "sha256": "222651c54ac2deb580c44dd32cae99453f34e29b064ec0d1f64e7f861232013c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0030_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0031_MOVE_FORWARD.png",
+          "step": 31,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 197740,
+          "sha256": "00c558f7b014ba42bcf7ac6ca2208db22e4cbab5dd3753f2d9b6c4b0bc09f9ea",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0031_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0032_MOVE_FORWARD.png",
+          "step": 32,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 202201,
+          "sha256": "32a7eb19b11a4fb3a9407bfe97a6e5cd6e8f7c6436968b3f9859952aacf0bb08",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0032_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0033_TURN_RIGHT.png",
+          "step": 33,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 182993,
+          "sha256": "4ed02663235cc939d020a0dda7831fda53386d05cdd29055fbbf601d47fc633b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0033_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0034_MOVE_FORWARD.png",
+          "step": 34,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 210126,
+          "sha256": "07f0823421f2c172759e5c1bb36da5c7e73c97955f108e6982337c28aeebab00",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0034_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0035_MOVE_FORWARD.png",
+          "step": 35,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 215736,
+          "sha256": "94211dccbbe657540e823b8a1142a1422bfbdde2f3ea5eb79d10605e6b1824aa",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0035_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0036_MOVE_FORWARD.png",
+          "step": 36,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 211134,
+          "sha256": "1275165c1f8d4fbe7d9137f5a7526a9edeecf44343b201b33b03a89d34bd0db0",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0036_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0037_TURN_LEFT.png",
+          "step": 37,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 210920,
+          "sha256": "c946a566ddeaea2d0c9278ebb8f82d50f13505ae5fe3175ba48ab6c7d393e499",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0037_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0038_MOVE_FORWARD.png",
+          "step": 38,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 186936,
+          "sha256": "b0322256e0fc7ae8984a5ca4518439a15d59c4a8aeacabf05bad43064e636060",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0038_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0039_MOVE_FORWARD.png",
+          "step": 39,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 198978,
+          "sha256": "6e2948ee78cea1a4b3d48c3110ed80998bdaf2d5f598ccf964aef6a0204a24ad",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0039_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0040_MOVE_FORWARD.png",
+          "step": 40,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 190611,
+          "sha256": "90e1caeb23dfe9f899f5e3b83d00286a0e56da80b5f4a57739f861ff8f640860",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0040_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0041_TURN_LEFT.png",
+          "step": 41,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 180034,
+          "sha256": "9ad2088fa3d0e05a4e804db68db3e4515c6aec25a4f6a39df5ef093ff0a74f6b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0041_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0042_MOVE_FORWARD.png",
+          "step": 42,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 156214,
+          "sha256": "13c25c38a818de0495f7abeb934a6b25b4daaaa8f5e7892be07fcc0a49730246",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0042_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0043_MOVE_FORWARD.png",
+          "step": 43,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 144196,
+          "sha256": "16303aebeaa0847ecc5eb78df733f5f7cc552a6a4e548b5c18b640c75f0a7150",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0043_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0044_MOVE_FORWARD.png",
+          "step": 44,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 155094,
+          "sha256": "83e48706adffc35c0bd64b9e75f03442c3af86b0b8ac1f972c5e9afb1e5267dd",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0044_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0045_MOVE_FORWARD.png",
+          "step": 45,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 206384,
+          "sha256": "160eccbab898b9b81fe368b8384617e5e8134a2ede2974b945f7c4f494a3f2cc",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0045_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0046_MOVE_FORWARD.png",
+          "step": 46,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 193998,
+          "sha256": "475c66a2e58295ff63ff5c397f26a2eb861c2ef625ce4f1b415eb56608dd095b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0046_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0047_MOVE_FORWARD.png",
+          "step": 47,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 183455,
+          "sha256": "2958fe36a90f996cb8a394c271d8ff98842b87e160303099261adc4e2a9614da",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0047_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0048_MOVE_FORWARD.png",
+          "step": 48,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 179213,
+          "sha256": "265ebc3fada8feaa728c77d5635569705de48694c262fd6a95680d23ee76c860",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0048_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0049_TURN_LEFT.png",
+          "step": 49,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 175997,
+          "sha256": "b45783d3eb7a203ed54e58f11ebe6f1c82f6491480b1f4cac0be31ed3cdb293a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0049_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0050_TURN_LEFT.png",
+          "step": 50,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 171035,
+          "sha256": "08f3594d4467880da00d2bb7e264b5959482ca98173f003e876f7244ccd1dade",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0050_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0051_TURN_LEFT.png",
+          "step": 51,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 147617,
+          "sha256": "b43d58fcc97aa4629e9e922870624d23f75525caa3658a04c9584a70c9441088",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0051_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0052_MOVE_FORWARD.png",
+          "step": 52,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 134729,
+          "sha256": "25ab799b82053e5529d49c6ecd7d17933318180781ef26127ea1e7f4d7796f9c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0052_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0053_TURN_RIGHT.png",
+          "step": 53,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 116644,
+          "sha256": "fed9187729b2f277cb810ce45ca714235860f10e8d9cd885845d83726663865d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0053_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0054_MOVE_FORWARD.png",
+          "step": 54,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 127250,
+          "sha256": "7a7df8deca1fc7d5ab3de5be7c82c12aa7495a19ec62ed6eca554fd74f04a328",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0054_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0055_TURN_LEFT.png",
+          "step": 55,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 136556,
+          "sha256": "c8f6e7faa423659e5ae6317e69cffd2edc0138abf7d07a5916c542ff055b2406",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0055_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0056_MOVE_FORWARD.png",
+          "step": 56,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 122748,
+          "sha256": "e2504baab5f6129246c8a404312afb1abb2bf39918c8d85cc411ef10f3722f5c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0056_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0057_MOVE_FORWARD.png",
+          "step": 57,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 136754,
+          "sha256": "279ae737d863d9c2d60e354ca271cb9d8d6836d461c2cb2682764456868530cc",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0057_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0058_TURN_LEFT.png",
+          "step": 58,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 182120,
+          "sha256": "329a3f49a4ad71adc24e8bcb229c2f270d908ff73172ffa1034e8211e16ec33d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0058_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0059_MOVE_FORWARD.png",
+          "step": 59,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 150847,
+          "sha256": "8a9e026e197cca9cb97f1067b9364cea7120734506e1187f8207bfeaba05bc6e",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0059_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0060_MOVE_FORWARD.png",
+          "step": 60,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 158974,
+          "sha256": "31ba9ef3f357ca1d1894dacd7b4be7aa0f45098faadbd8d33221fe0e038e55eb",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0060_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0061_TURN_LEFT.png",
+          "step": 61,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 139658,
+          "sha256": "6d3609d6c7ba9cb24725c4f72352c6e15d70ccab10c1156c6d5e354a779f7970",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0061_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0062_MOVE_FORWARD.png",
+          "step": 62,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 150871,
+          "sha256": "233c149d469e2776778a66a026e98cb8de89e59d10426a7fb48b044deeb0a8bf",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0062_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0063_STOP.png",
+          "step": 63,
+          "action": "STOP",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 140100,
+          "sha256": "e2da2e441aeb9e67d18c2e15a05581c2e530d36615867d69c0e39c296d9d93ed",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/4991/step_0063_STOP.png"
+        }
+      ]
+    },
+    {
+      "episode_id": "7880",
+      "scene_id": "mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "trajectory_id": 5274,
+      "start_position": [
+        0.15406300127506256,
+        0.09358400106430054,
+        9.759759902954102
+      ],
+      "start_rotation": [
+        -0.0,
+        0.2588190451025209,
+        0.0,
+        0.9659258262890682
+      ],
+      "frame_count": 58,
+      "actions_match_train_gt": true,
+      "contiguous_steps": true,
+      "last_action": "STOP",
+      "directory": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880",
+      "frames": [
+        {
+          "filename": "step_0000_TURN_RIGHT.png",
+          "step": 0,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 260195,
+          "sha256": "d6f64bf1974ceee281e82c797aacfe4315a43ae8e19d3ed7e719ee5674d4ff48",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0000_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0001_TURN_RIGHT.png",
+          "step": 1,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 240405,
+          "sha256": "c10ac90cb9b354bb6299d704cf078f7e34d819c5d4297b0feffb97d88b0b1fdf",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0001_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0002_TURN_RIGHT.png",
+          "step": 2,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 212801,
+          "sha256": "d0ba3b90a421cd6b423b1e4df8a3d372fb4de0977d5f29fb3a8ed31896d0eb0f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0002_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0003_MOVE_FORWARD.png",
+          "step": 3,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 209626,
+          "sha256": "146d8233bb8a6230cad0950d7a67347f83c3ace7904a21eaf03cd4e30ceb92de",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0003_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0004_TURN_RIGHT.png",
+          "step": 4,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 203439,
+          "sha256": "8206433338b52d3c3dd5ff9d70dcc6e901647da9e7ccd2feeb4cf4d31020f4fa",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0004_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0005_MOVE_FORWARD.png",
+          "step": 5,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 189242,
+          "sha256": "ab8d691f0541d8ecfd6ec09cc1ff0ca701a534136e109a0facf333c3ed117259",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0005_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0006_MOVE_FORWARD.png",
+          "step": 6,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 184786,
+          "sha256": "10dbf46443eebe03ba6a36a625cf0f997bcd8c860e4ede9dc93143a10dcd5e14",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0006_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0007_MOVE_FORWARD.png",
+          "step": 7,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 175540,
+          "sha256": "fc60484d28948b7eefb3ce7fa55d6f5e547a5aadde24faca02e198a17d3809d9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0007_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0008_MOVE_FORWARD.png",
+          "step": 8,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 170226,
+          "sha256": "fd0408c43289c563913f096eae9de1075d62de0c050afaf05431e813c4d8e1fd",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0008_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0009_MOVE_FORWARD.png",
+          "step": 9,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 166087,
+          "sha256": "430918d72e49e3a239782b7f4d5d0cb031893278adbe2ddfea053937647a86c9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0009_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0010_MOVE_FORWARD.png",
+          "step": 10,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 166420,
+          "sha256": "484d2b66d80480dee3be980b781cd4fffcc43f7316d4fc2ce87f28b887b545cd",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0010_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0011_MOVE_FORWARD.png",
+          "step": 11,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 166536,
+          "sha256": "29b89d0d17dd76a6f2b1fab916432c16edb7d2f548bcf2d1844a55c33c670b91",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0011_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0012_MOVE_FORWARD.png",
+          "step": 12,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 164358,
+          "sha256": "3e065bcf217a184b23bee2e3590befba790b054a96ffb10bc73d17816650c292",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0012_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0013_TURN_LEFT.png",
+          "step": 13,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 160065,
+          "sha256": "5caac6711b85b7de041e9e6c1863730e9aca30fabeed5ba55411877a1d200dcb",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0013_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0014_MOVE_FORWARD.png",
+          "step": 14,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 167459,
+          "sha256": "8ef39a14087100d908eabd4fe0f68d1428094855d599259394d349cddfaee704",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0014_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0015_MOVE_FORWARD.png",
+          "step": 15,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 168991,
+          "sha256": "522644eb879e87212f9514e34defc65611f375f9df2d51122b5164c1f0e6c1a2",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0015_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0016_MOVE_FORWARD.png",
+          "step": 16,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 170118,
+          "sha256": "42f92a054849f225b71adff5a58253450ffc9a087fca081b80524c83397a05f6",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0016_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0017_MOVE_FORWARD.png",
+          "step": 17,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 167526,
+          "sha256": "91c46c8d98ca503db81609c32ad2d9a7dcdf394707c9a2495a7463647070fb3f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0017_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0018_MOVE_FORWARD.png",
+          "step": 18,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 167215,
+          "sha256": "f018dd7351b2b5d359fd10e5337e432c034922a0473e4e144b1795ae8f073240",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0018_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0019_TURN_LEFT.png",
+          "step": 19,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 171748,
+          "sha256": "7934a5f40451999e18c0fef80bd2ead75b84fe69f0cde66493dc4dd9f784a4f8",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0019_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0020_MOVE_FORWARD.png",
+          "step": 20,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 186529,
+          "sha256": "b0a565976e6cd06ae69529e7b2b53273472f53b6c6347bd7b9fffba0cfbb3e93",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0020_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0021_MOVE_FORWARD.png",
+          "step": 21,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 189729,
+          "sha256": "836e38e409c79b2ae9abc8fd3108cab1d6872805c1b29b76bffcdd0bb8bed380",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0021_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0022_MOVE_FORWARD.png",
+          "step": 22,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 200660,
+          "sha256": "cc358c8c23ecaf8ff62cfba7ae0f8404bb558e0dcba37f53d48ef803a6ffeed7",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0022_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0023_MOVE_FORWARD.png",
+          "step": 23,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 206523,
+          "sha256": "7d8f7a0aca8b2d74d220814f93985a80deac6193a180e52bf6d3c4cdb3c6cc91",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0023_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0024_TURN_RIGHT.png",
+          "step": 24,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 213811,
+          "sha256": "84c14a109ceff47e0b37b49d0a732f5b0e3964b6fab744214cb2879819ed4bf4",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0024_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0025_MOVE_FORWARD.png",
+          "step": 25,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 208712,
+          "sha256": "8982842e1aab5ef9c420fffb1397a1d73bca85a57f9b8f1e7817d06693fffbcd",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0025_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0026_MOVE_FORWARD.png",
+          "step": 26,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 218625,
+          "sha256": "a0cf6211e41db74d815c82ed4086dea51e4d2d7ce296b6e03329834a11a7f47a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0026_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0027_TURN_LEFT.png",
+          "step": 27,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 229853,
+          "sha256": "2b78f2d96cb170b4bb2a2268d10761a515c1968d314105012331001cd741f732",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0027_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0028_TURN_LEFT.png",
+          "step": 28,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230051,
+          "sha256": "942b376dcdcc7a93b5c52b3a038898ee5bcf15faab8c028bb992f7ea5761ced3",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0028_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0029_MOVE_FORWARD.png",
+          "step": 29,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 254237,
+          "sha256": "2ea82449ea913b5e741bc67b5359cc1685d1669dfe60f4014b93af86078e2c78",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0029_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0030_MOVE_FORWARD.png",
+          "step": 30,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 236427,
+          "sha256": "eee7dff40f54f02c105733f099f2016940952bc4c290a1b159faa4d59b8bcef5",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0030_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0031_TURN_RIGHT.png",
+          "step": 31,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 228189,
+          "sha256": "1ac7bc1a42d694bba0dd2c832b860eb7ab756e2b8b17cc895973b537e7eeffba",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0031_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0032_MOVE_FORWARD.png",
+          "step": 32,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 242958,
+          "sha256": "a728f9ed2efee793948beedf9f00c5df73fedd0c585c61ef72004d519a227330",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0032_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0033_TURN_LEFT.png",
+          "step": 33,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 232240,
+          "sha256": "306d2198677b2108793553d71133bf22b3bde3c2dd49560a18778842ec7dbd16",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0033_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0034_MOVE_FORWARD.png",
+          "step": 34,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230101,
+          "sha256": "90820a4f74696ac4d26558bec6f7f26d40e872006a780fb6e9e1227b2efa5c62",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0034_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0035_TURN_RIGHT.png",
+          "step": 35,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 224535,
+          "sha256": "5e3160e454cb98bea5cc51df6597610a9f2bdd1b755ab0866c3aebcfcfb89cca",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0035_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0036_MOVE_FORWARD.png",
+          "step": 36,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 234231,
+          "sha256": "d825d7ab795f1dc23e16c5674906145d7183c5024a01d8c07cae4327faa0455e",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0036_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0037_MOVE_FORWARD.png",
+          "step": 37,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 238235,
+          "sha256": "db8f5c7f3a6dc3ae7e46c67929aaa063d2e99b402c6deeae500a5176deac58ae",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0037_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0038_MOVE_FORWARD.png",
+          "step": 38,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 235288,
+          "sha256": "814d79b0c65005a29a52e59dd0e8614f91adb723f74f1d5ab44eae132a72bcc9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0038_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0039_MOVE_FORWARD.png",
+          "step": 39,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 232879,
+          "sha256": "713c7d61ab1ede1f4a3a31c74b8d68d1bec403b661e4bf6bfd338f6430c2b30f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0039_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0040_MOVE_FORWARD.png",
+          "step": 40,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 215107,
+          "sha256": "9f42f594ba8458b91970d437953a0129cda2ee5cee9ca008cf1dba6b8b94c208",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0040_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0041_MOVE_FORWARD.png",
+          "step": 41,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 208693,
+          "sha256": "ad668cf182a785f2b257604ce568d0b6a12d84c60254e375acbb0e684c64ccdb",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0041_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0042_MOVE_FORWARD.png",
+          "step": 42,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 194049,
+          "sha256": "55a1b3e2d1ed4f43c6207ae46081d1b82fa935e6381ae910f1e623bcdae94b11",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0042_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0043_MOVE_FORWARD.png",
+          "step": 43,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 192686,
+          "sha256": "ab95a03b2d12a70403c01ec9321f7ae329e62a4c62e4069ead8dec48056776ad",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0043_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0044_TURN_RIGHT.png",
+          "step": 44,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 184009,
+          "sha256": "86dff48a71db77dd47b4c06b294563dbffe27b514ab71b445cc908ffb5009258",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0044_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0045_TURN_RIGHT.png",
+          "step": 45,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 194647,
+          "sha256": "f51ee85333fb0b5c285b13167d64cc12463d7f51c8b6c539a18793c43faaf02b",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0045_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0046_TURN_RIGHT.png",
+          "step": 46,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 216675,
+          "sha256": "3efe5cea4315033e781681edb44e4feadcbe6c0f084d5ae711de25334faeb872",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0046_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0047_MOVE_FORWARD.png",
+          "step": 47,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 205730,
+          "sha256": "ae67a520d99ddd0a9e8d98e593780eca8de71764097ce715669a21fba4d74f66",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0047_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0048_MOVE_FORWARD.png",
+          "step": 48,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 205073,
+          "sha256": "dad775c70231aa6d6d30e017f3d19455c07519e4a2e98e1a79321f7bcd39023d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0048_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0049_TURN_RIGHT.png",
+          "step": 49,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 193843,
+          "sha256": "ea786528e4604799aaa66ee53c033a025b55afa5cf7376570e66859eef42c6f9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0049_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0050_MOVE_FORWARD.png",
+          "step": 50,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 194860,
+          "sha256": "c90e04f00a173d00849d5b82ff0d324fcac4c97c5065b01bdf45054ac1b34324",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0050_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0051_MOVE_FORWARD.png",
+          "step": 51,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 181307,
+          "sha256": "f56b72f087e815a52bffc0fcefb2b68b437425f1813350adfedc2267db9d9e93",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0051_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0052_TURN_RIGHT.png",
+          "step": 52,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 209368,
+          "sha256": "6858cd59e7c9c46b3f8d0a819b912081b9b443196c040988e8e070251786fb07",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0052_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0053_TURN_RIGHT.png",
+          "step": 53,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 192193,
+          "sha256": "38b2e5f8d4339b2c570758d18900f889f8815c6096a4ec07200e0da85f931037",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0053_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0054_MOVE_FORWARD.png",
+          "step": 54,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 137763,
+          "sha256": "811792ebb33d5f88171e60e71a36317ee2395c0f7a13d51d02d412aacef32289",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0054_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0055_TURN_LEFT.png",
+          "step": 55,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 141413,
+          "sha256": "509b9f6dc19067a6d13a904d7510b5f42ad3787b267fabeef3292ffea270c5ad",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0055_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0056_MOVE_FORWARD.png",
+          "step": 56,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 195543,
+          "sha256": "e52dab19e7f7c4afdc9ce099d72108b87bec51165c5deed2a486444eeae06497",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0056_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0057_STOP.png",
+          "step": 57,
+          "action": "STOP",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 190480,
+          "sha256": "819a837e1f9609cfe3dc56166858778ae9e53e7687be60ec42394b705b7f2041",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/7880/step_0057_STOP.png"
+        }
+      ]
+    },
+    {
+      "episode_id": "3871",
+      "scene_id": "mp3d/JeFG25nYj2p/JeFG25nYj2p.glb",
+      "trajectory_id": 2554,
+      "start_position": [
+        1.6572200059890747,
+        0.09358400106430054,
+        5.05417013168335
+      ],
+      "start_rotation": [
+        -0.0,
+        0.49999999999999983,
+        0.0,
+        0.8660254037844387
+      ],
+      "frame_count": 53,
+      "actions_match_train_gt": true,
+      "contiguous_steps": true,
+      "last_action": "STOP",
+      "directory": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871",
+      "frames": [
+        {
+          "filename": "step_0000_MOVE_FORWARD.png",
+          "step": 0,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 240466,
+          "sha256": "9626e70e7bc257896b5d9c307d3db854fa1b8497b0ff41d79e22fca90a25bc6d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0000_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0001_MOVE_FORWARD.png",
+          "step": 1,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 234432,
+          "sha256": "b67cce2769dc4ea63b1a32ad235d9e315608d6b2ab2a44f720da88f97b362ed8",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0001_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0002_MOVE_FORWARD.png",
+          "step": 2,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 227167,
+          "sha256": "8e599f158c7ce54901e36cd0f808d98cd6e6e61292ddae52225d6c7e8475d127",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0002_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0003_TURN_LEFT.png",
+          "step": 3,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 216222,
+          "sha256": "848b8bfcb90ee57fb3203b8a9a3aa24ac71f4ab9b027c16ea7cafa7313aaaab9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0003_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0004_MOVE_FORWARD.png",
+          "step": 4,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 212027,
+          "sha256": "00767c5bddc9f1b74ad2cd5e92f4d2d04951e2eba7fe17bc54cbd0412579563c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0004_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0005_MOVE_FORWARD.png",
+          "step": 5,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 200245,
+          "sha256": "a9e30c90b348df8bb772bf4b407b5af305930690db93f6a07a4722381dff288a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0005_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0006_MOVE_FORWARD.png",
+          "step": 6,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 190972,
+          "sha256": "2c885812c22505620a6dd61df41ca46b785fdf99e449129f4e18eab8abd5d8f3",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0006_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0007_MOVE_FORWARD.png",
+          "step": 7,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 183861,
+          "sha256": "8c7cf6f5c2272c7591ac1cfc5fb6d367d7d69e8ad7000a8eb8fbf8dae266f4f9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0007_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0008_MOVE_FORWARD.png",
+          "step": 8,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 180357,
+          "sha256": "5ea4ae6c7b298c61fc913a1ee357f6ba9527c143dad8e1011ce7a114b1fdd46a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0008_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0009_MOVE_FORWARD.png",
+          "step": 9,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 180501,
+          "sha256": "a5648ebfafc69c565d18de205e9c2e5fa6343421d86d74472315a117a1c61652",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0009_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0010_MOVE_FORWARD.png",
+          "step": 10,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 190918,
+          "sha256": "7bf1a3ad711c1be1c7fa6ff945bb5681afb5a85f5c6ee808d9a0024cff53a4f3",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0010_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0011_MOVE_FORWARD.png",
+          "step": 11,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 204101,
+          "sha256": "a3b271ab0937c129f280fff91b48038269823b1076c38b0695b46f0b6e8c68b9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0011_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0012_TURN_LEFT.png",
+          "step": 12,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 211745,
+          "sha256": "c30128df2154dd5866e7af96adc90ffef63da1a9f6c6c50a40cb7e8a53ae8412",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0012_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0013_MOVE_FORWARD.png",
+          "step": 13,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 182715,
+          "sha256": "c079ae1db3da0ec9844ab2d458e221eb155479695dc394fd6b4c71463b31f615",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0013_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0014_MOVE_FORWARD.png",
+          "step": 14,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 191369,
+          "sha256": "3dcbbd51b442e7bb8a62ed7967e21b4415edbea0118662499abbac1847d0ffc7",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0014_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0015_MOVE_FORWARD.png",
+          "step": 15,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 197782,
+          "sha256": "50eaa24b65a0015f46b25208fb88a3b20886c46fed8eeb3ced60cee0956cd8fc",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0015_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0016_MOVE_FORWARD.png",
+          "step": 16,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 184628,
+          "sha256": "a026fe52f96955344dd0b51d3e0b896ef3516bce7853da2cd74faa87d96419c5",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0016_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0017_TURN_RIGHT.png",
+          "step": 17,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 179480,
+          "sha256": "43f6d8d5f0d7563b46ece20555e055feb809e4d9fe80f104851de33613cf3420",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0017_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0018_MOVE_FORWARD.png",
+          "step": 18,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 193371,
+          "sha256": "a3d4f6e87c485b44e3483605b63fd656d857e00bee8033e7b68055bc27478939",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0018_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0019_TURN_LEFT.png",
+          "step": 19,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 184144,
+          "sha256": "d4f1d4b225ab5c7d86d3d8d342ec0bb95ecf4cf1cbed88f7fed1ccc433570841",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0019_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0020_TURN_LEFT.png",
+          "step": 20,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 167455,
+          "sha256": "66a46708ab1fa1e3522e666509836d53ebd07f8686bc6c4ab10d71543197b41c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0020_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0021_MOVE_FORWARD.png",
+          "step": 21,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 191848,
+          "sha256": "6f829b98429cc58b8a2f3cfc432fafbe1e1d6efd6ccd5f768e938a35248d627f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0021_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0022_MOVE_FORWARD.png",
+          "step": 22,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 183783,
+          "sha256": "b604215f2ed5732b4b0a78001d1a29284c0cbfef8822a678c398d3e8da387a0f",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0022_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0023_MOVE_FORWARD.png",
+          "step": 23,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 170851,
+          "sha256": "c60a6bfc70f0e5e808af6b9103de412868972558e1a65b4ca8747bfabba6bfb8",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0023_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0024_MOVE_FORWARD.png",
+          "step": 24,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 158851,
+          "sha256": "d4715abf9d28a892a4d182a7d91ec742eaa47f22df2493ea60a2c745084d2eb1",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0024_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0025_MOVE_FORWARD.png",
+          "step": 25,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 150806,
+          "sha256": "7bc8e1f24aa5070faf734da9465073a7f6f4d02e420322e4650e03c798c9aff0",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0025_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0026_MOVE_FORWARD.png",
+          "step": 26,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 139802,
+          "sha256": "aa44c4e3302b1046c786a86c5cfca78609b83779a66ae068a2f2fbcda9379a92",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0026_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0027_MOVE_FORWARD.png",
+          "step": 27,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 142203,
+          "sha256": "f798ca49c0ba2842bd7869b601899008b0dcad7a15af1794af87c32c5b16344a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0027_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0028_TURN_LEFT.png",
+          "step": 28,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 144303,
+          "sha256": "d643d8bb2523512e15b7974467adecd0b4816fb04b391b533cf34a9efb4c7f5c",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0028_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0029_MOVE_FORWARD.png",
+          "step": 29,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 185013,
+          "sha256": "5b6d056f34f42792f20c1df3af8c4cfc1f09de70286064b6409acecd0f1b4eda",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0029_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0030_MOVE_FORWARD.png",
+          "step": 30,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 188666,
+          "sha256": "cbc80bea7cbcdea9d2607cf79364d73e6fd7b2d4fa12a3dd3a2584c05f279cc9",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0030_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0031_MOVE_FORWARD.png",
+          "step": 31,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 181495,
+          "sha256": "30b27cdc506f753842815a6e47ee71b21121a633e59bc3e68b8bf9353b7bc6db",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0031_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0032_TURN_LEFT.png",
+          "step": 32,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 199849,
+          "sha256": "30874ddba431314fc4b5763a1a44e95a081e0bb656cb80faf067e6fb9194214a",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0032_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0033_MOVE_FORWARD.png",
+          "step": 33,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 207679,
+          "sha256": "0e87b3d6410c611f8728f3790e9c445a04f61fc9fb106a750c2083fc2db86795",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0033_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0034_TURN_LEFT.png",
+          "step": 34,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 179094,
+          "sha256": "cfa65ed2a1e7eb5e550f2c7747e0b042c751d25e0f3334e20cf035740e904bdf",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0034_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0035_MOVE_FORWARD.png",
+          "step": 35,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 150326,
+          "sha256": "4baf3e953b08d57c27975044165a9d76295477d1d04e267c0ad817b278d5d336",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0035_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0036_TURN_RIGHT.png",
+          "step": 36,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 145356,
+          "sha256": "973ece467c4634a7153e63020ce85dd28fb83a826bf4bdb7549266d012f572b4",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0036_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0037_MOVE_FORWARD.png",
+          "step": 37,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 166048,
+          "sha256": "3b28cba6b7c706fe51f117080b96efafa27e98a91dc24ec5829c632d5a009b29",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0037_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0038_MOVE_FORWARD.png",
+          "step": 38,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 161298,
+          "sha256": "8f24b9bb47988f7f7f5d22f50b20588d64e2ab954b1975ab977b7e133fbcfbd2",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0038_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0039_TURN_RIGHT.png",
+          "step": 39,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 163200,
+          "sha256": "90fdb498e764213aabef7c3167a26777717b2a3ded415f902d5dbe504141fd26",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0039_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0040_MOVE_FORWARD.png",
+          "step": 40,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 178560,
+          "sha256": "19a6432f13f96c9e7b717686ff426520992550e5b20e79a450625a2f81203e5d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0040_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0041_MOVE_FORWARD.png",
+          "step": 41,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 188637,
+          "sha256": "be7885264d069f4f21e969da40b1d36705ea9fbf51624558246cb2a9bb9c829e",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0041_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0042_TURN_LEFT.png",
+          "step": 42,
+          "action": "TURN_LEFT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 212591,
+          "sha256": "3674ef497fef416564d9cc91ba6559f182f70702545fcfccf1c46cdcdc3c72c0",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0042_TURN_LEFT.png"
+        },
+        {
+          "filename": "step_0043_MOVE_FORWARD.png",
+          "step": 43,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 204503,
+          "sha256": "9fd077f0b7c3e9467292cdf801e04448112f0fe3cadbb14e0e494f4bb7371325",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0043_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0044_TURN_RIGHT.png",
+          "step": 44,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 230917,
+          "sha256": "ca5f082fa3c4cd3c20a1e1c96960f35bbd732606e74a01b4c9c438e9b38b7a8e",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0044_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0045_MOVE_FORWARD.png",
+          "step": 45,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 208836,
+          "sha256": "3394501144761fce06994b9dc60d77f24fd4bbcc150bb7d01998e5285de16aaf",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0045_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0046_MOVE_FORWARD.png",
+          "step": 46,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 214586,
+          "sha256": "feeb105ea9aa602f4d71c121d5715b3879b316202e970d703b42d056c36d8f2d",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0046_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0047_MOVE_FORWARD.png",
+          "step": 47,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 209636,
+          "sha256": "bbcd70533f9fbb231635147ac951205988173cc9de6b808682eca9a95eae6c46",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0047_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0048_TURN_RIGHT.png",
+          "step": 48,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 235243,
+          "sha256": "a9adbfd4341f627a1d6d3d8d426e9e563359d3629fa148dddf1223007df03a0e",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0048_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0049_TURN_RIGHT.png",
+          "step": 49,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 194031,
+          "sha256": "74f816eb58e69cb513c5388fe3ed687868795676a1259d92172c4ccf9ec641c2",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0049_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0050_TURN_RIGHT.png",
+          "step": 50,
+          "action": "TURN_RIGHT",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 147926,
+          "sha256": "ac749feea150f2acad2f7ff57cec4ceea250d22fdb009ce1f707f1c0fca673b5",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0050_TURN_RIGHT.png"
+        },
+        {
+          "filename": "step_0051_MOVE_FORWARD.png",
+          "step": 51,
+          "action": "MOVE_FORWARD",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 144881,
+          "sha256": "1a3971827d79620bf4468edd1278b5cab330a5d869b9ac9d7254d212f1fef537",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0051_MOVE_FORWARD.png"
+        },
+        {
+          "filename": "step_0052_STOP.png",
+          "step": 52,
+          "action": "STOP",
+          "dimensions": [
+            640,
+            480
+          ],
+          "mode": "RGB",
+          "size_bytes": 132296,
+          "sha256": "48554beb4393ce48026cd3d98d9c17ad5bedfb0bb0f092212815a0a3baf187f0",
+          "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/training_reference/R2R-CE-640x480/train/3871/step_0052_STOP.png"
+        }
+      ]
+    }
+  ],
+  "skipped_episodes": [],
+  "total_frames": 175
+}

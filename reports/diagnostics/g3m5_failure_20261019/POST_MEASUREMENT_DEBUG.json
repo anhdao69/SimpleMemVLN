@@ -1,0 +1,84 @@
+{
+  "status": "failure reproduced; execution method corrected before diagnostic measurements",
+  "first_attempt": {
+    "queue_status": "failed",
+    "failed_stage": "probes_and_ablation",
+    "failure": "bank_M5_E1 exited 1",
+    "failed_model": "M5_E1",
+    "episode_id": "1007",
+    "plans_equal": true,
+    "copied_full_forward_logits_bitwise_equal": true,
+    "prefix_state_relative_frobenius_error": 0.03167570824481703,
+    "previous_custom_limit": 0.01,
+    "failure_conclusion": "The custom full-vs-truncated prefix-state check failed; no D-b intervention episode was measured."
+  },
+  "reproduction": {
+    "episode_id": "1007",
+    "prefix_tokens": 9004,
+    "layer24_input_full_vs_prefix": {
+      "bitwise_equal": false,
+      "relative_frobenius_error": 0.034364718943834305,
+      "rms": 0.016107622534036636,
+      "max_abs": 1.8125,
+      "different_tokens": 8997
+    },
+    "reconstructed_state_full_vs_prefix": {
+      "relative_frobenius_error": 0.03167570824481703
+    },
+    "layerwise_output_comparison": [
+      {
+        "layer": 0,
+        "relative_frobenius_error": 0.0010251125786453485,
+        "max_abs": 0.0625
+      },
+      {
+        "layer": 1,
+        "relative_frobenius_error": 0.002060108818113804,
+        "max_abs": 0.125
+      },
+      {
+        "layer": 2,
+        "relative_frobenius_error": 0.0037516665179282427,
+        "max_abs": 0.1875
+      },
+      {
+        "layer": 3,
+        "relative_frobenius_error": 0.0043701534159481525,
+        "max_abs": 0.1875
+      },
+      {
+        "layer": 7,
+        "relative_frobenius_error": 0.009071355685591698,
+        "max_abs": 0.25
+      },
+      {
+        "layer": 11,
+        "relative_frobenius_error": 0.013413183391094208,
+        "max_abs": 0.234375
+      },
+      {
+        "layer": 15,
+        "relative_frobenius_error": 0.01882200874388218,
+        "max_abs": 0.21875
+      },
+      {
+        "layer": 19,
+        "relative_frobenius_error": 0.02951684780418873,
+        "max_abs": 0.78125
+      },
+      {
+        "layer": 23,
+        "relative_frobenius_error": 0.034364718943834305,
+        "max_abs": 1.8125
+      }
+    ],
+    "interpretation": "The discrepancy begins at the first decoder block when the full sequence is shortened and accumulates by layer. This identifies a sequence-length-dependent numerical path; the exact low-level kernel mechanism is not isolated."
+  },
+  "method_correction": {
+    "measurement": "For targeted/control Metric 1, compare each intervention against an unmodified prefix forward using the same anchor and truncated sequence length; use that prefix baseline\u2019s source-frame keys/values. Keep full-length forward for the registered global bank-off evaluation.",
+    "thresholds_changed": false,
+    "registered_common_gates_changed": false,
+    "navigation_or_auxiliary_parameters_updated": false,
+    "full_vs_prefix_difference": "Retained as descriptive sensitivity evidence, not used as a gate because this check is not a registered parity gate and compares different sequence-length execution paths."
+  }
+}

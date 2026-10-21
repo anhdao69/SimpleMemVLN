@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-10-21 01:49:43 +0700",
+  "pid": 298832,
+  "progress": {
+    "M5_E1": {
+      "episodes": 240,
+      "rows": 403424,
+      "bytes": 84361806,
+      "mtime": "2026-10-21 00:55:51 +0700"
+    },
+    "G3_M5": {
+      "episodes": 240,
+      "rows": 403108,
+      "bytes": 84231875,
+      "mtime": "2026-10-21 01:26:33 +0700"
+    },
+    "TRIPLE": {
+      "episodes": 168,
+      "rows": 281370,
+      "bytes": 59166037,
+      "mtime": "2026-10-21 01:49:40 +0700"
+    }
+  },
+  "panel_per_model": 240,
+  "complete": false,
+  "queue_stage": "probes_and_ablation",
+  "verifier_latest": {
+    "episodes": 1645,
+    "scheduled_episodes": 1839,
+    "sr": 0.47598784194528876,
+    "spl": 0.4432481345285821,
+    "failures": 0,
+    "complete": false,
+    "passed": true
+  }
+}

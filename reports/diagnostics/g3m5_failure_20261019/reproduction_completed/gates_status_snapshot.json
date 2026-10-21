@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "pid": 186438,
+  "episode_ids": [
+    "1007",
+    "1013"
+  ],
+  "models_completed": [
+    "M5_E1",
+    "G3_M5",
+    "TRIPLE",
+    "G3",
+    "G1"
+  ],
+  "queued_unix": 1792433393.2395375,
+  "updated_unix": 1792436762.4663243,
+  "selected_episode_uids": [
+    "r2rce:val_unseen:mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb:1007:1007",
+    "r2rce:val_unseen:mp3d/TbHJrupSAjP/TbHJrupSAjP.glb:1013:1013"
+  ],
+  "current_model": "G1",
+  "model_started_unix": 1792436618.8180668,
+  "child_pid": 197340,
+  "last_exit_code": 0,
+  "finished_unix": 1792436762.466322
+}

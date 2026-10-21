@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "pid": 182980,
+  "command": [
+    "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+    "-u",
+    "-m",
+    "scripts.diag.cache_teacher",
+    "--manifest",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render/episodes.jsonl",
+    "--panel",
+    "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+    "--output",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_cache",
+    "--teacher-source",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/vggt-omega",
+    "--teacher-weights",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt"
+  ],
+  "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+  "queued_unix": 1792432929.2530313,
+  "gpu_coordination": "remote_inputs confirmed all instrumentation complete; root informed teacher heavy GPU reserved after preparation",
+  "started_unix": 1792434489.2815206,
+  "child_pid": 192945,
+  "returncode": 0,
+  "finished_unix": 1792435940.741982
+}

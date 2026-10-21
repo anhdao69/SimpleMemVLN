@@ -1,0 +1,15 @@
+{
+  "observed_at": "2026-10-20T23:50:33.260700+07:00",
+  "pid": 292764,
+  "phase": "aggregation_running",
+  "integrity_pass_evidence": "summarize_captures.main calls validate_captures before creating output and writing CSV rows",
+  "source_sha256": "2501ff7a7beb5b526d22597747601b5fd07eed71866dd09034dee874ae539d6a",
+  "outputs": {
+    "eviction_bridge_episodes.csv": 16438,
+    "attention_steps.csv": 67473973,
+    "selection_steps.csv": 16850134,
+    "cross_selection_steps.csv": 0,
+    "probe_drift_steps.csv": 0
+  },
+  "summary_complete": false
+}

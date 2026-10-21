@@ -1,0 +1,29 @@
+{
+  "status": "complete",
+  "mode": "render",
+  "archive_panel_complete": false,
+  "archive_inventory": "/data14t/anhdh35/diag_g3m5_20261019_assets/archive_inventory.json",
+  "command": [
+    "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+    "-u",
+    "-m",
+    "scripts.diag.prepare_expert",
+    "--mode",
+    "render",
+    "--source",
+    "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen.json.gz",
+    "--ground-truth",
+    "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen_gt.json.gz",
+    "--panel",
+    "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+    "--frames-root",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_frames_render/val_unseen",
+    "--output",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render"
+  ],
+  "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+  "started_unix": 1792432868.569075,
+  "pid": 181301,
+  "returncode": 0,
+  "finished_unix": 1792434478.16908
+}

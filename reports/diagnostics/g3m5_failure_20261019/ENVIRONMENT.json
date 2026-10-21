@@ -1,0 +1,30 @@
+{
+  "policy_python": "3.12.13 (main, Aug  7 2026, 02:25:39) [Clang 22.1.3 ]",
+  "platform": "Linux-6.8.0-138-generic-x86_64-with-glibc2.35",
+  "torch": "2.10.0+cu129",
+  "transformers": "5.11.0",
+  "cuda_runtime": "12.9",
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+  "capability": [
+    12,
+    0
+  ],
+  "float32_matmul_precision": "highest",
+  "cuda_matmul_allow_tf32": false,
+  "packages": {
+    "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+    "flash-linear-attention": "0.5.2",
+    "fla-core": "0.5.2",
+    "triton": "3.6.0",
+    "numpy": "2.4.4",
+    "pillow": "12.2.0",
+    "scipy": null,
+    "matplotlib": null
+  },
+  "simulator": {
+    "python": "3.10.20 (main, Jun 11 2026, 15:17:37) [GCC 14.3.0]",
+    "habitat": "0.2.4",
+    "habitat_sim": "0.2.4"
+  },
+  "nvidia_smi": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition, GPU-fa3af837-308e-d118-d6bf-9312fcc4c25f, 580.178.04, 97887 MiB"
+}

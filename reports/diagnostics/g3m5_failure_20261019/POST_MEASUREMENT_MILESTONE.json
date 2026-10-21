@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-10-20T22:30:38.330896+07:00",
+  "models": {
+    "M5_E1": {
+      "episodes": 240,
+      "journal_sha256": "3482c4c709b2585d285e354cc22df877aea7f7c1211c71b3aca237ae28c53fed",
+      "matched_pairs": 1232,
+      "parameter_versions_unchanged": true,
+      "journal_hash_verified": true,
+      "artifact_paths_present": true
+    },
+    "G3_M5": {
+      "episodes": 240,
+      "journal_sha256": "890907f914f05737ded823a7dc0f197507170c037f313d6048451f57a7297ba9",
+      "matched_pairs": 1153,
+      "parameter_versions_unchanged": true,
+      "journal_hash_verified": true,
+      "artifact_paths_present": true
+    },
+    "TRIPLE": {
+      "episodes": 240,
+      "journal_sha256": "a890e064e08e5fee10c0cde2ba37a18c7499bbe402de7d948d73f85229c88c6c",
+      "matched_pairs": 1239,
+      "parameter_versions_unchanged": true,
+      "journal_hash_verified": true,
+      "artifact_paths_present": true
+    }
+  },
+  "probe_completion": {
+    "models": [
+      "M5_E1",
+      "G3_M5",
+      "TRIPLE",
+      "G3",
+      "G1"
+    ],
+    "lag_groups": [
+      "A",
+      "B",
+      "C"
+    ],
+    "status": "complete"
+  },
+  "queue": {
+    "status": "running",
+    "pid": 271026,
+    "children": {
+      "fit_probes": {
+        "pid": 271030,
+        "status": "complete",
+        "exit_code": 0
+      },
+      "bank_M5_E1": {
+        "pid": 271031,
+        "status": "complete",
+        "exit_code": 0
+      },
+      "bank_G3_M5": {
+        "pid": 277937,
+        "status": "complete",
+        "exit_code": 0
+      },
+      "bank_TRIPLE": {
+        "pid": 284309,
+        "status": "complete",
+        "exit_code": 0
+      },
+      "summarize_captures": {
+        "pid": 292764,
+        "status": "running"
+      }
+    },
+    "stages_completed": [
+      "probes_and_ablation"
+    ],
+    "updated_unix": 1792510238.385323,
+    "stage": "probes_and_ablation"
+  },
+  "live_pids": [
+    271026,
+    292764
+  ]
+}

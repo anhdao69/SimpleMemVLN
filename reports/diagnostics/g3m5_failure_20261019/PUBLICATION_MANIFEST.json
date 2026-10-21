@@ -1,0 +1,2540 @@
+{
+  "source_commit": "747677faae442c06e90019bbe013b88ab5ddf53f",
+  "source_worktree": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+  "scientific_report_qualified": false,
+  "rendering_gate": "failed_rendering_parity_stop",
+  "files": [
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/ABLATION_PROBE_APPLICATION_LIVE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/ABLATION_PROBE_APPLICATION_LIVE.json",
+      "source_bytes": 784,
+      "source_sha256": "d8d26a9167f6d7ea4b2435d01778760152cbe899c7cfd026b7f92c7a9a13e6f4",
+      "published_bytes": 784,
+      "published_sha256": "d8d26a9167f6d7ea4b2435d01778760152cbe899c7cfd026b7f92c7a9a13e6f4"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/ACTUAL_CAPTURE_SCHEMA_SMOKE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/ACTUAL_CAPTURE_SCHEMA_SMOKE.json",
+      "source_bytes": 3455,
+      "source_sha256": "7fbe5acaff7b97c3e02f97c5457cf6fb802d931803c0bf627ed5a38ca967b243",
+      "published_bytes": 3455,
+      "published_sha256": "7fbe5acaff7b97c3e02f97c5457cf6fb802d931803c0bf627ed5a38ca967b243"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/BASELINE_RESULTS_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/BASELINE_RESULTS_VERIFIED.json",
+      "source_bytes": 3618,
+      "source_sha256": "6d02928d810c60dea3cee32ac0540def8629129ad03697ba992b0c3e7ef477ed",
+      "published_bytes": 3618,
+      "published_sha256": "6d02928d810c60dea3cee32ac0540def8629129ad03697ba992b0c3e7ef477ed"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_AGGREGATION_LIVE_CHECK.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_AGGREGATION_LIVE_CHECK.json",
+      "source_bytes": 928,
+      "source_sha256": "63f3131d5fc479a4fb03b56d3113da0c45c2fa375f7b37d125cc2b6e1f297a46",
+      "published_bytes": 928,
+      "published_sha256": "63f3131d5fc479a4fb03b56d3113da0c45c2fa375f7b37d125cc2b6e1f297a46"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_AGGREGATION_STARTED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_AGGREGATION_STARTED.json",
+      "source_bytes": 551,
+      "source_sha256": "e01cb0adbd719ade3fceb9a30d5feb595786b4e2b9704955a7368a73029a7aec",
+      "published_bytes": 551,
+      "published_sha256": "e01cb0adbd719ade3fceb9a30d5feb595786b4e2b9704955a7368a73029a7aec"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_SUMMARY_VALIDATED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/CAPTURE_SUMMARY_VALIDATED.json",
+      "source_bytes": 1690,
+      "source_sha256": "f739e594a0d8f5e2511b9e6c00b58c71eab0164846136e85489a96b34edf45bf",
+      "published_bytes": 1690,
+      "published_sha256": "f739e594a0d8f5e2511b9e6c00b58c71eab0164846136e85489a96b34edf45bf"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETE.json",
+      "source_bytes": 386,
+      "source_sha256": "6b815b0bf474b85efe5a18dca97d7bdb23c0a2fb8c133b44c1d2d8f74225b0b5",
+      "published_bytes": 386,
+      "published_sha256": "6b815b0bf474b85efe5a18dca97d7bdb23c0a2fb8c133b44c1d2d8f74225b0b5"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETED_FIGURE_COMMAND.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETED_FIGURE_COMMAND.json",
+      "source_bytes": 2213,
+      "source_sha256": "18cb305724459da8365744d3234f8fd218cd8b618681239e822b6e2380848f98",
+      "published_bytes": 2213,
+      "published_sha256": "18cb305724459da8365744d3234f8fd218cd8b618681239e822b6e2380848f98"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETED_REPORT_INPUTS_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/COMPLETED_REPORT_INPUTS_VERIFIED.json",
+      "source_bytes": 784,
+      "source_sha256": "50e907e98c3956f57d885b33139796c39f2dad4945e4da01d8c2837ffc287aa3",
+      "published_bytes": 784,
+      "published_sha256": "50e907e98c3956f57d885b33139796c39f2dad4945e4da01d8c2837ffc287aa3"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/DOWNLOAD_MANIFEST.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/DOWNLOAD_MANIFEST.json",
+      "source_bytes": 8216,
+      "source_sha256": "5058229290e8f3d1733fc004ea1962a21d86dcbb27918e18438aef4cb254cf63",
+      "published_bytes": 8216,
+      "published_sha256": "5058229290e8f3d1733fc004ea1962a21d86dcbb27918e18438aef4cb254cf63"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/D_B_FINAL_RESULTS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/D_B_FINAL_RESULTS.json",
+      "source_bytes": 541828,
+      "source_sha256": "b5a3cf7cf8f461a7c9b03ce52f1f7e8e118f5b5cf068d98f556e1ea152f72821",
+      "published_bytes": 541828,
+      "published_sha256": "b5a3cf7cf8f461a7c9b03ce52f1f7e8e118f5b5cf068d98f556e1ea152f72821"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/D_B_RUNTIME_SMOKE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/D_B_RUNTIME_SMOKE.json",
+      "source_bytes": 410,
+      "source_sha256": "b0410dcc2e5b7dd1b8236b18ea6f1e1c1a42a0c2ebfae8edf6e2eda63e329405",
+      "published_bytes": 410,
+      "published_sha256": "b0410dcc2e5b7dd1b8236b18ea6f1e1c1a42a0c2ebfae8edf6e2eda63e329405"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/D_E_FINAL_RESULTS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/D_E_FINAL_RESULTS.json",
+      "source_bytes": 15513,
+      "source_sha256": "3511ee36d0f9358a2d337cd8575319dadf7c92862540c1fcebb2a788f968c465",
+      "published_bytes": 15513,
+      "published_sha256": "3511ee36d0f9358a2d337cd8575319dadf7c92862540c1fcebb2a788f968c465"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/D_E_PREFLIGHTS_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/D_E_PREFLIGHTS_VERIFIED.json",
+      "source_bytes": 1990,
+      "source_sha256": "c8b0b0a6d0b3a88216cdb2a58201ef5c070d864503c53e641f57a638b127fa81",
+      "published_bytes": 1990,
+      "published_sha256": "c8b0b0a6d0b3a88216cdb2a58201ef5c070d864503c53e641f57a638b127fa81"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/ENVIRONMENT.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/ENVIRONMENT.json",
+      "source_bytes": 927,
+      "source_sha256": "f54fc6f06c0553b191e59d29701f93e41c43a947451148ed3928d4de4f2e905c",
+      "published_bytes": 927,
+      "published_sha256": "f54fc6f06c0553b191e59d29701f93e41c43a947451148ed3928d4de4f2e905c"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/FIRST_CAPTURE_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/FIRST_CAPTURE_VERIFIED.json",
+      "source_bytes": 2615,
+      "source_sha256": "33286244baa8003eb1d3a640b60a644e7699b64e54db701af049eefa745fc331",
+      "published_bytes": 2615,
+      "published_sha256": "33286244baa8003eb1d3a640b60a644e7699b64e54db701af049eefa745fc331"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/FIXTURE_INSTRUMENT_PROGRESS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/FIXTURE_INSTRUMENT_PROGRESS.json",
+      "source_bytes": 659,
+      "source_sha256": "02b3ff10a78f308e53bb4efe1c1f7fd0401ef80aebb36b532b06fd2a18212764",
+      "published_bytes": 659,
+      "published_sha256": "02b3ff10a78f308e53bb4efe1c1f7fd0401ef80aebb36b532b06fd2a18212764"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/IMPLEMENTATION_PLAN.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/IMPLEMENTATION_PLAN.md",
+      "source_bytes": 9156,
+      "source_sha256": "22cbaf3c4f0614b32bbfe32b6ed138784ec78c1917351a3bd351229531f314b1",
+      "published_bytes": 9156,
+      "published_sha256": "22cbaf3c4f0614b32bbfe32b6ed138784ec78c1917351a3bd351229531f314b1"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/INPUT_RECOVERY_MANIFEST.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/INPUT_RECOVERY_MANIFEST.json",
+      "source_bytes": 1495,
+      "source_sha256": "6c50033405f2ff421b4ae40bdc4a7a885f1a20ded2dcddcf3fbf4d306aaf522b",
+      "published_bytes": 1495,
+      "published_sha256": "6c50033405f2ff421b4ae40bdc4a7a885f1a20ded2dcddcf3fbf4d306aaf522b"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/JANUS_ARCHIVE_PROVENANCE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/JANUS_ARCHIVE_PROVENANCE.json",
+      "source_bytes": 1372,
+      "source_sha256": "233a204ff5174e5b175d87ddeda5b503ad9bc53ca01b9efea8b35b5f8323aa5d",
+      "published_bytes": 1372,
+      "published_sha256": "233a204ff5174e5b175d87ddeda5b503ad9bc53ca01b9efea8b35b5f8323aa5d"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/KL_SCOPE_UPDATE.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/KL_SCOPE_UPDATE.md",
+      "source_bytes": 392,
+      "source_sha256": "2351cf6a5ac61d729e3273bf4bf1bd1e486fa807a666ddb6cd868850540e4693",
+      "published_bytes": 392,
+      "published_sha256": "2351cf6a5ac61d729e3273bf4bf1bd1e486fa807a666ddb6cd868850540e4693"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_GATES_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_GATES_VERIFIED.json",
+      "source_bytes": 1057889,
+      "source_sha256": "2c99766230c02ae59825db2a1923e6d7215179d8af305fcf4cae0bad027dfbd3",
+      "published_bytes": 1057889,
+      "published_sha256": "2c99766230c02ae59825db2a1923e6d7215179d8af305fcf4cae0bad027dfbd3"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_MANIFEST.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_MANIFEST.json",
+      "source_bytes": 3552,
+      "source_sha256": "6d9c07799819d2d2c51c2eafeddfcaf50a612fa0f05db564f823379103669e39",
+      "published_bytes": 3552,
+      "published_sha256": "6d9c07799819d2d2c51c2eafeddfcaf50a612fa0f05db564f823379103669e39"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_PREPARATION_PROGRESS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PANEL_PREPARATION_PROGRESS.json",
+      "source_bytes": 6241,
+      "source_sha256": "7c5beb9457da5a8e17459c88b5ce696bdfc11bdc1494147b260230d9fbe9d69e",
+      "published_bytes": 6241,
+      "published_sha256": "7c5beb9457da5a8e17459c88b5ce696bdfc11bdc1494147b260230d9fbe9d69e"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/POST_MEASUREMENT_DEBUG.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/POST_MEASUREMENT_DEBUG.json",
+      "source_bytes": 3059,
+      "source_sha256": "b34919f8c0e7dab69dd49972a829a0746aeee45df245919ed81ffebcde496e5c",
+      "published_bytes": 3059,
+      "published_sha256": "b34919f8c0e7dab69dd49972a829a0746aeee45df245919ed81ffebcde496e5c"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/POST_MEASUREMENT_MILESTONE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/POST_MEASUREMENT_MILESTONE.json",
+      "source_bytes": 1916,
+      "source_sha256": "0140b739a35799b8c8f8570711ae7847944da85ebb761281d77c2d9084fd4a57",
+      "published_bytes": 1916,
+      "published_sha256": "0140b739a35799b8c8f8570711ae7847944da85ebb761281d77c2d9084fd4a57"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_CAPTURE_FINDINGS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_CAPTURE_FINDINGS.json",
+      "source_bytes": 21699,
+      "source_sha256": "c10d52391b82d77bfb401e69231c862ac977cb19b65d262bd61dd15728321726",
+      "published_bytes": 21699,
+      "published_sha256": "c10d52391b82d77bfb401e69231c862ac977cb19b65d262bd61dd15728321726"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION.json",
+      "source_bytes": 10978970,
+      "source_sha256": "772edb79a8c5bf441e9f31863def907483e8143ad44bbd54cdf31f1e4aea29f3",
+      "published_bytes": 10978970,
+      "published_sha256": "772edb79a8c5bf441e9f31863def907483e8143ad44bbd54cdf31f1e4aea29f3"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION_LIVE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION_LIVE.json",
+      "source_bytes": 616,
+      "source_sha256": "86d219c1c730f1583dc244616348aee5116f247fd93b561455fa215410e05b91",
+      "published_bytes": 616,
+      "published_sha256": "86d219c1c730f1583dc244616348aee5116f247fd93b561455fa215410e05b91"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/REMOTE_ARTIFACT_VERIFICATION.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/REMOTE_ARTIFACT_VERIFICATION.json",
+      "source_bytes": 597481,
+      "source_sha256": "580a38440edb3c4517bbba110de12b23638aaca3bf1dcc2d4d0b9e6d8a2790d5",
+      "published_bytes": 597481,
+      "published_sha256": "580a38440edb3c4517bbba110de12b23638aaca3bf1dcc2d4d0b9e6d8a2790d5"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/RENDERING_GATE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/RENDERING_GATE.json",
+      "source_bytes": 158482,
+      "source_sha256": "76d21692993a463b4cf870b9517237810286f12165ab9d17f0ad510b703b671a",
+      "published_bytes": 158482,
+      "published_sha256": "76d21692993a463b4cf870b9517237810286f12165ab9d17f0ad510b703b671a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/REPLAY_G2_PROGRESS.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/REPLAY_G2_PROGRESS.json",
+      "source_bytes": 577550,
+      "source_sha256": "dfac6995a50e356c3c0553a67b6e352c2ff01b13f90cbca46bac965da657587f",
+      "published_bytes": 577550,
+      "published_sha256": "dfac6995a50e356c3c0553a67b6e352c2ff01b13f90cbca46bac965da657587f"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/REPORT.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/REPORT.md",
+      "source_bytes": 891584,
+      "source_sha256": "eda5543738c72d02f47b8ad07a983a1204f44be43c4fac717cfbac514ce3aa60",
+      "published_bytes": 891584,
+      "published_sha256": "eda5543738c72d02f47b8ad07a983a1204f44be43c4fac717cfbac514ce3aa60"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/REPORT_PREREQUISITES_DRAFT.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/REPORT_PREREQUISITES_DRAFT.json",
+      "source_bytes": 978175,
+      "source_sha256": "cbee9b895d3d16b5fe6d0b8eafbc8342ad1b25ad6aa3ffe71c6367c0a1c69275",
+      "published_bytes": 978175,
+      "published_sha256": "cbee9b895d3d16b5fe6d0b8eafbc8342ad1b25ad6aa3ffe71c6367c0a1c69275"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/REPORT_PREREQUISITES_FINAL.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/REPORT_PREREQUISITES_FINAL.json",
+      "source_bytes": 982517,
+      "source_sha256": "b159115be45c3f576ad6c73ae1fc5a9d796e5f5067166656a378c6b6abe23783",
+      "published_bytes": 982517,
+      "published_sha256": "b159115be45c3f576ad6c73ae1fc5a9d796e5f5067166656a378c6b6abe23783"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/RESOURCE_CLEANUP_20261020.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/RESOURCE_CLEANUP_20261020.json",
+      "source_bytes": 9883,
+      "source_sha256": "ec6f5e525bff7f06d03832b76f2637df076b0a1c43298e3e468e1d64bca90c6a",
+      "published_bytes": 9883,
+      "published_sha256": "ec6f5e525bff7f06d03832b76f2637df076b0a1c43298e3e468e1d64bca90c6a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/SCENE_ASSET_VERIFICATION.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/SCENE_ASSET_VERIFICATION.json",
+      "source_bytes": 10026,
+      "source_sha256": "c1ccb52ec055151be9f3c73ab43f7c0366c1aa19f2a583d4fcc6b7c0d3da7686",
+      "published_bytes": 10026,
+      "published_sha256": "c1ccb52ec055151be9f3c73ab43f7c0366c1aa19f2a583d4fcc6b7c0d3da7686"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/SCIENTIFIC_REVIEW.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/SCIENTIFIC_REVIEW.json",
+      "source_bytes": 2017,
+      "source_sha256": "c051e3a09d389d1cae2ab7583442ba2b3346e77d4485fa66cce1d757e601299a",
+      "published_bytes": 2017,
+      "published_sha256": "c051e3a09d389d1cae2ab7583442ba2b3346e77d4485fa66cce1d757e601299a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/SCOPE_UPDATE.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/SCOPE_UPDATE.md",
+      "source_bytes": 1705,
+      "source_sha256": "5b23ec82db7e606f7e665c74b6e0c5360bc251a5cb9fdbbf35db588b642101d5",
+      "published_bytes": 1705,
+      "published_sha256": "5b23ec82db7e606f7e665c74b6e0c5360bc251a5cb9fdbbf35db588b642101d5"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/STATUS.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/STATUS.md",
+      "source_bytes": 331828,
+      "source_sha256": "8437981bd709cead143a2c6abb94fc4f027899f7a2afce6cbda283315ac26f92",
+      "published_bytes": 331828,
+      "published_sha256": "8437981bd709cead143a2c6abb94fc4f027899f7a2afce6cbda283315ac26f92"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/Streaming_VGGT_inventory.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/Streaming_VGGT_inventory.json",
+      "source_bytes": 34866,
+      "source_sha256": "e44894a0a3a9a968272a57d9e4f8581314809d88abf16b8a03d6abc708daa7a6",
+      "published_bytes": 34866,
+      "published_sha256": "e44894a0a3a9a968272a57d9e4f8581314809d88abf16b8a03d6abc708daa7a6"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/Streaming_episodic_inventory.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/Streaming_episodic_inventory.json",
+      "source_bytes": 52160,
+      "source_sha256": "96175ce30729d0f44153dae58e09b79a54fe4501d2fbf6791ac44f7bf47e86c7",
+      "published_bytes": 52160,
+      "published_sha256": "96175ce30729d0f44153dae58e09b79a54fe4501d2fbf6791ac44f7bf47e86c7"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TASK_SPEC.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TASK_SPEC.md",
+      "source_bytes": 37357,
+      "source_sha256": "d7ddd1a7280a1cdcd490d5a2c2c39d2484b9504af9aa8a53806bf985c4a6b96a",
+      "published_bytes": 37357,
+      "published_sha256": "d7ddd1a7280a1cdcd490d5a2c2c39d2484b9504af9aa8a53806bf985c4a6b96a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_CACHE_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_CACHE_VERIFIED.json",
+      "source_bytes": 2262,
+      "source_sha256": "cc36c22c39fed556e03c9eaac082e47a969c607944812a9afd5f89501e21cf6f",
+      "published_bytes": 2262,
+      "published_sha256": "cc36c22c39fed556e03c9eaac082e47a969c607944812a9afd5f89501e21cf6f"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_CONSTRUCTOR_GATE.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_CONSTRUCTOR_GATE.json",
+      "source_bytes": 1347,
+      "source_sha256": "4dd04a3f52959f9a7655346c348e3dd36215f3daf31e28a115c8964d616c118a",
+      "published_bytes": 1347,
+      "published_sha256": "4dd04a3f52959f9a7655346c348e3dd36215f3daf31e28a115c8964d616c118a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_SOURCE_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_SOURCE_VERIFIED.json",
+      "source_bytes": 3503,
+      "source_sha256": "220dc4959cf391ca04e1a7565ec57b0306173f278b37d02934fa59a0e8af9e9a",
+      "published_bytes": 3503,
+      "published_sha256": "220dc4959cf391ca04e1a7565ec57b0306173f278b37d02934fa59a0e8af9e9a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_WEIGHT_VERIFIED.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TEACHER_WEIGHT_VERIFIED.json",
+      "source_bytes": 396,
+      "source_sha256": "5a6333dbe063032ebca8c9991ced082f1728d0518a035c34f0be965a3437598c",
+      "published_bytes": 396,
+      "published_sha256": "5a6333dbe063032ebca8c9991ced082f1728d0518a035c34f0be965a3437598c"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/TRAINING_REFERENCE_RECOVERY.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/TRAINING_REFERENCE_RECOVERY.json",
+      "source_bytes": 87765,
+      "source_sha256": "88cab91945006366ce247da8c6c76dc2d99ef1bedc039225e977d38ebcb885da",
+      "published_bytes": 87765,
+      "published_sha256": "88cab91945006366ce247da8c6c76dc2d99ef1bedc039225e977d38ebcb885da"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/UPSTREAM_LOCAL_R2R_FINAL_20261019.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/UPSTREAM_LOCAL_R2R_FINAL_20261019.json",
+      "source_bytes": 36619,
+      "source_sha256": "845c9b48d14af02f69fe06af42b1a208be7ee8d5921feea3fd1d0644ae06502f",
+      "published_bytes": 36619,
+      "published_sha256": "845c9b48d14af02f69fe06af42b1a208be7ee8d5921feea3fd1d0644ae06502f"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/REVIEW.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/REVIEW.json",
+      "source_bytes": 1427,
+      "source_sha256": "cb48ffb2ca19255db4fd6aaed4d3665fda03912f2814a8c8d9a8005b8cdfae08",
+      "published_bytes": 1427,
+      "published_sha256": "cb48ffb2ca19255db4fd6aaed4d3665fda03912f2814a8c8d9a8005b8cdfae08"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figure_results.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figure_results.json",
+      "source_bytes": 4412667,
+      "source_sha256": "bdee5cc70815b221e34a48918e8590c5ee7f08de2acb87a251ad6b8d03fc33de",
+      "published_bytes": 4412667,
+      "published_sha256": "bdee5cc70815b221e34a48918e8590c5ee7f08de2acb87a251ad6b8d03fc33de"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-a.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-a.png",
+      "source_bytes": 580686,
+      "source_sha256": "b7d8d8e444822d4f2e691863e15bc331f3c4e055e88768540549aa7fc2a6856f",
+      "published_bytes": 580686,
+      "published_sha256": "b7d8d8e444822d4f2e691863e15bc331f3c4e055e88768540549aa7fc2a6856f"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-b.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-b.png",
+      "source_bytes": 182015,
+      "source_sha256": "f15c4aede243e632b043be591de7952d564f7774cdbcacba0b52f89270f15f93",
+      "published_bytes": 182015,
+      "published_sha256": "f15c4aede243e632b043be591de7952d564f7774cdbcacba0b52f89270f15f93"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-c.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-c.png",
+      "source_bytes": 640746,
+      "source_sha256": "03cf6fc96614ac985de4a69abc3d52e3677db3508fb4c0742f199bc6012b752b",
+      "published_bytes": 640746,
+      "published_sha256": "03cf6fc96614ac985de4a69abc3d52e3677db3508fb4c0742f199bc6012b752b"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-d.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-d.png",
+      "source_bytes": 396847,
+      "source_sha256": "0956a2dd1b27e779d6c217967a74f9460d97cc7577a3026428669643b271d9cf",
+      "published_bytes": 396847,
+      "published_sha256": "0956a2dd1b27e779d6c217967a74f9460d97cc7577a3026428669643b271d9cf"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-f.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_figure_review_20261021/figures/D-f.png",
+      "source_bytes": 357385,
+      "source_sha256": "57729b17b5d73a927626c2a2cc87e4c4adb3a100c1714d31b49198ca2f7cfdce",
+      "published_bytes": 357385,
+      "published_sha256": "57729b17b5d73a927626c2a2cc87e4c4adb3a100c1714d31b49198ca2f7cfdce"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/de_panel_ids.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/de_panel_ids.json",
+      "source_bytes": 223519,
+      "source_sha256": "475d192008a0ef5ab0d0c249aff4769d345cf9cc1879ee720c9ba98e014a3cb1",
+      "published_bytes": 223519,
+      "published_sha256": "475d192008a0ef5ab0d0c249aff4769d345cf9cc1879ee720c9ba98e014a3cb1"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-a.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-a.png",
+      "source_bytes": 580686,
+      "source_sha256": "b7d8d8e444822d4f2e691863e15bc331f3c4e055e88768540549aa7fc2a6856f",
+      "published_bytes": 580686,
+      "published_sha256": "b7d8d8e444822d4f2e691863e15bc331f3c4e055e88768540549aa7fc2a6856f"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-b.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-b.png",
+      "source_bytes": 182015,
+      "source_sha256": "f15c4aede243e632b043be591de7952d564f7774cdbcacba0b52f89270f15f93",
+      "published_bytes": 182015,
+      "published_sha256": "f15c4aede243e632b043be591de7952d564f7774cdbcacba0b52f89270f15f93"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-c.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-c.png",
+      "source_bytes": 891099,
+      "source_sha256": "4505ae2b25ff40615820edd4e8d0e7082b16446bfeb0daadbd954273aad881e7",
+      "published_bytes": 891099,
+      "published_sha256": "4505ae2b25ff40615820edd4e8d0e7082b16446bfeb0daadbd954273aad881e7"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-d.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-d.png",
+      "source_bytes": 396847,
+      "source_sha256": "0956a2dd1b27e779d6c217967a74f9460d97cc7577a3026428669643b271d9cf",
+      "published_bytes": 396847,
+      "published_sha256": "0956a2dd1b27e779d6c217967a74f9460d97cc7577a3026428669643b271d9cf"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-e.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-e.png",
+      "source_bytes": 97722,
+      "source_sha256": "74291052efdb3b89b4553066ca738b236b7e421fdd610f0456a8908387644c71",
+      "published_bytes": 97722,
+      "published_sha256": "74291052efdb3b89b4553066ca738b236b7e421fdd610f0456a8908387644c71"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-f.png",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/figures/D-f.png",
+      "source_bytes": 357385,
+      "source_sha256": "57729b17b5d73a927626c2a2cc87e4c4adb3a100c1714d31b49198ca2f7cfdce",
+      "published_bytes": 357385,
+      "published_sha256": "57729b17b5d73a927626c2a2cc87e4c4adb3a100c1714d31b49198ca2f7cfdce"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "source_bytes": 89888,
+      "source_sha256": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e",
+      "published_bytes": 89888,
+      "published_sha256": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/README.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/README.md",
+      "source_bytes": 1322,
+      "source_sha256": "3a89094e6c561e223e9c42abdac090e1dd75d9e3019c8a600d2ccf928ac28ed5",
+      "published_bytes": 1322,
+      "published_sha256": "3a89094e6c561e223e9c42abdac090e1dd75d9e3019c8a600d2ccf928ac28ed5"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_commands_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_commands_snapshot.json",
+      "source_bytes": 14564,
+      "source_sha256": "9a040c1c281e643e84790174c93f53c45bf815a33694074dda10d75202d3aa06",
+      "published_bytes": 14564,
+      "published_sha256": "9a040c1c281e643e84790174c93f53c45bf815a33694074dda10d75202d3aa06"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_status_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_status_snapshot.json",
+      "source_bytes": 1226,
+      "source_sha256": "cc5a7c1fc527d7d058e3d4cf5d147355b95b9ba29d5579e45be12d06b944889a",
+      "published_bytes": 1226,
+      "published_sha256": "cc5a7c1fc527d7d058e3d4cf5d147355b95b9ba29d5579e45be12d06b944889a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_commands_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_commands_snapshot.json",
+      "source_bytes": 6014,
+      "source_sha256": "be9d947f37b30efabaa9129f436febca0110d51bff7cb9cdf1e9768272a473ca",
+      "published_bytes": 6014,
+      "published_sha256": "be9d947f37b30efabaa9129f436febca0110d51bff7cb9cdf1e9768272a473ca"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_status_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_status_snapshot.json",
+      "source_bytes": 2687,
+      "source_sha256": "3990faab9f9745e49748a2f5c70d705344ee9054dfb3a47fb0d68c405f12829a",
+      "published_bytes": 2687,
+      "published_sha256": "3990faab9f9745e49748a2f5c70d705344ee9054dfb3a47fb0d68c405f12829a"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/commands.json",
+      "source_bytes": 64647,
+      "source_sha256": "c6208065081812fe0b39ad43a887778772246745b2f05f52c1c19e56d788f42d",
+      "published_bytes": 64647,
+      "published_sha256": "c6208065081812fe0b39ad43a887778772246745b2f05f52c1c19e56d788f42d"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_commands_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_commands_snapshot.json",
+      "source_bytes": 5351,
+      "source_sha256": "fbd8d3d0e447baaaa4af5e69a1d2fe6b37b8036f24624fe4b934965012d3bdfe",
+      "published_bytes": 5351,
+      "published_sha256": "fbd8d3d0e447baaaa4af5e69a1d2fe6b37b8036f24624fe4b934965012d3bdfe"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_status_snapshot.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_status_snapshot.json",
+      "source_bytes": 574,
+      "source_sha256": "380de79cd7661de250021f000d879b86d2f7a5298493e77cc4ba2f3528f06128",
+      "published_bytes": 574,
+      "published_sha256": "380de79cd7661de250021f000d879b86d2f7a5298493e77cc4ba2f3528f06128"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/manifest.json",
+      "source_bytes": 3510,
+      "source_sha256": "fd1738893f7225108772e8dc1b4e6076c9f2629bf9f7a8dc24bf12d1fd1b74e1",
+      "published_bytes": 3510,
+      "published_sha256": "fd1738893f7225108772e8dc1b4e6076c9f2629bf9f7a8dc24bf12d1fd1b74e1"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_capture_manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_capture_manifest.json",
+      "source_bytes": 10250,
+      "source_sha256": "99642b11bae0bdb6d3b8ee90e25f87130ba85842e20077a6b2971d4ed2f737c6",
+      "published_bytes": 10250,
+      "published_sha256": "99642b11bae0bdb6d3b8ee90e25f87130ba85842e20077a6b2971d4ed2f737c6"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_remaining_supervisor.py.txt",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_remaining_supervisor.py.txt",
+      "source_bytes": 8588,
+      "source_sha256": "d5f526210a610271e30305537a29bad1bec6b31c421cc0a79f9023ae7244b5e8",
+      "published_bytes": 8588,
+      "published_sha256": "d5f526210a610271e30305537a29bad1bec6b31c421cc0a79f9023ae7244b5e8"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_final/commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_final/commands.json",
+      "source_bytes": 3001,
+      "source_sha256": "c6abcfa485e9e3c96cd3dcb2ada5124175b238468eee5746517dc26bcbc9791d",
+      "published_bytes": 3001,
+      "published_sha256": "c6abcfa485e9e3c96cd3dcb2ada5124175b238468eee5746517dc26bcbc9791d"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G1_invocations.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G1_invocations.json",
+      "source_bytes": 1725,
+      "source_sha256": "a6cc7d4134990372e7e2660df4a4ce8457024afc90a8f63bb18dc12f010332e9",
+      "published_bytes": 1725,
+      "published_sha256": "a6cc7d4134990372e7e2660df4a4ce8457024afc90a8f63bb18dc12f010332e9"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_M5_invocations.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_M5_invocations.json",
+      "source_bytes": 2002,
+      "source_sha256": "d55ecbc2e2d138299ab1520c68f6ba809b2d981bc9e74bc7fb1e251308fc2e0e",
+      "published_bytes": 2002,
+      "published_sha256": "d55ecbc2e2d138299ab1520c68f6ba809b2d981bc9e74bc7fb1e251308fc2e0e"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_invocations.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_invocations.json",
+      "source_bytes": 1957,
+      "source_sha256": "7a8d006dee61cb864550a6474784bdd47364b5c290b82eb24ab0e94b4b41c9d7",
+      "published_bytes": 1957,
+      "published_sha256": "7a8d006dee61cb864550a6474784bdd47364b5c290b82eb24ab0e94b4b41c9d7"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_M5_E1_invocations.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_M5_E1_invocations.json",
+      "source_bytes": 1988,
+      "source_sha256": "0c66f6f86c145bf342826bfdc5de1ad9f3c4da4273078d1c86481e4f83f25bf1",
+      "published_bytes": 1988,
+      "published_sha256": "0c66f6f86c145bf342826bfdc5de1ad9f3c4da4273078d1c86481e4f83f25bf1"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_TRIPLE_invocations.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_TRIPLE_invocations.json",
+      "source_bytes": 2089,
+      "source_sha256": "c766cb7274a2ea41e752234bcf379b3b09737d14143924a4499d77d14a7324ae",
+      "published_bytes": 2089,
+      "published_sha256": "c766cb7274a2ea41e752234bcf379b3b09737d14143924a4499d77d14a7324ae"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/README.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/README.md",
+      "source_bytes": 1639,
+      "source_sha256": "f430e1778fd2cdb544db434d37be4c8e9cbd01d18353fb545bd409668dddca44",
+      "published_bytes": 1639,
+      "published_sha256": "f430e1778fd2cdb544db434d37be4c8e9cbd01d18353fb545bd409668dddca44"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/commands.json",
+      "source_bytes": 16801,
+      "source_sha256": "af34bb6d48e4f931877acb7de457a662daf8106715e55d782cfdf4af5b58de4d",
+      "published_bytes": 16801,
+      "published_sha256": "af34bb6d48e4f931877acb7de457a662daf8106715e55d782cfdf4af5b58de4d"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/expert_preparation_process.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/expert_preparation_process.json",
+      "source_bytes": 1038,
+      "source_sha256": "e0683e0a5bed34b054cdea3c0bb235eec2ddee6f8f3c2144af00d1b6e82f9354",
+      "published_bytes": 1038,
+      "published_sha256": "e0683e0a5bed34b054cdea3c0bb235eec2ddee6f8f3c2144af00d1b6e82f9354"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/manifest.json",
+      "source_bytes": 3615,
+      "source_sha256": "312f1fa3a213726f8a5f63a4ce53e62643f91f677f4b10e2815c2a28f5908cc5",
+      "published_bytes": 3615,
+      "published_sha256": "312f1fa3a213726f8a5f63a4ce53e62643f91f677f4b10e2815c2a28f5908cc5"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/panel_reproduction.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/panel_reproduction.json",
+      "source_bytes": 736,
+      "source_sha256": "318b6a119d7f4103084a7b72c581f2d9d32dc69ff8fa017dfd890f4b2a912fa3",
+      "published_bytes": 736,
+      "published_sha256": "318b6a119d7f4103084a7b72c581f2d9d32dc69ff8fa017dfd890f4b2a912fa3"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_expert_preparation.py.txt",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_expert_preparation.py.txt",
+      "source_bytes": 2039,
+      "source_sha256": "66546b3e6266bfb7daa89c13bb5e23afcd66f19f578364dc349fb87aca75c868",
+      "published_bytes": 2039,
+      "published_sha256": "66546b3e6266bfb7daa89c13bb5e23afcd66f19f578364dc349fb87aca75c868"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_teacher_after_preparation.py.txt",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_teacher_after_preparation.py.txt",
+      "source_bytes": 1846,
+      "source_sha256": "8db91162b844e00377c2cbf16768c03fc335bafeff0cab9e5f6ac6d37ed76cfa",
+      "published_bytes": 1846,
+      "published_sha256": "8db91162b844e00377c2cbf16768c03fc335bafeff0cab9e5f6ac6d37ed76cfa"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/teacher_cache_process.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/teacher_cache_process.json",
+      "source_bytes": 1033,
+      "source_sha256": "e801d56cea9caf83af0c4c2ac4c7b7c3adb8468293ddf005c03a445c6c0c088d",
+      "published_bytes": 1033,
+      "published_sha256": "e801d56cea9caf83af0c4c2ac4c7b7c3adb8468293ddf005c03a445c6c0c088d"
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/results.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/results.json",
+      "source_bytes": 50994801,
+      "source_sha256": "ea6e1e670ca32abc940be18dc0593609e9880468026b22503d91d9f5ee6645ef",
+      "published_bytes": 50994801,
+      "published_sha256": "ea6e1e670ca32abc940be18dc0593609e9880468026b22503d91d9f5ee6645ef"
+    },
+    {
+      "source_path": "scripts/diag/INSTRUMENT_GATE.md",
+      "published_path": "scripts/diag/INSTRUMENT_GATE.md",
+      "source_bytes": 5342,
+      "source_sha256": "aa4e45ac7fb8d5cfd293d46e7a42da64e726db261ccdd95c65a446ac2c215027",
+      "published_bytes": 5342,
+      "published_sha256": "aa4e45ac7fb8d5cfd293d46e7a42da64e726db261ccdd95c65a446ac2c215027"
+    },
+    {
+      "source_path": "scripts/diag/MEASURE_PANEL_REVIEW.md",
+      "published_path": "scripts/diag/MEASURE_PANEL_REVIEW.md",
+      "source_bytes": 5748,
+      "source_sha256": "03158c4edb3762f20a518f2f7be207255745cdcdb0b0c056a9d4c2d102a08c0a",
+      "published_bytes": 5748,
+      "published_sha256": "03158c4edb3762f20a518f2f7be207255745cdcdb0b0c056a9d4c2d102a08c0a"
+    },
+    {
+      "source_path": "scripts/diag/PREPARE_EXPERT.md",
+      "published_path": "scripts/diag/PREPARE_EXPERT.md",
+      "source_bytes": 3280,
+      "source_sha256": "1641f0aa4ade4660ff2e3c01f9dc9cefba6f768a04b8205bb6990ba031bb760d",
+      "published_bytes": 3280,
+      "published_sha256": "1641f0aa4ade4660ff2e3c01f9dc9cefba6f768a04b8205bb6990ba031bb760d"
+    },
+    {
+      "source_path": "scripts/diag/README.md",
+      "published_path": "scripts/diag/README.md",
+      "source_bytes": 7910,
+      "source_sha256": "7ed378470b339306e49d70b98343b3d4d7edc2bf1bd33691a8852580ded717af",
+      "published_bytes": 7910,
+      "published_sha256": "7ed378470b339306e49d70b98343b3d4d7edc2bf1bd33691a8852580ded717af"
+    },
+    {
+      "source_path": "scripts/diag/REPLAY_GATE.md",
+      "published_path": "scripts/diag/REPLAY_GATE.md",
+      "source_bytes": 4930,
+      "source_sha256": "62704bfbd146ddc5e71086a0c37d71825a9cafffb40ea473b673edc198bda555",
+      "published_bytes": 4930,
+      "published_sha256": "62704bfbd146ddc5e71086a0c37d71825a9cafffb40ea473b673edc198bda555"
+    },
+    {
+      "source_path": "scripts/diag/STATE.md",
+      "published_path": "scripts/diag/STATE.md",
+      "source_bytes": 5096,
+      "source_sha256": "182744934f9828d5626651e1db0caeaec9b58a4798ac7f3d63a2e6ee5feddca3",
+      "published_bytes": 5096,
+      "published_sha256": "182744934f9828d5626651e1db0caeaec9b58a4798ac7f3d63a2e6ee5feddca3"
+    },
+    {
+      "source_path": "scripts/diag/apply_ablation_probes.py",
+      "published_path": "scripts/diag/apply_ablation_probes.py",
+      "source_bytes": 18261,
+      "source_sha256": "6771782a365ba22f919abd124f8fe2cc41eaba84a640102d13be29558ec6b859",
+      "published_bytes": 18261,
+      "published_sha256": "6771782a365ba22f919abd124f8fe2cc41eaba84a640102d13be29558ec6b859"
+    },
+    {
+      "source_path": "scripts/diag/attention.py",
+      "published_path": "scripts/diag/attention.py",
+      "source_bytes": 14337,
+      "source_sha256": "e9bb2a2d2bcb00b2851383d3f95caeef8b2f435de52d24363dada12aeb9710f2",
+      "published_bytes": 14337,
+      "published_sha256": "e9bb2a2d2bcb00b2851383d3f95caeef8b2f435de52d24363dada12aeb9710f2"
+    },
+    {
+      "source_path": "scripts/diag/bank_ablation.py",
+      "published_path": "scripts/diag/bank_ablation.py",
+      "source_bytes": 20180,
+      "source_sha256": "ef0b8f1527b28ab29aa5583b2c724d902234f2168041e020ea0df9004bb76f16",
+      "published_bytes": 20180,
+      "published_sha256": "ef0b8f1527b28ab29aa5583b2c724d902234f2168041e020ea0df9004bb76f16"
+    },
+    {
+      "source_path": "scripts/diag/cache_teacher.py",
+      "published_path": "scripts/diag/cache_teacher.py",
+      "source_bytes": 5062,
+      "source_sha256": "930076fd9d393801d28f1489b3944c7232cb6bb3f82746ac1d01f3f9859569f1",
+      "published_bytes": 5062,
+      "published_sha256": "930076fd9d393801d28f1489b3944c7232cb6bb3f82746ac1d01f3f9859569f1"
+    },
+    {
+      "source_path": "scripts/diag/export_recall_pairs.py",
+      "published_path": "scripts/diag/export_recall_pairs.py",
+      "source_bytes": 6555,
+      "source_sha256": "168acc50c2e17cf410c4a95a6b27c4b5efa2e19977708b12e9c583ef7431407a",
+      "published_bytes": 6555,
+      "published_sha256": "168acc50c2e17cf410c4a95a6b27c4b5efa2e19977708b12e9c583ef7431407a"
+    },
+    {
+      "source_path": "scripts/diag/fit_probes.py",
+      "published_path": "scripts/diag/fit_probes.py",
+      "source_bytes": 13223,
+      "source_sha256": "5df66106a70be8877aebcec413aac39ac454ed8cc98c42d92e33d89b30f5001e",
+      "published_bytes": 13223,
+      "published_sha256": "5df66106a70be8877aebcec413aac39ac454ed8cc98c42d92e33d89b30f5001e"
+    },
+    {
+      "source_path": "scripts/diag/gate_models.json",
+      "published_path": "scripts/diag/gate_models.json",
+      "source_bytes": 951,
+      "source_sha256": "43c4933772741b0297caf5b70c4d23f7c6bd09734f7629d808d1ffb5120a017c",
+      "published_bytes": 951,
+      "published_sha256": "43c4933772741b0297caf5b70c4d23f7c6bd09734f7629d808d1ffb5120a017c"
+    },
+    {
+      "source_path": "scripts/diag/gate_queue.py",
+      "published_path": "scripts/diag/gate_queue.py",
+      "source_bytes": 8012,
+      "source_sha256": "2965f5c05fc8d8d8c213201e9eda1087c640bc3ea4e039ecbeea95cf493fd38d",
+      "published_bytes": 8012,
+      "published_sha256": "2965f5c05fc8d8d8c213201e9eda1087c640bc3ea4e039ecbeea95cf493fd38d"
+    },
+    {
+      "source_path": "scripts/diag/instrument_gate.py",
+      "published_path": "scripts/diag/instrument_gate.py",
+      "source_bytes": 10782,
+      "source_sha256": "6d06b7f38b03301fce08c385f0c1d423432a3468fa29a28956a61910eaa5fe14",
+      "published_bytes": 10782,
+      "published_sha256": "6d06b7f38b03301fce08c385f0c1d423432a3468fa29a28956a61910eaa5fe14"
+    },
+    {
+      "source_path": "scripts/diag/measure_panel.py",
+      "published_path": "scripts/diag/measure_panel.py",
+      "source_bytes": 12927,
+      "source_sha256": "1cd9f17e638c227319eb735ca87506901773a2deccb2716e1e8043599e9f335b",
+      "published_bytes": 12927,
+      "published_sha256": "1cd9f17e638c227319eb735ca87506901773a2deccb2716e1e8043599e9f335b"
+    },
+    {
+      "source_path": "scripts/diag/measurement_queue.py",
+      "published_path": "scripts/diag/measurement_queue.py",
+      "source_bytes": 5424,
+      "source_sha256": "e7bd7b576de287ece6b0e3bac250b2b79e06070c65d67d5d8362221b2201d574",
+      "published_bytes": 5424,
+      "published_sha256": "e7bd7b576de287ece6b0e3bac250b2b79e06070c65d67d5d8362221b2201d574"
+    },
+    {
+      "source_path": "scripts/diag/panels.py",
+      "published_path": "scripts/diag/panels.py",
+      "source_bytes": 8778,
+      "source_sha256": "0d7a1723c7fd5465727b6452dff1c35929e838787bbf0232be79e9fe2e1090c3",
+      "published_bytes": 8778,
+      "published_sha256": "0d7a1723c7fd5465727b6452dff1c35929e838787bbf0232be79e9fe2e1090c3"
+    },
+    {
+      "source_path": "scripts/diag/post_measurement_queue.py",
+      "published_path": "scripts/diag/post_measurement_queue.py",
+      "source_bytes": 10023,
+      "source_sha256": "f02b5ac832338f19768b74b127f2f88fb4e1c665089a84fbfafbdd951501a563",
+      "published_bytes": 10023,
+      "published_sha256": "f02b5ac832338f19768b74b127f2f88fb4e1c665089a84fbfafbdd951501a563"
+    },
+    {
+      "source_path": "scripts/diag/prepare_expert.py",
+      "published_path": "scripts/diag/prepare_expert.py",
+      "source_bytes": 10907,
+      "source_sha256": "fd28f739f2491022beb83d442786484a5426ba2984020051997e698ca314f8f4",
+      "published_bytes": 10907,
+      "published_sha256": "fd28f739f2491022beb83d442786484a5426ba2984020051997e698ca314f8f4"
+    },
+    {
+      "source_path": "scripts/diag/probe_drift.py",
+      "published_path": "scripts/diag/probe_drift.py",
+      "source_bytes": 8486,
+      "source_sha256": "6150bc0fc637a60c252c0a140a95df806fe682a55d15aa30861fe9d8322b4108",
+      "published_bytes": 8486,
+      "published_sha256": "6150bc0fc637a60c252c0a140a95df806fe682a55d15aa30861fe9d8322b4108"
+    },
+    {
+      "source_path": "scripts/diag/probes.py",
+      "published_path": "scripts/diag/probes.py",
+      "source_bytes": 6676,
+      "source_sha256": "67e26f41ab41d566fd084678b9f112c5e52f9a23507bba7a9d97e76f56d513f5",
+      "published_bytes": 6676,
+      "published_sha256": "67e26f41ab41d566fd084678b9f112c5e52f9a23507bba7a9d97e76f56d513f5"
+    },
+    {
+      "source_path": "scripts/diag/recall.py",
+      "published_path": "scripts/diag/recall.py",
+      "source_bytes": 6674,
+      "source_sha256": "b38484d7309b2d59dddba4da85b5f20b1f34ef2f74459c2c1c1432ddf9b3e050",
+      "published_bytes": 6674,
+      "published_sha256": "b38484d7309b2d59dddba4da85b5f20b1f34ef2f74459c2c1c1432ddf9b3e050"
+    },
+    {
+      "source_path": "scripts/diag/render_panel.py",
+      "published_path": "scripts/diag/render_panel.py",
+      "source_bytes": 11045,
+      "source_sha256": "beae599da75277e8c74a97f69dbfb44226fc583fc6899b44a71932b580d930a2",
+      "published_bytes": 11045,
+      "published_sha256": "beae599da75277e8c74a97f69dbfb44226fc583fc6899b44a71932b580d930a2"
+    },
+    {
+      "source_path": "scripts/diag/replay_gate.py",
+      "published_path": "scripts/diag/replay_gate.py",
+      "source_bytes": 9921,
+      "source_sha256": "8eb9a0172b197d0e0525ae39a834fe06dde747fc47d26e78e0f5fc8f60a1bd10",
+      "published_bytes": 9921,
+      "published_sha256": "8eb9a0172b197d0e0525ae39a834fe06dde747fc47d26e78e0f5fc8f60a1bd10"
+    },
+    {
+      "source_path": "scripts/diag/report.py",
+      "published_path": "scripts/diag/report.py",
+      "source_bytes": 35838,
+      "source_sha256": "fd7ce147f145d25d940edeb215c08bea80c8546d86a9c007e898d25b4d42cb2f",
+      "published_bytes": 35838,
+      "published_sha256": "fd7ce147f145d25d940edeb215c08bea80c8546d86a9c007e898d25b4d42cb2f"
+    },
+    {
+      "source_path": "scripts/diag/report_decisions.py",
+      "published_path": "scripts/diag/report_decisions.py",
+      "source_bytes": 3216,
+      "source_sha256": "0672c132316bca3ea535e2059fee2d9bb06ecf3ff14d18a7ac32581a098d5315",
+      "published_bytes": 3216,
+      "published_sha256": "0672c132316bca3ea535e2059fee2d9bb06ecf3ff14d18a7ac32581a098d5315"
+    },
+    {
+      "source_path": "scripts/diag/report_figures.py",
+      "published_path": "scripts/diag/report_figures.py",
+      "source_bytes": 9940,
+      "source_sha256": "a06f1c9c0804b083e3a2b390a84cd37f2d4b2b021740f97a9655f95884163545",
+      "published_bytes": 9940,
+      "published_sha256": "a06f1c9c0804b083e3a2b390a84cd37f2d4b2b021740f97a9655f95884163545"
+    },
+    {
+      "source_path": "scripts/diag/report_tables.py",
+      "published_path": "scripts/diag/report_tables.py",
+      "source_bytes": 10183,
+      "source_sha256": "78dd322de849d84c53e7ecfb125292ef135bbab911854ab87228599d9f5ecc68",
+      "published_bytes": 10183,
+      "published_sha256": "78dd322de849d84c53e7ecfb125292ef135bbab911854ab87228599d9f5ecc68"
+    },
+    {
+      "source_path": "scripts/diag/run_bank_ablation.py",
+      "published_path": "scripts/diag/run_bank_ablation.py",
+      "source_bytes": 18540,
+      "source_sha256": "8ebf7680ba4d592b1f3f47dd0405e9cfa2edebe8f394ad7609c1a004d086fa56",
+      "published_bytes": 18540,
+      "published_sha256": "8ebf7680ba4d592b1f3f47dd0405e9cfa2edebe8f394ad7609c1a004d086fa56"
+    },
+    {
+      "source_path": "scripts/diag/selection.py",
+      "published_path": "scripts/diag/selection.py",
+      "source_bytes": 8698,
+      "source_sha256": "b3ff24f9a13f8d927a1f8f98d62ae330db051e11a652b3b12639d00c7eefc013",
+      "published_bytes": 8698,
+      "published_sha256": "b3ff24f9a13f8d927a1f8f98d62ae330db051e11a652b3b12639d00c7eefc013"
+    },
+    {
+      "source_path": "scripts/diag/selector_eval.py",
+      "published_path": "scripts/diag/selector_eval.py",
+      "source_bytes": 10692,
+      "source_sha256": "a6273935da8a8841572c51fc4bc14e96cb0a3f4209c269f1ffef0a5d07336f1a",
+      "published_bytes": 10692,
+      "published_sha256": "a6273935da8a8841572c51fc4bc14e96cb0a3f4209c269f1ffef0a5d07336f1a"
+    },
+    {
+      "source_path": "scripts/diag/selector_results.py",
+      "published_path": "scripts/diag/selector_results.py",
+      "source_bytes": 8902,
+      "source_sha256": "c4e41dcf149c742ecbaf3a3b4f3a7dbde5461a37f327b367a57f07c346f5fd64",
+      "published_bytes": 8902,
+      "published_sha256": "c4e41dcf149c742ecbaf3a3b4f3a7dbde5461a37f327b367a57f07c346f5fd64"
+    },
+    {
+      "source_path": "scripts/diag/selector_server.py",
+      "published_path": "scripts/diag/selector_server.py",
+      "source_bytes": 5062,
+      "source_sha256": "6564df13c5a4a132d7d6c7a67674235c617737d0811f1beef93c2a31d007077e",
+      "published_bytes": 5062,
+      "published_sha256": "6564df13c5a4a132d7d6c7a67674235c617737d0811f1beef93c2a31d007077e"
+    },
+    {
+      "source_path": "scripts/diag/state.py",
+      "published_path": "scripts/diag/state.py",
+      "source_bytes": 10584,
+      "source_sha256": "a450ab6556c578e91c0eee34e97dc433c1c418b55a036e650c5c34befc71f214",
+      "published_bytes": 10584,
+      "published_sha256": "a450ab6556c578e91c0eee34e97dc433c1c418b55a036e650c5c34befc71f214"
+    },
+    {
+      "source_path": "scripts/diag/statistics.py",
+      "published_path": "scripts/diag/statistics.py",
+      "source_bytes": 4209,
+      "source_sha256": "90ee6b89806e4f7aa9d8dbcb123179b7cf2c4b684807bb48c06dc9aca0f3562f",
+      "published_bytes": 4209,
+      "published_sha256": "90ee6b89806e4f7aa9d8dbcb123179b7cf2c4b684807bb48c06dc9aca0f3562f"
+    },
+    {
+      "source_path": "scripts/diag/summarize_captures.py",
+      "published_path": "scripts/diag/summarize_captures.py",
+      "source_bytes": 22522,
+      "source_sha256": "2501ff7a7beb5b526d22597747601b5fd07eed71866dd09034dee874ae539d6a",
+      "published_bytes": 22522,
+      "published_sha256": "2501ff7a7beb5b526d22597747601b5fd07eed71866dd09034dee874ae539d6a"
+    },
+    {
+      "source_path": "scripts/diag/test_apply_ablation_probes.py",
+      "published_path": "scripts/diag/test_apply_ablation_probes.py",
+      "source_bytes": 2847,
+      "source_sha256": "5867a9096391b60606dac1655447f18ee3eed723cef479075a9302c9acd1a038",
+      "published_bytes": 2847,
+      "published_sha256": "5867a9096391b60606dac1655447f18ee3eed723cef479075a9302c9acd1a038"
+    },
+    {
+      "source_path": "scripts/diag/test_attention.py",
+      "published_path": "scripts/diag/test_attention.py",
+      "source_bytes": 5941,
+      "source_sha256": "ec137de284afa8deea02114036a47b3addeaaecfddbaaf3e62515a18a7b2db27",
+      "published_bytes": 5941,
+      "published_sha256": "ec137de284afa8deea02114036a47b3addeaaecfddbaaf3e62515a18a7b2db27"
+    },
+    {
+      "source_path": "scripts/diag/test_bank_ablation.py",
+      "published_path": "scripts/diag/test_bank_ablation.py",
+      "source_bytes": 5644,
+      "source_sha256": "41b37811119e7e0bcfa2fa754f6030c6be1643a11d788c1f4388be93c5ce8fa4",
+      "published_bytes": 5644,
+      "published_sha256": "41b37811119e7e0bcfa2fa754f6030c6be1643a11d788c1f4388be93c5ce8fa4"
+    },
+    {
+      "source_path": "scripts/diag/test_cache_teacher.py",
+      "published_path": "scripts/diag/test_cache_teacher.py",
+      "source_bytes": 2110,
+      "source_sha256": "9afcac925918b15b758bf3695d563638b924cba5fe37e8bb2cb84a4347446172",
+      "published_bytes": 2110,
+      "published_sha256": "9afcac925918b15b758bf3695d563638b924cba5fe37e8bb2cb84a4347446172"
+    },
+    {
+      "source_path": "scripts/diag/test_export_recall_pairs.py",
+      "published_path": "scripts/diag/test_export_recall_pairs.py",
+      "source_bytes": 3089,
+      "source_sha256": "46bd4008848222a5096e72e583c21d28179ef0d43341914fc1d2e5e1bd079f1b",
+      "published_bytes": 3089,
+      "published_sha256": "46bd4008848222a5096e72e583c21d28179ef0d43341914fc1d2e5e1bd079f1b"
+    },
+    {
+      "source_path": "scripts/diag/test_fit_probes.py",
+      "published_path": "scripts/diag/test_fit_probes.py",
+      "source_bytes": 2693,
+      "source_sha256": "5fadf089fdc3f78dc676bd929c671aa34bb19750f0999205bf5e996db5f1b5cb",
+      "published_bytes": 2693,
+      "published_sha256": "5fadf089fdc3f78dc676bd929c671aa34bb19750f0999205bf5e996db5f1b5cb"
+    },
+    {
+      "source_path": "scripts/diag/test_gate_queue.py",
+      "published_path": "scripts/diag/test_gate_queue.py",
+      "source_bytes": 2320,
+      "source_sha256": "808c84166b5a4577bb83fcc9163f0803a5bdcdb7b3e648fc3edf789827c27b8a",
+      "published_bytes": 2320,
+      "published_sha256": "808c84166b5a4577bb83fcc9163f0803a5bdcdb7b3e648fc3edf789827c27b8a"
+    },
+    {
+      "source_path": "scripts/diag/test_instrument_gate.py",
+      "published_path": "scripts/diag/test_instrument_gate.py",
+      "source_bytes": 3128,
+      "source_sha256": "30cc3886e3d334f4f9e684ffc7a36708175d7908271bc7c2104872baffd101cd",
+      "published_bytes": 3128,
+      "published_sha256": "30cc3886e3d334f4f9e684ffc7a36708175d7908271bc7c2104872baffd101cd"
+    },
+    {
+      "source_path": "scripts/diag/test_measure_panel.py",
+      "published_path": "scripts/diag/test_measure_panel.py",
+      "source_bytes": 3674,
+      "source_sha256": "62a3bbfa9b1d4fdb38b68813f86d614b3d5746bbc2a478a0784a763961b6e4ba",
+      "published_bytes": 3674,
+      "published_sha256": "62a3bbfa9b1d4fdb38b68813f86d614b3d5746bbc2a478a0784a763961b6e4ba"
+    },
+    {
+      "source_path": "scripts/diag/test_measurement_queue.py",
+      "published_path": "scripts/diag/test_measurement_queue.py",
+      "source_bytes": 1658,
+      "source_sha256": "fe64f6cf7e31f543ccf988ead3ffdd046d4a5f385565bdef20050d5174cb9c97",
+      "published_bytes": 1658,
+      "published_sha256": "fe64f6cf7e31f543ccf988ead3ffdd046d4a5f385565bdef20050d5174cb9c97"
+    },
+    {
+      "source_path": "scripts/diag/test_panels.py",
+      "published_path": "scripts/diag/test_panels.py",
+      "source_bytes": 3465,
+      "source_sha256": "d583e4cf9968548bb15cab9eb3d1d85a3522c2afe774783384263536c41bbe9d",
+      "published_bytes": 3465,
+      "published_sha256": "d583e4cf9968548bb15cab9eb3d1d85a3522c2afe774783384263536c41bbe9d"
+    },
+    {
+      "source_path": "scripts/diag/test_post_measurement_queue.py",
+      "published_path": "scripts/diag/test_post_measurement_queue.py",
+      "source_bytes": 1500,
+      "source_sha256": "061fd9ae8dd12cf79780612a3a4e946a62fe64cc2fcc85b1b9d186a6dbe49f4b",
+      "published_bytes": 1500,
+      "published_sha256": "061fd9ae8dd12cf79780612a3a4e946a62fe64cc2fcc85b1b9d186a6dbe49f4b"
+    },
+    {
+      "source_path": "scripts/diag/test_prepare_expert.py",
+      "published_path": "scripts/diag/test_prepare_expert.py",
+      "source_bytes": 4380,
+      "source_sha256": "004a8e4ffeaf12db9295e187b944f15a6cbb1e55e1db284cba0fba1379c5416c",
+      "published_bytes": 4380,
+      "published_sha256": "004a8e4ffeaf12db9295e187b944f15a6cbb1e55e1db284cba0fba1379c5416c"
+    },
+    {
+      "source_path": "scripts/diag/test_probe_drift.py",
+      "published_path": "scripts/diag/test_probe_drift.py",
+      "source_bytes": 2520,
+      "source_sha256": "8ff53a069eada6e847c8660fbc42b8c56d78eda3b7dba52f4e2ce518229dfe53",
+      "published_bytes": 2520,
+      "published_sha256": "8ff53a069eada6e847c8660fbc42b8c56d78eda3b7dba52f4e2ce518229dfe53"
+    },
+    {
+      "source_path": "scripts/diag/test_probes.py",
+      "published_path": "scripts/diag/test_probes.py",
+      "source_bytes": 2500,
+      "source_sha256": "8bd0acc09ca467178545660311d56b2f85bf8bd3ac53c4d1b69855bc0ed98e85",
+      "published_bytes": 2500,
+      "published_sha256": "8bd0acc09ca467178545660311d56b2f85bf8bd3ac53c4d1b69855bc0ed98e85"
+    },
+    {
+      "source_path": "scripts/diag/test_recall.py",
+      "published_path": "scripts/diag/test_recall.py",
+      "source_bytes": 2172,
+      "source_sha256": "251aabae9c316125fa1e3830d87e8dbc51e829b8885b8e51426f1aafe62b4286",
+      "published_bytes": 2172,
+      "published_sha256": "251aabae9c316125fa1e3830d87e8dbc51e829b8885b8e51426f1aafe62b4286"
+    },
+    {
+      "source_path": "scripts/diag/test_render_panel.py",
+      "published_path": "scripts/diag/test_render_panel.py",
+      "source_bytes": 3240,
+      "source_sha256": "67386b99a171408f3866857686e2a8b39cd9374ef3424786c859ff4a64a406a0",
+      "published_bytes": 3240,
+      "published_sha256": "67386b99a171408f3866857686e2a8b39cd9374ef3424786c859ff4a64a406a0"
+    },
+    {
+      "source_path": "scripts/diag/test_replay_gate.py",
+      "published_path": "scripts/diag/test_replay_gate.py",
+      "source_bytes": 3413,
+      "source_sha256": "56a90f328e283c3948012f35d60508c06160fd8fec6b8d5a2b4b27c7e91af757",
+      "published_bytes": 3413,
+      "published_sha256": "56a90f328e283c3948012f35d60508c06160fd8fec6b8d5a2b4b27c7e91af757"
+    },
+    {
+      "source_path": "scripts/diag/test_report.py",
+      "published_path": "scripts/diag/test_report.py",
+      "source_bytes": 8744,
+      "source_sha256": "675904e7b544986c9a8e23384221436bf5b84ea7433cbbbfb405c2bd201004a8",
+      "published_bytes": 8744,
+      "published_sha256": "675904e7b544986c9a8e23384221436bf5b84ea7433cbbbfb405c2bd201004a8"
+    },
+    {
+      "source_path": "scripts/diag/test_report_decisions.py",
+      "published_path": "scripts/diag/test_report_decisions.py",
+      "source_bytes": 2100,
+      "source_sha256": "0466a160c27b706ceabc8f01237a3b9e548845a5982d588f471100f401e88351",
+      "published_bytes": 2100,
+      "published_sha256": "0466a160c27b706ceabc8f01237a3b9e548845a5982d588f471100f401e88351"
+    },
+    {
+      "source_path": "scripts/diag/test_report_figures.py",
+      "published_path": "scripts/diag/test_report_figures.py",
+      "source_bytes": 4615,
+      "source_sha256": "c980a91272167b2dbd8593b4f903387e67031f0b18305276d293f73556196162",
+      "published_bytes": 4615,
+      "published_sha256": "c980a91272167b2dbd8593b4f903387e67031f0b18305276d293f73556196162"
+    },
+    {
+      "source_path": "scripts/diag/test_report_tables.py",
+      "published_path": "scripts/diag/test_report_tables.py",
+      "source_bytes": 4407,
+      "source_sha256": "3d6a53a3169fdab4cf05c1d47cd588bf39458895b1c4fe1d9a15b4b1c835f789",
+      "published_bytes": 4407,
+      "published_sha256": "3d6a53a3169fdab4cf05c1d47cd588bf39458895b1c4fe1d9a15b4b1c835f789"
+    },
+    {
+      "source_path": "scripts/diag/test_run_bank_ablation.py",
+      "published_path": "scripts/diag/test_run_bank_ablation.py",
+      "source_bytes": 3053,
+      "source_sha256": "99867e5644e8459b9b0522f43aa3f9658fb6165be85e9f5a03e87c0e09d802c8",
+      "published_bytes": 3053,
+      "published_sha256": "99867e5644e8459b9b0522f43aa3f9658fb6165be85e9f5a03e87c0e09d802c8"
+    },
+    {
+      "source_path": "scripts/diag/test_selection.py",
+      "published_path": "scripts/diag/test_selection.py",
+      "source_bytes": 3660,
+      "source_sha256": "dc9c1d31500b2fab088f13822c0be0ffb6ae4ffeab6d79a72cad250bb1ea8f0c",
+      "published_bytes": 3660,
+      "published_sha256": "dc9c1d31500b2fab088f13822c0be0ffb6ae4ffeab6d79a72cad250bb1ea8f0c"
+    },
+    {
+      "source_path": "scripts/diag/test_selector_eval.py",
+      "published_path": "scripts/diag/test_selector_eval.py",
+      "source_bytes": 2728,
+      "source_sha256": "b10a06f2b47887c24554547d760eaf5ee2610aa4982241a22adcfab80af725cb",
+      "published_bytes": 2728,
+      "published_sha256": "b10a06f2b47887c24554547d760eaf5ee2610aa4982241a22adcfab80af725cb"
+    },
+    {
+      "source_path": "scripts/diag/test_selector_results.py",
+      "published_path": "scripts/diag/test_selector_results.py",
+      "source_bytes": 1762,
+      "source_sha256": "f63127a1f806c3ce61a13c77da7902df2194ab02e93d797f4da8da710efd247f",
+      "published_bytes": 1762,
+      "published_sha256": "f63127a1f806c3ce61a13c77da7902df2194ab02e93d797f4da8da710efd247f"
+    },
+    {
+      "source_path": "scripts/diag/test_state.py",
+      "published_path": "scripts/diag/test_state.py",
+      "source_bytes": 6606,
+      "source_sha256": "4e26be5392aed9c9d9c8b3731c878f284d62eb30b2f0e0835d55b1c02c804abf",
+      "published_bytes": 6606,
+      "published_sha256": "4e26be5392aed9c9d9c8b3731c878f284d62eb30b2f0e0835d55b1c02c804abf"
+    },
+    {
+      "source_path": "scripts/diag/test_statistics.py",
+      "published_path": "scripts/diag/test_statistics.py",
+      "source_bytes": 1896,
+      "source_sha256": "89d4b10cd16614a426779d7e533eb189fe63919b31e68ce46be7dd6fea6d832f",
+      "published_bytes": 1896,
+      "published_sha256": "89d4b10cd16614a426779d7e533eb189fe63919b31e68ce46be7dd6fea6d832f"
+    },
+    {
+      "source_path": "scripts/diag/test_summarize_captures.py",
+      "published_path": "scripts/diag/test_summarize_captures.py",
+      "source_bytes": 2627,
+      "source_sha256": "565cc663ad7a72c92adf3659a1eed98d6d7050814a0158e85e0a24c600499e9d",
+      "published_bytes": 2627,
+      "published_sha256": "565cc663ad7a72c92adf3659a1eed98d6d7050814a0158e85e0a24c600499e9d"
+    }
+  ],
+  "server_evidence_files": [
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/README.md",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/README.md",
+      "source_bytes": 1572,
+      "source_sha256": "2829b129096449586561802a824298f3e1b1c2966e9130b587f1d2f07a84e753",
+      "published_bytes": 1572
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-000.gz",
+      "source_bytes": 13594095,
+      "source_sha256": "92a030d33a6a6cc6158ace28a06f53a7614cf1c07a9dfc7e18e76afe33ef0430",
+      "published_bytes": 13594095
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-001.gz",
+      "source_bytes": 13536005,
+      "source_sha256": "ccab1ed50fbf3bc68c7edc1eaa441dd4e29c987cfd1b0b1bc3812e870d82e226",
+      "published_bytes": 13536005
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-002.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-002.gz",
+      "source_bytes": 13593564,
+      "source_sha256": "8cafbc563957aeb176d2bc1034b6b2171041f2e77c3aba5c48cf802ddfe071db",
+      "published_bytes": 13593564
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-003.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-003.gz",
+      "source_bytes": 13684023,
+      "source_sha256": "bb8b8f2c6632d5818c07d73d21a61141a5c3a32a3e62b0e7f442204222e2748f",
+      "published_bytes": 13684023
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-004.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-004.gz",
+      "source_bytes": 13631464,
+      "source_sha256": "3e21127cf8d6e5affca2de9ec88f9fff5b07ecfcf81d24430dd74834cd34cfd5",
+      "published_bytes": 13631464
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-005.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-005.gz",
+      "source_bytes": 13705541,
+      "source_sha256": "aa0a99c4aadf724cdc8ff386d1ba6a87934a70adc47cd6b7de5bdc5b24477d82",
+      "published_bytes": 13705541
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-006.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-006.gz",
+      "source_bytes": 13718564,
+      "source_sha256": "3dabcc4edacb9f763572c1d31b012c3cb3e0e6aa784a2f51985ff9693bf04e08",
+      "published_bytes": 13718564
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-007.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-007.gz",
+      "source_bytes": 13663172,
+      "source_sha256": "bd4a51c9505007294b01416d16ff4da9bf99c06fde902b2a21984f74296b6529",
+      "published_bytes": 13663172
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-008.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-008.gz",
+      "source_bytes": 13594844,
+      "source_sha256": "870f27c841ec2bedf6baa32f64aa0d75bd93b8658e6c717ba7acd4ca18f6c55b",
+      "published_bytes": 13594844
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-009.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-009.gz",
+      "source_bytes": 13492748,
+      "source_sha256": "af6ff77629492e869848ae17a4028f6ac1519b45179ba2d3352420b21a391c15",
+      "published_bytes": 13492748
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-010.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-010.gz",
+      "source_bytes": 13582853,
+      "source_sha256": "da99d2414c4c76ed7d62c7759101c591a79f4a8f2250c3f328a9df13dd2a2269",
+      "published_bytes": 13582853
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-011.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-011.gz",
+      "source_bytes": 13687022,
+      "source_sha256": "e5ef3a0efe7b5840c859c8ca80540412b4a6c71baf6311be103b6872c21e6dcf",
+      "published_bytes": 13687022
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-012.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-012.gz",
+      "source_bytes": 13717929,
+      "source_sha256": "14f704b6c1036dfbd2fbccc30d798a77bcd53ae412d0c6c0982e0788fd71c47e",
+      "published_bytes": 13717929
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-013.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-013.gz",
+      "source_bytes": 13663334,
+      "source_sha256": "e6e17d81842e5fae6792c8909b596b61a19ec36dcd737d8b95172b1e5a55ab27",
+      "published_bytes": 13663334
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-014.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-014.gz",
+      "source_bytes": 13735398,
+      "source_sha256": "4f6b1be7f0441ee6b803891e91572a779b848dd967dec421d6ca47155a43e722",
+      "published_bytes": 13735398
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-015.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-015.gz",
+      "source_bytes": 13564586,
+      "source_sha256": "77c77a5ddf0a9bff4da0d1d7927fb82101da9b2eef4386fad39fe82ece8b901b",
+      "published_bytes": 13564586
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-016.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-016.gz",
+      "source_bytes": 13392730,
+      "source_sha256": "50571649011818324dc6e12354567715e0fac139eb32ee0528e16e555bb3b8e6",
+      "published_bytes": 13392730
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-017.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-017.gz",
+      "source_bytes": 13493804,
+      "source_sha256": "ee5d28450bb64978fb9f9b887dfbff61aaa65a770af3c45e6f9453dfad470aca",
+      "published_bytes": 13493804
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-018.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-018.gz",
+      "source_bytes": 13573257,
+      "source_sha256": "a79e78b327dd0be64221715aa2c1342798c138193f2e80a97347ef1fd48340a6",
+      "published_bytes": 13573257
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-019.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-019.gz",
+      "source_bytes": 13536656,
+      "source_sha256": "545313439728ff090f96636c28d311e46f06c6dd934194aa31b89d7c044108c4",
+      "published_bytes": 13536656
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-020.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-020.gz",
+      "source_bytes": 13584057,
+      "source_sha256": "69abdcde7fbd88794aeb033efd3a9ca7b0667cf1b9e94f1d5f772af4d671139e",
+      "published_bytes": 13584057
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-021.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-021.gz",
+      "source_bytes": 13614881,
+      "source_sha256": "e2544e9871d730c733850f6779138b33c3372c4cd15fe7a08ca68a1e9323ee42",
+      "published_bytes": 13614881
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-022.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-022.gz",
+      "source_bytes": 13121051,
+      "source_sha256": "a7770eb49bfd1f023a4eed7a9804e19373e955c5be919cc1356d7b951975cf2c",
+      "published_bytes": 13121051
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-023.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-023.gz",
+      "source_bytes": 10351238,
+      "source_sha256": "4cac625b42ca2636e3c7ad81fa09d9e52657676129a8e55af758d26b0ccc7458",
+      "published_bytes": 10351238
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-024.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-024.gz",
+      "source_bytes": 10354136,
+      "source_sha256": "76d224bd041d2e7c8cb3dea8652a753b922d1f495e0bd1852c53d759852327ba",
+      "published_bytes": 10354136
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-025.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-025.gz",
+      "source_bytes": 10369560,
+      "source_sha256": "dbb447c68af2cdaea60126935081785e271da5738f1bb8899d227acb80ec10f4",
+      "published_bytes": 10369560
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-026.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-026.gz",
+      "source_bytes": 10449969,
+      "source_sha256": "abc2a210cd88584d4e48cfc639f61e7ad4722c8985717f29c06d7f7b9949affc",
+      "published_bytes": 10449969
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-027.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-027.gz",
+      "source_bytes": 10441767,
+      "source_sha256": "d4c95a62710a920dd6b7510d29873311711be5677ff0ad87c8cdccc2188ba76d",
+      "published_bytes": 10441767
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-028.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-028.gz",
+      "source_bytes": 10448114,
+      "source_sha256": "3760f3b402bf4627f8a0b04c7014b0d137a875b300b127625905ea66902fca46",
+      "published_bytes": 10448114
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-029.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-029.gz",
+      "source_bytes": 10381250,
+      "source_sha256": "4307524ef8028849c20fb8054772f8f15dcecc9535b42a2059ded06710bc12aa",
+      "published_bytes": 10381250
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-030.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-030.gz",
+      "source_bytes": 10344081,
+      "source_sha256": "60655bc8470c2bb5ca2d573b757581af8bc9b70e224cf1f555a319d1d121ae3b",
+      "published_bytes": 10344081
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-031.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-031.gz",
+      "source_bytes": 10368133,
+      "source_sha256": "2d08c8c56b4f261400e9e0977e0039f0e4a8f3269d26966142e7a47d2f8d34a4",
+      "published_bytes": 10368133
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-032.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-032.gz",
+      "source_bytes": 10416717,
+      "source_sha256": "5ea9d75690894933583ed74a115f5a1965118d31ffa631b8d0dada530e6109c0",
+      "published_bytes": 10416717
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-033.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-033.gz",
+      "source_bytes": 10440365,
+      "source_sha256": "6c9eafd96612d1d5f6c106dff2d1ff894e7333f4e83c41fa93495e1d0ef3bef5",
+      "published_bytes": 10440365
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-034.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-034.gz",
+      "source_bytes": 10449512,
+      "source_sha256": "88cfdbb6b84b0951bafdfb7d5145a24591edf32404e896c394cc209709337b92",
+      "published_bytes": 10449512
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-035.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/attention_steps.csv.part-035.gz",
+      "source_bytes": 9969670,
+      "source_sha256": "c4306a29da466ee0c5472c91c28e33d8a69b54f6d49155037f0f85d1b09d6803",
+      "published_bytes": 9969670
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/cross_selection_steps.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/cross_selection_steps.csv.part-000.gz",
+      "source_bytes": 4522113,
+      "source_sha256": "3111ca26ec9f78b5441251d010559a2ce4aa88e0d666d815c2b04dafd2e23ba8",
+      "published_bytes": 4522113
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-000.gz",
+      "source_bytes": 6493172,
+      "source_sha256": "fb63797d7dfb2abb5842f6f04c8185db24bff37a8adcbd41c5fe5133293d2059",
+      "published_bytes": 6493172
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-001.gz",
+      "source_bytes": 7251285,
+      "source_sha256": "c2541518593f81e98e101cc270ae334fa25376f43563a0aeff917e37fa056437",
+      "published_bytes": 7251285
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-002.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-002.gz",
+      "source_bytes": 5891453,
+      "source_sha256": "8c15b6403cf2b6bede349c7554e3033d0cb20712ec61bbde40fbd45e8af2c0cb",
+      "published_bytes": 5891453
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-003.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-003.gz",
+      "source_bytes": 8353178,
+      "source_sha256": "be92db4d3243074ff78e8bf2fdf60c843ac0147a748eaa6c50fda6ad74bc3293",
+      "published_bytes": 8353178
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-004.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-004.gz",
+      "source_bytes": 8517926,
+      "source_sha256": "88f0212b4778aa5eb0b02818063e5200282cb9c006611f167c5d0bfa5254f5ad",
+      "published_bytes": 8517926
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-005.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-005.gz",
+      "source_bytes": 6969490,
+      "source_sha256": "f782f6a4e43d1bd97355cb716ea1b0350a407758b1e656d134cea860a9df3a3d",
+      "published_bytes": 6969490
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-006.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-006.gz",
+      "source_bytes": 2207559,
+      "source_sha256": "421b04170cb2e0a0940434f6f7f8b5e5881fe7dc6abcacef327af025b081af03",
+      "published_bytes": 2207559
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-007.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/episode_metrics.csv.part-007.gz",
+      "source_bytes": 1680087,
+      "source_sha256": "0b538f95e69364274ea722c3c2315d06c780e780cfddb0ea7e696db500fbaff4",
+      "published_bytes": 1680087
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/eviction_bridge_episodes.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/eviction_bridge_episodes.csv.part-000.gz",
+      "source_bytes": 89376,
+      "source_sha256": "8700ae28ad5a235baaca23a113cfc0db19c8587a166a37d9cffacf8e8ff77024",
+      "published_bytes": 89376
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/probe_drift_steps.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/probe_drift_steps.csv.part-000.gz",
+      "source_bytes": 967795,
+      "source_sha256": "888262378312ab1323feec0d1bfbb8a4a34ab0d6bfefa473e14cb79ac4849517",
+      "published_bytes": 967795
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-000.gz",
+      "source_bytes": 12495337,
+      "source_sha256": "4987e2860b371cdec1dfac44cbaf275fba877fc9a66b24c15550fff8ca97122f",
+      "published_bytes": 12495337
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-001.gz",
+      "source_bytes": 12475447,
+      "source_sha256": "30624763ea58e327166a903187b0e78de890b3a1187504a2377c6d689b4cd4cd",
+      "published_bytes": 12475447
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-002.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-002.gz",
+      "source_bytes": 12418349,
+      "source_sha256": "984a897437b7afb935307e8994a420db26812e9aa0b0a27fad22c86da1c93b83",
+      "published_bytes": 12418349
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-003.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-003.gz",
+      "source_bytes": 12365114,
+      "source_sha256": "fc5006f91af87d06a896fb3bcb6b996f617b6b0e73e4ba42db854164bf40afe2",
+      "published_bytes": 12365114
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-004.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-004.gz",
+      "source_bytes": 12364473,
+      "source_sha256": "ae17145e6714eb2e80a32dd38d671f19bc5c11909fb28c830d7806ee20fa3b97",
+      "published_bytes": 12364473
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-005.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/capture_summary/selection_steps.csv.part-005.gz",
+      "source_bytes": 8832567,
+      "source_sha256": "3242dd1860ef07b7e7f090dcf17d33db26f9bdd5c27ae6d482c765952eeffbf5",
+      "published_bytes": 8832567
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/manifest.json",
+      "source_bytes": 91278,
+      "source_sha256": "09265fccd832aa59aa1d79ff425fb994bd76016f8585819f45fc96c9bfbbd591",
+      "published_bytes": 91278
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.capture_manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.capture_manifest.json",
+      "source_bytes": 745185,
+      "source_sha256": "a4d80374849fb01416c70f23fabf28fabe9bf6942d28d4195c707b7835ad0b2e",
+      "published_bytes": 745185
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-000.gz",
+      "source_bytes": 11068613,
+      "source_sha256": "1c3bce0c394365d5a42b76f19b9677b5d4cefd8b2b55d899747e5814c8f6059b",
+      "published_bytes": 11068613
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-001.gz",
+      "source_bytes": 11076921,
+      "source_sha256": "331499de3bd7181bab3bb5e58b7e31345924e663ad6787ba692d2ec0d73cbd4d",
+      "published_bytes": 11076921
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-002.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-002.gz",
+      "source_bytes": 11271758,
+      "source_sha256": "c8aaaffbcbfa46ee85370de4f03dc7e52ebd8978c3f4ae3a14f9f2d1e6337712",
+      "published_bytes": 11271758
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-003.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-003.gz",
+      "source_bytes": 11261077,
+      "source_sha256": "61b8d7b3f02c5e13c6b6a8ee90fa7a0c321e32618a38e577aeca583f7585c5bb",
+      "published_bytes": 11261077
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-004.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-004.gz",
+      "source_bytes": 11179441,
+      "source_sha256": "946185a2366e574e24e31235972b7dbe4ecdce397cf01d7e8276e15ede31e897",
+      "published_bytes": 11179441
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-005.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-005.gz",
+      "source_bytes": 11077418,
+      "source_sha256": "73e8e01359031435c5c5193876eddb88bb67f7ee278d774a0a66e91ac4472ae2",
+      "published_bytes": 11077418
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-006.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-006.gz",
+      "source_bytes": 11187029,
+      "source_sha256": "7807fbb375ca8fe4e364dea6d272c9d66a870abda07d6d974426a3c587bba7f3",
+      "published_bytes": 11187029
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-007.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-007.gz",
+      "source_bytes": 11271025,
+      "source_sha256": "71346c39f97437877ec31f53cbc897d332d8d353ff5414d614cacacaf73f2b2e",
+      "published_bytes": 11271025
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-008.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-008.gz",
+      "source_bytes": 11264434,
+      "source_sha256": "36e9c24c8c1efa3088da842bfd2f26b2c7f62ca4b1ea67dd9d9bc4b3b2283d9c",
+      "published_bytes": 11264434
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-009.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-009.gz",
+      "source_bytes": 11011690,
+      "source_sha256": "b8dab0b03df378b5cdaed4549a252dcbfd8ee5bd884902cdf5b7072b14624287",
+      "published_bytes": 11011690
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-010.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-010.gz",
+      "source_bytes": 11008380,
+      "source_sha256": "53f1b5272258f4ab9fa94f0386d257a7951f8a47d1083875afe2101c7abd7569",
+      "published_bytes": 11008380
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-011.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-011.gz",
+      "source_bytes": 11028372,
+      "source_sha256": "590a586a336dad9a6a50e70a8d47c94a3dd2a2977db54fdef24f55dc96232e26",
+      "published_bytes": 11028372
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-012.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-012.gz",
+      "source_bytes": 11145605,
+      "source_sha256": "eec8a58c7b10e34a66bb6b471bcfc75530a656f5a5de0a25f47693f0379712cc",
+      "published_bytes": 11145605
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-013.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-013.gz",
+      "source_bytes": 11192089,
+      "source_sha256": "a8ec96b9c48f499f18e36e2cb79212371becd887d44b39b32b28769885786a0f",
+      "published_bytes": 11192089
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-014.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-014.gz",
+      "source_bytes": 11186671,
+      "source_sha256": "26c2033e1ef0293c8bcbbe6fcdf7af172113f1d8e7bd6aee120418cbc6deb568",
+      "published_bytes": 11186671
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-015.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-015.gz",
+      "source_bytes": 11211118,
+      "source_sha256": "96baff13499cf9e12a2ec3eda0091532d835c1ca61955c5b7c2186dfb929fe82",
+      "published_bytes": 11211118
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-016.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-016.gz",
+      "source_bytes": 11214839,
+      "source_sha256": "546e37a7d058d222cbb5b520c8f8bea96f30d9be10589a4bfa7cbd5658caafbe",
+      "published_bytes": 11214839
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-017.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-017.gz",
+      "source_bytes": 11219735,
+      "source_sha256": "ef2614c4e021b76c566a6c447d59df1f0663e1d148bff13eab6da5a805e025fd",
+      "published_bytes": 11219735
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-018.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-018.gz",
+      "source_bytes": 11353776,
+      "source_sha256": "1da031e3c488225154d99f2681fd453f2846dba01fe4b9e206fa6eadf6f3428f",
+      "published_bytes": 11353776
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-019.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-019.gz",
+      "source_bytes": 11439777,
+      "source_sha256": "271d6400c3924ee822b4836961a125c59ff44df7c88aa5b5c2ba6bbea062be51",
+      "published_bytes": 11439777
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-020.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-020.gz",
+      "source_bytes": 11429094,
+      "source_sha256": "8c6dcca165d0f8758c0bc4eb00c7698d7c1b551c6dc248758bfaa785c709719d",
+      "published_bytes": 11429094
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-021.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-021.gz",
+      "source_bytes": 11243848,
+      "source_sha256": "ba3d71384b544ddfc6f12d85d048d7d612db3f18edd53182b41e5dec5d7b77c3",
+      "published_bytes": 11243848
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-022.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-022.gz",
+      "source_bytes": 11302388,
+      "source_sha256": "858a716337dc744f780b06679f92df1ad89d590cbc181a6b4ba6096aad1d198e",
+      "published_bytes": 11302388
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-023.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-023.gz",
+      "source_bytes": 11477051,
+      "source_sha256": "339064a9e6233eb5e844f352079ad568149cade23648de4731dc18e83a544652",
+      "published_bytes": 11477051
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-024.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-024.gz",
+      "source_bytes": 11473272,
+      "source_sha256": "55349b8b13ac54d394f8f9f60a1aea1f36f780d2378374b8cfded727608d20ed",
+      "published_bytes": 11473272
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-025.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.csv.part-025.gz",
+      "source_bytes": 3585238,
+      "source_sha256": "ce0696077a8802bf4bb9813ef9034a3c53bb2341f630c42d371ec667f502d142",
+      "published_bytes": 3585238
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/native_recall_pairs.manifest.json",
+      "source_bytes": 5649,
+      "source_sha256": "9a4a7efe02fdc3b552808d495ea82e44b37128c4c2a084182faaed6df0e95e2f",
+      "published_bytes": 5649
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1305784,
+      "source_sha256": "eaaac71745d460f060f0df2de3f540e12edef8274cdb13d702884925eb3a5353",
+      "published_bytes": 1305784
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1314435,
+      "source_sha256": "ba26d3f6dc99bd951156e6f3f601a3893a628a87d2135aa6cac545fe4916fec6",
+      "published_bytes": 1314435
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1312287,
+      "source_sha256": "bdd5bc82a95dccf7c4b1f3f8e7e23a3a3718d9fa48a86d3396dc65cb324330ad",
+      "published_bytes": 1312287
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/A/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1312444,
+      "source_sha256": "e4d31d037638adc99eb507948ff770017d2c8a02ac7169dd5233ff8f961bf2ca",
+      "published_bytes": 1312444
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1660866,
+      "source_sha256": "aca8a802be91144e4a62f08657c0c276da727d11c2bd5b677f7dbb1cef78d5d4",
+      "published_bytes": 1660866
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1659239,
+      "source_sha256": "a1aa2efecf528aba5edfb16668a1402b46ef7144dd8daf6e2fa8caa4b2583ea5",
+      "published_bytes": 1659239
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1654707,
+      "source_sha256": "30263bea28660cbbdab72d90a925f3e280715f11d15e1bf63fd0c8e1de4fcfc8",
+      "published_bytes": 1654707
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/B/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1655484,
+      "source_sha256": "be8ea0adbbe352d7b7066af80147fbc7d9a048923de851cbbd20e5c6575f976c",
+      "published_bytes": 1655484
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3668319,
+      "source_sha256": "da3dbda3d9352e81a64d4ac9a84bdc528ac05d7e983d634fda91d8436b2b1bd1",
+      "published_bytes": 3668319
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 3657921,
+      "source_sha256": "16938dbd0962dcb9a1ad87ccf4ce5aea9842042301fd10856a899e8865adde7f",
+      "published_bytes": 3657921
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3650482,
+      "source_sha256": "c4b8a5b236c4a76febab40c46b510176cbeb49dcdf17fe7504430535d272f39f",
+      "published_bytes": 3650482
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G1/C/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 3652501,
+      "source_sha256": "e562e03c797f83d46cf5527893562c20a1d61d5b0f2836d6966eba08bfd27d13",
+      "published_bytes": 3652501
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1314289,
+      "source_sha256": "dee6edbcb7518b5d37a04c9272722aea2e8e6bd7d74d3cf4fef3d9a6be06be5d",
+      "published_bytes": 1314289
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1319493,
+      "source_sha256": "27c9858e83d07afb5afd51cdbc3f0547a029b324c82bf6dab61bb4287aac432e",
+      "published_bytes": 1319493
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1318253,
+      "source_sha256": "ddb15d0d75af89968656b3a41801c8ad1af22deb7469f0188530d0caae1591e4",
+      "published_bytes": 1318253
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/A/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1321112,
+      "source_sha256": "a09daa643894cd21968d0ef624f5b97e3e0671c3ebd8fb1945f3d1143ffbb5d7",
+      "published_bytes": 1321112
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1664086,
+      "source_sha256": "9cae3f46d046e977a1021304c1a8a8146cb279f3694cfc11a102a63bc8cccfe4",
+      "published_bytes": 1664086
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1663075,
+      "source_sha256": "120337568d6ec5a9ba146b0362abcfd742c8df1a5af346d4d0a80c9fd095d28c",
+      "published_bytes": 1663075
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1658575,
+      "source_sha256": "f99e958e3972b0db9ce6af5fc3882bb6170b143731c02c175e26f89fae597f59",
+      "published_bytes": 1658575
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/B/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1661215,
+      "source_sha256": "4e54a3fc02dce66170bb9d940ec0b49b0619c6ed1dadf85c1bf448bf1e7a6286",
+      "published_bytes": 1661215
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3669304,
+      "source_sha256": "926bdf37a5df279b397a79b08317deba5ab1b916a4b82a1e2522fbca6f6853db",
+      "published_bytes": 3669304
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 3660083,
+      "source_sha256": "c0d66b2cf51c77bc5feec32b0b6b151f792c229f2bb86401702ffeb8b475766f",
+      "published_bytes": 3660083
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3651283,
+      "source_sha256": "7766c1ff28177aebd42dcb8ce7a0a578ba2b0466cad69a7eb9d01ae948e7d408",
+      "published_bytes": 3651283
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3/C/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 3654606,
+      "source_sha256": "3d9ab6dc16bbc3bf15f73472366050d45878973e06e9535b955d4cc0fd9a440a",
+      "published_bytes": 3654606
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1313447,
+      "source_sha256": "b4a22f94bf743e8685f2b6454d740a801319afe6a21d829da6461d0bd57f77ad",
+      "published_bytes": 1313447
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1318844,
+      "source_sha256": "20550850b7309b2acbb1150e82e91fdc9ae9528cb2e22c5dda0dd55003440942",
+      "published_bytes": 1318844
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1319049,
+      "source_sha256": "35be0f9d76d6cc2a75e7c49733b9007f8dd4d481f3ee94afed84a7ec5106d330",
+      "published_bytes": 1319049
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/A/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1320687,
+      "source_sha256": "b8a96e53eafe71eaf188aa10ecd278a144b132fcb49bbf634d50576b29577512",
+      "published_bytes": 1320687
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1665630,
+      "source_sha256": "8a1e6a5592d0072ddfd66f234400c0715a97c433d21be03373b7b2d924449ac7",
+      "published_bytes": 1665630
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1661990,
+      "source_sha256": "f0970616f806105815a309d37ef52ef394571e6b91aae93b822abf90c19f9794",
+      "published_bytes": 1661990
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1659139,
+      "source_sha256": "f62e4c2346871ac6a47db84819dd26093c0c1f3924b03e1253323d08c587eeab",
+      "published_bytes": 1659139
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/B/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1661165,
+      "source_sha256": "fd8bdaa954864116e814184d5ad4b81e0b98198b949477701a5a10b008be684f",
+      "published_bytes": 1661165
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3668126,
+      "source_sha256": "0774b401430a153b5af14e0a5ab1c377f813b38c5124599e39e6cf727e72aba8",
+      "published_bytes": 3668126
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 3660151,
+      "source_sha256": "b21648583e1cb37c53ffd0715fc3c2a5a2de50828ea991a44b8b89ad97ce1685",
+      "published_bytes": 3660151
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3651388,
+      "source_sha256": "278e7460166374f430895f159e37ba2cde397046136464ab7cec513c63acf5e8",
+      "published_bytes": 3651388
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/G3_M5/C/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 3655386,
+      "source_sha256": "bdb8ad9ff7500b8316f279814f14613a0aac79eaa90a552086126f5d818a68d2",
+      "published_bytes": 3655386
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1314157,
+      "source_sha256": "e7afa23a03fcfa164557009a63b5b46b4120b1a080096c0499f82ac7ece86625",
+      "published_bytes": 1314157
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1320127,
+      "source_sha256": "aa7d67358091755c030b4c31db47824245f133556b065e90f617774332d04e25",
+      "published_bytes": 1320127
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1321019,
+      "source_sha256": "a251e3c61ec337f7ab53c2f60d93191187653855229f99a0642f17ec651d52c1",
+      "published_bytes": 1321019
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/A/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1323033,
+      "source_sha256": "8d1f8603a302513544c652006b1c97140a0958d8a0da1f9c7f1f134fb87ca657",
+      "published_bytes": 1323033
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1667472,
+      "source_sha256": "17e8d8160bc09d1d2eee5f6f93de23e32ce70de9c09d184f3252ac2a7c150152",
+      "published_bytes": 1667472
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1665537,
+      "source_sha256": "ca84868a353e95470449828e00ccce6f8a6a2f43b378ba681c0f0a02ccf09369",
+      "published_bytes": 1665537
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1664201,
+      "source_sha256": "e546a674529d4fcce258d1a6741e7e4802023ae98f7c37ff9da159692c00e171",
+      "published_bytes": 1664201
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/B/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1663557,
+      "source_sha256": "9037ac54721d8a8b229d1228306692337fff84cceba672595025179488738526",
+      "published_bytes": 1663557
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3668694,
+      "source_sha256": "feea4b5c8025764af2f8a279877ea778bae25878aa39496fae74e9cec0037e33",
+      "published_bytes": 3668694
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 3663001,
+      "source_sha256": "e9f74f411dfbc34e2496e15ae0f23e7766a7bf5298776069601f91ce1fd9cecf",
+      "published_bytes": 3663001
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3658147,
+      "source_sha256": "2aa9d75ccf2596c0b8c874b9dab45fc5d2353a9972fe845792372b8742f02ec6",
+      "published_bytes": 3658147
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/M5_E1/C/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 3657782,
+      "source_sha256": "9dca2ccf4cdfff6d224c564ac4812a5a684a81fc45fd1fce6c631b83a2781f8c",
+      "published_bytes": 3657782
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1314254,
+      "source_sha256": "5816fbc71833aa259705ec1a4df0202e8fd696bdcb4e55cfd3f3ea2a696d71b0",
+      "published_bytes": 1314254
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_16/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_16/pairs.csv.part-000.gz",
+      "source_bytes": 1318326,
+      "source_sha256": "0cc8de17bfe7356c0d70fe03e2734dff6d30692d6bad95aeda459b1b00c4e0c6",
+      "published_bytes": 1318326
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1319587,
+      "source_sha256": "d2f7f58addf6ca349da54501224e9f605ee9a368bc3b654393f866562c37c041",
+      "published_bytes": 1319587
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1319413,
+      "source_sha256": "442382ff45b02f123fbc04bc79d92ab298fd03dbbf5a05353d4d972372a86487",
+      "published_bytes": 1319413
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1322458,
+      "source_sha256": "cd31f049c4c5cb8a3e428089b7ec38ca3820f80d3dce396843d4e5af8bf68e11",
+      "published_bytes": 1322458
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_8/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/A/state_layer_8/pairs.csv.part-000.gz",
+      "source_bytes": 1313276,
+      "source_sha256": "0e96f54b8e68aa5d1d2ddcc66df255b08a4e1e13f0ce90a23d5a721cf2d7eb69",
+      "published_bytes": 1313276
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1666527,
+      "source_sha256": "2818ce9d18203af6d3f13bff899a3bdfcb87fd44edca64427ea787b40c4f978d",
+      "published_bytes": 1666527
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_16/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_16/pairs.csv.part-000.gz",
+      "source_bytes": 1661269,
+      "source_sha256": "757e028f8119ae2ec12a273cabbc121e37251e488257d53c0b6d26fbd895c7e7",
+      "published_bytes": 1661269
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 1664103,
+      "source_sha256": "281b7d431e4786ea053a92a161e988781975c1ee8ffc2c920461eca7ae4d3f1c",
+      "published_bytes": 1664103
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 1661478,
+      "source_sha256": "ad2933141e3e54f17100656a4a2d158045461047c7077947af762de4eefbd720",
+      "published_bytes": 1661478
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 1664126,
+      "source_sha256": "305a7dcde79732da392d8007dce9c5413734d4c519d392f6290fb288631251af",
+      "published_bytes": 1664126
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_8/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/B/state_layer_8/pairs.csv.part-000.gz",
+      "source_bytes": 1655802,
+      "source_sha256": "340ce37a4a618ec0c40b80b8a081d21ddd17b1ad4ca17caacaca2ba243ae72ab",
+      "published_bytes": 1655802
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/control_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/control_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3668947,
+      "source_sha256": "1c2cf838ba34130ca408b2ea6ead03602870d5f1c6c87cd26bfd6d1e74adf866",
+      "published_bytes": 3668947
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_16/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_16/pairs.csv.part-000.gz",
+      "source_bytes": 3658024,
+      "source_sha256": "3b9b132d9e541dfe304ead2af4b9fb869007f1f1cd09e9fd333ba8eac68b864b",
+      "published_bytes": 3658024
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_22/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_22/pairs.csv.part-000.gz",
+      "source_bytes": 3662366,
+      "source_sha256": "5ef7bee33cf408dd8875f39317d9418528013240a7b63b3c54e7029a7bc1770e",
+      "published_bytes": 3662366
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_24/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_24/pairs.csv.part-000.gz",
+      "source_bytes": 3655010,
+      "source_sha256": "927c40e340426653a935947afa7343b0ec06cf52658e22acbe3953fef57dad9f",
+      "published_bytes": 3655010
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_26/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_26/pairs.csv.part-000.gz",
+      "source_bytes": 3657459,
+      "source_sha256": "0d505a11ca128075dfaa554e0cb60fe1d41c8cad80ea69cbecd53cedb3b25d16",
+      "published_bytes": 3657459
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_8/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/completed_exports/probes/TRIPLE/C/state_layer_8/pairs.csv.part-000.gz",
+      "source_bytes": 3651999,
+      "source_sha256": "33dd4c25ac2c355279574c73b3965d24a2e09143fdb7c16ee4cd2541499766c1",
+      "published_bytes": 3651999
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/episode_contrasts.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/episode_contrasts.csv.gz",
+      "source_bytes": 473993,
+      "source_sha256": "dc127a6829b0898dad0c872650a6c613cfc4c2f84186740daf610f7dce87e7c7",
+      "published_bytes": 473993
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/native_pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/native_pairs.csv.gz",
+      "source_bytes": 17930179,
+      "source_sha256": "ccc4ca408c52754ed35ea0ef0e5c876137a12b5ba667d7bc6ee06a7823355755",
+      "published_bytes": 17930179
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/G3_M5/pairs.csv.gz",
+      "source_bytes": 26905635,
+      "source_sha256": "4d2ea8c8d55d24b10ddacca9dedc32e9edc49a54c52387392b2eff400ff59e30",
+      "published_bytes": 26905635
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/episode_contrasts.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/episode_contrasts.csv.gz",
+      "source_bytes": 474510,
+      "source_sha256": "75e875ea5a2b6cbdd4bcb9ddcdcc1ee31cafd789111ff8718b5648deeb5eacc9",
+      "published_bytes": 474510
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/native_pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/native_pairs.csv.gz",
+      "source_bytes": 17979694,
+      "source_sha256": "48a0e1d755851d82bb4845f6a05cc45510717ef31fbe24b8fdd9118ed22a736b",
+      "published_bytes": 17979694
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/M5_E1/pairs.csv.gz",
+      "source_bytes": 26948281,
+      "source_sha256": "25dbdcf785a5dc79e542b644ce70da94ef54df6715696c235d946895bf150318",
+      "published_bytes": 26948281
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/episode_contrasts.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/episode_contrasts.csv.gz",
+      "source_bytes": 473133,
+      "source_sha256": "5db43db00fb0cc048879a7fbb3657c3ee89399d515027936f78e59069cdd0bd7",
+      "published_bytes": 473133
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/native_pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/native_pairs.csv.gz",
+      "source_bytes": 17980977,
+      "source_sha256": "3d39a53dfbc54ec23b3c4368f0a881f6585d52452cb38210e3e96bbbe84c27cd",
+      "published_bytes": 17980977
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/pairs.csv.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/d_b_exports/TRIPLE/pairs.csv.gz",
+      "source_bytes": 26956467,
+      "source_sha256": "76dedbe16343b4fd86f908140cdf9e369d679e94f9bb039f2b1ad05c711775d7",
+      "published_bytes": 26956467
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/086_panel_ids.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/086_panel_ids.json",
+      "source_bytes": 89888,
+      "source_sha256": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e",
+      "published_bytes": 89888
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/087_REPORT_PREREQUISITES_FINAL.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/087_REPORT_PREREQUISITES_FINAL.json",
+      "source_bytes": 982517,
+      "source_sha256": "b159115be45c3f576ad6c73ae1fc5a9d796e5f5067166656a378c6b6abe23783",
+      "published_bytes": 982517
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/088_commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/088_commands.json",
+      "source_bytes": 16801,
+      "source_sha256": "af34bb6d48e4f931877acb7de457a662daf8106715e55d782cfdf4af5b58de4d",
+      "published_bytes": 16801
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/089_commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/089_commands.json",
+      "source_bytes": 64647,
+      "source_sha256": "c6208065081812fe0b39ad43a887778772246745b2f05f52c1c19e56d788f42d",
+      "published_bytes": 64647
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/090_commands.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/090_commands.json",
+      "source_bytes": 3001,
+      "source_sha256": "c6abcfa485e9e3c96cd3dcb2ada5124175b238468eee5746517dc26bcbc9791d",
+      "published_bytes": 3001
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/073_interaction.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/073_interaction.csv",
+      "source_bytes": 67545,
+      "source_sha256": "e35d562b04b8c1ab1800ccdd30c26b9cb2cca1d38237d70d2952281af75c6e9d",
+      "published_bytes": 67545
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/074_episodes.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/074_episodes.csv",
+      "source_bytes": 783907,
+      "source_sha256": "bb1ea28603cdefd1133bdd64722dd5b74b674461f730b90b259f4facb6fe97fb",
+      "published_bytes": 783907
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/075_difference_in_differences_episodes.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/075_difference_in_differences_episodes.csv",
+      "source_bytes": 635228,
+      "source_sha256": "decbf60e7b4d92a4c94a79de2bf745f687a18271f6364786f21390ed8a405bb1",
+      "published_bytes": 635228
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/077_native_pairs.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/077_native_pairs.csv",
+      "source_bytes": 62710112,
+      "source_sha256": "0d4a88b9f03fa6ac173858c17689ab977056627ba3d292cc4516047dcbd1c67d",
+      "published_bytes": 62710112
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/078_episode_contrasts.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/078_episode_contrasts.csv",
+      "source_bytes": 2865773,
+      "source_sha256": "f34163a9ed7aea6538656398e6c2a4edbd28057b341dd6117c78ee7e48120692",
+      "published_bytes": 2865773
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/080_native_pairs.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/080_native_pairs.csv",
+      "source_bytes": 62672389,
+      "source_sha256": "dfa7cdf47f7ea7e13884539936e7224a59e953aae8b304fb11072567f33bd880",
+      "published_bytes": 62672389
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/081_episode_contrasts.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/081_episode_contrasts.csv",
+      "source_bytes": 2865556,
+      "source_sha256": "7392f85dca582e96937351546d0d43fed0c780c3a28bcec6b8f95690a84cdf15",
+      "published_bytes": 2865556
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/083_native_pairs.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/083_native_pairs.csv",
+      "source_bytes": 63261921,
+      "source_sha256": "c4062ba31dd1cfbd5866a62a880891be791185ae7953920a929314eaceea0cb3",
+      "published_bytes": 63261921
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/084_episode_contrasts.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional/084_episode_contrasts.csv",
+      "source_bytes": 2892758,
+      "source_sha256": "b16fdd9d6930c939993e58876d30651c290cd4dc28393eb3797c8882f093b8d2",
+      "published_bytes": 2892758
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/manifest.json",
+      "source_bytes": 823,
+      "source_sha256": "6d497fbe570d9934a4d9c3844944c990a7c40b066b05e7df1fae0d9bf695b379",
+      "published_bytes": 823
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/pairs.csv.part-000.gz",
+      "source_bytes": 20369969,
+      "source_sha256": "a24742f696e63b9124a4580bb6c5d3dc64988237ed4ad0533e7490582e18fdcd",
+      "published_bytes": 20369969
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/pairs.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/04973416251e9a2b/pairs.csv.part-001.gz",
+      "source_bytes": 5251253,
+      "source_sha256": "9a5f31ffdcd114cfdcaa5cf504146b8a140f9b44e6ab38283d9f2eb55300045a",
+      "published_bytes": 5251253
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/manifest.json",
+      "source_bytes": 823,
+      "source_sha256": "4a6f032efab89f2f10c37b7e68e94d2e7f04af83c3485f89f0e1d0e96d0f2ef7",
+      "published_bytes": 823
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/pairs.csv.part-000.gz",
+      "source_bytes": 20369284,
+      "source_sha256": "d9f11bdf175b2970cc1bfadfa94800bdba2abe931acff492b88ef97cd19411c8",
+      "published_bytes": 20369284
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/pairs.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/60bcb357629c4fce/pairs.csv.part-001.gz",
+      "source_bytes": 5210194,
+      "source_sha256": "328fc42b1dfab350c6b62c0a64ef79af8520be016aee88b154bf79860619a5b3",
+      "published_bytes": 5210194
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/manifest.json",
+      "source_bytes": 824,
+      "source_sha256": "628ebdc2a62cb05d0b5a9b6951d5a0de64d67d35588a331d046e6e7129a21ed0",
+      "published_bytes": 824
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/pairs.csv.part-000.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/pairs.csv.part-000.gz",
+      "source_bytes": 20279885,
+      "source_sha256": "618c7a0f85fbed4e1fc593d062d0cd9e1856101f6f9159e95d6f9c48432ddfe2",
+      "published_bytes": 20279885
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/pairs.csv.part-001.gz",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/additional_large/779dea5166e39d6e/pairs.csv.part-001.gz",
+      "source_bytes": 5348007,
+      "source_sha256": "a445eced2620e1e9e69e3fbb2a8859b9c71f596e033fd304772b5e18824f6a76",
+      "published_bytes": 5348007
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/metric2_episode_metrics.csv",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/metric2_episode_metrics.csv.gz",
+      "source_bytes": 202363028,
+      "source_sha256": "91d491d67343e5841a55c5e1e812ba25975f5c9198d0477b87a75d2d1648acb9",
+      "published_bytes": 21420939
+    },
+    {
+      "source_path": "reports/diagnostics/g3m5_failure_20261019/exports/native_recall_pairs.capture_manifest.json",
+      "published_path": "reports/diagnostics/g3m5_failure_20261019/exports/native_recall_pairs.capture_manifest.json",
+      "source_bytes": 745690,
+      "source_sha256": "411639c4b59fb4b95e0e82909ffb27f7c0203a2e5c61be23cc4141cbd99b3456",
+      "published_bytes": 745690
+    }
+  ],
+  "publication_notes": "156 final report, figure, result, review, metadata, reproduction and code files are published verbatim. 183 raw export files remain on the source server and are indexed under server_evidence_files; no compressed substitute is published."
+}

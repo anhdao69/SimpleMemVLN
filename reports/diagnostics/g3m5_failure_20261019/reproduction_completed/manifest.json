@@ -1,0 +1,55 @@
+{
+  "prepared_utc": "2026-10-20T19:41:18.374081+00:00",
+  "complete_for_listed_stages": true,
+  "full_study_complete": false,
+  "command_count": 16,
+  "commands_sha256": "c6208065081812fe0b39ad43a887778772246745b2f05f52c1c19e56d788f42d",
+  "snapshots": [
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_capture_manifest.json",
+      "sha256": "99642b11bae0bdb6d3b8ee90e25f87130ba85842e20077a6b2971d4ed2f737c6",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/parallel_capture_manifest.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/parallel_remaining_supervisor.py.txt",
+      "sha256": "d5f526210a610271e30305537a29bad1bec6b31c421cc0a79f9023ae7244b5e8",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/parallel_remaining_supervisor.py"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_commands_snapshot.json",
+      "sha256": "fbd8d3d0e447baaaa4af5e69a1d2fe6b37b8036f24624fe4b934965012d3bdfe",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/instrument_gates/panel_allhooks/commands.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/gates_status_snapshot.json",
+      "sha256": "380de79cd7661de250021f000d879b86d2f7a5298493e77cc4ba2f3528f06128",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/instrument_gates/panel_allhooks/queue_status.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_commands_snapshot.json",
+      "sha256": "be9d947f37b30efabaa9129f436febca0110d51bff7cb9cdf1e9768272a473ca",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/panel_measurements/commands.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/captures_status_snapshot.json",
+      "sha256": "3990faab9f9745e49748a2f5c70d705344ee9054dfb3a47fb0d68c405f12829a",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/panel_measurements/queue_status.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_commands_snapshot.json",
+      "sha256": "9a040c1c281e643e84790174c93f53c45bf815a33694074dda10d75202d3aa06",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/commands.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_completed/analysis_status_snapshot.json",
+      "sha256": "cc5a7c1fc527d7d058e3d4cf5d147355b95b9ba29d5579e45be12d06b944889a",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/queue_status.json"
+    }
+  ],
+  "pending": [
+    "Preparation and G-2 reproduction records",
+    "D-e commands and completed evidence after queue finishes",
+    "Final report-generation and delivery commands"
+  ],
+  "output_safety": "Historical commands retain original destinations. To reproduce, map all output roots and downstream references to new empty paths; never rerun against frozen measurements."
+}

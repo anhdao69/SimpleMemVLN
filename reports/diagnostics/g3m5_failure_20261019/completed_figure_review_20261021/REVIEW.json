@@ -1,0 +1,46 @@
+{
+  "status": "reviewed_completed_diagnostics_only",
+  "full_study_complete": false,
+  "utc": "2026-10-20T19:36:46.813286+00:00",
+  "figures_reviewed": [
+    "D-a",
+    "D-b",
+    "D-c",
+    "D-d",
+    "D-f"
+  ],
+  "png_hashes_verified": true,
+  "all_plotted_metric_rows_exactly_match_source": true,
+  "metric_rows_per_figure": {
+    "D-a": {
+      "retained_rows": 310,
+      "plotted_defined_rows": 310,
+      "undefined_rows_not_plotted": 0
+    },
+    "D-b": {
+      "retained_rows": 12,
+      "plotted_defined_rows": 12,
+      "undefined_rows_not_plotted": 0
+    },
+    "D-c": {
+      "retained_rows": 480,
+      "plotted_defined_rows": 456,
+      "undefined_rows_not_plotted": 24
+    },
+    "D-d": {
+      "retained_rows": 48,
+      "plotted_defined_rows": 48,
+      "undefined_rows_not_plotted": 0
+    },
+    "D-f": {
+      "retained_rows": 1968,
+      "plotted_defined_rows": 1904,
+      "undefined_rows_not_plotted": 64
+    }
+  },
+  "spatial_maps_verified": 24,
+  "visual_review": "Axes, units, legends and panels inspected; single-group D-b CIs rendered as visible separate model intervals.",
+  "rendering_fix": "Single-point fill_between polygons have zero area; explicit vertical confidence intervals added. All source numbers unchanged.",
+  "tests": "13 focused report/decision/figure tests passed in simulator environment; regression failures observed before fixes.",
+  "D_e": "pending, no D-e figure generated"
+}

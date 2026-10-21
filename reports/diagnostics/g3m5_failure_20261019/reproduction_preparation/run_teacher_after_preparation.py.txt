@@ -1,0 +1,24 @@
+import json,os,subprocess,time
+from pathlib import Path
+assets=Path(__file__).parent
+work=Path('/data14t/anhdh35/simplememvln_diag_g3m5_20261019')
+prep=assets/'expert_preparation_process.json'
+record=assets/'teacher_cache_process.json'
+command=['/storage/anhdh35/SimpleMemVLN/.venv/bin/python','-u','-m','scripts.diag.cache_teacher','--manifest',str(assets/'expert_panel_render/episodes.jsonl'),'--panel',str(work/'reports/diagnostics/g3m5_failure_20261019/panel_ids.json'),'--output',str(assets/'teacher_cache'),'--teacher-source',str(assets/'vggt-omega'),'--teacher-weights',str(assets/'teacher_weights/vggt_omega_1b_512.pt')]
+meta={'status':'waiting_for_preparation','pid':os.getpid(),'command':command,'cwd':str(work),'queued_unix':time.time(),'gpu_coordination':'remote_inputs confirmed all instrumentation complete; root informed teacher heavy GPU reserved after preparation'}
+record.write_text(json.dumps(meta,indent=2)+'\n')
+while True:
+ if prep.exists():
+  state=json.loads(prep.read_text())
+  if state['status']=='failed':
+   meta.update(status='blocked_preparation_failed');record.write_text(json.dumps(meta,indent=2)+'\n');raise SystemExit(1)
+  if state['status']=='complete':break
+ time.sleep(15)
+meta.update(status='running',started_unix=time.time());record.write_text(json.dumps(meta,indent=2)+'\n')
+env=dict(os.environ,PYTHONPATH=str(work/'src'),CUDA_VISIBLE_DEVICES='0',OMP_NUM_THREADS='4',TOKENIZERS_PARALLELISM='false')
+with (assets/'teacher_cache.log').open('w') as log:
+ child=subprocess.Popen(command,cwd=work,env=env,stdout=log,stderr=subprocess.STDOUT)
+ meta['child_pid']=child.pid;record.write_text(json.dumps(meta,indent=2)+'\n')
+ code=child.wait()
+meta.update(status='complete' if code==0 else 'failed',returncode=code,finished_unix=time.time());record.write_text(json.dumps(meta,indent=2)+'\n')
+raise SystemExit(code)

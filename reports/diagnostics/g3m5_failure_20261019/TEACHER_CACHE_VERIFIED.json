@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "episodes": 240,
+  "frames": 13847,
+  "elapsed_teacher_seconds": 1451.4604613780975,
+  "cache_identity": {
+    "manifest": "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render/episodes.jsonl",
+    "manifest_sha256": "8ab1a618be32a1bcb4111af10664c3154e6aca017df1f1e6f293003b501215da",
+    "config_sha256": "f9c91580e67dc1956d86e0dd10793e6f7ca70e873b2bc3108e6a8fa336a39de5",
+    "panel_sha256": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e",
+    "teacher_identity": {
+      "base": {
+        "weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+        "source_sha256": "b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb",
+        "preprocessing": "omega-balanced512-rgb640x480-bicubic448x592-v1",
+        "position": "g1-center-sincos2048-rms1-scale0.5-v1",
+        "adapter_sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+        "preprocessing_code_sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+        "teacher_layer": 23,
+        "patch_offset": 17,
+        "teacher_dim": 2048,
+        "compute_dtype": "float32",
+        "pooling": "adaptive-average-15x20-LN2048-eps1e-6",
+        "position_sha256": "dfee8e96d744f224ab3e8032096a468146a6df91b0d4397c2d30112a272c2ea7"
+      },
+      "target": "g3-unpositioned-LN2048-regions-v1",
+      "adapter_sha256": "91fab33372f42c22de5991bc7bcfb85480193eb00d3c94b7c3df563419c5fb5e",
+      "regions_sha256": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839"
+    },
+    "cache_dtype": "float16",
+    "compute_dtype": "float32",
+    "episodes": 240
+  },
+  "index_sha256": "de9b99ce0e0b7dd089a73395c3b935d50a3d9571f1158e066e04a7be00d75479",
+  "complete_sha256": "9b0e0f6e3d5ab411e7b0d58319220362ee1dcbed974b3135d563ae44165fae38",
+  "preparation_sha256": "78d64aae8c56aaceede04b96707931f55c30482952f354527bfe440eb9b47ba1",
+  "checks": [
+    "All target file SHA256",
+    "Tensor shape [frames,5,2048]",
+    "FP16 finite values",
+    "Exact ordered episode UID coverage",
+    "Every input path and image hash matches preparation",
+    "Manifest and panel hashes",
+    "Teacher process exit code zero"
+  ],
+  "verified_unix": 1792435988.8565605
+}

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "command": [
+    "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+    "-m",
+    "scripts.diag.panels",
+    "--data-root",
+    "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen",
+    "--output-dir",
+    "/data14t/anhdh35/diag_g3m5_20261019_assets/panel_reproduction_verification_20261021"
+  ],
+  "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+  "verified_utc": "2026-10-20T19:43:29.513585+00:00",
+  "panel_hashes": {
+    "panel_ids.json": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e",
+    "de_panel_ids.json": "475d192008a0ef5ab0d0c249aff4769d345cf9cc1879ee720c9ba98e014a3cb1"
+  },
+  "definition": "Fresh deterministic regeneration; original frozen panel files unchanged"
+}

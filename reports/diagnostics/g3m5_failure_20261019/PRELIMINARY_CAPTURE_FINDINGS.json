@@ -1,0 +1,726 @@
+{
+  "status": "provisional_capture_findings_only_full_study_incomplete",
+  "scope": "D-a Metric 1, D-c, D-d, D-f from completed 240-episode capture panel; D-g removed by user instruction",
+  "source": {
+    "summary_json": "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/capture_summary/summary.json",
+    "sha256": "8ca9ff6a88930571a806d4744720129324af85286b6a757268538013533d163d",
+    "completion_marker_sha256": "8ca9ff6a88930571a806d4744720129324af85286b6a757268538013533d163d",
+    "episodes_per_model": 240,
+    "metric2_aggregation_json": "reports/diagnostics/g3m5_failure_20261019/PRELIMINARY_DA2_AGGREGATION.json",
+    "metric2_aggregation_sha256": "772edb79a8c5bf441e9f31863def907483e8143ad44bbd54cdf31f1e4aea29f3"
+  },
+  "uncertainty": {
+    "unit": "episode",
+    "bootstrap": "within-scene episode bootstrap",
+    "resamples": 2000,
+    "seed": 20261019,
+    "ci": "95% percentile"
+  },
+  "R1": {
+    "provisional_decision": "Refuted",
+    "rule_check": "D-a layer-24 Global forgetting difference in group B is below zero and its entire CI excludes positive values.",
+    "metric1": {
+      "B": {
+        "diagnostic": "D-a",
+        "model": "G3_M5 - M5_E1",
+        "layer": 24,
+        "lag": "B",
+        "region": "Global",
+        "metric": "forgetting",
+        "scope": "pair_mean",
+        "estimate": -0.013088017254517593,
+        "ci95": [
+          -0.013439290366866363,
+          -0.012735368463510529
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_pairs": 25072,
+          "left_token_visits": 7521600,
+          "right_pairs": 25072,
+          "right_token_visits": 7521600
+        }
+      },
+      "C": {
+        "diagnostic": "D-a",
+        "model": "G3_M5 - M5_E1",
+        "layer": 24,
+        "lag": "C",
+        "region": "Global",
+        "metric": "forgetting",
+        "scope": "pair_mean",
+        "estimate": -0.017735822586795392,
+        "ci95": [
+          -0.018231558669774692,
+          -0.017237830060491677
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_pairs": 54548,
+          "left_token_visits": 16364400,
+          "right_pairs": 54548,
+          "right_token_visits": 16364400
+        }
+      }
+    },
+    "metric2_state_cosine": {
+      "B": {
+        "diagnostic": "D-a2",
+        "feature": "state",
+        "lag": "B",
+        "layer": 24,
+        "metric": "cosine",
+        "model": "G3_M5 - M5_E1",
+        "estimate": 0.0007374102552556587,
+        "ci95": [
+          0.0005820134160908043,
+          0.0009007504694465001
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 32,
+          "mp3d/8194nk5LbLH/8194nk5LbLH.glb": 8,
+          "mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 16,
+          "mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 32,
+          "mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 33,
+          "mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 18,
+          "mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 20,
+          "mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 22,
+          "mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 8,
+          "mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 13,
+          "mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 38
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null,
+        "contrast": "right - left",
+        "counts": {
+          "left_pairs": 25072,
+          "left_candidate_frame_visits": 1547972,
+          "right_pairs": 25072,
+          "right_candidate_frame_visits": 1547972
+        }
+      },
+      "C": {
+        "diagnostic": "D-a2",
+        "feature": "state",
+        "lag": "C",
+        "layer": 24,
+        "metric": "cosine",
+        "model": "G3_M5 - M5_E1",
+        "estimate": 0.0010147946232548272,
+        "ci95": [
+          0.0008778513951350917,
+          0.0011502696726431374
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "undefined_episode_ids": [],
+        "scene_counts": {
+          "mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 32,
+          "mp3d/8194nk5LbLH/8194nk5LbLH.glb": 8,
+          "mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 16,
+          "mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 32,
+          "mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 33,
+          "mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 18,
+          "mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 20,
+          "mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 22,
+          "mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 8,
+          "mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 13,
+          "mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 38
+        },
+        "resamples": 2000,
+        "seed": 20261019,
+        "unit": "episode",
+        "method": "within-scene episode bootstrap; percentile linear quantiles",
+        "undefined_reason": null,
+        "contrast": "right - left",
+        "counts": {
+          "left_pairs": 54548,
+          "left_candidate_frame_visits": 3426103,
+          "right_pairs": 54548,
+          "right_candidate_frame_visits": 3426103
+        }
+      }
+    },
+    "metric2_interpretation": "Both B and C contrasts are positive with CIs excluding zero, whereas the registered lag-hole support pattern requires state decodability to fall in B and rise in C; this is consistent with the registered R1 refutation, not support."
+  },
+  "R2": {
+    "provisional_decision": "Inconclusive",
+    "missing": "D-b targeted-minus-control estimate is still running.",
+    "D_c_attention_difference": {
+      "diagnostic": "D-c",
+      "model": "G3_M5 - M5_E1",
+      "layer": "3-23",
+      "role": "combined",
+      "category": "bank_lag_8_32",
+      "metric": "mass_per_token",
+      "scope": "query_head_mean",
+      "estimate": -3.905464301734327e-06,
+      "ci95": [
+        -4.302032454163427e-06,
+        -3.526970784923146e-06
+      ],
+      "n_episodes": 240,
+      "n_input": 240,
+      "n_undefined": 0,
+      "counts": {
+        "left_queries": 2741706,
+        "left_query_heads": 43867296,
+        "left_defined_query_heads": 37784736,
+        "left_visible_tokens": 1795681140,
+        "left_token_head_visits": 28730898240,
+        "left_undefined_queries": 380160,
+        "right_queries": 2741706,
+        "right_query_heads": 43867296,
+        "right_defined_query_heads": 37784736,
+        "right_visible_tokens": 1786187667,
+        "right_token_head_visits": 28579002672,
+        "right_undefined_queries": 380160
+      }
+    },
+    "interpretation": "Observed lower-layer bank-lag 8\u201332 per-token mass difference is negative; this does not satisfy the registered support direction."
+  },
+  "R3": {
+    "provisional_decision": "Inconclusive",
+    "missing": "D-e selector-swap interaction has not run.",
+    "normalized_margin_differences": {
+      "2": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 2,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": 3.322556228229608e-05,
+        "ci95": [
+          1.4172199750098704e-05,
+          5.1612072354361936e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      },
+      "6": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 6,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": -2.4384988508103274e-07,
+        "ci95": [
+          -2.7547859378569296e-05,
+          2.8222562242837857e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      },
+      "10": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 10,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": 2.5689188539641473e-06,
+        "ci95": [
+          -1.937269443098773e-05,
+          2.475352577476314e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      },
+      "14": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 14,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": -1.1100098746589431e-05,
+        "ci95": [
+          -3.2260618499145365e-05,
+          1.1325559260589605e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      },
+      "18": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 18,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": 1.6590369693709506e-05,
+        "ci95": [
+          -3.5746761213242104e-05,
+          6.4924571507235e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      },
+      "22": {
+        "diagnostic": "D-d",
+        "model": "G3_M5 - M5_E1",
+        "layer": 22,
+        "metric": "normalized_cutoff_margin",
+        "scope": "admission_mean",
+        "estimate": 3.0986127541594944e-06,
+        "ci95": [
+          -7.078080783452246e-05,
+          8.385962409145648e-05
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "left_steps": 13847,
+          "left_candidate_token_visits": 18610500,
+          "left_selected_token_visits": 15032400,
+          "left_defined_steps": 11927,
+          "left_undefined_steps": 1920,
+          "right_steps": 13847,
+          "right_candidate_token_visits": 18610500,
+          "right_selected_token_visits": 15032400,
+          "right_defined_steps": 11927,
+          "right_undefined_steps": 1920
+        }
+      }
+    },
+    "negative_ci_layers": []
+  },
+  "R4": {
+    "provisional_decision": "Supported",
+    "pooled_total_bank_mass_difference": {
+      "estimate": -0.006979442607250506,
+      "ci95": [
+        -0.007403786769552626,
+        -0.006563938587911575
+      ],
+      "n_episodes": 240,
+      "n_input": 240,
+      "n_undefined": 0,
+      "undefined_episode_ids": [],
+      "scene_counts": {
+        "mp3d/2azQ1b91cZZ/2azQ1b91cZZ.glb": 32,
+        "mp3d/8194nk5LbLH/8194nk5LbLH.glb": 8,
+        "mp3d/EU6Fwq7SyZv/EU6Fwq7SyZv.glb": 16,
+        "mp3d/QUCTc6BB5sX/QUCTc6BB5sX.glb": 32,
+        "mp3d/TbHJrupSAjP/TbHJrupSAjP.glb": 33,
+        "mp3d/X7HyMhZNoso/X7HyMhZNoso.glb": 18,
+        "mp3d/Z6MFQCViBuw/Z6MFQCViBuw.glb": 20,
+        "mp3d/oLBMNvg9in8/oLBMNvg9in8.glb": 22,
+        "mp3d/pLe4wQe7qrG/pLe4wQe7qrG.glb": 8,
+        "mp3d/x8F5xyUWy9e/x8F5xyUWy9e.glb": 13,
+        "mp3d/zsNo4HB9uLZ/zsNo4HB9uLZ.glb": 38
+      },
+      "resamples": 2000,
+      "seed": 20261019,
+      "unit": "episode",
+      "method": "within-scene episode bootstrap; percentile linear quantiles",
+      "undefined_reason": null,
+      "contrast": "right - left",
+      "definition": "G3_M5-M5_E1; equal eight layers per episode; combined33 total bank mass"
+    }
+  },
+  "R5": {
+    "provisional_decision": "Refuted",
+    "rule_check": "All 16 G3_M5/TRIPLE layer means are at least 0.995.",
+    "minimum_layer_mean_overlap": 0.9969356921872503,
+    "layer_means": {
+      "G3_M5:3": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 3,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:7": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 7,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:11": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 11,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:15": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 15,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:19": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 19,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:23": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 23,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:27": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 27,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9992090902287458,
+        "ci95": [
+          0.9991595317503119,
+          0.9992588474299601
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "G3_M5:31": {
+        "diagnostic": "D-f",
+        "model": "G3_M5",
+        "layer": 31,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9987564120880349,
+        "ci95": [
+          0.9986608485333455,
+          0.9988475123035948
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:3": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 3,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:7": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 7,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 1.0,
+        "ci95": [
+          1.0,
+          1.0
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:11": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 11,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9990984711798363,
+        "ci95": [
+          0.9990437410603178,
+          0.9991542159906623
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:15": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 15,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9983042568014653,
+        "ci95": [
+          0.9981918110361864,
+          0.998412090267811
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:19": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 19,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.998192819194758,
+        "ci95": [
+          0.9980702793055957,
+          0.9983109783043491
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:23": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 23,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9975823884618683,
+        "ci95": [
+          0.9974209908990557,
+          0.9977416304880293
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:27": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 27,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9969356921872503,
+        "ci95": [
+          0.9967185915376061,
+          0.9971424386399808
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      },
+      "TRIPLE:31": {
+        "diagnostic": "D-f",
+        "model": "TRIPLE",
+        "layer": 31,
+        "metric": "selected_overlap",
+        "scope": "episode_mean",
+        "estimate": 0.9969953400005774,
+        "ci95": [
+          0.996753019091765,
+          0.9972284993693308
+        ],
+        "n_episodes": 240,
+        "n_input": 240,
+        "n_undefined": 0,
+        "counts": {
+          "nonempty_steps": 12887,
+          "empty_steps": 960,
+          "selected_token_visits": 15032400
+        }
+      }
+    }
+  },
+  "study_complete": false,
+  "interpretation_caveat": "Provisional until D-b application, D-e, complete aggregation, report checks, and final artifact audit finish."
+}

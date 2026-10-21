@@ -1,0 +1,111 @@
+{
+  "model": "M5_E1",
+  "episode_id": "1007",
+  "frames": 79,
+  "seconds": 79.01968988298904,
+  "files_verified": 26,
+  "parameter_versions_unchanged": true,
+  "attention_gate_passed": true,
+  "layers": [
+    22,
+    24,
+    26
+  ],
+  "recall_counts": {
+    "22": {
+      "unique_anchor_source_pairs": 651,
+      "region_rows": 3255,
+      "regions": {
+        "Q1": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q2": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q3": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Q4": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Global": {
+          "pairs": 651,
+          "tokens_per_pair": 300,
+          "token_evaluations": 195300
+        }
+      }
+    },
+    "24": {
+      "unique_anchor_source_pairs": 651,
+      "region_rows": 3255,
+      "regions": {
+        "Q1": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q2": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q3": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Q4": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Global": {
+          "pairs": 651,
+          "tokens_per_pair": 300,
+          "token_evaluations": 195300
+        }
+      }
+    },
+    "26": {
+      "unique_anchor_source_pairs": 651,
+      "region_rows": 3255,
+      "regions": {
+        "Q1": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q2": {
+          "pairs": 651,
+          "tokens_per_pair": 70,
+          "token_evaluations": 45570
+        },
+        "Q3": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Q4": {
+          "pairs": 651,
+          "tokens_per_pair": 80,
+          "token_evaluations": 52080
+        },
+        "Global": {
+          "pairs": 651,
+          "tokens_per_pair": 300,
+          "token_evaluations": 195300
+        }
+      }
+    }
+  },
+  "complete_sha256": "760e8e964e9f22852b531789da86b095d8e8cfc06b2397c78cca16da8e6b1024",
+  "scope": "First complete episode only; not a model-level completion or hypothesis contrast"
+}

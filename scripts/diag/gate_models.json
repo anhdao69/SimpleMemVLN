@@ -1,0 +1,7 @@
+[
+  {"model":"M5_E1","checkpoint":"/data14t/anhdh35/diag_g3m5_20261019_assets/checkpoints/M5_E1/epoch-1","weights_sha256":"92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6"},
+  {"model":"G3_M5","checkpoint":"/data14t/anhdh35/simplememvln_g3_m5_combined_eval/checkpoints/G3_M5/epoch-1","weights_sha256":"4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f"},
+  {"model":"TRIPLE","checkpoint":"/data14t/anhdh35/diag_g3m5_20261019_assets/checkpoints/G3_M5_L8_L16_L24/epoch-1","weights_sha256":"c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce"},
+  {"model":"G3","checkpoint":"/data14t/anhdh35/simplememvln_g3_m5_eval/checkpoints/G3/G3/epoch-1","weights_sha256":"a71be6b5291b6acddbeb389318befaded5818c5b1438d5d44cf351c64248333b"},
+  {"model":"G1","checkpoint":"/data14t/anhdh35/simplememvln_g1_eval/checkpoints/G1/epoch-1","weights_sha256":"a620ab17b1c0cbec6f7c5f95d67177a4b078ae53e83ea08c6696c5c4797a63ae"}
+]

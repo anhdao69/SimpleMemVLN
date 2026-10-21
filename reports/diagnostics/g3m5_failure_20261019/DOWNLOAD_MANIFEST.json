@@ -1,0 +1,275 @@
+{
+  "repo": "anhdao69/Streaming_VGGT",
+  "revision": "86a537b6eb4d72baedbbf6b9ec003b3ab20f0a24",
+  "created_utc": "2026-10-19T16:54:48.367457+00:00",
+  "status": "verified",
+  "files": [
+    {
+      "path": "G3/training_auxiliary_state_head.pt",
+      "bytes": 21057107,
+      "sha256": "66d9c8e18ed32da7ac1eef9a43c6ef4933933cdccd76dae204d617139cc779fc",
+      "git_blob_id": "aa8a075cee070876bd33011a38400f43af649fbb",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/README.md",
+      "bytes": 2697,
+      "sha256": null,
+      "git_blob_id": "47a78281b42c9cf9ecddd0c053323120328325aa",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/SHA256SUMS.json",
+      "bytes": 2851,
+      "sha256": null,
+      "git_blob_id": "25e5aeb34eba19e99862b35651e95834f1075799",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/chat_template.jinja",
+      "bytes": 7756,
+      "sha256": null,
+      "git_blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/config.json",
+      "bytes": 2903,
+      "sha256": null,
+      "git_blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/navigation.json",
+      "bytes": 3876,
+      "sha256": null,
+      "git_blob_id": "ba3f14cb074b5b137ffb759a808a42eff83b061b",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/processor_config.json",
+      "bytes": 1191,
+      "sha256": null,
+      "git_blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/pytorch_model.bin",
+      "bytes": 10350179659,
+      "sha256": "c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce",
+      "git_blob_id": "441e1e0815e78d45c86beb61fef323884cd01e92",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/research_training.json",
+      "bytes": 1736,
+      "sha256": null,
+      "git_blob_id": "e7e812b3092d74de680f2b65a8b924670978c339",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer.json",
+      "bytes": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "git_blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer_config.json",
+      "bytes": 1164,
+      "sha256": null,
+      "git_blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/completion_resources.json",
+      "bytes": 1897,
+      "sha256": null,
+      "git_blob_id": "4b157b910e5e3275f8c403e16e6ca244e0472f9d",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/epoch-1.json",
+      "bytes": 396566,
+      "sha256": null,
+      "git_blob_id": "405f6cbcb407747b28af7f21e9eea9b4c2ef2cca",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/publication_validation.json",
+      "bytes": 1708,
+      "sha256": null,
+      "git_blob_id": "91b00729cff2b18a0722862bb44e1e0e7c1fb021",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_pass.json",
+      "bytes": 52658,
+      "sha256": null,
+      "git_blob_id": "bfb5f4b099ff40f65448b28c623d3dd93c0279a8",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_serving_replay.json",
+      "bytes": 1292,
+      "sha256": null,
+      "git_blob_id": "04b9884adc6ab4cee6ebbe604b8c209a50b0f75b",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/resolved_config.json",
+      "bytes": 3865,
+      "sha256": null,
+      "git_blob_id": "28a39a1e15c13ca3ecd510852162862c5d6298ee",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/run_timing.json",
+      "bytes": 354,
+      "sha256": null,
+      "git_blob_id": "736d3e41a619c810d9ae9d281e35f0ffb7bcb983",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/source_and_completion.json",
+      "bytes": 1756,
+      "sha256": null,
+      "git_blob_id": "c05263b7ac2bb6e030eb2b4a2549224bbeca1c9b",
+      "verified": true
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/trainer_state.json",
+      "bytes": 719134,
+      "sha256": null,
+      "git_blob_id": "7be346216aeabcc2347d0777303a2acd9cf2df13",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/README.md",
+      "bytes": 2293,
+      "sha256": null,
+      "git_blob_id": "72d02565865ac4b41af1fa303c6b360a13b58015",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/SHA256SUMS.json",
+      "bytes": 2487,
+      "sha256": null,
+      "git_blob_id": "de78fc99af0af6e7b30204b6e9c0a90d1a53e0d6",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/chat_template.jinja",
+      "bytes": 7756,
+      "sha256": null,
+      "git_blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/config.json",
+      "bytes": 2903,
+      "sha256": null,
+      "git_blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/navigation.json",
+      "bytes": 3877,
+      "sha256": null,
+      "git_blob_id": "ced39244169f677d6206f2cda9e793914a3ceadd",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/processor_config.json",
+      "bytes": 1191,
+      "sha256": null,
+      "git_blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/pytorch_model.bin",
+      "bytes": 10350179723,
+      "sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+      "git_blob_id": "c6aeefe855b34d98b07504d8821e73fa90686b5a",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer.json",
+      "bytes": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "git_blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer_config.json",
+      "bytes": 1164,
+      "sha256": null,
+      "git_blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/completion_resources.json",
+      "bytes": 1936,
+      "sha256": null,
+      "git_blob_id": "ededa3239620d5dcb498ab39aeec27970bcd8eb1",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/epoch-1.json",
+      "bytes": 396528,
+      "sha256": null,
+      "git_blob_id": "ed1f4b83d73dc4e6d22ecfd64616682efadd4352",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/publication_validation.json",
+      "bytes": 305,
+      "sha256": null,
+      "git_blob_id": "e8ab7f856c02b6fdcd3a9dc76d7a1611b041b593",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/qualification_pass.json",
+      "bytes": 4195,
+      "sha256": null,
+      "git_blob_id": "b10eec0a3ef2acb8a9cface23e814bb828a35e87",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/resolved_config.json",
+      "bytes": 2250,
+      "sha256": null,
+      "git_blob_id": "ed3b006b3ee0450ddfe6af7e7dca9dc1ac623bd1",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/run_identity.json",
+      "bytes": 2958,
+      "sha256": null,
+      "git_blob_id": "0e218d0f68268e9d3721fd2cab36d4d12ca398d1",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/run_timing.json",
+      "bytes": 352,
+      "sha256": null,
+      "git_blob_id": "3e8d61da1a5c48249f39fcde04dec5b647493d11",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/source_and_completion.json",
+      "bytes": 1740,
+      "sha256": null,
+      "git_blob_id": "7949ee41a9d0dff7724efe6c5897568135b66921",
+      "verified": true
+    },
+    {
+      "path": "M5_E1/provenance/trainer_state.json",
+      "bytes": 719164,
+      "sha256": null,
+      "git_blob_id": "f6d6bf45160d96877f47c6173d8a1b325b5a61fd",
+      "verified": true
+    }
+  ],
+  "verified_utc": "2026-10-19T16:58:01.785470+00:00"
+}

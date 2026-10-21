@@ -1,0 +1,79 @@
+{
+  "branch": "diag/g3m5-failure-20261019",
+  "evidence": {
+    "cpu_tests": {
+      "failed": 0,
+      "passed": 144,
+      "skipped": 4
+    },
+    "decisions": {
+      "R1": "Refuted",
+      "R2": "Refuted",
+      "R3": "Inconclusive",
+      "R4": "Supported",
+      "R5": "Refuted"
+    },
+    "diagnostic": true,
+    "export_parts_and_files_hash_verified": 166,
+    "figure_count_hash_verified": 6,
+    "figures": [
+      "D-a",
+      "D-b",
+      "D-c",
+      "D-d",
+      "D-e",
+      "D-f"
+    ],
+    "full_completion": true,
+    "model_gates": {
+      "G1": {
+        "dc": true,
+        "g1": true,
+        "g2": true,
+        "g3": true
+      },
+      "G3": {
+        "dc": true,
+        "g1": true,
+        "g2": true,
+        "g3": true
+      },
+      "G3_M5": {
+        "db": true,
+        "dc": true,
+        "df": true,
+        "g1": true,
+        "g2": true,
+        "g3": true
+      },
+      "M5_E1": {
+        "db": true,
+        "dc": true,
+        "g1": true,
+        "g2": true,
+        "g3": true
+      },
+      "TRIPLE": {
+        "db": true,
+        "dc": true,
+        "df": true,
+        "g1": true,
+        "g2": true,
+        "g3": true
+      }
+    },
+    "qualified": false,
+    "rendering_gate": "failed_rendering_parity_stop",
+    "report_sha256": "eda5543738c72d02f47b8ad07a983a1204f44be43c4fac717cfbac514ce3aa60",
+    "results_sha256": "ea6e1e670ca32abc940be18dc0593609e9880468026b22503d91d9f5ee6645ef"
+  },
+  "interpretive_limits": [
+    "Rendering parity failed and remains reported as failed; the user explicitly authorized proceeding with the specified dataset.",
+    "Teacher-forced evidence does not establish the closed-loop cause or magnitude.",
+    "D-g was removed; no objective-interference conclusion is made."
+  ],
+  "pre_review_head": "d9b4b9c355d71c2e414abcbfb7963fda6b443d97",
+  "review": "passed artifact and scientific-consistency review",
+  "reviewed_at_local": "2026-10-21T06:26:50+07:00",
+  "scope": "D-a through D-f; D-g explicitly removed by user instruction"
+}

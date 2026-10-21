@@ -1,0 +1,42 @@
+{
+  "frozen": {
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "worker",
+      "--source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/source",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g3_m5_eval/checkpoints/G3/G3/epoch-1",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3/frozen",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base"
+    ],
+    "pythonpath": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/source/src:/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/source"
+  },
+  "diagnostic": {
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "worker",
+      "--source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g3_m5_eval/checkpoints/G3/G3/epoch-1",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3/diagnostic",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base"
+    ],
+    "pythonpath": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/src:/data14t/anhdh35/simplememvln_diag_g3m5_20261019"
+  }
+}

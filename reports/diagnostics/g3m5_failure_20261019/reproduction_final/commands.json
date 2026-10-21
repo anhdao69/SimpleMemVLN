@@ -1,0 +1,68 @@
+[
+  {
+    "label": "post_measurement_queue_D_e_and_aggregation",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-u",
+      "-m",
+      "scripts.diag.post_measurement_queue",
+      "--source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--assets",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "executed_full_diagnostic_queue",
+    "output_root": "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1"
+  },
+  {
+    "label": "selector_results_independent_reaggregation",
+    "command": [
+      "env",
+      "PYTHONPATH=src:.",
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-m",
+      "scripts.diag.selector_results",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/de_panel_ids.json",
+      "--baseline",
+      "M5_E1=/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/full/episodes.jsonl",
+      "--baseline",
+      "G3_M5=/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/full/episodes.jsonl",
+      "--runs",
+      "M5_E1=/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/closed_loop/M5_E1",
+      "--runs",
+      "G3_M5=/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/closed_loop/G3_M5",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/selector_results_rerun_check"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "executed_independent_reaggregation",
+    "output_root": "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1/selector_results_rerun_check"
+  },
+  {
+    "label": "final_report_generation",
+    "command": [
+      "env",
+      "PYTHONPATH=src:.",
+      "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+      "-m",
+      "scripts.diag.report",
+      "--post-root",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/post_measurements_retry1",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "--prerequisites",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/REPORT_PREREQUISITES_FINAL.json",
+      "--output",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/final_review_20261021"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "report_generation_recipe",
+    "output_root": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/final_review_20261021"
+  }
+]

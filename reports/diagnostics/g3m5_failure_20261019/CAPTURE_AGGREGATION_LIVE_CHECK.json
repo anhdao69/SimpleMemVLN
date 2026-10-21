@@ -1,0 +1,40 @@
+{
+  "observed_at": "2026-10-21 00:23:35 +0700",
+  "pid": 292764,
+  "io": {
+    "rchar": 1606046032616,
+    "wchar": 2838895069,
+    "syscr": 1116140,
+    "syscw": 339886,
+    "read_bytes": 1590686117888,
+    "write_bytes": 2840207360,
+    "cancelled_write_bytes": 0
+  },
+  "outputs": {
+    "eviction_bridge_episodes.csv": {
+      "bytes": 436243,
+      "mtime": "2026-10-21 00:09:56 +0700"
+    },
+    "attention_steps.csv": {
+      "bytes": 2412837196,
+      "mtime": "2026-10-21 00:21:10 +0700"
+    },
+    "selection_steps.csv": {
+      "bytes": 383755137,
+      "mtime": "2026-10-21 00:10:06 +0700"
+    },
+    "cross_selection_steps.csv": {
+      "bytes": 21931166,
+      "mtime": "2026-10-21 00:23:35 +0700"
+    },
+    "probe_drift_steps.csv": {
+      "bytes": 19935327,
+      "mtime": "2026-10-21 00:10:06 +0700"
+    }
+  },
+  "complete": false,
+  "queue": {
+    "status": "running",
+    "stage": "probes_and_ablation"
+  }
+}

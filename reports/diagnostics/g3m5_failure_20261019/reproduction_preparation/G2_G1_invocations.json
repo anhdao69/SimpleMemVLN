@@ -1,0 +1,44 @@
+{
+  "frozen": {
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-P",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "worker",
+      "--source",
+      "/data14t/anhdh35/simplememvln_g1_eval/source",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g1_eval/checkpoints/G1/epoch-1",
+      "--fixture",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_128.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G1_retry_safe_path/frozen",
+      "--rgb-dir",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_frames",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base"
+    ],
+    "pythonpath": "/data14t/anhdh35/simplememvln_g1_eval/source/src:/data14t/anhdh35/simplememvln_g1_eval/source"
+  },
+  "diagnostic": {
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-P",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "worker",
+      "--source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g1_eval/checkpoints/G1/epoch-1",
+      "--fixture",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_128.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G1_retry_safe_path/diagnostic",
+      "--rgb-dir",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_frames",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base"
+    ],
+    "pythonpath": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/src:/data14t/anhdh35/simplememvln_diag_g3m5_20261019"
+  }
+}

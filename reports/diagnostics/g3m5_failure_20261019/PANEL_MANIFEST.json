@@ -1,0 +1,67 @@
+{
+  "algorithm": "Premeasurement panel selection; standard library only, no model imports.\n\nAlgorithm v1: scene quotas use constrained Hamilton apportionment. Fix scenes\nwhose proportional ideal is below the minimum at that minimum, recompute ideals\non the remaining population, floor ideals, then give remaining seats in descending\nfractional-remainder order (lexicographic scene key breaks ties). Capacity is never\nexceeded. Within each scene, apportion its quota proportionally over the population's\nthree GLOBAL rank tertiles. Rank by (continuous GT length, string episode ID),\nassign tertile min(2, floor(3*rank/N)); equal lengths may cross a boundary, with\nlexicographic episode IDs breaking ties. No model outputs inform these choices.\n\nSelection: separate random.Random(seed) streams for shared, D-e and determinism\npanels; canonical sorted scene/stratum/ID order before shuffle. Within each fixed\nshared-panel stratum shuffle >=34-action and shorter candidates separately, then\ntake long candidates first. D-e has scene quotas only and no length preference.\nThe 60 determinism episodes are scene-proportional within the selected 600.\nAction count includes terminal STOP; continuous path length is the sum of 3D\nEuclidean distances between successive GT locations, not reference-path length\nor action count. Missing/malformed GT fails closed instead of silently excluding\nepisodes. Missing instruction_id defaults to episode_id (VLN-CE convention).\n",
+  "dataset_matches_spec": true,
+  "measurements_performed": false,
+  "panel_file_sha256": {
+    "de_panel_ids.json": "475d192008a0ef5ab0d0c249aff4769d345cf9cc1879ee720c9ba98e014a3cb1",
+    "panel_ids.json": "dd90cd04ce78ef4182598c7fe3801f433153bc7fe280dd45e41bf0b2a243e22e"
+  },
+  "population": {
+    "long_episodes": 1767,
+    "scene_counts": {
+      "2azQ1b91cZZ": 252,
+      "8194nk5LbLH": 39,
+      "EU6Fwq7SyZv": 132,
+      "QUCTc6BB5sX": 255,
+      "TbHJrupSAjP": 264,
+      "X7HyMhZNoso": 141,
+      "Z6MFQCViBuw": 159,
+      "oLBMNvg9in8": 177,
+      "pLe4wQe7qrG": 18,
+      "x8F5xyUWy9e": 102,
+      "zsNo4HB9uLZ": 300
+    },
+    "stratum_counts": {
+      "2azQ1b91cZZ:0": 99,
+      "2azQ1b91cZZ:1": 81,
+      "2azQ1b91cZZ:2": 72,
+      "8194nk5LbLH:0": 12,
+      "8194nk5LbLH:1": 12,
+      "8194nk5LbLH:2": 15,
+      "EU6Fwq7SyZv:0": 60,
+      "EU6Fwq7SyZv:1": 48,
+      "EU6Fwq7SyZv:2": 24,
+      "QUCTc6BB5sX:0": 40,
+      "QUCTc6BB5sX:1": 71,
+      "QUCTc6BB5sX:2": 144,
+      "TbHJrupSAjP:0": 78,
+      "TbHJrupSAjP:1": 119,
+      "TbHJrupSAjP:2": 67,
+      "X7HyMhZNoso:0": 60,
+      "X7HyMhZNoso:1": 45,
+      "X7HyMhZNoso:2": 36,
+      "Z6MFQCViBuw:0": 27,
+      "Z6MFQCViBuw:1": 33,
+      "Z6MFQCViBuw:2": 99,
+      "oLBMNvg9in8:0": 75,
+      "oLBMNvg9in8:1": 75,
+      "oLBMNvg9in8:2": 27,
+      "pLe4wQe7qrG:0": 18,
+      "x8F5xyUWy9e:0": 60,
+      "x8F5xyUWy9e:1": 30,
+      "x8F5xyUWy9e:2": 12,
+      "zsNo4HB9uLZ:0": 84,
+      "zsNo4HB9uLZ:1": 99,
+      "zsNo4HB9uLZ:2": 117
+    }
+  },
+  "population_episodes": 1839,
+  "scope": "D-a through D-f only; no D-g panel",
+  "seed": 20261019,
+  "selector_source_sha256": "0d7a1723c7fd5465727b6452dff1c35929e838787bbf0232be79e9fe2e1090c3",
+  "source_bytes_unchanged": true,
+  "source_gzip_sha256": {
+    "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen.json.gz": "1767a407e2c8a011fbb7abece76cd64c5b39ff9fa0e9e340ebdce5a490d167c3",
+    "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen_gt.json.gz": "46a2e02c4a5e3b9d3d3c936009cbe1a4e9ea8f34156589f1e69ff1ff7080c044"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "status": "verified",
+  "tasks": [
+    {
+      "repo": "1kaiser/vggt-omega-jax",
+      "kind": "model",
+      "revision": "a8c3a718e0cf78e9e4c6847229efea793d37f060",
+      "file": "vggt_omega_1b_512.pt",
+      "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt",
+      "verified": true,
+      "verified_utc": "2026-10-19T17:10:33.924659+00:00"
+    },
+    {
+      "repo": "XinyuYan/JanusVLN_Trajectory_Data",
+      "kind": "dataset",
+      "revision": "c8402e857853d3d6a96a9564107025ca157c9cc5",
+      "file": "trajectory_data/R2R-CE-640x480.tar.gz.part00",
+      "sha256": "ef36d42bbaf7f3d5182786759eb9a47accbcf4aadc5b18544015af57204085c8",
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/janus_training_archives/trajectory_data/R2R-CE-640x480.tar.gz.part00",
+      "verified": true,
+      "verified_utc": "2026-10-19T17:32:07.989464+00:00"
+    },
+    {
+      "repo": "XinyuYan/JanusVLN_Trajectory_Data",
+      "kind": "dataset",
+      "revision": "c8402e857853d3d6a96a9564107025ca157c9cc5",
+      "file": "trajectory_data/R2R-CE-640x480.tar.gz.part01",
+      "sha256": "302ebad8f51755eb3b8840249f4d60039697226088ae56856e2c66521feab119",
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/janus_training_archives/trajectory_data/R2R-CE-640x480.tar.gz.part01",
+      "verified": true,
+      "verified_utc": "2026-10-19T17:28:03.740965+00:00"
+    }
+  ]
+}

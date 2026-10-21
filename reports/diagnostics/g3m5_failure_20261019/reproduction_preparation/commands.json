@@ -1,0 +1,330 @@
+[
+  {
+    "label": "panel_selection_reproduction_verified",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-m",
+      "scripts.diag.panels",
+      "--data-root",
+      "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen",
+      "--output-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/panel_reproduction_verification_20261021"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "executed_verification_in_new_output",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/panel_reproduction.json",
+      "sha256": "318b6a119d7f4103084a7b72c581f2d9d32dc69ff8fa017dfd890f4b2a912fa3"
+    }
+  },
+  {
+    "label": "original_training_rendering_gate_failed",
+    "command": [
+      "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+      "-m",
+      "scripts.diag.render_panel"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "recorded_reproduction_command_with_defaults",
+    "expected_outcome": "Failed; user-authorized continuation in SCOPE_UPDATE.md",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/RENDERING_GATE.json",
+      "sha256": "76d21692993a463b4cf870b9517237810286f12165ab9d17f0ad510b703b671a"
+    },
+    "defaults_source": {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/render_panel.py",
+      "sha256": "beae599da75277e8c74a97f69dbfb44226fc583fc6899b44a71932b580d930a2"
+    }
+  },
+  {
+    "label": "expert_preparation",
+    "command": [
+      "env",
+      "CUDA_VISIBLE_DEVICES=0",
+      "HABITAT_SIM_LOG=quiet",
+      "MAGNUM_LOG=quiet",
+      "OMP_NUM_THREADS=4",
+      "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+      "-u",
+      "-m",
+      "scripts.diag.prepare_expert",
+      "--mode",
+      "render",
+      "--source",
+      "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen.json.gz",
+      "--ground-truth",
+      "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen_gt.json.gz",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "--frames-root",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_frames_render/val_unseen",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render"
+    ],
+    "recorded_argv": [
+      "/storage/anhdh35/miniconda3/envs/spatialstack_dagger/bin/python",
+      "-u",
+      "-m",
+      "scripts.diag.prepare_expert",
+      "--mode",
+      "render",
+      "--source",
+      "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen.json.gz",
+      "--ground-truth",
+      "/storage/anhdh35/JanusVLN/data/datasets/r2r/val_unseen/val_unseen_gt.json.gz",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "--frames-root",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_frames_render/val_unseen",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "recorded_argv_with_launcher_environment_overrides",
+    "recorded_command_file": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/expert_preparation_process.json",
+    "recorded_command_sha256": "e0683e0a5bed34b054cdea3c0bb235eec2ddee6f8f3c2144af00d1b6e82f9354",
+    "environment_overrides": {
+      "MAGNUM_LOG": "quiet",
+      "HABITAT_SIM_LOG": "quiet",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "OMP_NUM_THREADS": "4"
+    },
+    "environment_source": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_expert_preparation.py.txt",
+    "environment_source_sha256": "66546b3e6266bfb7daa89c13bb5e23afcd66f19f578364dc349fb87aca75c868",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render/PREPARATION.json",
+      "sha256": "78d64aae8c56aaceede04b96707931f55c30482952f354527bfe440eb9b47ba1"
+    }
+  },
+  {
+    "label": "teacher_cache",
+    "command": [
+      "env",
+      "CUDA_VISIBLE_DEVICES=0",
+      "OMP_NUM_THREADS=4",
+      "PYTHONPATH=/data14t/anhdh35/simplememvln_diag_g3m5_20261019/src",
+      "TOKENIZERS_PARALLELISM=false",
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-u",
+      "-m",
+      "scripts.diag.cache_teacher",
+      "--manifest",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render/episodes.jsonl",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_cache",
+      "--teacher-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/vggt-omega",
+      "--teacher-weights",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt"
+    ],
+    "recorded_argv": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "-u",
+      "-m",
+      "scripts.diag.cache_teacher",
+      "--manifest",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_panel_render/episodes.jsonl",
+      "--panel",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/panel_ids.json",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_cache",
+      "--teacher-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/vggt-omega",
+      "--teacher-weights",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "recorded_argv_with_launcher_environment_overrides",
+    "recorded_command_file": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/teacher_cache_process.json",
+    "recorded_command_sha256": "e801d56cea9caf83af0c4c2ac4c7b7c3adb8468293ddf005c03a445c6c0c088d",
+    "environment_overrides": {
+      "PYTHONPATH": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/src",
+      "CUDA_VISIBLE_DEVICES": "0",
+      "OMP_NUM_THREADS": "4",
+      "TOKENIZERS_PARALLELISM": "false"
+    },
+    "environment_source": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_teacher_after_preparation.py.txt",
+    "environment_source_sha256": "8db91162b844e00377c2cbf16768c03fc335bafeff0cab9e5f6ac6d37ed76cfa",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_cache/COMPLETE.json",
+      "sha256": "9b0e0f6e3d5ab411e7b0d58319220362ee1dcbed974b3135d563ae44165fae38"
+    }
+  },
+  {
+    "label": "G2_M5_E1",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "run",
+      "--model",
+      "M5_E1",
+      "--checkpoint",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/checkpoints/M5_E1/epoch-1",
+      "--weights-sha256",
+      "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/fixture.json",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/fixture",
+      "--frozen-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/source",
+      "--diagnostic-source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/M5_E1"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "orchestrator_recipe_reconstructed_from_saved_worker_invocations",
+    "worker_invocations": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_M5_E1_invocations.json",
+    "worker_invocations_sha256": "0c66f6f86c145bf342826bfdc5de1ad9f3c4da4273078d1c86481e4f83f25bf1",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/M5_E1/result.json",
+      "sha256": "0c9dae677c9692ed26723ac4cbbe741886427b51c1e77fca01a6205c79cfbf80"
+    },
+    "note": "Original worker argv/PYTHONPATH retained exactly in invocation snapshot. Current orchestrator applies -P safe-path to both workers; this packaging is not a claim that every historical parent argv was captured. Unchanged tolerance and model inputs."
+  },
+  {
+    "label": "G2_G3_M5",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "run",
+      "--model",
+      "G3_M5",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g3_m5_combined_eval/checkpoints/G3_M5/epoch-1",
+      "--weights-sha256",
+      "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/fixture.json",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/fixture",
+      "--frozen-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/source",
+      "--diagnostic-source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3_M5"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "orchestrator_recipe_reconstructed_from_saved_worker_invocations",
+    "worker_invocations": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_M5_invocations.json",
+    "worker_invocations_sha256": "d55ecbc2e2d138299ab1520c68f6ba809b2d981bc9e74bc7fb1e251308fc2e0e",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3_M5/result.json",
+      "sha256": "83e23a0b260288e2169dd23e7da3b37d9c2cf429edc7e717245aed6d2a6a01b0"
+    },
+    "note": "Original worker argv/PYTHONPATH retained exactly in invocation snapshot. Current orchestrator applies -P safe-path to both workers; this packaging is not a claim that every historical parent argv was captured. Unchanged tolerance and model inputs."
+  },
+  {
+    "label": "G2_TRIPLE",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "run",
+      "--model",
+      "TRIPLE",
+      "--checkpoint",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/checkpoints/G3_M5_L8_L16_L24/epoch-1",
+      "--weights-sha256",
+      "c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/fixture.json",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/fixture",
+      "--frozen-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/source",
+      "--diagnostic-source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/TRIPLE"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "orchestrator_recipe_reconstructed_from_saved_worker_invocations",
+    "worker_invocations": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_TRIPLE_invocations.json",
+    "worker_invocations_sha256": "c766cb7274a2ea41e752234bcf379b3b09737d14143924a4499d77d14a7324ae",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/TRIPLE/result.json",
+      "sha256": "1992710110ecf601f97bea29eee47810be67dd47a06f10300c984204daf8aa36"
+    },
+    "note": "Original worker argv/PYTHONPATH retained exactly in invocation snapshot. Current orchestrator applies -P safe-path to both workers; this packaging is not a claim that every historical parent argv was captured. Unchanged tolerance and model inputs."
+  },
+  {
+    "label": "G2_G3",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "run",
+      "--model",
+      "G3",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g3_m5_eval/checkpoints/G3/G3/epoch-1",
+      "--weights-sha256",
+      "a71be6b5291b6acddbeb389318befaded5818c5b1438d5d44cf351c64248333b",
+      "--fixture",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture.json",
+      "--rgb-dir",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/fixture",
+      "--frozen-source",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/source",
+      "--diagnostic-source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "orchestrator_recipe_reconstructed_from_saved_worker_invocations",
+    "worker_invocations": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_invocations.json",
+    "worker_invocations_sha256": "7a8d006dee61cb864550a6474784bdd47364b5c290b82eb24ab0e94b4b41c9d7",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3/result.json",
+      "sha256": "4f6c363299c83a2911b65d944949e0db5e0bca99f95e94b15a8d1e5f5e3d55cf"
+    },
+    "note": "Original worker argv/PYTHONPATH retained exactly in invocation snapshot. Current orchestrator applies -P safe-path to both workers; this packaging is not a claim that every historical parent argv was captured. Unchanged tolerance and model inputs."
+  },
+  {
+    "label": "G2_G1",
+    "command": [
+      "/storage/anhdh35/SimpleMemVLN/.venv/bin/python",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/scripts/diag/replay_gate.py",
+      "run",
+      "--model",
+      "G1",
+      "--checkpoint",
+      "/data14t/anhdh35/simplememvln_g1_eval/checkpoints/G1/epoch-1",
+      "--weights-sha256",
+      "a620ab17b1c0cbec6f7c5f95d67177a4b078ae53e83ea08c6696c5c4797a63ae",
+      "--fixture",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_128.json",
+      "--rgb-dir",
+      "/data14t/anhdh35/simplememvln_g1_eval/replay_frames",
+      "--frozen-source",
+      "/data14t/anhdh35/simplememvln_g1_eval/source",
+      "--diagnostic-source",
+      "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+      "--model-path",
+      "/storage/anhdh35/SimpleMemVLN/artifacts/checkpoints/qwen-base",
+      "--output",
+      "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G1_retry_safe_path"
+    ],
+    "cwd": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019",
+    "command_kind": "orchestrator_recipe_reconstructed_from_saved_worker_invocations",
+    "worker_invocations": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G1_invocations.json",
+    "worker_invocations_sha256": "a6cc7d4134990372e7e2660df4a4ce8457024afc90a8f63bb18dc12f010332e9",
+    "completion_evidence": {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G1_retry_safe_path/result.json",
+      "sha256": "ec68677d9efc54eee457db299e4ca42b4a3b0f2a82a8c24dec5805c1f6fac7ff"
+    },
+    "note": "Original worker argv/PYTHONPATH retained exactly in invocation snapshot. Current orchestrator applies -P safe-path to both workers; this packaging is not a claim that every historical parent argv was captured. Unchanged tolerance and model inputs."
+  }
+]

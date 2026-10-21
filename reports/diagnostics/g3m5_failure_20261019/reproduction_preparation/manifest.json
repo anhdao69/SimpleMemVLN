@@ -1,0 +1,60 @@
+{
+  "prepared_utc": "2026-10-20T19:43:29.663549+00:00",
+  "commands_sha256": "af34bb6d48e4f931877acb7de457a662daf8106715e55d782cfdf4af5b58de4d",
+  "command_count": 9,
+  "snapshots": [
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/expert_preparation_process.json",
+      "sha256": "e0683e0a5bed34b054cdea3c0bb235eec2ddee6f8f3c2144af00d1b6e82f9354",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/expert_preparation_process.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_expert_preparation.py.txt",
+      "sha256": "66546b3e6266bfb7daa89c13bb5e23afcd66f19f578364dc349fb87aca75c868",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/run_expert_preparation.py"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/teacher_cache_process.json",
+      "sha256": "e801d56cea9caf83af0c4c2ac4c7b7c3adb8468293ddf005c03a445c6c0c088d",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_cache_process.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/run_teacher_after_preparation.py.txt",
+      "sha256": "8db91162b844e00377c2cbf16768c03fc335bafeff0cab9e5f6ac6d37ed76cfa",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/run_teacher_after_preparation.py"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_M5_E1_invocations.json",
+      "sha256": "0c66f6f86c145bf342826bfdc5de1ad9f3c4da4273078d1c86481e4f83f25bf1",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/M5_E1/invocations.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_M5_invocations.json",
+      "sha256": "d55ecbc2e2d138299ab1520c68f6ba809b2d981bc9e74bc7fb1e251308fc2e0e",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3_M5/invocations.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_TRIPLE_invocations.json",
+      "sha256": "c766cb7274a2ea41e752234bcf379b3b09737d14143924a4499d77d14a7324ae",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/TRIPLE/invocations.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G3_invocations.json",
+      "sha256": "7a8d006dee61cb864550a6474784bdd47364b5c290b82eb24ab0e94b4b41c9d7",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G3/invocations.json"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_diag_g3m5_20261019/reports/diagnostics/g3m5_failure_20261019/reproduction_preparation/G2_G1_invocations.json",
+      "sha256": "a6cc7d4134990372e7e2660df4a4ce8457024afc90a8f63bb18dc12f010332e9",
+      "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/g2_replay/G1_retry_safe_path/invocations.json"
+    }
+  ],
+  "full_study_complete": false,
+  "rendering_gate_passed": false,
+  "panel_regeneration_exact": true,
+  "inherited_shell_environment_recorded": false,
+  "pending": [
+    "D-e completed command inventory",
+    "Final report-generation and delivery commands"
+  ]
+}

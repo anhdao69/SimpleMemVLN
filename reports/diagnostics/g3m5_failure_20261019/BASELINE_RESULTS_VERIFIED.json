@@ -1,0 +1,87 @@
+{
+  "baseline_results": {
+    "M5_E1": {
+      "episodes": 1839,
+      "successes": 950,
+      "sr": 0.5165851005981512,
+      "spl": 0.48401033739315247,
+      "failures": 0,
+      "root": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/full"
+    },
+    "G3_M5": {
+      "episodes": 1839,
+      "successes": 917,
+      "sr": 0.49864056552474173,
+      "spl": 0.46140868733034324,
+      "failures": 0,
+      "root": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/full"
+    },
+    "TRIPLE": {
+      "episodes": 1839,
+      "successes": 916,
+      "sr": 0.4980967917346384,
+      "spl": 0.462657412500402,
+      "failures": 0,
+      "root": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/full"
+    },
+    "G3": {
+      "episodes": 1839,
+      "successes": 956,
+      "sr": 0.519847743338771,
+      "spl": 0.48095940511038254,
+      "failures": 0,
+      "root": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/full"
+    },
+    "G1": {
+      "episodes": 1839,
+      "successes": 914,
+      "sr": 0.49700924415443176,
+      "spl": 0.46072124712845913,
+      "failures": 0,
+      "root": "/data14t/anhdh35/simplememvln_g1_eval/results/full/G1"
+    }
+  },
+  "source_files": [
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/full/episodes.jsonl",
+      "sha256": "010fb9fee20f3f66e68917b33991ff16d5d2d5ff3cd3e1bfd03a3d4853da2ad7"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/m5_e1_epoch1_20261019/full/summary.json",
+      "sha256": "770ef8e165e4431ff39d2dfe44f9138404444b2486245e0ad8c88d0a74d7c200"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/full/episodes.jsonl",
+      "sha256": "570d53680fc61079b64d1132685e630fcb5bee2c730d10e91f80f208e872e659"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_epoch1_20261017/full/summary.json",
+      "sha256": "7a7741fc41b9cb9fd0c1ff0e3ccf3713849ac0e37b664f4cdaf76797f35c0a11"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/full/episodes.jsonl",
+      "sha256": "746811929af5e6ad6407e6931d5780ca83555f2be01d296a5783d5e02aa625a2"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_m5_l8_l16_l24_epoch1_20261018/full/summary.json",
+      "sha256": "5b6c6791a3fc6b87714fb5e8a762142006423cfa54df5f2a31d1a9ba682def1c"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/full/episodes.jsonl",
+      "sha256": "8a9df612674b1a2b41b279b87bc58e2241a1272b384f4fbfe05818507587ffce"
+    },
+    {
+      "path": "/data14t/anhdh35/diag_g3m5_20261019_assets/remote_evaluation/g3_epoch1_20261018/full/summary.json",
+      "sha256": "a3cd6a985186a62eafea52ceb2cfd8bbb82c6ca935c0724fe88539ef6761b7c0"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_g1_eval/results/full/G1/episodes.jsonl",
+      "sha256": "7bd2f8f3e24a7c31891357d70a3e9cbbfafaad4837cca4004fa3a897b25311f8"
+    },
+    {
+      "path": "/data14t/anhdh35/simplememvln_g1_eval/results/full/G1/summary.json",
+      "sha256": "457b263c6c30707210b18ea01e7af1e4a1bf103558c761769ab2229d04e3f434"
+    }
+  ],
+  "verification": "All five full journals: 1839 unique IDs, zero failures, exact expected success counts; recomputed SR/SPL match saved summaries within 1e-12. Original artifacts unchanged."
+}

@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "device": "cpu",
+  "identity": {
+    "base": {
+      "weights_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "source_sha256": "b0e8d9d7ca0ee3ac8f819621a3d1c2ab5523bc57cbbc93e995aadfc5260a97cb",
+      "preprocessing": "omega-balanced512-rgb640x480-bicubic448x592-v1",
+      "position": "g1-center-sincos2048-rms1-scale0.5-v1",
+      "adapter_sha256": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+      "preprocessing_code_sha256": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+      "teacher_layer": 23,
+      "patch_offset": 17,
+      "teacher_dim": 2048,
+      "compute_dtype": "float32",
+      "pooling": "adaptive-average-15x20-LN2048-eps1e-6",
+      "position_sha256": "dfee8e96d744f224ab3e8032096a468146a6df91b0d4397c2d30112a272c2ea7"
+    },
+    "target": "g3-unpositioned-LN2048-regions-v1",
+    "adapter_sha256": "91fab33372f42c22de5991bc7bcfb85480193eb00d3c94b7c3df563419c5fb5e",
+    "regions_sha256": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839"
+  },
+  "constructor_seconds": 23.876269673986826,
+  "requires_grad_any": false,
+  "training": false,
+  "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/vggt-omega",
+  "weights": "/data14t/anhdh35/diag_g3m5_20261019_assets/teacher_weights/vggt_omega_1b_512.pt"
+}

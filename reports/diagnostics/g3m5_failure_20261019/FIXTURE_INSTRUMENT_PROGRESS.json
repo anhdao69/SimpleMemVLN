@@ -1,0 +1,20 @@
+{
+  "M5_E1": {
+    "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/instrument_gates/M5_E1_fixture/result.json",
+    "status": "PARTIAL",
+    "panel_episodes": 0,
+    "g1_bitwise_passed": true,
+    "g3_checked_anchors": 640,
+    "g3_max_relative_error": 0.002258927260933112,
+    "required_panel_gate_completed": false
+  },
+  "TRIPLE": {
+    "source": "/data14t/anhdh35/diag_g3m5_20261019_assets/instrument_gates/TRIPLE_fixture/result.json",
+    "status": "PARTIAL",
+    "panel_episodes": 0,
+    "g1_bitwise_passed": true,
+    "g3_checked_anchors": 640,
+    "g3_max_relative_error": 0.002486466917908736,
+    "required_panel_gate_completed": false
+  }
+}

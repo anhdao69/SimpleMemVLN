@@ -1,0 +1,63 @@
+{
+  "status": "running",
+  "pid": 271026,
+  "children": {
+    "fit_probes": {
+      "pid": 271030,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "bank_M5_E1": {
+      "pid": 271031,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "bank_G3_M5": {
+      "pid": 277937,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "bank_TRIPLE": {
+      "pid": 284309,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "summarize_captures": {
+      "pid": 292764,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "apply_ablation_probes": {
+      "pid": 298832,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "M5_E1_random_smoke": {
+      "pid": 306011,
+      "status": "complete",
+      "exit_code": 0
+    },
+    "M5_E1_random_0": {
+      "pid": 306139,
+      "status": "running"
+    },
+    "M5_E1_random_1": {
+      "pid": 306140,
+      "status": "running"
+    },
+    "M5_E1_random_2": {
+      "pid": 306141,
+      "status": "running"
+    },
+    "M5_E1_random_3": {
+      "pid": 306142,
+      "status": "running"
+    }
+  },
+  "stages_completed": [
+    "probes_and_ablation",
+    "offline_summaries"
+  ],
+  "updated_unix": 1792525273.3283937,
+  "stage": "closed_loop"
+}

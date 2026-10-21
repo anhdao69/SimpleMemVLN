@@ -1,0 +1,1206 @@
+{
+  "repo": "anhdao69/Streaming_VGGT",
+  "revision": "86a537b6eb4d72baedbbf6b9ec003b3ab20f0a24",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "size": 2167,
+      "sha256": null,
+      "blob_id": "3b2fe48d29f46cb3b6ce75de54b5b7dc839a1186"
+    },
+    {
+      "path": "A0/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "A0/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "A0/epoch-1/export_info.json",
+      "size": 55,
+      "sha256": null,
+      "blob_id": "6e5fcee7ceee53abbce7f6089de34cc7cc2e47d6"
+    },
+    {
+      "path": "A0/epoch-1/navigation.json",
+      "size": 3129,
+      "sha256": null,
+      "blob_id": "376b1cc015fecd5c8014a37fc46c9c3c2405b0f6"
+    },
+    {
+      "path": "A0/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "A0/epoch-1/pytorch_model.bin",
+      "size": 10350271307,
+      "sha256": "5e63563ddb891c43e6a02073125ddad8892f0a85c77a5b1d0b6637150b6f08e6",
+      "blob_id": "eb003d58c83c0cf3ff14bf3861487c84259b0ca4"
+    },
+    {
+      "path": "A0/epoch-1/reload_reference.json",
+      "size": 122,
+      "sha256": null,
+      "blob_id": "cc550606f9a528898a4531b785b0cb459b320ac3"
+    },
+    {
+      "path": "A0/epoch-1/research_training.json",
+      "size": 320,
+      "sha256": null,
+      "blob_id": "1c4a8fe70a51580d22bf3fb24fbfcf581d819e6e"
+    },
+    {
+      "path": "A0/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "A0/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "A0/provenance/epoch-1.json",
+      "size": 396444,
+      "sha256": null,
+      "blob_id": "737c140ba1d0222e3c2799c05a68b9be7abf188b"
+    },
+    {
+      "path": "A0/provenance/publication_validation.json",
+      "size": 579,
+      "sha256": null,
+      "blob_id": "f7bce505b11526bd0ef5ca58612bbe14a95ef4ce"
+    },
+    {
+      "path": "A0/provenance/resolved_config.json",
+      "size": 2464,
+      "sha256": null,
+      "blob_id": "1b631b7b5027cfed2d7bec29dec967c68e887d04"
+    },
+    {
+      "path": "A0/provenance/run_timing.json",
+      "size": 353,
+      "sha256": null,
+      "blob_id": "8013099644f333af8487e57079d3a9000039d77a"
+    },
+    {
+      "path": "A0/provenance/source.commit",
+      "size": 41,
+      "sha256": null,
+      "blob_id": "ce5bee7723be0444983f04ee508d683b0dfee0fe"
+    },
+    {
+      "path": "A0/provenance/source_manifest.json",
+      "size": 18698,
+      "sha256": null,
+      "blob_id": "56fd713b33615fc89a0a89e67205c350f795522c"
+    },
+    {
+      "path": "A0/provenance/supervisor_resources.json",
+      "size": 1859,
+      "sha256": null,
+      "blob_id": "f09d012f28d1264ff0ff78437b7b8d1e41e94604"
+    },
+    {
+      "path": "A0/provenance/train_results.json",
+      "size": 191,
+      "sha256": null,
+      "blob_id": "2ebf17ad7760834b25a5861746cfe002e3de8438"
+    },
+    {
+      "path": "A0/provenance/trainer_state.json",
+      "size": 719431,
+      "sha256": null,
+      "blob_id": "86144216aa24d48b06af8ecfb27a943a9a60bf12"
+    },
+    {
+      "path": "A0/provenance/training_navigation.json",
+      "size": 3385,
+      "sha256": null,
+      "blob_id": "14966decd9ab80e7bda0377eab5b6831f5f8d1f3"
+    },
+    {
+      "path": "A1/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "A1/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "A1/epoch-1/export_info.json",
+      "size": 55,
+      "sha256": null,
+      "blob_id": "6e5fcee7ceee53abbce7f6089de34cc7cc2e47d6"
+    },
+    {
+      "path": "A1/epoch-1/navigation.json",
+      "size": 3129,
+      "sha256": null,
+      "blob_id": "376b1cc015fecd5c8014a37fc46c9c3c2405b0f6"
+    },
+    {
+      "path": "A1/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "A1/epoch-1/pytorch_model.bin",
+      "size": 10350271307,
+      "sha256": "0d9078ffd00e39d60655866912b849e0d9949407b9fa35424545134b00337bea",
+      "blob_id": "1c9dd0e5ca691c3f72c68c578b7f803e3bfe0bf1"
+    },
+    {
+      "path": "A1/epoch-1/reload_reference.json",
+      "size": 125,
+      "sha256": null,
+      "blob_id": "0ea2773e4017e9e0883b240ace7e0370da5a9446"
+    },
+    {
+      "path": "A1/epoch-1/research_training.json",
+      "size": 1503,
+      "sha256": null,
+      "blob_id": "ddde015631f9b6ecc3b1bd9126e0e3deace5b6ea"
+    },
+    {
+      "path": "A1/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "A1/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "A1/provenance/epoch-1.json",
+      "size": 396649,
+      "sha256": null,
+      "blob_id": "c20d8b04a2a9db22f815d9afe31a1cfea3763e42"
+    },
+    {
+      "path": "A1/provenance/publication_validation.json",
+      "size": 579,
+      "sha256": null,
+      "blob_id": "28febcccdcd59d3dbd752e793822ecd8a679cb1f"
+    },
+    {
+      "path": "A1/provenance/qualification_pass.json",
+      "size": 28493,
+      "sha256": null,
+      "blob_id": "0d1e622ab1c118b0e2953079fcd8cbe03ad22038"
+    },
+    {
+      "path": "A1/provenance/resolved_config.json",
+      "size": 3647,
+      "sha256": null,
+      "blob_id": "c22f6bbd032a257e8bca672e41b1aa8f74c13aee"
+    },
+    {
+      "path": "A1/provenance/run_timing.json",
+      "size": 353,
+      "sha256": null,
+      "blob_id": "a72ffd24730ab395a7861225dfa98c50df8f723b"
+    },
+    {
+      "path": "A1/provenance/source.commit",
+      "size": 41,
+      "sha256": null,
+      "blob_id": "e53f3ee551e088f4a14baf4568bb727b7ebea0c4"
+    },
+    {
+      "path": "A1/provenance/source_manifest.json",
+      "size": 18698,
+      "sha256": null,
+      "blob_id": "da6f8ef504e8e745057d7c003550b8c775f1c66b"
+    },
+    {
+      "path": "A1/provenance/supervisor_resources.json",
+      "size": 1870,
+      "sha256": null,
+      "blob_id": "5183d7a533d9b87ebf12e1802dbf535548465673"
+    },
+    {
+      "path": "A1/provenance/train_results.json",
+      "size": 191,
+      "sha256": null,
+      "blob_id": "ae54587a0b650dd0251efa50f23fc592614f14ed"
+    },
+    {
+      "path": "A1/provenance/trainer_state.json",
+      "size": 719134,
+      "sha256": null,
+      "blob_id": "63d9a26d2538818c1158d0752ef621958b5b66d1"
+    },
+    {
+      "path": "A1/provenance/training_navigation.json",
+      "size": 4612,
+      "sha256": null,
+      "blob_id": "4bb752913e2ebb0f07bb8276a2844b02e5015896"
+    },
+    {
+      "path": "G1/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G1/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G1/epoch-1/export_info.json",
+      "size": 55,
+      "sha256": null,
+      "blob_id": "6e5fcee7ceee53abbce7f6089de34cc7cc2e47d6"
+    },
+    {
+      "path": "G1/epoch-1/navigation.json",
+      "size": 2919,
+      "sha256": null,
+      "blob_id": "143908d91f5e447a6f028cfe3755d04b08cfc6c4"
+    },
+    {
+      "path": "G1/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G1/epoch-1/pytorch_model.bin",
+      "size": 10350179659,
+      "sha256": "a620ab17b1c0cbec6f7c5f95d67177a4b078ae53e83ea08c6696c5c4797a63ae",
+      "blob_id": "19e96d5d4a64bf84fda35b67a8905b028e2ce269"
+    },
+    {
+      "path": "G1/epoch-1/reload_reference.json",
+      "size": 126,
+      "sha256": null,
+      "blob_id": "abbcbd1d689764b67b0fb60fb58f8b6a934d95e7"
+    },
+    {
+      "path": "G1/epoch-1/research_training.json",
+      "size": 1415,
+      "sha256": null,
+      "blob_id": "fc42529b7005b07b542807582ea818ba0e537a34"
+    },
+    {
+      "path": "G1/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G1/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G1/provenance/epoch-1.json",
+      "size": 396616,
+      "sha256": null,
+      "blob_id": "a3ed9ae329897e352dd0edf5c34a2c526816106c"
+    },
+    {
+      "path": "G1/provenance/production_launch.json",
+      "size": 647,
+      "sha256": null,
+      "blob_id": "8d543af16a7ec1a460c17e3d101277a1d502e713"
+    },
+    {
+      "path": "G1/provenance/publication_validation.json",
+      "size": 300,
+      "sha256": null,
+      "blob_id": "92dad636f4c817614f643548769c142afa05dc63"
+    },
+    {
+      "path": "G1/provenance/resolved_config.json",
+      "size": 3344,
+      "sha256": null,
+      "blob_id": "0fb2bd7bcdba4ac632b88ce141f0f47aae440f81"
+    },
+    {
+      "path": "G1/provenance/run_timing.json",
+      "size": 353,
+      "sha256": null,
+      "blob_id": "93c3b636098a1f89469c364d6cad8c45e9568fa2"
+    },
+    {
+      "path": "G1/provenance/source.commit",
+      "size": 41,
+      "sha256": null,
+      "blob_id": "1d75f4293517b7c63012717bce3d22cbf3bcb902"
+    },
+    {
+      "path": "G1/provenance/source_manifest.json",
+      "size": 35776,
+      "sha256": null,
+      "blob_id": "fad9d33196abea74fc4e9fc0cf5ece8d9a97cf1e"
+    },
+    {
+      "path": "G1/provenance/train_results.json",
+      "size": 189,
+      "sha256": null,
+      "blob_id": "913c51fe3aa9065a8f4a7d8a36f6b1db3839e16a"
+    },
+    {
+      "path": "G1/provenance/trainer_state.json",
+      "size": 719290,
+      "sha256": null,
+      "blob_id": "bdcbed598b607eb681bd229eb0ff031171cf7b12"
+    },
+    {
+      "path": "G1/provenance/training_navigation.json",
+      "size": 4270,
+      "sha256": null,
+      "blob_id": "395d2095dba88ca6ed500bb254dfcac9ef637bc5"
+    },
+    {
+      "path": "G1/training_auxiliary_projector.pt",
+      "size": 37774673,
+      "sha256": "407d6852a335e4b7ed1a44b1c6d4b6a394698565bf4ac6078e37ca137b336958",
+      "blob_id": "5f5eee6dcee3b3ebfa239d90f0a8bb591dca8833"
+    },
+    {
+      "path": "G3/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G3/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G3/epoch-1/export_info.json",
+      "size": 55,
+      "sha256": null,
+      "blob_id": "6e5fcee7ceee53abbce7f6089de34cc7cc2e47d6"
+    },
+    {
+      "path": "G3/epoch-1/navigation.json",
+      "size": 2919,
+      "sha256": null,
+      "blob_id": "143908d91f5e447a6f028cfe3755d04b08cfc6c4"
+    },
+    {
+      "path": "G3/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G3/epoch-1/pytorch_model.bin",
+      "size": 10350179659,
+      "sha256": "a71be6b5291b6acddbeb389318befaded5818c5b1438d5d44cf351c64248333b",
+      "blob_id": "a8109d7e5e69a494d8f873e97d4b27e4379c942b"
+    },
+    {
+      "path": "G3/epoch-1/reload_reference.json",
+      "size": 124,
+      "sha256": null,
+      "blob_id": "fbc858c5bce5c4df8c02f9372c24509a29814e63"
+    },
+    {
+      "path": "G3/epoch-1/research_training.json",
+      "size": 1709,
+      "sha256": null,
+      "blob_id": "5be3751843b1fe0b235a91975199987433e6905d"
+    },
+    {
+      "path": "G3/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G3/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G3/provenance/epoch-1.json",
+      "size": 396545,
+      "sha256": null,
+      "blob_id": "0ea84e3c3f998f4851046a777efae128448becbf"
+    },
+    {
+      "path": "G3/provenance/production_launch.json",
+      "size": 1033,
+      "sha256": null,
+      "blob_id": "93371deef07b4bdeaea7bc1d9e6bfb72c14a3ca5"
+    },
+    {
+      "path": "G3/provenance/publication_validation.json",
+      "size": 518,
+      "sha256": null,
+      "blob_id": "67b3a858a319a55da12d8600ef5ab617ee5d10de"
+    },
+    {
+      "path": "G3/provenance/resolved_config.json",
+      "size": 3628,
+      "sha256": null,
+      "blob_id": "8a796c312d1b85edfcbc6c6135322623da565e01"
+    },
+    {
+      "path": "G3/provenance/run_timing.json",
+      "size": 354,
+      "sha256": null,
+      "blob_id": "2ca895a79f3f1f864762a9be6528ec1dbe6b5a72"
+    },
+    {
+      "path": "G3/provenance/source.commit",
+      "size": 41,
+      "sha256": null,
+      "blob_id": "11645efd869b7cae6135df6344d9b5e087efebd5"
+    },
+    {
+      "path": "G3/provenance/source_manifest.json",
+      "size": 38292,
+      "sha256": null,
+      "blob_id": "49b7a9d82f3c91f72ecbd613fae37519470fded7"
+    },
+    {
+      "path": "G3/provenance/train_results.json",
+      "size": 192,
+      "sha256": null,
+      "blob_id": "bf524aaa24f7cb172668601080d5a515228e8ded"
+    },
+    {
+      "path": "G3/provenance/trainer_state.json",
+      "size": 719135,
+      "sha256": null,
+      "blob_id": "89445cd90acb75d1ce27cba7891ca622ee1b2a1c"
+    },
+    {
+      "path": "G3/provenance/training_navigation.json",
+      "size": 4564,
+      "sha256": null,
+      "blob_id": "f63d76cacc55d33553cabc1d38dffad8d7a3933d"
+    },
+    {
+      "path": "G3/training_auxiliary_state_head.pt",
+      "size": 21057107,
+      "sha256": "66d9c8e18ed32da7ac1eef9a43c6ef4933933cdccd76dae204d617139cc779fc",
+      "blob_id": "aa8a075cee070876bd33011a38400f43af649fbb"
+    },
+    {
+      "path": "G3A1/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G3A1/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G3A1/epoch-1/export_info.json",
+      "size": 55,
+      "sha256": null,
+      "blob_id": "6e5fcee7ceee53abbce7f6089de34cc7cc2e47d6"
+    },
+    {
+      "path": "G3A1/epoch-1/navigation.json",
+      "size": 3128,
+      "sha256": null,
+      "blob_id": "f164995e183557c17484e02e6fa49fe3a579ea39"
+    },
+    {
+      "path": "G3A1/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G3A1/epoch-1/pytorch_model.bin",
+      "size": 10350271307,
+      "sha256": "2e53f3bb918501ceeace310b21f06e49b8a713c08801c9dde145385e0ee564a0",
+      "blob_id": "e0eac61ad2510d70f5ebf6452bf58f69489169f3"
+    },
+    {
+      "path": "G3A1/epoch-1/reload_reference.json",
+      "size": 124,
+      "sha256": null,
+      "blob_id": "7789fb0e5ca111e1cc9ab93dd287325791728038"
+    },
+    {
+      "path": "G3A1/epoch-1/research_training.json",
+      "size": 1720,
+      "sha256": null,
+      "blob_id": "3196c375fd8f46cc2d8f8cbb2092decfc0899654"
+    },
+    {
+      "path": "G3A1/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G3A1/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G3A1/provenance/REBASE_RECORD.json",
+      "size": 2688,
+      "sha256": null,
+      "blob_id": "2c3d22ef1a0bc097a4c5c79c96c310c76828f097"
+    },
+    {
+      "path": "G3A1/provenance/dataset_equivalence.json",
+      "size": 314,
+      "sha256": null,
+      "blob_id": "16e6c7d4c2605a99932a482eb4374d58ea2ffc1e"
+    },
+    {
+      "path": "G3A1/provenance/gpu-suite.xml",
+      "size": 56092,
+      "sha256": null,
+      "blob_id": "5ebe2c77ceb6eeac8c6ee8105251f874d823169c"
+    },
+    {
+      "path": "G3A1/provenance/publication_validation.json",
+      "size": 1011,
+      "sha256": null,
+      "blob_id": "2be812f4829945d5f185718131a7a70baeca762d"
+    },
+    {
+      "path": "G3A1/provenance/resolved_config.json",
+      "size": 3849,
+      "sha256": null,
+      "blob_id": "2f6f16de19bb534cba791447b2d19d00790bd0e5"
+    },
+    {
+      "path": "G3A1/provenance/run_timing.json",
+      "size": 354,
+      "sha256": null,
+      "blob_id": "25fc5f6b85fc242a46990c77021c135f01e3ec32"
+    },
+    {
+      "path": "G3A1/provenance/sampling_audit.json",
+      "size": 796,
+      "sha256": null,
+      "blob_id": "674550c84f0ba32e78c11988ce7432b85a6c8807"
+    },
+    {
+      "path": "G3A1/provenance/source.commit",
+      "size": 41,
+      "sha256": null,
+      "blob_id": "181a1e9c6dfd1d7d1d0e2de7a8c221f571b9445d"
+    },
+    {
+      "path": "G3A1/provenance/supervisor_resources.json",
+      "size": 1953,
+      "sha256": null,
+      "blob_id": "48d02f16c325d4fbf077b9e44ea0860d4f13a1b1"
+    },
+    {
+      "path": "G3A1/provenance/train_results.json",
+      "size": 191,
+      "sha256": null,
+      "blob_id": "953ec7ddaebc69d4c20cc3e59d98e5216658969f"
+    },
+    {
+      "path": "G3A1/provenance/trainer_state.json",
+      "size": 719129,
+      "sha256": null,
+      "blob_id": "080883a7ec03870ed12e63c366594e9a3bd196b4"
+    },
+    {
+      "path": "G3A1/provenance/training_navigation.json",
+      "size": 4818,
+      "sha256": null,
+      "blob_id": "bfd97bc1d166bcdd4c6e11e0cca5b7efe040419f"
+    },
+    {
+      "path": "G3A1/provenance/training_source.tar.gz",
+      "size": 287967,
+      "sha256": "881da1e64b6068160437e11a396c8dc102a33371dc49cef59f7a933f32002e8a",
+      "blob_id": "c6291a70b8425a2b1dc45ed6e623f087b04d14c2"
+    },
+    {
+      "path": "G3_M5/README.md",
+      "size": 2345,
+      "sha256": null,
+      "blob_id": "25afc8a5e7a411ebaeecb214bac95423515303b1"
+    },
+    {
+      "path": "G3_M5/SHA256SUMS.json",
+      "size": 2491,
+      "sha256": null,
+      "blob_id": "ed39d1919d6bf92cbc521c3aa8cccd427cac7954"
+    },
+    {
+      "path": "G3_M5/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G3_M5/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G3_M5/epoch-1/navigation.json",
+      "size": 3876,
+      "sha256": null,
+      "blob_id": "ba3f14cb074b5b137ffb759a808a42eff83b061b"
+    },
+    {
+      "path": "G3_M5/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G3_M5/epoch-1/pytorch_model.bin",
+      "size": 10350179659,
+      "sha256": "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f",
+      "blob_id": "bd9dc85f62dee10725635dc0b4ad291bf9d489b6"
+    },
+    {
+      "path": "G3_M5/epoch-1/research_training.json",
+      "size": 1705,
+      "sha256": null,
+      "blob_id": "81ccbee1339d29f0045c8222e8469696923c5ff7"
+    },
+    {
+      "path": "G3_M5/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G3_M5/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G3_M5/provenance/completion_resources.json",
+      "size": 1878,
+      "sha256": null,
+      "blob_id": "498f9daa74137bc4146a037d9ccdefb92978e0b0"
+    },
+    {
+      "path": "G3_M5/provenance/epoch-1.json",
+      "size": 396559,
+      "sha256": null,
+      "blob_id": "e251b06ed9040d4b532984833b73d5128eb5bb07"
+    },
+    {
+      "path": "G3_M5/provenance/publication_validation.json",
+      "size": 1293,
+      "sha256": null,
+      "blob_id": "3565a32318c3cc2fd2c93dcc5463482f2d9a14db"
+    },
+    {
+      "path": "G3_M5/provenance/qualification_pass.json",
+      "size": 35566,
+      "sha256": null,
+      "blob_id": "4c212c34b51f2e16308fbf2e81cfcd32fa7681ce"
+    },
+    {
+      "path": "G3_M5/provenance/resolved_config.json",
+      "size": 3831,
+      "sha256": null,
+      "blob_id": "1076588b49806f857572e69c8e70be09be08e1a2"
+    },
+    {
+      "path": "G3_M5/provenance/run_timing.json",
+      "size": 353,
+      "sha256": null,
+      "blob_id": "37ce21f56d23d1534c11b013b6ccd25c04dd9463"
+    },
+    {
+      "path": "G3_M5/provenance/source_and_completion.json",
+      "size": 1784,
+      "sha256": null,
+      "blob_id": "c2184a25c22b8e4d16c49c3ae7f79b0a162f3d7c"
+    },
+    {
+      "path": "G3_M5/provenance/trainer_state.json",
+      "size": 719160,
+      "sha256": null,
+      "blob_id": "9b1aac7b99f65e6670c58a383364b157e7592409"
+    },
+    {
+      "path": "G3_M5_L8/README.md",
+      "size": 2147,
+      "sha256": null,
+      "blob_id": "49300a5616c89ad3d9e84968d9db9837515670ec"
+    },
+    {
+      "path": "G3_M5_L8/SHA256SUMS.json",
+      "size": 2706,
+      "sha256": null,
+      "blob_id": "320ebbc0b9fa7edc217a3d58c92860fc4c63c475"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/navigation.json",
+      "size": 3876,
+      "sha256": null,
+      "blob_id": "ba3f14cb074b5b137ffb759a808a42eff83b061b"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/pytorch_model.bin",
+      "size": 10350179659,
+      "sha256": "4081cb1fd573be20a5d656846bd6044a0b79fe956e1a8164e1d2ce9fa677657e",
+      "blob_id": "c070ef0baaf02525269d86a02bd1e58c590054df"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/research_training.json",
+      "size": 1708,
+      "sha256": null,
+      "blob_id": "e790bb22347c875091ed49a936842a2b8ab1e730"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G3_M5_L8/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G3_M5_L8/provenance/completion_resources.json",
+      "size": 1883,
+      "sha256": null,
+      "blob_id": "1007279ab907441b31b271778b592db0d67bc1b8"
+    },
+    {
+      "path": "G3_M5_L8/provenance/epoch-1.json",
+      "size": 396657,
+      "sha256": null,
+      "blob_id": "54215d851ad3f7e2815af2421f9396d2eb5c8140"
+    },
+    {
+      "path": "G3_M5_L8/provenance/publication_validation.json",
+      "size": 796,
+      "sha256": null,
+      "blob_id": "655233c4ebb7a5ad7f1308c9b2ea82cb64e1d1f0"
+    },
+    {
+      "path": "G3_M5_L8/provenance/qualification_pass.json",
+      "size": 52658,
+      "sha256": null,
+      "blob_id": "bfb5f4b099ff40f65448b28c623d3dd93c0279a8"
+    },
+    {
+      "path": "G3_M5_L8/provenance/qualification_serving_replay.json",
+      "size": 1329,
+      "sha256": null,
+      "blob_id": "6a2d4fe34275838b60ae541406656d92e906bfbf"
+    },
+    {
+      "path": "G3_M5_L8/provenance/resolved_config.json",
+      "size": 3845,
+      "sha256": null,
+      "blob_id": "32b3860c3983647c5a097d4e5541aecde78f5719"
+    },
+    {
+      "path": "G3_M5_L8/provenance/run_timing.json",
+      "size": 352,
+      "sha256": null,
+      "blob_id": "d4a3137239c373e60c499e6c364ebbb965ce04ab"
+    },
+    {
+      "path": "G3_M5_L8/provenance/source_and_completion.json",
+      "size": 1724,
+      "sha256": null,
+      "blob_id": "715f5b1c30bc320f0a372b74b1f0bcb441365818"
+    },
+    {
+      "path": "G3_M5_L8/provenance/trainer_state.json",
+      "size": 719149,
+      "sha256": null,
+      "blob_id": "d184ad01dddbcb5e5c785100984a43cd619b89b4"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/README.md",
+      "size": 2697,
+      "sha256": null,
+      "blob_id": "47a78281b42c9cf9ecddd0c053323120328325aa"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/SHA256SUMS.json",
+      "size": 2851,
+      "sha256": null,
+      "blob_id": "25e5aeb34eba19e99862b35651e95834f1075799"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/navigation.json",
+      "size": 3876,
+      "sha256": null,
+      "blob_id": "ba3f14cb074b5b137ffb759a808a42eff83b061b"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/pytorch_model.bin",
+      "size": 10350179659,
+      "sha256": "c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce",
+      "blob_id": "441e1e0815e78d45c86beb61fef323884cd01e92"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/research_training.json",
+      "size": 1736,
+      "sha256": null,
+      "blob_id": "e7e812b3092d74de680f2b65a8b924670978c339"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/completion_resources.json",
+      "size": 1897,
+      "sha256": null,
+      "blob_id": "4b157b910e5e3275f8c403e16e6ca244e0472f9d"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/epoch-1.json",
+      "size": 396566,
+      "sha256": null,
+      "blob_id": "405f6cbcb407747b28af7f21e9eea9b4c2ef2cca"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/publication_validation.json",
+      "size": 1708,
+      "sha256": null,
+      "blob_id": "91b00729cff2b18a0722862bb44e1e0e7c1fb021"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_pass.json",
+      "size": 52658,
+      "sha256": null,
+      "blob_id": "bfb5f4b099ff40f65448b28c623d3dd93c0279a8"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/qualification_serving_replay.json",
+      "size": 1292,
+      "sha256": null,
+      "blob_id": "04b9884adc6ab4cee6ebbe604b8c209a50b0f75b"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/resolved_config.json",
+      "size": 3865,
+      "sha256": null,
+      "blob_id": "28a39a1e15c13ca3ecd510852162862c5d6298ee"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/run_timing.json",
+      "size": 354,
+      "sha256": null,
+      "blob_id": "736d3e41a619c810d9ae9d281e35f0ffb7bcb983"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/source_and_completion.json",
+      "size": 1756,
+      "sha256": null,
+      "blob_id": "c05263b7ac2bb6e030eb2b4a2549224bbeca1c9b"
+    },
+    {
+      "path": "G3_M5_L8_L16_L24/provenance/trainer_state.json",
+      "size": 719134,
+      "sha256": null,
+      "blob_id": "7be346216aeabcc2347d0777303a2acd9cf2df13"
+    },
+    {
+      "path": "M5_E1/README.md",
+      "size": 2293,
+      "sha256": null,
+      "blob_id": "72d02565865ac4b41af1fa303c6b360a13b58015"
+    },
+    {
+      "path": "M5_E1/SHA256SUMS.json",
+      "size": 2487,
+      "sha256": null,
+      "blob_id": "de78fc99af0af6e7b30204b6e9c0a90d1a53e0d6"
+    },
+    {
+      "path": "M5_E1/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "M5_E1/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "M5_E1/epoch-1/navigation.json",
+      "size": 3877,
+      "sha256": null,
+      "blob_id": "ced39244169f677d6206f2cda9e793914a3ceadd"
+    },
+    {
+      "path": "M5_E1/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "M5_E1/epoch-1/pytorch_model.bin",
+      "size": 10350179723,
+      "sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+      "blob_id": "c6aeefe855b34d98b07504d8821e73fa90686b5a"
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "M5_E1/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "M5_E1/provenance/completion_resources.json",
+      "size": 1936,
+      "sha256": null,
+      "blob_id": "ededa3239620d5dcb498ab39aeec27970bcd8eb1"
+    },
+    {
+      "path": "M5_E1/provenance/epoch-1.json",
+      "size": 396528,
+      "sha256": null,
+      "blob_id": "ed1f4b83d73dc4e6d22ecfd64616682efadd4352"
+    },
+    {
+      "path": "M5_E1/provenance/publication_validation.json",
+      "size": 305,
+      "sha256": null,
+      "blob_id": "e8ab7f856c02b6fdcd3a9dc76d7a1611b041b593"
+    },
+    {
+      "path": "M5_E1/provenance/qualification_pass.json",
+      "size": 4195,
+      "sha256": null,
+      "blob_id": "b10eec0a3ef2acb8a9cface23e814bb828a35e87"
+    },
+    {
+      "path": "M5_E1/provenance/resolved_config.json",
+      "size": 2250,
+      "sha256": null,
+      "blob_id": "ed3b006b3ee0450ddfe6af7e7dca9dc1ac623bd1"
+    },
+    {
+      "path": "M5_E1/provenance/run_identity.json",
+      "size": 2958,
+      "sha256": null,
+      "blob_id": "0e218d0f68268e9d3721fd2cab36d4d12ca398d1"
+    },
+    {
+      "path": "M5_E1/provenance/run_timing.json",
+      "size": 352,
+      "sha256": null,
+      "blob_id": "3e8d61da1a5c48249f39fcde04dec5b647493d11"
+    },
+    {
+      "path": "M5_E1/provenance/source_and_completion.json",
+      "size": 1740,
+      "sha256": null,
+      "blob_id": "7949ee41a9d0dff7724efe6c5897568135b66921"
+    },
+    {
+      "path": "M5_E1/provenance/trainer_state.json",
+      "size": 719164,
+      "sha256": null,
+      "blob_id": "f6d6bf45160d96877f47c6173d8a1b325b5a61fd"
+    },
+    {
+      "path": "R1/README.md",
+      "size": 1918,
+      "sha256": null,
+      "blob_id": "9b55f8681910b4b170dacc834ee1a7d69bf542dc"
+    },
+    {
+      "path": "R1/SHA256SUMS.json",
+      "size": 2290,
+      "sha256": null,
+      "blob_id": "f36f054335bafb322dffeebc47d8680ccfd305e2"
+    },
+    {
+      "path": "R1/epoch-1/chat_template.jinja",
+      "size": 7756,
+      "sha256": null,
+      "blob_id": "a585dec894e63da457d9440ec6aa7caa16d20860"
+    },
+    {
+      "path": "R1/epoch-1/config.json",
+      "size": 2903,
+      "sha256": null,
+      "blob_id": "b45474a6509c35ea4d26e49630c2beed0600409e"
+    },
+    {
+      "path": "R1/epoch-1/navigation.json",
+      "size": 3662,
+      "sha256": null,
+      "blob_id": "4990e0bffff832e39946352aec32f89ceb07ba28"
+    },
+    {
+      "path": "R1/epoch-1/processor_config.json",
+      "size": 1191,
+      "sha256": null,
+      "blob_id": "33818c7f9e991ad735fd240209f4fa73e6c28c50"
+    },
+    {
+      "path": "R1/epoch-1/pytorch_model.bin",
+      "size": 10392300939,
+      "sha256": "2b25416a500d92d4c13925046551ff9fcfa77d5f57e6c7aea94fc3ac889cb347",
+      "blob_id": "f039aeecc311ce7b1173d7d2a98f9e7dce254603"
+    },
+    {
+      "path": "R1/epoch-1/research_training.json",
+      "size": 7682,
+      "sha256": null,
+      "blob_id": "47b2dc1caeac58b120bbad3b3026ae0b2808d07d"
+    },
+    {
+      "path": "R1/epoch-1/tokenizer.json",
+      "size": 19989325,
+      "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "blob_id": "5520bfd2dd834ce386c1312c410fa71af56db5ad"
+    },
+    {
+      "path": "R1/epoch-1/tokenizer_config.json",
+      "size": 1164,
+      "sha256": null,
+      "blob_id": "875b7b0a3aabbd4e5e2888802dfbd5624a4a2060"
+    },
+    {
+      "path": "R1/provenance/completion_resources.json",
+      "size": 1865,
+      "sha256": null,
+      "blob_id": "44f80098fa74d2a7e3ed830350764daae2f11025"
+    },
+    {
+      "path": "R1/provenance/epoch-1.json",
+      "size": 396522,
+      "sha256": null,
+      "blob_id": "b1be2459747b2011f594173487fed0832dd871ab"
+    },
+    {
+      "path": "R1/provenance/publication_validation.json",
+      "size": 3055,
+      "sha256": null,
+      "blob_id": "cf7c5c8799a281f26dc7ef71d70a883fc14c61fd"
+    },
+    {
+      "path": "R1/provenance/resolved_config.json",
+      "size": 9864,
+      "sha256": null,
+      "blob_id": "a35ec490c9dda71404ff89c5249a8988e7006163"
+    },
+    {
+      "path": "R1/provenance/run_timing.json",
+      "size": 352,
+      "sha256": null,
+      "blob_id": "ba7ac0ba63e76c7d77e7a9f59e3cc49b4a16fd09"
+    },
+    {
+      "path": "R1/provenance/source_and_completion.json",
+      "size": 1774,
+      "sha256": null,
+      "blob_id": "1c279c4ea6bd22c737acfb9162f65fb7a5a0e87d"
+    },
+    {
+      "path": "R1/provenance/trainer_state.json",
+      "size": 719218,
+      "sha256": null,
+      "blob_id": "d1854e0774da6826401efc4cab8254e306811ce8"
+    },
+    {
+      "path": "README.md",
+      "size": 9881,
+      "sha256": null,
+      "blob_id": "ad3125eb0dc34a238a306b4e49f45938c6778c4a"
+    },
+    {
+      "path": "SHA256SUMS.json",
+      "size": 11277,
+      "sha256": null,
+      "blob_id": "ec6a1b8667bd0a8df215306c8b8714cbd6e69994"
+    }
+  ]
+}

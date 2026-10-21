@@ -1,0 +1,68 @@
+{
+  "status": "complete",
+  "pid": 188899,
+  "models_completed": [
+    "M5_E1",
+    "G3_M5",
+    "TRIPLE",
+    "G3",
+    "G1"
+  ],
+  "updated_unix": 1792490146.1075814,
+  "gate_result_hashes": {
+    "M5_E1": "a937612e384b4df131abdfbd7ee4b63590356a710a91c65b14c1345331615c6e",
+    "G3_M5": "d9a404454b9a944b8f27a7fffc4de429ec5f0cad2124dfc982a6b1e18c596e10",
+    "TRIPLE": "aa45572954b51da17453773a82ccd65f5056cee1d3e5ac2bab686867aadfeb3e",
+    "G3": "5860b1ea0fe04717442f4b0035dcc86fc1e7b9fdf722b6e733a6d9d35fd87482",
+    "G1": "f696f23e64d858088fe0e7805e4bbd81e697f25fdf01dc16ef09f0bf75f7bda6"
+  },
+  "projection_manifest_sha256": "176e56a53db645f10164cd23894888063e524fbba03ab4df822d87361d9526c1",
+  "current_model": null,
+  "child_pid": null,
+  "parallel_capture_pids": {
+    "G3": 254667,
+    "G1": 254668
+  },
+  "parallel_capture_started_unix": 1792479409.2499025,
+  "parallel_capture_method": "G3 and G1 run concurrently in their registered output roots; TRIPLE continues unchanged",
+  "parallel_capture_results": {
+    "G1": {
+      "episodes": 240,
+      "journal_sha256": "ac5809dfa23aaa7710f7a86ae22ffa3221f194b1ca95d4f0490e3fa74577afc6",
+      "weights_sha256": "a620ab17b1c0cbec6f7c5f95d67177a4b078ae53e83ea08c6696c5c4797a63ae"
+    },
+    "G3": {
+      "episodes": 240,
+      "journal_sha256": "1241fe5aed008d4006af041d99ad4f1ae05935a423668e56f690f030f39ffad4",
+      "weights_sha256": "a71be6b5291b6acddbeb389318befaded5818c5b1438d5d44cf351c64248333b"
+    }
+  },
+  "finished_unix": 1792490146.1075766,
+  "final_capture_validations": {
+    "M5_E1": {
+      "episodes": 240,
+      "journal_sha256": "35c93fef4b5b572f625905d12256dc23496d14e6faea5705e835c876a9deb6f3",
+      "weights_sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6"
+    },
+    "G3_M5": {
+      "episodes": 240,
+      "journal_sha256": "da1f7f70037a2e5537194b9cb74e9ed58e8b44c9c591d22ae8f3a541a97c8586",
+      "weights_sha256": "4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f"
+    },
+    "TRIPLE": {
+      "episodes": 240,
+      "journal_sha256": "6bfee8522e1ec7969443b15a49ca3798f4fe3542e1adadc2c2b45e8f133b0585",
+      "weights_sha256": "c206e32e4bbe884ae6ac5dbcd1a46ac7589d9218b7bc8f27a70e29a821b295ce"
+    },
+    "G3": {
+      "episodes": 240,
+      "journal_sha256": "1241fe5aed008d4006af041d99ad4f1ae05935a423668e56f690f030f39ffad4",
+      "weights_sha256": "a71be6b5291b6acddbeb389318befaded5818c5b1438d5d44cf351c64248333b"
+    },
+    "G1": {
+      "episodes": 240,
+      "journal_sha256": "ac5809dfa23aaa7710f7a86ae22ffa3221f194b1ca95d4f0490e3fa74577afc6",
+      "weights_sha256": "a620ab17b1c0cbec6f7c5f95d67177a4b078ae53e83ea08c6696c5c4797a63ae"
+    }
+  }
+}
