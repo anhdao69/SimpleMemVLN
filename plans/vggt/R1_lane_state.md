@@ -1,3 +1,7 @@
+> **Authorized online implementation update (2026-10-15):** use frozen resident FP32 single-view VGGT-Omega-1B-512 online, no feature pre-extraction/PCA, the same unpositioned LN2048 regional targets as implemented G3. The lane-read decoder outputs2048, not256. User selected one joint R2R+EnglishRxR15 epoch from original Qwen base:3852updates,warmup116,cosine minimum0.1; global8 on worker-2 fourH100. R0 is the verified completed text-dual run in the registry (four lanes16/20/24/28). R0's E1 was halfway through a two-epoch schedule: this LR mismatch is explicit, not a controlled auxiliary-only comparison. `R1_omega_execution.md` records the implementation and qualification gates.
+
+> **Distributed empty-support requirement:** production uses ZeRO2 with two accumulation slots. Empty support must follow the same zero-sized query/probe/decoder graph as positive support, inserting no extra sequence rows. A standalone zero-loss shortcut changes gradient readiness order and can deadlock the reducer despite every parameter receiving a gradient. Require matching four-rank bucket sequences and recovery past the actual failed batch; the implementation report preserves the initial update19 failure and repair evidence.
+
 # R1 — Delayed VGGT supervision of the existing second memory bank
 
 > **For agentic workers:** reuse the user's completed R0 as a comparison artifact and its ARCHITECTURE/INITIALIZATION SPEC as the recipe. Never submit a new R0, and never silently train a new one-lane architecture against a four-lane baseline.
@@ -51,7 +55,7 @@ At each requested anchor add five no-write lane-kernel rows:
 
 Probe read equals `R_read(t).T @ q_hat / sqrt(128)`. Keep probe reads before lane gated RMSNorm/z/out_proj; remove them from the real-token sequence. Native GDN24 receives no probe rows. Capture the detached native q context from the existing native preparation once, not a second model pass.
 
-Decoder: per-head FP32 RMS normalization no affine -> flatten H_lane*128 -> Linear(H_lane*128,1024) -> GELU -> Linear1024,256.
+Decoder: per-head FP32 RMS normalization no affine -> flatten H_lane*128 -> Linear(H_lane*128,1024) -> GELU -> Linear1024,2048 (online Omega; no PCA).
 
 Targets, five regions, per-pair cosine loss, lambda max0.1 and ramp are identical in recipe to G3. Head parameter counts differ because one bank has4 vs32 value heads; report this rather than pretending exact matched capacity.
 
@@ -66,28 +70,28 @@ Native language weights and all installed lane weights remain trainable under th
 ## 5. Implementation tasks
 
 ### R1.1: registry and lane reader
-**Files:** `research/vggt_five_contract.py`, `models/vggt_aux_heads.py`; tests `test_vggt_r1_contract.py`.
-- [ ] Test exact-R0 layer preservation, layer24 requirement, wrong output/history rejection.
-- [ ] Query/decoder H4 shapes and parameter counts; generic H_lane supports validated metadata only, no automatic capacity conversion.
+**Files:** `research/vggt_r1.py`, `research/vggt_r1_teacher.py`, `models/vggt_g3_heads.py`; tests `test_vggt_r1_contract.py`.
+- [x] Test exact-R0 layer preservation, layer24 requirement, wrong output/history rejection.
+- [x] Query/decoder H4 shapes and parameter counts; generic H_lane supports validated metadata only, no automatic capacity conversion.
 
 ### R1.2: pure lane probe path
-**Files:** `models/parallel_step_lane.py`, `models/gdn_research.py`, `models/research_forward.py`.
-**Interface:** `lane_forward_with_queries(lane, x, roles, plan, query_context, targets) -> (real_lane_output, recall_sum)` for uncached training only.
-- [ ] Factor preparation/read/postprocessing without changing native serving `forward` semantics.
-- [ ] Insert rows AFTER lane's QKV+SiLU/head repetition/effective gates, never by assigning synthetic token roles to x.
-- [ ] Probes bypass norm/out_proj; real rows still use original z and original output projection.
-- [ ] Test no-probe outputs/gradients match old lane, no double write, no current-source write before action.
+**Files:** `models/vggt_r1_forward.py`, `models/research_forward.py`; original `parallel_step_lane.py` serving implementation is preserved.
+**Interface:** `lane_forward_with_queries(lane, x, roles, head, context, anchors, lags, targets) -> (real_lane_output, recall_sum)` for uncached training only.
+- [x] Mirror the narrow pinned preparation/read/postprocessing in the R1 functional helper, preserving native serving `forward` unchanged; actual FLA parity tested.
+- [x] Insert rows AFTER lane's QKV+SiLU/head repetition/effective gates, never by assigning synthetic token roles to x.
+- [x] Probes bypass norm/out_proj; real rows still use original z and original output projection.
+- [x] Test no-probe outputs/gradients match old lane, no double write, no current-source write before action.
 
 ### R1.3: gradient gate
-- [ ] With W_out=0 and lambda>0, a later recall loss must give nonzero earlier lane writer gradients in a nondegenerate fixture.
-- [ ] Native navigation output remains unaffected by probe presence mathematically when lambda=0, apart from declared finite-precision effects.
-- [ ] Isolated anchor loss has no future writer gradient; first-step/no-pair episodes use valid zero participation.
+- [x] With W_out=0 and lambda>0, a later recall loss must give nonzero earlier lane writer gradients in a nondegenerate fixture.
+- [x] Native navigation output remains unaffected by probe presence mathematically when lambda=0, apart from declared finite-precision effects.
+- [x] Isolated anchor loss has no future writer gradient; first-step/no-pair episodes use valid zero participation.
 
 ### R1.4: serving/checkpoint/resource
-- [ ] Train checkpoint keeps auxiliary parameters; export strips only those and retains every R0 lane.
-- [ ] Load existing R0 for diagnostic parity without changing its metadata/weights; not another training run.
-- [ ] Train a disposable smoke, save/reload, then run same-history raw-token and complete-response comparisons.
-- [ ] Longest real episode gate with all installed lanes and40 probe rows at R24, full optimizer/offload/save; launch fresh R1 only after PASS.
+- [x] Train checkpoint keeps auxiliary parameters; export strips only those and retains every R0 lane.
+- [x] Load existing R0 for diagnostic parity without changing its metadata/weights; not another training run.
+- [x] Train a disposable smoke, save/reload, then run same-history raw-token and complete-response comparisons.
+- [x] Longest real episode gate with all installed lanes and40 probe rows at R24, full optimizer/offload/save; launch fresh R1 only after PASS.
 
 ## 6. Evaluation
 
@@ -96,3 +100,5 @@ Compare R1–R0 at equal declared/completed exposure, output/history and lane la
 Compare R1 to G3 as a whole-model quality/cost choice. If native G3 is equal or better, keep the simpler native model; do not force the lane into the paper. A decrease when suppressing trained lane output is a dependence diagnostic, not a replacement for trained no-lane control.
 
 Report installed lane parameters/state bytes and actual latency; training-only auxiliary adds no extra deployed modules relative to R0, but R0 itself is more expensive than native V0.
+
+Serving qualification compares optimized offline and streaming independently against the established sequential offline BF16 reference at unchanged tolerances, plus exact source/export scores. The original one-logit direct R2R discrepancy is retained in the report; approximate equality is not transitive. No serving or training math was changed to address this audit difference.

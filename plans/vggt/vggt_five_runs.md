@@ -1,3 +1,7 @@
+> **R1 update (2026-10-15):** `R1_lane_state.md` and `R1_omega_execution.md` supersede historical R1 cache/PCA/dimension/schedule defaults: online frozen FP32 Omega, full2048 regional targets and training-only student MLP, exact registered four-lane R0 architecture, one joint R2R + English RxR15 epoch. R0 E1 used a two-epoch LR schedule; report this confound.
+
+> **G3 online update (2026-10-13):** `G3_native_state.md` and `G3_omega_execution.md` replace this document's offline/PCA target requirements for G3. It now uses frozen online single-view Omega, full2048-dimensional regional targets, no added positional term, and four-H100 qualification. Other unimplemented arms retain their original specifications.
+
 > Production steering (2026-10-13): the user authorized G1 on joint R2R+RxR for **one epoch** on four H100s after qualification. Use `G1_current_alignment.md` and `G1_omega_execution.md` for the active online-Omega design, selected runtime and declared one-epoch schedule override. Other proposed arms remain unchanged.
 
 > **G1 update (2026-10-13):** User requests ONLINE VGGT-Omega, no pre-extraction/PCA, the SpatialForcing projector, and4H100 tests. For G1, `G1_current_alignment.md` supersedes conflicting offline/PCA/two-GPU sections below. Other arms are not implemented by this task.
