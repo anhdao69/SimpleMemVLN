@@ -62,8 +62,6 @@ pilot() {   # NAME CHECKPOINT PHYSICAL_GPU: val_seen-300 development evaluation 
     "$2" "$3" "$out" --split val_seen --episode-list "$R/evals/pilot_valseen300/ids_valseen300.json") >> "$log" 2>&1
   sleep 150     # stagger the ~10 GB host-RAM model loads (see supervise.sh)
 }
-pilot m5_e1 /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1 0
-pilot m5_e1_frame_prior $R/runs/m5_e1_frame_prior/ckpt 1
 
 # M5_E1 itself, evaluated by the same supervisor/evaluator as an RL export at "step 0".
 BASE=$R/runs/m5_e1_base
@@ -72,6 +70,10 @@ mkdir -p "$BASE/exports"
 [ -f "$BASE/COMPLETE" ] || echo '{"note": "M5_E1 published checkpoint, no RL training"}' > "$BASE/COMPLETE"
 say "evaluate M5_E1"
 bash scripts/rl/supervise.sh m5_e1_base none 0 || { say "M5_E1 evaluation failed"; exit 1; }
+# Pilots after (not alongside) the M5_E1 evaluation: six evaluators at once with other users' jobs
+# thrashed the 62 GB host until model requests timed out (both pilots, 2026-10-22 11:50).
+pilot m5_e1 /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1 0
+pilot m5_e1_frame_prior $R/runs/m5_e1_frame_prior/ckpt 1
 while systemctl --user is-active -q rl-pilot-m5_e1 || systemctl --user is-active -q rl-pilot-m5_e1_frame_prior; do
   sleep 60; done
 say "pilots finished"
