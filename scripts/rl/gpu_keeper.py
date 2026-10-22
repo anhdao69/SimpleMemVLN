@@ -7,8 +7,8 @@ CUDA OOM. ``run`` (unit rl-gpu-keeper) holds 1 GiB blocks so that, per GPU,
 
     keeper + our other processes + pending requests + 2 GiB per our evaluation model server = target,
 
-never takes more than ``target`` (targets.json, our training footprint), and always leaves 1 GiB free
-so other users' running jobs can still grow. It holds nothing while one of our trainers runs on that GPU
+never takes more than ``target`` (targets.json, our training footprint), leaves pending requests free, and 1 GiB
+more so other users' running jobs can still grow. It holds nothing while one of our trainers runs on that GPU
 (the trainer's update peaks exceed its reservation), and releases a GPU as soon as our trainer appears
 on it, or 90 s after our torchrun launcher started.
 
@@ -124,8 +124,10 @@ def run():
                 changed = True
             if changed:
                 torch.cuda.empty_cache()
+            # Pending requests stay free (not only out of the target): a request granted from memory
+            # another of our jobs just freed was otherwise re-held before the evaluator loaded (OOM, 2026-10-22).
             free = free_bytes(g) if len(held[g]) * GIB + GIB <= want else 0
-            while len(held[g]) * GIB + GIB <= want and free - GIB >= MARGIN:
+            while len(held[g]) * GIB + GIB <= want and free - GIB >= MARGIN + pending.get(g, 0):
                 try:
                     held[g].append(torch.empty(GIB, dtype=torch.uint8, device=g))
                 except RuntimeError:
