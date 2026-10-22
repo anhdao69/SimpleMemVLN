@@ -4,7 +4,8 @@
 #   M5_E1 -> local evaluation of M5_E1 itself (reference journal for paired tests) -> GRPO on M5_E1 ->
 #   GRPO+F-B on M5_E1, each evaluated on val_unseen once at step 125.
 # Steps are idempotent (supervise.sh resumes training, skips finished shards, exits 0 when evaluated),
-# so a restart after a host OOM continues where it stopped. A failed smoke stops the chain (exit 1).
+# so a restart after a host OOM continues where it stopped. A failed smoke writes SMOKE_FAILED and ends
+# the chain with exit 0 (no systemd restart loop); delete that marker to retry after a fix.
 set -uo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd); cd "$ROOT"
 R=/data/anh/rl_baseline; log=$R/logs/queue_m5.log
@@ -15,6 +16,7 @@ while systemctl --user is-active -q rl-chain; do sleep 120; done
 smoke() {   # NAME CONFIG [--no-forks]
   local name=$1 config=$2 flag=${3:-} out=$R/runs/$1
   if [ -f "$out/SMOKE_PASSED" ]; then return 0; fi
+  if [ -f "$out/SMOKE_FAILED" ]; then say "smoke $name failed earlier; chain stopped"; exit 0; fi
   if [ ! -f "$out/STOPPED" ]; then
     rm -rf "$out"
     say "smoke $name"
@@ -28,7 +30,7 @@ smoke() {   # NAME CONFIG [--no-forks]
   if python3 scripts/rl/check_fork_smoke.py "$out" $flag >> "$log" 2>&1; then
     touch "$out/SMOKE_PASSED"; say "smoke $name passed"
   else
-    say "smoke $name FAILED"; exit 1
+    touch "$out/SMOKE_FAILED"; say "smoke $name FAILED; chain stopped"; exit 0
   fi
 }
 smoke smoke_grpo_m5 configs/rl/activevln_grpo_m5_r2r1k.yaml --no-forks
