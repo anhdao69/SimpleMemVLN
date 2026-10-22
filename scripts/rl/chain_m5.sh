@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # M5 RL queue (user request 2026-10-22), run by the persistent user unit rl-chain-m5.service:
 #   wait for the Window8 chain (G = 8 control + its evaluation)
-#   -> 2-step smokes: GRPO and GRPO+F-B on M5_E1 (this checkout, RL_m5), MemFork (RL_memfork worktree)
+#   -> 2-step smokes: GRPO and GRPO+F-B on M5_E1, MemFork (all from this checkout, RL_m5)
 #   -> local val_unseen evaluation of M5_E1 (reference journal for paired tests), concurrently the
 #      val_seen-300 development pilot: M5_E1 native token memory vs the MemFork frame-level prior
 #   -> GRPO on M5_E1 -> GRPO+F-B on M5_E1 -> MemFork -> A2 (MemFork-GRPO, no forks)
@@ -13,10 +13,13 @@
 # MemFork runs. Delete the marker to retry after a fix.
 set -uo pipefail
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd); cd "$ROOT"
-MF=/data/anh/code/SimpleMem-memfork
+# One checkout for every run and evaluation: compare_evals refuses journals whose evaluation sources
+# differ, so all M5 journals (M5_E1, baselines, MemFork, ablations) come from this code. MemFork paths are
+# inert for checkpoints without memory_retention.pt. Development happens in SimpleMem-memfork (RL_memfork).
+MF=$ROOT
 R=/data/anh/rl_baseline; log=$R/logs/queue_m5.log
 say() { echo "$(date -Is) $*" >> "$log"; }
-say "chain_m5 start ($ROOT @ $(git rev-parse --short HEAD); memfork @ $(git -C $MF rev-parse --short HEAD))"
+say "chain_m5 start ($ROOT @ $(git rev-parse --short HEAD))"
 while systemctl --user is-active -q rl-chain; do sleep 120; done
 
 smoke() {   # CHECKOUT NAME CONFIG [checker flags...]; returns 1 on failure
