@@ -123,7 +123,7 @@ def run():
                 held[g].pop()
                 changed = True
             if held[g] and pending.get(g):        # others' jobs may have taken the rest of the GPU
-                short = MARGIN + pending[g] - free_bytes(g)
+                short = pending[g] - free_bytes(g)    # grab needs MARGIN + 1 GiB more: no flapping
                 while held[g] and short > 0:
                     held[g].pop()
                     short -= GIB
