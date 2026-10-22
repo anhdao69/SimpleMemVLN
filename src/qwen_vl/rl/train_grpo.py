@@ -197,7 +197,8 @@ class DummyItem:
     def __init__(self, serializer):
         rgb = np.zeros((480, 640, 3), dtype=np.uint8)
         self.batch = encode_rollout(serializer, 'Stop.', [rgb],
-                                    [dict(tokens=serializer.action_ids[3], complete=True)])
+                                    [dict(tokens=serializer.action_ids[3], complete=True)],
+                                    episode_uid='rl:dummy')
 
 
 def to_device(batch, device):
@@ -396,7 +397,7 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
                     t = b['fork_t']
                     prefix_tokens = sum(len(r['tokens']) for r in e['_responses'][:t])
                     full = dict(
-                        uid=f"{e['uid']}:fork{t}:{b['branch']}", episode_id=e['episode_id'],
+                        uid=f"{e['uid']}:fork{t}:{b['branch']}", memory_uid=e['uid'], episode_id=e['episode_id'],
                         instruction=e['instruction'], is_branch=True,
                         _frames=e['_frames'][:t] + b['_frames'], _responses=e['_responses'][:t] + b['_responses'],
                         rollout_logps=e['rollout_logps'][:prefix_tokens] + b['rollout_logps'],
@@ -764,7 +765,8 @@ def main():
                 HOST_OFFLOAD['on'] = should_offload(e, i == 0, device)
                 stats['offloaded'] += HOST_OFFLOAD['on']
                 batch = to_device(encode_rollout(serializer, e['instruction'], e['_frames'],
-                                                 e['_responses']), device)
+                                                 e['_responses'], episode_uid=e.get('memory_uid', e['uid'])),
+                                  device)
                 if estimator == 'grpo':
                     logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
                 else:

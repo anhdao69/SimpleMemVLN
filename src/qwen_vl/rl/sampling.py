@@ -39,6 +39,36 @@ def clone_cache(cache):
     return out
 
 
+def clone_episodic(state):
+    """Independent copy of an ``EpisodicSessionState`` taken between steps.
+
+    Copies the bank selection (running top-B), resident row IDs, open recent groups with
+    their source scores, and every committed-write scorer's carried FP32 state and conv
+    tail. The scorers keep their reference to the (shared, read-only) GDN layer.
+    """
+    from qwen_vl.stream.episodic_cache import EpisodicSessionState
+
+    if state is None:
+        return None
+    if type(state) is not EpisodicSessionState:
+        raise ValueError(f'Snapshots are defined for EpisodicSessionState, not {type(state).__name__}')
+    if state.segment_kind is not None:
+        raise ValueError('Episodic snapshot inside an append')
+    twin = copy.copy(state)
+    twin.running = copy.deepcopy(state.running)
+    twin.resident = {layer: ids.copy() for layer, ids in state.resident.items()}
+    twin.groups = copy.deepcopy(state.groups)
+    twin.promotions = copy.deepcopy(state.promotions)
+    twin.scorers = {}
+    for gdn, scorer in state.scorers.items():
+        if scorer.pending:
+            raise ValueError('Episodic snapshot with an unclosed response')
+        copied = copy.copy(scorer)
+        copied.state, copied.conv_tail, copied.pending = scorer.state.clone(), scorer.conv_tail.clone(), []
+        twin.scorers[gdn] = copied
+    return twin
+
+
 def tempered_token(logits, temperature, generator, probe=None):
     """Sample one token; return (token, log-prob, entropy) under softmax(logits/T).
 
@@ -73,13 +103,23 @@ class SamplingSession(StreamSession):
         self.last_result = None
         self.busy = False
         self.step_lane_cache = None
-        self._append_with_role(prefix, 0)
+        self.episodic = None
+        spec = getattr(self.model, 'episodic_spec', None)
+        if spec is not None:
+            from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
+            from qwen_vl.stream.episodic_cache import EpisodicSessionState
+            if spec.version == GDN_SWEEP_MODE:
+                raise ValueError('RL sampling supports episodic_window_v1 (M5/M5c), not the GDN sweep')
+            self.episodic = EpisodicSessionState(spec, self.model, episode_uid,
+                                                 device=next(self.model.parameters()).device)
+        self._append_with_role(prefix, 0, kind='prefix')
         self.prefix_length = self.positions.logical_token_count
         self.valid = True
 
     @torch.inference_mode()
     def snapshot(self):
-        """Clone of the complete streaming state before the next observation (GDN + Window8 KV).
+        """Clone of the complete streaming state before the next observation (GDN + attention KV,
+        and for M5 the episodic bank, recent groups and committed-write scorer state).
 
         A branch restored from it continues exactly as this session would; the memory is copied
         in O(state size), without re-encoding the history.
@@ -88,7 +128,8 @@ class SamplingSession(StreamSession):
             raise ValueError('Snapshot needs a valid text-policy session')
         return dict(cache=clone_cache(self.cache), positions=copy.copy(self.positions),
                     resident=deque(self.resident), next_step=self.next_step,
-                    prefix_length=self.prefix_length, episode_uid=self.episode_uid)
+                    prefix_length=self.prefix_length, episode_uid=self.episode_uid,
+                    episodic=clone_episodic(self.episodic))
 
     @torch.inference_mode()
     def restore(self, snapshot, episode_uid=None):
@@ -98,6 +139,9 @@ class SamplingSession(StreamSession):
         self.resident = deque(snapshot['resident'])
         self.next_step, self.prefix_length = snapshot['next_step'], snapshot['prefix_length']
         self.episode_uid = episode_uid or snapshot['episode_uid']
+        # The bank keeps the root episode's identity (random-hash selectors key on it), so a
+        # branch's training forward rebuilds its memory with the same UID as the root.
+        self.episodic = clone_episodic(snapshot.get('episodic'))
         self.last_result, self.busy, self.step_lane_cache = None, False, None
         self.valid = True
 
@@ -111,7 +155,10 @@ class SamplingSession(StreamSession):
             block = self.serializer.encode_observation(rgb, step_id)
         self._begin_step(step_id, block)
         start = self.positions.logical_token_count
-        hidden = self._append_with_role(block, 1)
+        if self.episodic is not None:
+            image = block['input_ids'][0].eq(self.serializer.image_id).nonzero().reshape(-1)
+            self.episodic.open_group(step_id, start, start + int(image[0]))
+        hidden = self._append_with_role(block, 1, kind='observation')
         forbidden = set(self.serializer.tokenizer.all_special_ids) - {self.serializer.eos}
         tokens, logps, entropies, greedy = [], [], [], []
         result = dict(valid=False, class_id=None, complete=False)
@@ -135,14 +182,15 @@ class SamplingSession(StreamSession):
                 if text.strip() in ACTIONS:
                     result.update(valid=True, class_id=ACTIONS.index(text.strip()))
                     self._append_with_role(
-                        self.serializer.text_block([token] + self.serializer.separator), 2, complete=True)
+                        self.serializer.text_block([token] + self.serializer.separator), 2, complete=True,
+                        kind='response_close')
                 else:
                     result['error'] = f'Invalid navigation response: {text!r}'
                 break
             if token in forbidden:
                 result['error'] = f'Forbidden structural token {token}'
                 break
-            hidden = self._append_with_role(self.serializer.text_block([token]), 2)
+            hidden = self._append_with_role(self.serializer.text_block([token]), 2, kind='response_token')
         else:
             result['error'] = 'Response limit reached without assistant terminator'
         if not result['valid']:
@@ -150,6 +198,8 @@ class SamplingSession(StreamSession):
             self.valid = False
         elif self.cfg['memory']['mode'] == 'window8':
             self.resident.append((step_id, self.positions.logical_token_count - start))
+        elif self.episodic is not None:
+            self.episodic.close_group(self.positions.logical_token_count)
         self.next_step += 1
         result.update(tokens=tokens, logps=logps, entropies=entropies, greedy_tokens=greedy,
                       retained_kv_tokens=kv_length(self.cache))
