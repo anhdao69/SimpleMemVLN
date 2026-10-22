@@ -40,7 +40,9 @@ smoke() {   # CHECKOUT NAME CONFIG [checker flags...]; returns 1 on failure
     sleep 30
     while systemctl --user is-active -q "rl-$name"; do sleep 30; done
   fi
-  if python3 "$root/scripts/rl/check_fork_smoke.py" "$out" "$@" >> "$log" 2>&1; then
+  # The training venv: --memory imports qwen_vl.stream.retention (torch); system python3 has no torch.
+  if PYTHONPATH="$root/src" /data/anh/code/SimpleMem/.venv/bin/python "$root/scripts/rl/check_fork_smoke.py" \
+      "$out" "$@" >> "$log" 2>&1; then
     touch "$out/SMOKE_PASSED"; say "smoke $name passed"
   else
     touch "$out/SMOKE_FAILED"; say "smoke $name FAILED"; return 1
