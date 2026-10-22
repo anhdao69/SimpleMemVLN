@@ -151,3 +151,67 @@ def test_memory_coefficients_index_the_preceding_action():
         memory_coefficients([0], main)
     with pytest.raises(ValueError):
         memory_coefficients([5], main)
+
+
+# ---- fork.placement: memory -- snapshot before m_t, branches re-draw m_t -------------------------------
+def memory_fork_point(steps):
+    """Causal for a pre-memory snapshot: first t >= 1 whose *state* qualifies (x_t odd; in the trainer,
+    the entropy of q(. | pool_t), known before m_t is drawn) -- never m_t or a_t."""
+    for t, x, m, a in steps:
+        if t >= 1 and x % 2 == 1:
+            return t
+    return None
+
+
+def expected_estimator_memory_forks(theta, phi, snapshot_before_memory=True, double_count=False, baseline=0.4):
+    total = np.zeros(5)
+    for p, x, mems, steps in suffix(theta, phi, 0, 0, []):
+        r = reward(x, mems)
+        t = memory_fork_point(steps)
+        mem_steps = [s for s in steps if s[2] is not None]
+        if t is None:
+            g = sum(score_action(theta, sx, sm or 0, sa) for _, sx, sm, sa in steps) * (r - baseline)
+            g = g + sum(score_memory(phi, sx, sm) for _, sx, sm, _ in mem_steps) * (r - baseline)
+            total += p * g
+            continue
+        tx = steps[t][1]
+        prefix_mems = [s[2] for s in steps[:t] if s[2] is not None]
+        for pb, xb, memsb, stepsb in suffix(theta, phi, t, tx, prefix_mems):       # re-draws m_t
+            rb = reward(xb, memsb)
+            main_c, branch_c = fork_coefficients(T, [t], r, [[rb]], r - baseline, 1.0)
+            c_mem = memory_coefficients([s[0] for s in mem_steps], main_c, snapshot_before_memory)
+            if double_count:     # main m_t keeps the full root credit although branches re-draw it
+                c_mem = [r - baseline if s == t else c for s, c in zip([s[0] for s in mem_steps], c_mem)]
+            g = sum(c * score_action(theta, sx, sm or 0, sa) for c, (_, sx, sm, sa) in zip(main_c, steps))
+            g = g + sum(c * score_memory(phi, sx, sm) for c, (_, sx, sm, _) in zip(c_mem, mem_steps))
+            cb = branch_c[0][0]
+            full_c = [0.0] * t + [cb] * (T - t)
+            branch_mem = [s for s in stepsb if s[2] is not None and s[0] >= t]
+            cb_mem = memory_coefficients([s[0] for s in branch_mem], full_c, snapshot_before_memory)
+            g = g + sum(c * score_action(theta, sx, sm or 0, sa) for c, (_, sx, sm, sa) in zip(full_c[t:], stepsb))
+            g = g + sum(c * score_memory(phi, sx, sm) for c, (_, sx, sm, _) in zip(cb_mem, branch_mem))
+            total += p * pb * g
+    return total
+
+
+def test_memory_fork_estimator_is_unbiased(params):
+    theta, phi = params
+    truth = finite_difference(theta, phi)
+    np.testing.assert_allclose(expected_estimator_memory_forks(theta, phi), truth, rtol=1e-5, atol=1e-7)
+
+
+def test_memory_forks_post_memory_credit_is_also_unbiased_but_double_counting_is_not(params):
+    """With a pre-memory snapshot, root credit for the main's m_t (offset 1) is still unbiased -- the
+    fork rule never sees m_t -- only noisier; root credit for the main's m_t *plus* sibling credit for
+    the re-drawn branch m_t counts m_t 1.5 times."""
+    theta, phi = params
+    truth = finite_difference(theta, phi)
+    np.testing.assert_allclose(expected_estimator_memory_forks(theta, phi, snapshot_before_memory=False),
+                               truth, rtol=1e-5, atol=1e-7)
+    wrong = expected_estimator_memory_forks(theta, phi, double_count=True)
+    assert np.abs(wrong[3:] - truth[3:]).max() > 1e-3
+
+
+def test_memory_coefficients_same_step_when_snapshot_precedes_memory():
+    main = np.asarray([0.5, 0.5, -1.0, -1.0, 2.0])
+    assert memory_coefficients([1, 2, 3, 4], main, snapshot_before_memory=True) == [0.5, -1.0, -1.0, 2.0]

@@ -40,8 +40,8 @@ retained frame set is shared by all 8 attention layers (1,200 rows = 4 frames).
 
 with g_φ an 8→32→1 MLP whose last layer is zero-initialised and κ > 0 learnable. At initialisation the
 policy is a tempered frame-level M5 rule; greedy decoding (evaluation) keeps the running top-4 frames by
-u (ties keep the older frame, as M5). shift/scale and κ₀ = 1.5 / (mean within-pool std of mean_l x_l)
-come from 4 greedy step-0 training episodes per rank (`rl/memfork.calibrate`).
+u (ties keep the older frame, as M5). shift/scale and κ₀ = spread / (mean within-pool std of mean_l x_l)
+come from 4 greedy step-0 training episodes per rank (`rl/memfork.calibrate`; spread 2.0 in the configs).
 Actions follow the unchanged policy a_t ~ π_θ(· | z_t) (tempered text decoding). The joint
 trajectory distribution is p(τ) = Π_t q_φ(m_t | z_t) π_θ(a_t | z_t) P(o_{t+1} | o_{≤t}, a_{≤t}).
 
@@ -52,35 +52,37 @@ Objective: J(θ, φ) = E_τ[R(τ)] with ActiveVLN's terminal reward (unchanged).
 Features x_j are detached functions of θ (as M5's priorities), so the φ-gradient is the exact score
 function of the sampled memory decisions and the θ-gradient is unchanged in form.
 
-## 3. Fork-consistent credit (the bridge)
+## 3. Forking the memory: fork-consistent joint credit (the bridge)
 
-GRPO+F-B snapshots the streaming memory before a decision t and samples M continuations from it. With
-memory decisions in the policy, the memory decision m_t (the promotion before observation t) is taken
-*before* the snapshot (`SamplingSession.prepare_step`), so z_t includes the bank after m_t, the recent
-groups and the scorer states (`rl/sampling.clone_episodic`); each branch samples its actions a_{t:} and
-all later memory decisions m_{t+1:} afresh from its own generator. The fork rule (action entropy of
-π(·|z_t) above the previous step's median) may then depend on m_t but never on a_t. Given (z_t, simulator state at t), the main suffix and the M branch
-suffixes are i.i.d. draws of the same conditional process of the joint policy. The sibling baseline of
-each suffix is therefore independent of that suffix's own decisions, and the F-B estimator, with the
-same 1/(1+M) averaging and batch scale, is unbiased for ∇_θ J **and** ∇_φ J. Credit rule
-(`rl/hico.memory_coefficients`): m_s takes the coefficient of a_{s−1} — the root (GRPO) advantage up to
-and including the fork point, the segment's sibling contrast after it, zero on a branch's replayed
-prefix. Verified by exact enumeration of a toy memory POMDP whose memory decisions change the action
-distribution (`tests/rl/test_memfork_estimator.py`: E[estimator] = ∇J for θ and φ to 1e-5; crediting the
-shared m_t with the sibling contrast, or dropping the 1/(1+M) averaging, is detectably biased).
+GRPO+F-B snapshots the streaming state before an uncertain *action* and samples M continuations from it.
+MemFork forks the **memory**: the fork point is an uncertain *memory decision*.
 
-What would be biased (and is excluded, tested by enumeration):
-- branching only the memory while replaying the main's actions (the counterfactual "same actions,
-  different memory" contrast): suffix actions are then not drawn from π given the branch's memory;
-- crediting a memory decision with a contrast whose baseline was computed from branches that share its
-  realised value (e.g. forking after the admission but crediting the admission).
+- Placement (causal): pre-drawn target τ ~ U[R+F, N*) (the first memory decision is at step R + F = 8);
+  the fork is the first t ∈ [τ, τ + 8] whose memory-decision entropy H(q_φ(·|pool_t)) is at least the
+  previous RL step's median memory-decision entropy. H is computed from the pool before m_t is drawn
+  (`EpisodicSessionState.pending_decision_entropy`), so the rule never sees m_t or a_t.
+- Snapshot *before* m_t (`before_memory` hook in `rl/rollout._advance`): z_t^- = GDN/conv states,
+  attention K/V, bank, recent groups and scorer states (`rl/sampling.clone_episodic`), O(state) device
+  copies. Each branch re-draws m_t from its own generator, then a_t, m_{t+1}, a_{t+1}, … on-policy.
+- Given z_t^- and the simulator state, the main suffix and the M branch suffixes are i.i.d. draws of
+  the joint policy's conditional process, so the sibling baseline of each suffix is independent of that
+  suffix's own decisions and the F-B estimator (1/(1+M) averaging, batch scale) is unbiased for ∇_θ J and
+  ∇_φ J. Credit (`rl/hico.memory_coefficients(..., snapshot_before_memory=True)`): m_s takes the
+  coefficient of a_s — root advantage before the fork, the sibling contrast (R_main − R_branch)/scale
+  from the fork on, zero on a branch's replayed prefix.
+- Siblings from the same z_t^- that keep different frames and reach different returns are a direct,
+  on-policy, outcome-level estimate of the value of a retention choice — the "L4-return" label of the
+  M5 plan, obtained inside RL without a labelling campaign or the local-LOO attention proxy.
 
-Consequence: two siblings from the same z_t that keep different frames and reach different returns give
-an on-policy, outcome-level estimate of the value of remembering — the L4-return label of the plan,
-obtained without a separate labelling campaign and without the local-LOO proxy.
+Verified by exact enumeration of a toy memory POMDP in which memory decisions change the action
+distribution (`tests/rl/test_memfork_estimator.py`), for both placements: memory forks with same-step
+credit and action forks (snapshot after m_t, m_s credited like a_{s−1}) give E[estimator] = ∇J for θ and
+φ (rtol 1e-5). Detectably biased: sibling credit for a memory decision shared by the siblings (action
+forks with same-step credit), double-counting a re-drawn m_t (root credit on the main + sibling credit on
+the branch), and dropping the 1/(1+M) averaging. Rollout ordering (snapshot strictly before m_t; branches
+re-draw m_t) is tested on a fake session and mutation-checked (`tests/rl/test_fork_rollout.py`).
 
-Fork placement: unchanged from F-B (first t in [τ, τ + 8] whose first-token action entropy exceeds the
-previous step's median; pre-drawn τ). Memory-entropy placement is a possible later variant.
+Action-entropy placement with a snapshot after m_t is ablation A3 (`memfork_actfork_m5_r2r1k`).
 
 ## 4. Why the hybrid GDN architecture makes this practical
 
@@ -102,8 +104,9 @@ Main comparison (M5_E1 initialisation):
 Ablations (each isolates one claim; queued in `scripts/rl/chain_m5.sh` on RL_m5):
 - A1 `frame_greedy_fb_m5_r2r1k`: frame-level greedy prior, q_φ frozen, + F-B — frame memory alone.
 - A2 `memfork_grpo_m5_r2r1k`: learned retention with GRPO credit only (no forks) — are forks needed?
+- A3 `memfork_actfork_m5_r2r1k`: learned retention with F-B's action forks — does forking the memory matter?
 - Matched interaction: `grpo_g8_m5_r2r1k` (GRPO, G = 8 on M5_E1).
-Not queued (compute): random-retention prior; memory-entropy fork placement; second seeds.
+Not queued (compute): random-retention prior; second seeds.
 
 Development only on the val_seen-300 subset; val_unseen once per final checkpoint; paired tests over
 episodes; two seeds for the final comparison if time allows.

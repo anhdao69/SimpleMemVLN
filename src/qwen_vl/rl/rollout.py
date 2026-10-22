@@ -16,7 +16,8 @@ def rollout_seed(*parts):
     return int.from_bytes(digest[:8], 'little') & ((1 << 63) - 1)
 
 
-def _advance(session, env, obs, t0, budget, temperature, generator, keep_frames, on_decision=None):
+def _advance(session, env, obs, t0, budget, temperature, generator, keep_frames, on_decision=None,
+             before_memory=None):
     """Sample decisions t0..budget-1 from the current session/environment state until the episode ends."""
     frames, responses, distances = [], [], [obs['distance_to_goal']]
     positions, bearings = [obs['position']], [obs.get('bearing_error')]
@@ -24,7 +25,9 @@ def _advance(session, env, obs, t0, budget, temperature, generator, keep_frames,
     outcome = dict(stopped=False, truncated=False, format_error=False)
     metrics = {}
     for t in range(t0, budget):
-        # Promotion and the MemFork memory decision m_t happen before the fork snapshot of decision t.
+        if before_memory is not None:          # fork placement: memory -- snapshot before m_t
+            before_memory(t, obs)
+        # Promotion and the MemFork memory decision m_t; with action forks, before their snapshot.
         session.prepare_step(t, generator)
         if on_decision is not None:
             on_decision(t, obs)
@@ -136,8 +139,32 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
     uid = f"rl:train:{obs['scene_id']}:{obs['episode_id']}:{sample_idx}"
     session.reset(uid, instruction)
     forks, pending = [], {}
-    on_decision = None
-    if fork:
+    on_decision = before_memory = None
+    if fork and fork.get('placement', 'action') == 'memory':
+        # MemFork memory forks: target decisions are drawn uniformly from [min_t, horizon) (min_t = the
+        # first step with a memory decision); fork k is placed at the first decision t in
+        # [target_k, target_k + window] whose memory decision has entropy >= min_entropy, with the
+        # snapshot taken *before* m_t (a property of q(. | pool_t), known before m_t is drawn), so the
+        # branches re-draw m_t and everything after it.
+        coin = torch.Generator().manual_seed(rollout_seed(seed, 'fork-targets'))
+        low = int(fork['min_t'])
+        horizon = max(low + 1, int(fork.get('horizon') or item['N_star']))
+        targets = sorted(int(torch.randint(low, horizon, (), generator=coin)) for _ in range(fork['max_forks']))
+        cursor = [0]
+
+        def before_memory(t, obs_t):
+            while cursor[0] < len(targets) and t > targets[cursor[0]] + fork['window']:
+                cursor[0] += 1
+            if cursor[0] == len(targets) or t < targets[cursor[0]]:
+                return
+            entropy = session.memory_entropy(t)
+            if entropy is not None and entropy >= fork['min_entropy']:
+                forks.append(dict(t=t, snapshot=session.snapshot(), obs=obs_t, entropy=entropy,
+                                  target=targets[cursor[0]]))
+                cursor[0] += 1
+                while cursor[0] < len(targets) and targets[cursor[0]] <= t:
+                    targets[cursor[0]] = t + 1
+    elif fork:
         coin = torch.Generator().manual_seed(rollout_seed(seed, 'fork-targets'))
         horizon = max(2, int(fork.get('horizon') or item['N_star']))
         targets = sorted(int(torch.randint(1, horizon, (), generator=coin)) for _ in range(fork['max_forks']))
@@ -160,7 +187,8 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
                     targets[cursor[0]] = t + 1
             pending.clear()
 
-    main = _advance(session, env, obs, 0, budget, temperature, generator, keep_frames, on_decision)
+    main = _advance(session, env, obs, 0, budget, temperature, generator, keep_frames, on_decision,
+                    before_memory)
     record = _summary(main, item, reward_cfg)
     record['memory'] = memory_record(session)
     finite = record['step_d'] + [record['final_distance']]

@@ -53,6 +53,24 @@ class EpisodicSessionState:
         from qwen_vl.stream.retention import FrameBank
         self.retention, self.bank = control, FrameBank(self.spec.budget_tokens // 300)
 
+    def pending_decision_entropy(self, step_id):
+        """Entropy of the MemFork memory decision ``promote(step_id)`` would sample, or None.
+
+        Known before the decision is drawn (pool = bank + the frame expiring at ``step_id``), so a fork
+        rule may use it with a snapshot taken before the decision.
+        """
+        if self.bank is None:
+            return None
+        expiring = [g for g in self.groups if g.step_id <= step_id - self.spec.recent_groups]
+        if not expiring or len(self.bank.sources) + len(expiring) <= self.bank.frames:
+            return None
+        if len(expiring) != 1 or expiring[0].end is None:
+            raise RuntimeError('Expected exactly one closed expiring group per step')
+        from qwen_vl.stream.retention import frame_features
+        pool = np.stack(self.bank.features + [frame_features(expiring[0].scores, self.attention_layers)])
+        logq = self.retention.policy.drop_log_probs(pool).detach()
+        return float(-(logq.exp() * logq).sum())
+
     def episodic_ids(self, layer):
         return self.bank.ids if self.bank is not None else self.running[layer].ids
 

@@ -69,14 +69,17 @@ def action_coefficients(record):
     return [record['advantage']] * record['num_steps']
 
 
-def update(policy, optimizer, items, n_main_global, grad_clip, device):
-    """One Adam step of q_phi on this RL step's credited memory decisions (all ranks)."""
+def update(policy, optimizer, items, n_main_global, grad_clip, device, snapshot_before_memory=False):
+    """One Adam step of q_phi on this RL step's credited memory decisions (all ranks).
+
+    ``snapshot_before_memory``: forks were placed before memory decisions (``fork.placement: memory``)."""
     features, drops, coefficients = [], [], []
     for record, _ in items:
         memory = record.get('memory')
         if not memory or not memory['decisions']:
             continue
-        cs = memory_coefficients([d['step'] for d in memory['decisions']], action_coefficients(record))
+        cs = memory_coefficients([d['step'] for d in memory['decisions']], action_coefficients(record),
+                                 snapshot_before_memory)
         for d, c in zip(memory['decisions'], cs):
             if c != 0.0:
                 features.append(d['features'])

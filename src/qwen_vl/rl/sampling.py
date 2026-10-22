@@ -166,6 +166,13 @@ class SamplingSession(StreamSession):
             self.episodic.promote(self.cache, step_id, generator=generator)
 
     @torch.inference_mode()
+    def memory_entropy(self, step_id):
+        """Entropy of the memory decision before observation ``step_id`` (None: no decision)."""
+        if not self.valid or step_id != self.next_step:
+            raise ValueError('Invalid session or out-of-order observation')
+        return None if self.episodic is None else self.episodic.pending_decision_entropy(step_id)
+
+    @torch.inference_mode()
     def sample_step(self, step_id, rgb, temperature, generator):
         if self.serializer.mode != 'qwen_text':
             raise ValueError('RL sampling is defined for text-action policies only')

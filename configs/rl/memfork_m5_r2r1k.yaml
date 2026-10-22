@@ -1,8 +1,9 @@
 # MemFork on M5_E1 (plans/RL/research/memfork_design.md): hico_grpo_fork_bs_m5_r2r1k.yaml (GRPO+F-B,
 # same data/hyperparameters) with the frame-level retention decision made part of the policy: one
-# stochastic drop per admission (q_phi over the 5-frame pool, initialised to the frame-level M5 rule),
-# forks snapshot the complete memory after the decision m_t, branches re-draw later memory decisions and
-# actions, and memory decisions get the coefficient of the preceding action (rl/hico.memory_coefficients).
+# stochastic drop per admission (q_phi over the 5-frame pool, initialised to the frame-level M5 rule).
+# Forks are memory forks: placed at uncertain memory decisions, the complete memory state is snapshotted
+# *before* m_t, each branch re-draws m_t and continues on-policy, and m_s takes the coefficient of a_s
+# (rl/hico.memory_coefficients, snapshot_before_memory=True).
 base:
   checkpoint: /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1
   weight_sha256: 92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6
@@ -50,6 +51,8 @@ algorithm:
     window: 8                                   # decisions after the pre-drawn target to find an uncertain one
     entropy_quantile: 0.5                       # threshold = median first-token entropy of the previous step
     initial_min_entropy: 0.1                    # step 0 only
+    placement: memory                          # MemFork: fork before uncertain memory decisions (snapshot before m_t;
+                                                # branches re-draw m_t); threshold = median memory-decision entropy
   norm_adv_by_std_in_grpo: true
   epsilon: 1.0e-6
   clip_ratio_low: 0.2
@@ -67,7 +70,7 @@ memory_policy:                                  # MemFork (rl/memfork.py, stream
   betas: [0.9, 0.999]
   grad_clip: 1.0
   calibration_episodes: 4                       # per rank, greedy, step-0 training instructions
-  calibration_logit_spread: 1.5                 # initial kappa = 1.5 / within-pool std of the prior
+  calibration_logit_spread: 2.0                 # initial kappa = 2.0 / within-pool std of the prior
   rollout_mode: sample
 optim:
   lr: 1.0e-6

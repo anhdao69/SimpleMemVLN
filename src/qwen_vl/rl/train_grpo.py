@@ -350,11 +350,17 @@ def branch_steps(episode):
 
 def fork_threshold(out, step, fork_cfg):
     """Entropy threshold for this step's fork points: a quantile of the previous step's first-token
-    entropies (main trajectories, all ranks). It never depends on this step's samples."""
+    entropies (main trajectories, all ranks), or with ``placement: memory`` of its memory-decision entropies.
+    It never depends on this step's samples."""
     values = []
+    memory = fork_cfg.get('placement', 'action') == 'memory'
     for path in sorted((out / 'rollouts').glob(f'step_{step - 1:04d}_rank*.jsonl')):
         for line in path.read_text().splitlines():
-            values += [v for v in json.loads(line).get('step_entropy') or [] if v is not None]
+            record = json.loads(line)
+            if memory:
+                values += [d['entropy'] for d in (record.get('memory') or {}).get('decisions', [])]
+            else:
+                values += [v for v in record.get('step_entropy') or [] if v is not None]
     if not values:
         return float(fork_cfg['initial_min_entropy'])
     return float(np.quantile(values, fork_cfg['entropy_quantile']))
@@ -370,6 +376,7 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
     near-zero-variance groups (all successes) do not amplify small final-distance differences.
     """
     a = cfg['algorithm']
+    memory_forks = a.get('fork', {}).get('placement', 'action') == 'memory'
     floor = a['scale_floor'] * cfg['reward']['success_reward_base']
     by_batch = a.get('fork_scale', 'group') == 'batch'
     if by_batch and not (step_scale is not None and step_scale > 0):
@@ -398,7 +405,8 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
                                       success=b['success'], num_steps=b['num_steps'],
                                       same_first_action=b['same_first_action'], coefficient=c,
                                       memory_drops=[(d['step'], d['pool'][d['drop']]) for d in
-                                                    (b.get('memory') or {}).get('decisions', []) if d['step'] > b['fork_t']])
+                                                    (b.get('memory') or {}).get('decisions', [])
+                                                    if d['step'] >= b['fork_t'] + (0 if memory_forks else 1)])
                                  for bs, cs in zip(by_fork, branch_c) for b, c in zip(bs, cs)]
             if any(e['_c_logpi']):
                 items.append((e, w))
@@ -618,6 +626,14 @@ def main():
         if estimator not in ('grpo', 'grpo_fork'):
             raise ValueError('MemFork credit is implemented for the grpo and grpo_fork estimators')
         memory_policy, memory_opt = memfork.make_policy(cfg, len(spec.attention_layers), cfg['run']['seed'])
+    fork_cfg = a.get('fork') or {}
+    if any(not isinstance(k, str) for k in fork_cfg):
+        raise ValueError(f'Non-string fork config keys {list(fork_cfg)} (YAML 1.1 reads "on:" as True)')
+    if fork_cfg.get('placement', 'action') not in ('action', 'memory'):
+        raise ValueError(f"Unknown fork placement {fork_cfg['placement']!r}")
+    if fork_cfg.get('placement') == 'memory' and (
+            memory_policy is None or memory_cfg.get('rollout_mode', 'sample') != 'sample'):
+        raise ValueError('Memory forks need a sampled MemFork retention policy')
 
     state_file = out / 'rl_state.json'
     start_step = 0
@@ -739,6 +755,9 @@ def main():
             threshold = fork_threshold(out, step, f)
             fork = dict(max_forks=f['max_forks'], branches=f['branches'], min_entropy=threshold,
                         window=f['window'])
+            if f.get('placement', 'action') == 'memory':
+                spec = model.episodic_spec          # first memory decision: pool of R + F frames full
+                fork.update(placement='memory', min_t=spec.recent_groups + spec.budget_tokens // 300)
         if helpers is not None:
             torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
             helpers.check_storage()
@@ -797,8 +816,9 @@ def main():
         memory_update = {}
         if memory_policy is not None and memory_mode == 'sample':
             # Score-function step of q_phi on this step's credited memory decisions (no LM forward).
-            memory_update = memfork.update(memory_policy, memory_opt, items, per_step * G,
-                                           memory_cfg.get('grad_clip', 1.0), device)
+            memory_update = memfork.update(
+                memory_policy, memory_opt, items, per_step * G, memory_cfg.get('grad_clip', 1.0), device,
+                snapshot_before_memory=estimator == 'grpo_fork' and a['fork'].get('placement', 'action') == 'memory')
         placement = dict(moved=0, free_gib=[])
         update_wait = 0
         if cfg['runtime'].get('update_min_free_gib'):

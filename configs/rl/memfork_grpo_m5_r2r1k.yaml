@@ -45,7 +45,7 @@ memory_policy:                                  # MemFork (rl/memfork.py, stream
   betas: [0.9, 0.999]
   grad_clip: 1.0
   calibration_episodes: 4                       # per rank, greedy, step-0 training instructions
-  calibration_logit_spread: 1.5                 # initial kappa = 1.5 / within-pool std of the prior
+  calibration_logit_spread: 2.0                 # initial kappa = 2.0 / within-pool std of the prior
   rollout_mode: sample
 optim:
   lr: 1.0e-6

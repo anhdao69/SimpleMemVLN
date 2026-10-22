@@ -191,3 +191,55 @@ def test_fork_prepare_batch_scale():
     with pytest.raises(ValueError, match='step scale'):
         fork_prepare([copy.deepcopy(group)], {e['uid']: 1.0 for e in group},
                      dict(cfg, algorithm=dict(cfg['algorithm'], fork_scale='batch')))
+
+
+class FakeMemorySession(FakeSession):
+    """FakeSession with a MemFork-like memory decision drawn in prepare_step (t >= 3) that changes the
+    policy, and a pre-decision entropy that depends only on the history."""
+
+    def reset(self, uid, instruction):
+        super().reset(uid, instruction)
+        self.uid, self.decisions, self.log = uid, [], getattr(self, 'log', [])
+
+    def memory_entropy(self, t):
+        assert all(s != t for s, _ in self.decisions), 'entropy must be read before m_t is drawn'
+        return None if t < 3 else 0.2 + float(self.memory[0] % 1.0)
+
+    def prepare_step(self, t, generator):
+        if t < 3 or any(s == t for s, _ in self.decisions):
+            return
+        m = int(torch.randint(2, (), generator=generator))
+        self.decisions.append((t, m))
+        self.memory[1] += 0.7 * m
+        self.log.append((self.uid, t, m))
+
+    def snapshot(self):
+        assert all(s != self.next_step for s, _ in self.decisions), 'snapshot must precede m_t'
+        return dict(super().snapshot(), decisions=list(self.decisions))
+
+    def restore(self, snapshot, episode_uid=None):
+        super().restore(snapshot, episode_uid)
+        self.decisions, self.uid = list(snapshot['decisions']), episode_uid
+
+
+MEMORY_FORK = dict(max_forks=2, branches=2, min_entropy=0.5, window=3, placement='memory', min_t=3)
+
+
+def test_memory_forks_snapshot_before_the_memory_decision_and_redraw_it():
+    differs = 0
+    for seed in range(12):
+        session = FakeMemorySession()
+        item = dict(episode_id='e1', N_star=12)
+        plain = run_episode(FakeMemorySession(), FakeEnv(), item, temperature=1.2, budget=20, seed=seed,
+                            sample_idx=0, reward_cfg=REWARD, device='cpu')
+        e = run_episode(session, FakeEnv(), item, temperature=1.2, budget=20, seed=seed, sample_idx=0,
+                        reward_cfg=REWARD, device='cpu', fork=dict(MEMORY_FORK))
+        assert e['actions'] == plain['actions'] and e['rollout_logps'] == plain['rollout_logps']
+        main = {t: m for uid, t, m in session.log if uid == e['uid']}
+        for b in e['_branches']:
+            t = b['fork_t']
+            assert t >= 3 and t in e['fork_points']
+            drawn = {s: m for uid, s, m in session.log if uid == f"{e['uid']}:fork{t}:{b['branch']}"}
+            assert t in drawn                                  # the branch re-drew m_t itself
+            differs += drawn[t] != main[t]
+    assert differs > 0

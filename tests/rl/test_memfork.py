@@ -139,3 +139,22 @@ def test_branch_redraws_memory_and_same_generator_replays(tiny):
     assert torch.equal(main_out, replay_out)
     assert main.state.bank.decisions == replay.state.bank.decisions
     assert len(set(drawn)) > 1
+
+
+def test_pending_decision_entropy_is_the_drawn_decisions_entropy(tiny):
+    spec = _spec(tiny, 2, 600, 'committed_mean_l2_v1')
+    layout, embeds, positions = _episode(9, seed=6)
+    generator = torch.Generator().manual_seed(2)
+    with torch.no_grad():
+        stream = Stream(tiny, spec, layout, embeds, positions, RetentionControl(_policy(), 'sample'))
+        checked = 0
+        for t in range(layout.groups):
+            pending = stream.state.pending_decision_entropy(t)
+            before = len(stream.state.bank.decisions)
+            stream.group(generator)
+            made = len(stream.state.bank.decisions) - before
+            assert (pending is None) == (made == 0)
+            if made:
+                assert abs(stream.state.bank.decisions[-1]['entropy'] - pending) < 1e-12
+                checked += 1
+    assert checked == layout.groups - spec.recent_groups - 2

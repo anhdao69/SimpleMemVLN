@@ -215,18 +215,23 @@ def action_terms(logp_tokens, stop_logp_tokens, action_index, num_actions):
     return logpi, sigma
 
 
-def memory_coefficients(decision_steps, action_coefficients):
+def memory_coefficients(decision_steps, action_coefficients, snapshot_before_memory=False):
     """MemFork: coefficient of each memory decision m_s (taken before observation s, s >= 1).
 
-    m_s precedes the fork snapshot at s, so it belongs to the history shared by every branch at s
-    and to the trajectory segment of action a_{s-1}: it takes that action's coefficient (the root
-    advantage up to the first fork point inclusive, the segment's sibling contrast after it, zero on
-    a branch's replayed prefix). tests/rl/test_memfork_estimator.py enumerates the joint estimator.
+    * Snapshots after the memory decision (``fork.placement: action``): m_s belongs to the history shared by
+      every branch at s, i.e. to the trajectory segment of a_{s-1}, and takes that coefficient (the root
+      advantage up to the first fork point inclusive, the segment's sibling contrast after it, zero on
+      a branch's replayed prefix).
+    * Snapshots before the memory decision (``fork.placement: memory``): branches at s re-draw m_s, which then
+      belongs to the segment of a_s and takes its coefficient.
+
+    tests/rl/test_memfork_estimator.py enumerates the joint estimator for both placements.
     """
     c = list(action_coefficients)
+    offset = 0 if snapshot_before_memory else 1
     out = []
     for s in decision_steps:
         if not 1 <= int(s) < len(c):
             raise ValueError(f'Memory decision {s} outside decisions 1..{len(c) - 1}')
-        out.append(float(c[int(s) - 1]))
+        out.append(float(c[int(s) - offset]))
     return out
