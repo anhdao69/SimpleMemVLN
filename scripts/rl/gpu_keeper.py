@@ -10,7 +10,7 @@ CUDA OOM. ``run`` (unit rl-gpu-keeper) holds 1 GiB blocks so that, per GPU,
 never takes more than ``target`` (targets.json, our training footprint), leaves pending requests free, and 1 GiB
 more so other users' running jobs can still grow. It holds nothing while one of our trainers runs on that GPU
 (the trainer's update peaks exceed its reservation), and releases a GPU as soon as our trainer appears
-on it, or 90 s after our torchrun launcher started.
+on it or our torchrun launcher starts.
 
 ``request`` (called by eval_export.sh before the evaluator starts): ask the keeper for GIB on a GPU for
 TTL seconds and wait (at most WAIT s) until that much is free. Never fails the caller.
@@ -32,7 +32,8 @@ GIB = 2 ** 30
 MARGIN = 1 * GIB             # always left free for other users' running jobs
 SERVER_HEADROOM = 2 * GIB    # growth room per running evaluation model server of ours
 CONTEXT = int(0.6 * GIB)     # the keeper's own CUDA context per GPU
-LAUNCH_GRACE = 90            # s a launched trainer may take to appear on the GPU
+LAUNCH_GRACE = 0             # release when our torchrun starts: the trainer's early hold (~30 s later) must find
+                             # the memory free (with 90 s it found it held and got 0-2 GiB, 2026-10-22)
 
 
 def sh(*cmd):
