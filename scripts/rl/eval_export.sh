@@ -14,9 +14,10 @@ cd "$SMV_ROOT"
 # single visible device is ordinal 0 (verified on this host; see plans/RL report).
 export CUDA_VISIBLE_DEVICES="$gpu"
 # Systems only: take over VRAM the GPU keeper holds for us (scripts/rl/gpu_keeper.py, rl-gpu-keeper unit);
-# returns as soon as the memory is free, after 10 min at most, or at once without a running keeper.
-python3 /data/anh/code/SimpleMem-m5/scripts/rl/gpu_keeper.py request --gpu "$gpu" --gib 20 \
-  --name "$(basename "$out")-$$" --ttl 900 --wait 600 || true
+# a loaded evaluator holds ~10 GiB; the request lapses after 5 min (longer left freed VRAM unheld, 2026-10-22).
+# Returns as soon as the memory is free, after 10 min at most, or at once without a running keeper.
+python3 /data/anh/code/SimpleMem-m5/scripts/rl/gpu_keeper.py request --gpu "$gpu" --gib 14 \
+  --name "$(basename "$out")-$$" --ttl 300 --wait 600 || true
 exec "$EVAL_PYTHON" -u -m qwen_vl.eval.habitat_r2r \
   --dataset-kind r2r --checkpoint "$checkpoint" \
   --model-python "$MODEL_PYTHON" --model-path "$MODEL_PATH" \
