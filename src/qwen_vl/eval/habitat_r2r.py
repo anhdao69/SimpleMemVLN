@@ -26,7 +26,10 @@ class ModelProcessError(RuntimeError):
 
 
 class ModelProcess:
-    def __init__(self, python, checkpoint, model_path=None, timeout=600):
+    def __init__(self, python, checkpoint, model_path=None, timeout=600, startup_timeout=None):
+        startup_timeout = timeout if startup_timeout is None else startup_timeout
+        if not all(math.isfinite(value) and value > 0 for value in (timeout, startup_timeout)):
+            raise ValueError('Model timeouts must be finite and positive')
         cmd = [python, '-u', '-m', 'qwen_vl.stream.server', '--checkpoint', str(checkpoint)]
         if model_path:
             cmd.extend(['--model-path', str(model_path)])
@@ -34,11 +37,12 @@ class ModelProcess:
                                         text=True, bufsize=1)
         self.selector = selectors.DefaultSelector()
         self.selector.register(self.process.stdout, selectors.EVENT_READ)
-        self.timeout = timeout
+        self.timeout = startup_timeout
         try:
             self.runtime = self.read()
             if self.runtime.get('status') != 'ready':
                 raise ModelProcessError('Model process failed to initialize')
+            self.timeout = timeout
         except BaseException:
             self.close()
             raise
@@ -257,6 +261,8 @@ def main():
     p.add_argument('--data-root', help='Legacy JanusVLN data root')
     p.add_argument('--model-python', required=True)
     p.add_argument('--model-path')
+    p.add_argument('--model-startup-timeout', type=int, default=600,
+                   help='Seconds allowed for model loading; action requests retain their 600-second timeout')
     p.add_argument('--simulator-source')
     p.add_argument('--dataset-kind', choices=('r2r', 'rxr15'), default='r2r')
     p.add_argument('--ground-truth-path', help='RxR guide GT path, optionally with {split}/{role}')
@@ -268,6 +274,8 @@ def main():
     args = p.parse_args()
     if args.max_episodes < 0:
         p.error('--max-episodes must be nonnegative')
+    if args.model_startup_timeout <= 0:
+        p.error('--model-startup-timeout must be positive')
     if args.simulator_source:
         sys.path.append(args.simulator_source)
     if args.dataset_kind == 'rxr15':
@@ -333,7 +341,9 @@ def main():
                     model_python=str(Path(args.model_python).resolve()),
                     model_path=str(Path(args.model_path).resolve()) if args.model_path else None,
                     protocol='R2R-VLNCE-0.2.4', max_steps=500,
-                    failure_policy='zero_sr_spl_keep_partial_metrics', transport='raw_rgb_base64')
+                    failure_policy='zero_sr_spl_keep_partial_metrics', transport='raw_rgb_base64',
+                    model_startup_timeout_seconds=args.model_startup_timeout,
+                    model_request_timeout_seconds=600)
     if args.dataset_kind == 'rxr15':
         contract['ground_truth_sha256'] = sha256(resolve_dataset_path(args.ground_truth_path, args.split))
     contract_file = out / 'evaluation_contract.json'
@@ -357,7 +367,8 @@ def main():
         return
     pending = [ep for ep in dataset.episodes if str(ep.episode_id) not in done]
     dataset.episodes = pending
-    model = ModelProcess(args.model_python, args.checkpoint, args.model_path)
+    model = ModelProcess(args.model_python, args.checkpoint, args.model_path,
+                         startup_timeout=args.model_startup_timeout)
     try:
         runtime_file = out / 'runtime.json'
         if runtime_file.exists() and json.loads(runtime_file.read_text()) != model.runtime:
