@@ -58,6 +58,7 @@ pilot() {   # NAME CHECKPOINT PHYSICAL_GPU: val_seen-300 development evaluation 
   rm -rf "$out"; mkdir -p "$out"; say "pilot $1 on GPU $3"
   (cd "$MF" && scripts/rl/launch_unit.sh "rl-pilot-$1" "$R/logs/pilot-$1.log" bash scripts/rl/eval_export.sh \
     "$2" "$3" "$out" --split val_seen --episode-list "$R/evals/pilot_valseen300/ids_valseen300.json") >> "$log" 2>&1
+  sleep 150     # stagger the ~10 GB host-RAM model loads (see supervise.sh)
 }
 pilot m5_e1 /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1 0
 pilot m5_e1_frame_prior $R/runs/m5_e1_frame_prior/ckpt 1

@@ -74,6 +74,9 @@ while true; do
         scripts/rl/launch_unit.sh "rl-eval-$NAME-$1" "$LOGS/eval-$NAME-shard$1.log" \
           bash scripts/rl/eval_export.sh "$RUN/exports/step_$(printf %04d "$FINAL")" "$2" "$shard" \
           --episode-list "$EVAL/ids$1.json" >> "$LOG" 2>&1
+        # Each evaluator's model load peaks at ~10 GB host RAM (CPU state dict); four at once with other
+        # users' jobs OOM-killed a shard on the 62 GB host (2026-10-22). Stagger the loads.
+        sleep "${EVAL_STAGGER_SECONDS:-150}"
       fi
     done
     if [ $done_shards = 4 ]; then
