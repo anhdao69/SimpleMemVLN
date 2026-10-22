@@ -10,11 +10,11 @@
 #     comparison against the completed baseline journal.
 set -uo pipefail
 NAME=${1:?run name}; CONFIG=${2:?config}; FINAL=${3:?final step}
-ROOT=/data/anh/code/SimpleMem
+ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 RUN=/data/anh/rl_baseline/runs/$NAME
 LOGS=/data/anh/rl_baseline/logs
 EVAL=/data/anh/rl_baseline/evals/$NAME-step$(printf %04d "$FINAL")
-BASELINE=/data/anh/simplemem-eval/results/r2r-full/epoch-2
+BASELINE=${BASELINE:-/data/anh/simplemem-eval/results/r2r-full/epoch-2}   # reference journal for the episode list and paired comparison
 UNIT=rl-$NAME
 LOG=$LOGS/supervisor-$NAME.log
 cd "$ROOT"
@@ -53,9 +53,9 @@ launch_train() {
   [ -s "$RUN/rl_state.json" ] && extra=(--resume)
   say "launch training ${extra[*]}"
   scripts/rl/launch_unit.sh "$UNIT" "$LOGS/$NAME.log" /usr/bin/env PYTORCH_ALLOC_CONF= \
-    PYTORCH_CUDA_ALLOC_CONF= .venv/bin/torchrun --nproc_per_node=2 --master_port 29661 \
+    PYTORCH_CUDA_ALLOC_CONF= /data/anh/code/SimpleMem/.venv/bin/torchrun --nproc_per_node=2 --master_port 29661 \
     -m qwen_vl.rl.train_grpo --config "$CONFIG" --output-dir "$RUN" "${extra[@]}" >> "$LOG" 2>&1
-  systemd-run --user --unit="rl-memwatch-$NAME" --collect -p MemoryMax=200M /bin/bash /data/anh/code/SimpleMem/scripts/rl/memwatch.sh "$UNIT" "$LOGS/memwatch_$NAME.log" >/dev/null 2>&1 || true
+  systemd-run --user --unit="rl-memwatch-$NAME" --collect -p MemoryMax=200M /bin/bash "$ROOT/scripts/rl/memwatch.sh" "$UNIT" "$LOGS/memwatch_$NAME.log" >/dev/null 2>&1 || true
 }
 
 say "supervisor start $NAME $CONFIG final=$FINAL"
@@ -78,7 +78,7 @@ while true; do
     done
     if [ $done_shards = 4 ]; then
       python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL"/shard{0,1,2,3} >> "$LOG" 2>&1 &&
-      python3 scripts/rl/compare_evals.py --base "$BASELINE" --new "$EVAL/val_unseen" --name-base sft_epoch2 \
+      python3 scripts/rl/compare_evals.py --base "$BASELINE" --new "$EVAL/val_unseen" --name-base "${BASELINE_NAME:-sft_epoch2}" \
         --name-new "$NAME-step$FINAL" --out "$EVAL/comparison.json" >> "$LOG" 2>&1 &&
       say "evaluation merged and compared: $EVAL" && exit 0
       say "merge/compare failed"; exit 1

@@ -5,6 +5,9 @@
 # Usage: eval_export.sh CHECKPOINT_DIR PHYSICAL_GPU OUT_DIR [extra evaluator args...]
 set -euo pipefail
 source /data/anh/simplemem-eval/env.sh
+# Model server code of this checkout (M5 episodic serving lives on RL_m5); evaluator unchanged.
+SMV_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
+export SMV_ROOT SIMULATOR_SOURCE="$SMV_ROOT/docs/evaluation_setup" PYTHONPATH="$SMV_ROOT/src:$SMV_ROOT/docs/evaluation_setup"
 checkpoint=${1:?checkpoint}; gpu=${2:?physical gpu}; out=${3:?out dir}; shift 3
 cd "$SMV_ROOT"
 # Habitat resolves gpu_device_id as a CUDA ordinal of the masked process, so the

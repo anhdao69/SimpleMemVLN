@@ -1,10 +1,14 @@
-"""Pass/fail check of a grpo_fork smoke run directory (used by smoke_then_queue.sh)."""
+"""Pass/fail check of a 2-step smoke run directory (used by smoke_then_queue.sh, chain_m5.sh).
+
+Usage: check_fork_smoke.py RUN_DIR [--no-forks]   (--no-forks for plain GRPO smokes)
+"""
 import json
 import math
 import sys
 from pathlib import Path
 
 run = Path(sys.argv[1])
+expect_forks = '--no-forks' not in sys.argv[2:]
 metrics = [json.loads(line) for line in (run / 'metrics.jsonl').read_text().splitlines()]
 problems = []
 if not (run / 'STOPPED').exists():
@@ -17,7 +21,7 @@ for m in metrics:
     if m['logp_mismatch_mean'] > 0.02:
         problems.append(f"step {m['step']}: trainer/rollout log-prob mismatch {m['logp_mismatch_mean']:.4f}")
 branches = sum(m.get('branches', 0) for m in metrics)
-if branches == 0:
+if expect_forks and branches == 0:
     problems.append('no fork happened in the smoke')
 records = [json.loads(line) for path in sorted((run / 'rollouts').glob('step_*.jsonl'))
            for line in path.read_text().splitlines()]
