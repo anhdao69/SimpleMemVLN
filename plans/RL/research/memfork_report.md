@@ -26,7 +26,7 @@ method is therefore only interaction-efficient if it beats the G = 8 row below, 
 
 | Run | Config | Status |
 |---|---|---|
-| M5_E1 (no RL), local val_unseen | — | pending |
+| M5_E1 (no RL), local val_unseen | — | **done** 2026-10-22: SR 51.22 / SPL 47.96 / NE 5.78 / OSR 57.97, TL 9.50, 142 forced stops, 0 failures, 0 infra retries (`evals/m5_e1_base-step0000/val_unseen`) |
 | val_seen-300 pilot: M5_E1 native vs frame-level prior | — | pending |
 | ActiveVLN GRPO | `activevln_grpo_m5_r2r1k` | pending |
 | GRPO+F-B | `hico_grpo_fork_bs_m5_r2r1k` | pending |
@@ -38,7 +38,11 @@ method is therefore only interaction-efficient if it beats the G = 8 row below, 
 
 ## 3. Results (val_unseen, step 125)
 
-Pending — no run has finished.
+| Policy | SR | SPL | NE | OSR | TL | forced stops |
+|---|---:|---:|---:|---:|---:|---:|
+| M5_E1 (no RL; reference journal) | 51.22 | 47.96 | 5.78 | 57.97 | 9.50 | 142 |
+
+RL rows pending — no M5 RL run has finished.
 
 ## 4. Memory behaviour
 
