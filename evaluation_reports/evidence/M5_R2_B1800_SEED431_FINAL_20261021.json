@@ -1,0 +1,95 @@
+{
+  "verified_utc": "2026-10-21T12:16:41.350837+00:00",
+  "model": "M5_R2_B1800_s431",
+  "successes": 944,
+  "summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.5133224578575313,
+    "spl": 0.4752548194604078,
+    "navigation_error": 5.72625162066282,
+    "navigation_error_coverage": 1839,
+    "navigation_error_undefined": 0,
+    "trajectory_length": 9.60241539604343,
+    "trajectory_length_coverage": 1839,
+    "trajectory_length_undefined": 0,
+    "oracle_success": 0.5894507884719956,
+    "oracle_success_coverage": 1839,
+    "oracle_success_undefined": 0,
+    "ndtw": null,
+    "ndtw_coverage": 0,
+    "ndtw_undefined": 1839,
+    "forced_stops": 175,
+    "mean_episode_steps": 104.2446982055465,
+    "invalid_responses": 0,
+    "predicted_action_counts": {
+      "1": 147744,
+      "3": 20498,
+      "2": 21800,
+      "0": 1664
+    },
+    "executed_action_counts": {
+      "1": 147578,
+      "3": 20495,
+      "2": 21794,
+      "0": 1839
+    },
+    "predicted_stops": 1664,
+    "failure_reasons": {},
+    "model_latency_p50_seconds": 0.11379890699754469,
+    "model_latency_mean_seconds": 0.16882862404251445,
+    "model_latency_p95_seconds": 0.43947033151926007,
+    "transport_and_model_p50_seconds": 0.12078011251287535,
+    "transport_and_model_mean_seconds": 0.17505121123974132,
+    "transport_and_model_p95_seconds": 0.4456552244955674,
+    "environment_p50_seconds": 0.0021327899885363877,
+    "environment_mean_seconds": 0.0030810303759105594,
+    "environment_p95_seconds": 0.008112145267659798,
+    "peak_kv_tokens": 2610,
+    "peak_allocated_gib": 8.693076610565186,
+    "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+    "scheduled_episodes": 1839,
+    "complete": true
+  },
+  "validation": {
+    "passed": true,
+    "complete": true,
+    "episodes": 1839,
+    "scheduled_episodes": 1839,
+    "failures": 0,
+    "strict_action_metadata": true,
+    "journal_is_contract_ordered_prefix": true,
+    "metrics_recomputed": true,
+    "sr": 0.5133224578575313,
+    "spl": 0.47525481946040754,
+    "contract_sha256": "d50c3be23facaea78bd54b7c1eb9f40788e9258ba9fc2cb4b519ccddf5ee6e1c"
+  },
+  "models": {
+    "M5_R2_B1800_s431": {
+      "checkpoint": "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/checkpoint/M5_E1_R2_B1800_seed431/epoch-1",
+      "source": "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/source",
+      "source_branch": "c2_vggt_omega_g3_m5_layers",
+      "source_commit": "fde1cbef213e27320920400a826addea8d5e114a",
+      "training_source_commit": "f4d1c2f216e68a960a5a691d21cbf1f08ea4a901",
+      "memory": {
+        "mode": "episodic_window_v1",
+        "recent_groups_including_current": 2,
+        "episodic_budget_tokens": 1800,
+        "episodic_granularity": "token",
+        "episodic_score": "committed_mean_l2_v1",
+        "episodic_selector_seed": 429,
+        "episodic_per_source_cap": null,
+        "evict_before_new_step": true,
+        "kv_guard_tokens": 4616
+      },
+      "checkpoint_repo_commit": "e1d614ab3eb5f2737dbe27de69906b05bea372e3"
+    }
+  },
+  "files_sha256": {
+    "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/results/full/M5_R2_B1800_s431/episodes.jsonl": "11e81927bde10bf01e76c2d1056b56cbc7681888ac9d1868e7043fbc319a1f7d",
+    "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/results/full/M5_R2_B1800_s431/summary.json": "25d36c6e39777549cf98c335f4c26086bf48a5d4297c0d82e6d5e7240720f00d",
+    "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/results/full/M5_R2_B1800_s431/evaluation_contract.json": "d50c3be23facaea78bd54b7c1eb9f40788e9258ba9fc2cb4b519ccddf5ee6e1c",
+    "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/full_validation.json": "1d044fb39039422430c7b47ccbe6e6a2a1f39590c4b693b45135ef3ddf1e324c",
+    "/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/audit/M5/passed.json": "27f5933e397bb4ba04649dca6c60d3c985f817d8a7ccffb7fe62d02eeb8d285e"
+  }
+}
