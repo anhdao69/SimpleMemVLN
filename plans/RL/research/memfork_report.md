@@ -27,7 +27,7 @@ method is therefore only interaction-efficient if it beats the G = 8 row below, 
 | Run | Config | Status |
 |---|---|---|
 | M5_E1 (no RL), local val_unseen | — | **done** 2026-10-22: SR 51.22 / SPL 47.96 / NE 5.78 / OSR 57.97, TL 9.50, 142 forced stops, 0 failures, 0 infra retries (`evals/m5_e1_base-step0000/val_unseen`) |
-| val_seen-300 pilot: M5_E1 native vs frame-level prior | — | pending |
+| val_seen-300 pilot: M5_E1 native vs frame-level prior | — | **done** 2026-10-22 (§2.1) |
 | ActiveVLN GRPO | `activevln_grpo_m5_r2r1k` | pending |
 | GRPO+F-B | `hico_grpo_fork_bs_m5_r2r1k` | pending |
 | **MemFork** (learned retention, memory forks) | `memfork_m5_r2r1k` | pending |
@@ -35,6 +35,23 @@ method is therefore only interaction-efficient if it beats the G = 8 row below, 
 | A2 MemFork-GRPO (no forks) | `memfork_grpo_m5_r2r1k` | pending |
 | A1 frame-greedy memory + F-B (retention not learned) | `frame_greedy_fb_m5_r2r1k` | pending |
 | GRPO G = 8 (matched interaction) | `activevln_grpo_g8_m5_r2r1k` | pending |
+
+### 2.1 Development pilot (val_seen-300, fixed subset; not a test result)
+
+Does moving M5's retention from token-level (per-layer top-B rows) to the frame-level decision unit that
+MemFork learns over cost accuracy before any RL? `m5_e1_frame_prior` = M5_E1 weights + a
+`memory_retention.pt` that keeps the running top-F frames by the frame-mean committed-write score
+(`scripts/rl/make_frame_prior_checkpoint.py`).
+
+| M5_E1 retention | SR | SPL | NE | OSR | TL | failures |
+|---|---:|---:|---:|---:|---:|---:|
+| native (token-level, per layer) | 49.33 | 45.97 | 5.42 | 61.67 | 9.96 | 0 |
+| frame-level prior (greedy) | 48.67 | 45.55 | 5.79 | 61.33 | 9.95 | 0 |
+
+Paired over the 300 episodes: ΔSR −0.67 (95 % bootstrap CI [−5.3, +4.0]), ΔSPL −0.42 ([−4.6, +3.5]),
+26 gained / 28 lost, McNemar p = 0.89. The frame-level decision unit costs no detectable accuracy at
+initialization (power is limited: n = 300), so MemFork starts from a policy equivalent to M5_E1 and any
+RL difference is attributable to training, not to the reparameterised memory.
 
 ## 3. Results (val_unseen, step 125)
 
