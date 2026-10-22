@@ -47,6 +47,9 @@ class FakeSession:
     def reset(self, uid, instruction):
         self.memory, self.next_step, self.valid = torch.zeros(4), 0, True
 
+    def prepare_step(self, step_id, generator):     # promotion before the snapshot (no memory here)
+        pass
+
     def snapshot(self):
         return dict(memory=self.memory.clone(), next_step=self.next_step)
 

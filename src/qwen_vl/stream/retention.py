@@ -75,9 +75,9 @@ class RetentionPolicy(torch.nn.Module):
         config = payload['config']
         if config.get('schema') != RETENTION_SCHEMA:
             raise ValueError(f'Retention schema {config.get("schema")!r} is not {RETENTION_SCHEMA}')
-        policy = cls(config['layers'], config['hidden'])
-        policy.load_state_dict(payload['state'], strict=True)
-        return policy.double().eval()
+        policy = cls(config['layers'], config['hidden']).double()
+        policy.load_state_dict(payload['state'], strict=True)      # exact float64 copy
+        return policy.eval()
 
 
 class RetentionControl:

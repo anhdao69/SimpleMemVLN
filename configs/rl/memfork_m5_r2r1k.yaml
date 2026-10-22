@@ -1,0 +1,94 @@
+# MemFork on M5_E1 (plans/RL/research/memfork_design.md): hico_grpo_fork_bs_m5_r2r1k.yaml (GRPO+F-B,
+# same data/hyperparameters) with the frame-level retention decision made part of the policy: one
+# stochastic drop per admission (q_phi over the 5-frame pool, initialised to the frame-level M5 rule),
+# forks snapshot the complete memory after the decision m_t, branches re-draw later memory decisions and
+# actions, and memory decisions get the coefficient of the preceding action (rl/hico.memory_coefficients).
+base:
+  checkpoint: /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1
+  weight_sha256: 92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6
+  model_path: /data/anh/checkpoints/simplemem/qwen-base
+data:
+  pool: data/rl/activevln_r2r4k.jsonl          # data/r2r_4000_train.parquet, row order kept
+  pool_sha256: a1f93b807ab419e4940750fb1ceec2a2db192977d5132895385820f3c23bd4d1
+  max_prompts: 1000                             # port: 1k prefix of the 4K list (user request)
+  subset_sha256: ba062de32d362951d56066519f3a07caab621b0d62d75cd296aff2660ed81358
+  prompts_per_step: 8                           # data.train_batch_size
+  shuffle: false                                # data.shuffle false: fixed parquet order
+  epochs: 1                                     # 1000 / 8 = 125 steps
+env:
+  habitat_config: docs/evaluation_setup/vln_r2r.yaml   # port: SimpleMem's Habitat 0.2.4 / HFOV 79 contract
+  split: train
+rollout:
+  group_size: 4                                 # actor_rollout_ref.rollout.n
+  temperature: 1.2
+  top_p: 1.0
+  budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
+  budget_cap: 120                               # port: converted to primitives with N*/M per episode
+  dynamic_sampling: {enabled: true, max_sample_attempts: 2}
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 1
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
+reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
+algorithm:
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+  estimator: grpo_fork                          # GRPO + forked sibling credit (rl/hico.fork_coefficients)
+  scale_floor: 0.05                             # floor of the step scale: max(std_batch, 0.05 * R_max)
+  fork_scale: batch                             # sibling contrasts / one std of all main rewards of the step (report §5.5)
+  fork:
+    max_forks: 1                                # K fork points per main trajectory
+    branches: 1                                 # M on-policy continuations per fork point
+    window: 8                                   # decisions after the pre-drawn target to find an uncertain one
+    entropy_quantile: 0.5                       # threshold = median first-token entropy of the previous step
+    initial_min_entropy: 0.1                    # step 0 only
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+memory_policy:                                  # MemFork (rl/memfork.py, stream/retention.py)
+  enabled: true
+  hidden: 32                                    # g_phi: 8 -> 32 -> 1, output layer zero-initialised
+  lr: 3.0e-3                                    # Adam on q_phi (float64, replicated on every rank)
+  betas: [0.9, 0.999]
+  grad_clip: 1.0
+  calibration_episodes: 4                       # per rank, greedy, step-0 training instructions
+  calibration_logit_spread: 1.5                 # initial kappa = 1.5 / within-pool std of the prior
+  rollout_mode: sample
+optim:
+  lr: 1.0e-6
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 32                              # systems only: smaller flat Adam temporaries on the shared GPU 0
+  grad_clip: 1.0
+  warmup_steps: 0
+trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
+runtime:
+  activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
+  checkpoint_decoder_layers: true
+  placement_margin_gib: 16                      # systems only: shared GPU 0 free memory drifts during the update
+  update_min_free_gib: 14                       # systems only: wait (not OOM) until each GPU can hold the grad partition + temporaries
+  hold_gpu_gib: [62, 66]                        # systems only: per-rank GPU reservation kept between steps; rank-0 update peaks ~61 GiB (G=8 median), so 46 left ~15 GiB unprotected (CUDA OOM 2026-10-21)
+  hold_helper_reserve_gib: 3                    # left free for this rank's rollout helper
+  hold_wait_minutes: 20
+run:
+  seed: 20261010
+  save_every: 2                                 # port: more frequent than trainer.save_freq=50 (shared host); 2 since update OOMs on long episodes came every 3-4 steps and each rolled back to the last save (2026-10-21)
+  extra_save_steps: []
+  export_steps: [25, 50, 75, 100, 125]
+  keep_resumable: 1

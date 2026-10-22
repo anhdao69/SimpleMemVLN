@@ -24,6 +24,8 @@ def _advance(session, env, obs, t0, budget, temperature, generator, keep_frames,
     outcome = dict(stopped=False, truncated=False, format_error=False)
     metrics = {}
     for t in range(t0, budget):
+        # Promotion and the MemFork memory decision m_t happen before the fork snapshot of decision t.
+        session.prepare_step(t, generator)
         if on_decision is not None:
             on_decision(t, obs)
         tick = time.perf_counter()
@@ -94,8 +96,16 @@ def replay(env, episode_id, actions):
     return obs
 
 
+def memory_record(session):
+    """MemFork bank record (decisions + realised banks per step) of the session's episode, or None."""
+    state = getattr(session, 'episodic', None)
+    if state is None or state.bank is None:
+        return None
+    return state.bank.export()
+
+
 def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, reward_cfg,
-                device, keep_frames=True, fork=None):
+                device, keep_frames=True, fork=None, retention=None):
     """One sampled episode: format error or budget exhaustion ends it with reward 0.
 
     ``fork`` (estimator ``grpo_fork``): dict(max_forks, branches, min_entropy, window[, horizon]);
@@ -108,7 +118,16 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
     snapshotted before each candidate decision and kept only at fork points; after the main episode,
     each fork gets ``branches`` on-policy continuations from the identical history (simulator prefix
     replayed deterministically and verified).
+
+    ``retention`` (MemFork): dict(export=RetentionPolicy.export(), mode='sample'|'greedy'). Memory
+    decisions draw from the same generator as the actions (a branch re-draws them with its own), and
+    each record carries ``memory`` (decisions and realised banks, rl/rollout.memory_record).
     """
+    if retention is not None:
+        from qwen_vl.stream.retention import RetentionControl, RetentionPolicy
+        session.retention = RetentionControl(RetentionPolicy.from_export(retention['export']), retention['mode'])
+    else:
+        session.retention = None
     generator = torch.Generator(device=device)
     generator.manual_seed(seed)
     started = time.perf_counter()
@@ -143,6 +162,7 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
 
     main = _advance(session, env, obs, 0, budget, temperature, generator, keep_frames, on_decision)
     record = _summary(main, item, reward_cfg)
+    record['memory'] = memory_record(session)
     finite = record['step_d'] + [record['final_distance']]
     model_seconds, env_seconds = main['model_seconds'], main['env_seconds']
     branches = []
@@ -161,6 +181,7 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
             model_seconds += run['model_seconds']
             env_seconds += run['env_seconds']
             branch = _summary(run, item, reward_cfg)
+            branch['memory'] = memory_record(session)
             branch.update(fork_t=t, branch=m, fork_index=k,
                           same_first_action=bool(branch['actions'][:1] == record['actions'][t:t + 1]))
             branches.append(branch)

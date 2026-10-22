@@ -1,6 +1,8 @@
 """Pass/fail check of a 2-step smoke run directory (used by smoke_then_queue.sh, chain_m5.sh).
 
-Usage: check_fork_smoke.py RUN_DIR [--no-forks]   (--no-forks for plain GRPO smokes)
+Usage: check_fork_smoke.py RUN_DIR [--no-forks] [--memory]
+  --no-forks  plain GRPO smokes;  --memory  MemFork smokes (memory decisions sampled and credited,
+  calibration written, exported retention policy loadable by the serving loader).
 """
 import json
 import math
@@ -9,6 +11,7 @@ from pathlib import Path
 
 run = Path(sys.argv[1])
 expect_forks = '--no-forks' not in sys.argv[2:]
+expect_memory = '--memory' in sys.argv[2:]
 metrics = [json.loads(line) for line in (run / 'metrics.jsonl').read_text().splitlines()]
 problems = []
 if not (run / 'STOPPED').exists():
@@ -28,7 +31,24 @@ records = [json.loads(line) for path in sorted((run / 'rollouts').glob('step_*.j
 summaries = [s for r in records for s in r.get('fork_summary', [])]
 if branches and len(summaries) != branches:
     problems.append(f'{branches} branches in metrics but {len(summaries)} in the records')
-print(json.dumps(dict(run=str(run), branches=branches, forks=[m.get('forks_per_main') for m in metrics],
+memory = {}
+if expect_memory:
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'src'))
+    from qwen_vl.stream.retention import load_retention
+    memory = dict(decisions=[m.get('memory_decisions') for m in metrics],
+                  credited=[m.get('memory_credited_decisions') for m in metrics],
+                  entropy=[m.get('memory_entropy') for m in metrics],
+                  log_kappa=[m.get('memory_log_kappa') for m in metrics])
+    if not all(memory['decisions']) or not any(memory['credited']):
+        problems.append('no sampled or credited memory decisions')
+    if not (run / 'memory_calibration.json').exists():
+        problems.append('no memory calibration')
+    exports = sorted((run / 'exports').glob('step_*'))
+    if not exports or load_retention(exports[-1]) is None:
+        problems.append('export without a loadable retention policy')
+    if not [r for r in records if r.get('memory') and r['memory']['decisions']]:
+        problems.append('rollout records without memory decisions')
+print(json.dumps(dict(run=str(run), branches=branches, memory=memory, forks=[m.get('forks_per_main') for m in metrics],
                       trained=[m['trained_trajectories'] for m in metrics],
                       mismatch=[round(m['logp_mismatch_mean'], 5) for m in metrics],
                       grad_norm=[m['grad_norm'] for m in metrics],

@@ -33,6 +33,7 @@ import yaml
 
 from qwen_vl.rl.algos import (activevln_budget, grpo_advantages, loss_weights, micro_batches,
                               policy_loss_terms)
+from qwen_vl.rl import memfork
 from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
@@ -168,8 +169,11 @@ def build_engine(model, cfg, world):
     return engine, ds_config
 
 
-def export(engine, serializer, base_navigation, path, provenance):
-    """EpisodeTrainer._save format; navigation.json must be byte-identical to the base."""
+def export(engine, serializer, base_navigation, path, provenance, retention=None):
+    """EpisodeTrainer._save format; navigation.json must be byte-identical to the base.
+
+    ``retention`` (MemFork): the learned retention policy, saved as stream/retention.RETENTION_FILE,
+    which the serving loader attaches (greedy decisions at evaluation)."""
     path = Path(path)
     tmp = path.with_name(path.name + '.tmp')
     if tmp.exists():
@@ -184,6 +188,10 @@ def export(engine, serializer, base_navigation, path, provenance):
     (tmp / 'navigation.json').write_bytes(base_navigation)
     serializer.processor.save_pretrained(tmp)
     provenance = dict(provenance, weights_sha256=sha256_file(tmp / 'pytorch_model.bin'))
+    if retention is not None:
+        from qwen_vl.stream.retention import RETENTION_FILE
+        torch.save(retention.export(), tmp / RETENTION_FILE)
+        provenance['retention_sha256'] = sha256_file(tmp / RETENTION_FILE)
     (tmp / 'rl_provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
     if path.exists():
         shutil.rmtree(path)
@@ -226,7 +234,7 @@ class RolloutWorker:
         self.session = SamplingSession(model, serializer)
         self.stream = torch.cuda.Stream(device)
 
-    def run(self, item, *, step, attempt, sample_idx, budget, cfg, fork=None):
+    def run(self, item, *, step, attempt, sample_idx, budget, cfg, fork=None, retention=None):
         r = cfg['rollout']
         seed = rollout_seed(cfg['run']['seed'], step, item['episode_id'], attempt, sample_idx)
         for _ in range(3):
@@ -234,7 +242,8 @@ class RolloutWorker:
                 with torch.cuda.stream(self.stream):
                     episode = run_episode(self.session, self.env, item, temperature=r['temperature'],
                                           budget=budget, seed=seed, sample_idx=sample_idx,
-                                          reward_cfg=cfg['reward'], device=self.device, fork=fork)
+                                          reward_cfg=cfg['reward'], device=self.device, fork=fork,
+                                          retention=retention)
                 self.stream.synchronize()
                 episode.update(attempt=attempt, budget=budget)
                 return episode
@@ -251,7 +260,7 @@ class RolloutWorker:
         self.env.close()
 
 
-def rollout_rank(workers, items, step, cfg, fork=None):
+def rollout_rank(workers, items, step, cfg, fork=None, retention=None):
     """All groups of this rank, G samples each, ActiveVLN dynamic sampling, K threads.
 
     Seeds depend only on (step, episode, attempt, sample), so results do not depend on
@@ -270,7 +279,7 @@ def rollout_rank(workers, items, step, cfg, fork=None):
         worker = free.get()
         try:
             return worker.run(item, step=step, attempt=attempt, sample_idx=sample_idx,
-                              budget=budget, cfg=cfg, fork=fork)
+                              budget=budget, cfg=cfg, fork=fork, retention=retention)
         finally:
             free.put(worker)
 
@@ -296,7 +305,7 @@ def rollout_rank(workers, items, step, cfg, fork=None):
     return groups, history
 
 
-def rollout_rank_pool(pool, items, step, cfg, fork=None):
+def rollout_rank_pool(pool, items, step, cfg, fork=None, retention=None):
     """rollout_rank for multi-process IPC helpers (rl/rollout_pool.py); same scheduling."""
     r = cfg['rollout']
     attempts = 1 + (r['dynamic_sampling']['max_sample_attempts'] if r['dynamic_sampling']['enabled'] else 0)
@@ -311,7 +320,7 @@ def rollout_rank_pool(pool, items, step, cfg, fork=None):
         for k in range(G):
             pool.submit((i, attempt, k), items[i], temperature=r['temperature'], budget=budgets[i],
                         seed=rollout_seed(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k),
-                        sample_idx=k, reward_cfg=cfg['reward'], fork=fork)
+                        sample_idx=k, reward_cfg=cfg['reward'], fork=fork, retention=retention)
         pending[i] = (attempt, {})
 
     for i in range(len(items)):
@@ -387,7 +396,9 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
             e['_c_logpi'], e['_c_sigma'] = main_c.tolist(), [0.0] * e['num_steps']
             e['fork_summary'] = [dict(fork_t=b['fork_t'], branch=b['branch'], reward=b['reward'],
                                       success=b['success'], num_steps=b['num_steps'],
-                                      same_first_action=b['same_first_action'], coefficient=c)
+                                      same_first_action=b['same_first_action'], coefficient=c,
+                                      memory_drops=[(d['step'], d['pool'][d['drop']]) for d in
+                                                    (b.get('memory') or {}).get('decisions', []) if d['step'] > b['fork_t']])
                                  for bs, cs in zip(by_fork, branch_c) for b, c in zip(bs, cs)]
             if any(e['_c_logpi']):
                 items.append((e, w))
@@ -402,7 +413,7 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
                         _frames=e['_frames'][:t] + b['_frames'], _responses=e['_responses'][:t] + b['_responses'],
                         rollout_logps=e['rollout_logps'][:prefix_tokens] + b['rollout_logps'],
                         step_stop_logp=e['step_stop_logp'][:t] + b['step_stop_logp'],
-                        response_tokens=prefix_tokens + b['response_tokens'],
+                        response_tokens=prefix_tokens + b['response_tokens'], memory=b.get('memory'),
                         _c_logpi=[0.0] * t + [c] * b['num_steps'], _c_sigma=[0.0] * (t + b['num_steps']))
                     if c != 0.0:
                         items.append((full, w))
@@ -598,6 +609,15 @@ def main():
     engine, ds_config = build_engine(model, cfg, world)
     model = engine.module
     trainable_names = [n for n, p_ in model.named_parameters() if p_.requires_grad]
+    memory_cfg = cfg.get('memory_policy') or {}
+    memory_policy = memory_opt = memory_calibration = None
+    if memory_cfg.get('enabled'):
+        spec = getattr(model, 'episodic_spec', None)
+        if spec is None or not spec.needs_write_scores or spec.budget_tokens % 300:
+            raise ValueError('MemFork needs an M5 policy (committed-write scores, whole-frame budget)')
+        if estimator not in ('grpo', 'grpo_fork'):
+            raise ValueError('MemFork credit is implemented for the grpo and grpo_fork estimators')
+        memory_policy, memory_opt = memfork.make_policy(cfg, len(spec.attention_layers), cfg['run']['seed'])
 
     state_file = out / 'rl_state.json'
     start_step = 0
@@ -608,6 +628,9 @@ def main():
         load_rank_state(engine, out / 'resumable' / rl_state['tag'], rank, world)
         if critic is not None:
             critic.load(torch.load(out / 'resumable' / rl_state['tag'] / 'critic.pt', weights_only=False))
+        if memory_policy is not None:
+            memory_calibration = memfork.load(memory_policy, memory_opt, torch.load(
+                out / 'resumable' / rl_state['tag'] / 'memory_policy.pt', weights_only=False))
         start_step = rl_state['next_step']
         if engine.global_steps != start_step:
             raise RuntimeError('Optimizer step counter disagrees with the RL state')
@@ -668,6 +691,32 @@ def main():
         start_hold(device, hold[local_rank] * 2 ** 30, cfg['runtime'].get('hold_helper_reserve_gib', 3) * 2 ** 30,
                    log, cfg['runtime'].get('hold_wait_minutes', 20) * 60)
     dummy = DummyItem(serializer)
+    if memory_policy is not None and not args.resume and memory_cfg.get('calibration_episodes'):
+        # Initial kappa and input normalisation from greedy-retention episodes on this rank's step-0
+        # training instructions (seeds of "step -1"); every rank computes the same calibration.
+        import copy
+        calib_cfg = copy.deepcopy(cfg)
+        calib_cfg['rollout']['group_size'] = 1
+        calib_cfg['rollout']['dynamic_sampling']['enabled'] = False
+        calib_items = pool[:per_step][rank * per_step // world:(rank + 1) * per_step // world]
+        calib_items = calib_items[:memory_cfg['calibration_episodes']]
+        greedy = memfork.payload(memory_policy, 'greedy')
+        model.eval()
+        if helpers is not None:
+            torch.cuda.synchronize()
+            calib_groups, _ = rollout_rank_pool(helpers, calib_items, -1, calib_cfg, None, greedy)
+        else:
+            calib_groups, _ = rollout_rank(workers, calib_items, -1, calib_cfg, None, greedy)
+        decisions = [d for g in gather_objects(memfork.decisions_of([e for grp in calib_groups for e in grp]))
+                     for d in g]
+        memory_calibration = memfork.calibrate(memory_policy, decisions,
+                                               memory_cfg.get('calibration_logit_spread', 1.5))
+        if rank == 0:
+            (out / 'memory_calibration.json').write_text(json.dumps(memory_calibration, indent=2) + '\n')
+        log('memory calibration', json.dumps({k: v for k, v in memory_calibration.items()
+                                              if k not in ('shift', 'scale')}))
+        del calib_groups
+        release_cache()
 
     for step in range(start_step, total_steps):
         if args.max_steps is not None and step >= args.max_steps:
@@ -682,6 +731,9 @@ def main():
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
         fork, threshold = None, None
+        # rollout_mode greedy (ablation): deterministic frame memory, q_phi not trained.
+        memory_mode = memory_cfg.get('rollout_mode', 'sample')
+        retention = memfork.payload(memory_policy, memory_mode) if memory_policy is not None else None
         if estimator == 'grpo_fork':
             f = a['fork']
             threshold = fork_threshold(out, step, f)
@@ -690,9 +742,9 @@ def main():
         if helpers is not None:
             torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
             helpers.check_storage()
-            groups, reroll = rollout_rank_pool(helpers, local, step, cfg, fork)
+            groups, reroll = rollout_rank_pool(helpers, local, step, cfg, fork, retention)
         else:
-            groups, reroll = rollout_rank(workers, local, step, cfg, fork)
+            groups, reroll = rollout_rank(workers, local, step, cfg, fork, retention)
         torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
@@ -742,6 +794,11 @@ def main():
                 items = [(e, w) for e, w in zip(trajectories, weights) if e['advantage'] != 0.0]
         else:
             trajectories, items, hico_stats = hico_prepare(groups, step, cfg, critic, n_star, world, device)
+        memory_update = {}
+        if memory_policy is not None and memory_mode == 'sample':
+            # Score-function step of q_phi on this step's credited memory decisions (no LM forward).
+            memory_update = memfork.update(memory_policy, memory_opt, items, per_step * G,
+                                           memory_cfg.get('grad_clip', 1.0), device)
         placement = dict(moved=0, free_gib=[])
         update_wait = 0
         if cfg['runtime'].get('update_min_free_gib'):
@@ -764,8 +821,10 @@ def main():
                 e, w = items[i]
                 HOST_OFFLOAD['on'] = should_offload(e, i == 0, device)
                 stats['offloaded'] += HOST_OFFLOAD['on']
+                memory = e.get('memory')
                 batch = to_device(encode_rollout(serializer, e['instruction'], e['_frames'],
-                                                 e['_responses'], episode_uid=e.get('memory_uid', e['uid'])),
+                                                 e['_responses'], episode_uid=e.get('memory_uid', e['uid']),
+                                                 memory_banks=memory['banks'] if memory else None),
                                   device)
                 if estimator == 'grpo':
                     logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
@@ -833,6 +892,8 @@ def main():
             groups=[[e['success'] for e in g] for g in groups],
             rerolls=[len(h) - 1 for h in reroll], discarded=sum(len(h[:-1]) * G for h in reroll),
             stats=stats, items=len(items), placement=placement, hico=hico_stats, fork=fork_stats,
+            memory=memfork.rollout_stats(trajectories) if memory_policy is not None else None,
+            memory_update=memory_update,
             # all sampled attempts, including groups later discarded by dynamic sampling
             sampled_branch_steps=[sum(x['branch_steps'][j] for h in reroll for grp in h for x in grp)
                                   for j in (0, 1)],
@@ -863,6 +924,8 @@ def main():
                 offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
                 **hico_metrics(gathered, critic),
                 **fork_metrics(gathered, threshold),
+                **(memfork.merged_metrics([g['memory'] for g in gathered]) if memory_policy is not None else {}),
+                **gathered[0]['memory_update'],
                 sampled_branch_env_steps=sum(g['sampled_branch_steps'][0] for g in gathered),
                 sampled_replay_env_steps=sum(g['sampled_branch_steps'][1] for g in gathered),
                 pg_loss=sum(g['stats']['pg_loss'] for g in gathered) / world,
@@ -899,7 +962,9 @@ def main():
                 digest = export(engine, serializer, base_navigation, out / 'exports' / f'step_{done:04d}',
                                 dict(base_checkpoint=str(base), base_weight_sha256=cfg['base']['weight_sha256'],
                                      rl_step=done, total_steps=total_steps, pool_sha256=cfg['data']['pool_sha256'],
-                                     algorithm='activevln_grpo', config=cfg, git_commit=git, smoke=smoke))
+                                     algorithm='memfork' if memory_policy is not None else 'activevln_grpo',
+                                     config=cfg, git_commit=git, smoke=smoke, memory_calibration=memory_calibration),
+                                retention=memory_policy)
                 log('exported step', done, digest)
             dist.barrier()
         if (done % cfg['run']['save_every'] == 0 or done == total_steps
@@ -908,6 +973,9 @@ def main():
             save_rank_state(engine, out / 'resumable' / tag, rank, world)
             if critic is not None and rank == 0:
                 torch.save(critic.state(), out / 'resumable' / tag / 'critic.pt')
+            if memory_policy is not None and rank == 0:
+                torch.save(memfork.state(memory_policy, memory_opt, memory_calibration),
+                           out / 'resumable' / tag / 'memory_policy.pt')
             dist.barrier()
             if rank == 0:
                 state_file.write_text(json.dumps(dict(next_step=done, tag=tag, total_steps=total_steps)) + '\n')
