@@ -83,6 +83,13 @@ while true; do
       fi
     done
     if [ $done_shards = 4 ]; then
+      # COMPARE=0: merge only (M5_E1's own journal is the later runs' reference; the default SFT journal
+      # comes from another checkout, whose evaluation sources differ, so compare_evals refuses it).
+      if [ "${COMPARE:-1}" = 0 ]; then
+        python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL"/shard{0,1,2,3} >> "$LOG" 2>&1 &&
+          { say "evaluation merged (no comparison): $EVAL"; exit 0; }
+        say "merge failed"; exit 1
+      fi
       python3 scripts/rl/eval_shards.py merge "$BASELINE" "$EVAL/val_unseen" "$EVAL"/shard{0,1,2,3} >> "$LOG" 2>&1 &&
       python3 scripts/rl/compare_evals.py --base "$BASELINE" --new "$EVAL/val_unseen" --name-base "${BASELINE_NAME:-sft_epoch2}" \
         --name-new "$NAME-step$FINAL" --out "$EVAL/comparison.json" >> "$LOG" 2>&1 &&

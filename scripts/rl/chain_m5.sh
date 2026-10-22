@@ -69,7 +69,7 @@ mkdir -p "$BASE/exports"
 [ -e "$BASE/exports/step_0000" ] || ln -s /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1 "$BASE/exports/step_0000"
 [ -f "$BASE/COMPLETE" ] || echo '{"note": "M5_E1 published checkpoint, no RL training"}' > "$BASE/COMPLETE"
 say "evaluate M5_E1"
-bash scripts/rl/supervise.sh m5_e1_base none 0 || { say "M5_E1 evaluation failed"; exit 1; }
+COMPARE=0 bash scripts/rl/supervise.sh m5_e1_base none 0 || { say "M5_E1 evaluation failed"; exit 1; }
 # Pilots after (not alongside) the M5_E1 evaluation: six evaluators at once with other users' jobs
 # thrashed the 62 GB host until model requests timed out (both pilots, 2026-10-22 11:50).
 pilot m5_e1 /data/anh/checkpoints/simplemem/streaming_vggt/M5_E1/epoch-1 0
