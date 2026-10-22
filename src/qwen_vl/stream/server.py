@@ -53,6 +53,11 @@ def main():
     if getattr(model, "episodic_spec", None) is not None:
         # Exported metadata drives evaluator memory behavior; record it in every journal.
         runtime.update(episodic=model.episodic_spec.to_dict())
+        policy = getattr(model, "retention_policy", None)
+        if policy is not None:
+            runtime.update(retention=dict(policy.config(), mode="greedy",
+                                          sha256=__import__("hashlib").sha256(b"".join(
+                                              v.cpu().numpy().tobytes() for v in policy.state_dict().values())).hexdigest()))
     if getattr(model, "step_lane_spec", None) is not None:
         runtime.update(
             step_lane=model.step_lane_spec.to_dict(),

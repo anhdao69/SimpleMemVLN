@@ -52,6 +52,11 @@ class StreamSession:
                 from qwen_vl.stream.episodic_cache import EpisodicSessionState as State
             self.episodic = State(
                 spec, self.model, episode_uid, device=next(self.model.parameters()).device)
+            policy = getattr(self.model, "retention_policy", None)
+            if policy is not None:
+                # MemFork checkpoints: deterministic frame retention at evaluation.
+                from qwen_vl.stream.retention import RetentionControl
+                self.episodic.set_retention(RetentionControl(policy, "greedy"))
         self._append_with_role(self.serializer.encode_prefix(instruction), 0, kind="prefix")
         self.prefix_length = self.positions.logical_token_count
         self.valid = True

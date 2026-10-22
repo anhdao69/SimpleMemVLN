@@ -13,8 +13,13 @@ from qwen_vl.data.episodic_metadata import build_episodic_layout
 from qwen_vl.research.episodic_contract import parse_episodic_spec
 
 
-def encode_rollout(serializer, instruction, frames, responses, model_max_length=None, episode_uid=None):
-    """frames[t]: uint8 HxWx3; responses[t]: dict(tokens=[...], complete=bool)."""
+def encode_rollout(serializer, instruction, frames, responses, model_max_length=None, episode_uid=None,
+                   memory_banks=None):
+    """frames[t]: uint8 HxWx3; responses[t]: dict(tokens=[...], complete=bool).
+
+    ``memory_banks`` (MemFork): the realised frame banks per step (``FrameBank.banks``); the
+    training forward then uses exactly that memory (``stream/retention.injected_plans``).
+    """
     if serializer.mode != 'qwen_text':
         raise ValueError('Rollout encoding is defined for text-action policies only')
     if not frames or len(frames) != len(responses):
@@ -58,6 +63,12 @@ def encode_rollout(serializer, instruction, frames, responses, model_max_length=
         result['episodic_layout'] = build_episodic_layout(
             result['input_ids'], serializer.image_id, prefix, tuple(observation_spans), tuple(spans))
         result['episode_uid'] = episode_uid
+        if memory_banks is not None:
+            from qwen_vl.stream.retention import injected_plans
+            spec = parse_episodic_spec(serializer.config)
+            result['episodic_plans'] = injected_plans(spec, result['episodic_layout'], memory_banks)
+    elif memory_banks is not None:
+        raise ValueError('Memory banks need an episodic_window_v1 policy')
     return result
 
 
@@ -70,6 +81,8 @@ def response_log_probs(model, batch, temperature, with_entropy=False, probe_toke
     episodic = {}
     if 'episodic_layout' in batch:
         episodic = dict(episodic_layout=batch['episodic_layout'], episode_uid=batch['episode_uid'])
+        if 'episodic_plans' in batch:
+            episodic['episodic_plans'] = batch['episodic_plans']
     hidden = model.hidden(batch['input_ids'], batch['mm_token_type_ids'], batch['pixel_values'],
                           batch['image_grid_thw'], batch['step_plan'], **episodic)
     positions = batch['response_target_positions']

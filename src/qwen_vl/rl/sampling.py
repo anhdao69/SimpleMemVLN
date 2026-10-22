@@ -59,6 +59,7 @@ def clone_episodic(state):
     twin.resident = {layer: ids.copy() for layer, ids in state.resident.items()}
     twin.groups = copy.deepcopy(state.groups)
     twin.promotions = copy.deepcopy(state.promotions)
+    twin.bank = copy.deepcopy(state.bank)          # MemFork frame bank and decision record
     twin.scorers = {}
     for gdn, scorer in state.scorers.items():
         if scorer.pending:
@@ -83,6 +84,8 @@ def tempered_token(logits, temperature, generator, probe=None):
 
 
 class SamplingSession(StreamSession):
+    retention = None      # stream/retention.RetentionControl for MemFork rollouts; None = plain M5
+
     @torch.inference_mode()
     def reset(self, episode_uid, instruction):
         """StreamSession.reset for text policies, with the prefix encoded under the lock.
@@ -112,6 +115,10 @@ class SamplingSession(StreamSession):
                 raise ValueError('RL sampling supports episodic_window_v1 (M5/M5c), not the GDN sweep')
             self.episodic = EpisodicSessionState(spec, self.model, episode_uid,
                                                  device=next(self.model.parameters()).device)
+            if self.retention is not None:
+                self.episodic.set_retention(self.retention)
+        elif self.retention is not None:
+            raise ValueError('Retention policies need an episodic_window_v1 checkpoint')
         self._append_with_role(prefix, 0, kind='prefix')
         self.prefix_length = self.positions.logical_token_count
         self.valid = True
@@ -144,6 +151,19 @@ class SamplingSession(StreamSession):
         self.episodic = clone_episodic(snapshot.get('episodic'))
         self.last_result, self.busy, self.step_lane_cache = None, False, None
         self.valid = True
+
+    @torch.inference_mode()
+    def prepare_step(self, step_id, generator):
+        """Promotion (and the MemFork memory decision m_t) before observation ``step_id``.
+
+        Runs before a fork snapshot, so m_t belongs to the shared history h_t of every branch at t
+        and the fork rule (entropy of pi(.|h_t)) may depend on it; ``sample_step`` repeats the
+        promotion as a no-op.
+        """
+        if not self.valid or step_id != self.next_step:
+            raise ValueError('Invalid session or out-of-order observation')
+        if self.episodic is not None:
+            self.episodic.promote(self.cache, step_id, generator=generator)
 
     @torch.inference_mode()
     def sample_step(self, step_id, rgb, temperature, generator):

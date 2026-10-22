@@ -40,6 +40,21 @@ class EpisodicSessionState:
         self.segment_kind = None
         self.visual_offset = None
         self.promotions = []
+        # MemFork (stream/retention.py): one frame-level decision per admission, shared by every
+        # attention layer, replaces the per-layer running top-B. None keeps plain M5.
+        self.retention = None
+        self.bank = None
+
+    def set_retention(self, control):
+        if self.groups or self.promotions or self.bank is not None:
+            raise RuntimeError('Retention is chosen before the first observation')
+        if not self.spec.needs_write_scores or self.spec.budget_tokens % 300:
+            raise ValueError('Frame retention needs committed-write scores and a whole-frame budget')
+        from qwen_vl.stream.retention import FrameBank
+        self.retention, self.bank = control, FrameBank(self.spec.budget_tokens // 300)
+
+    def episodic_ids(self, layer):
+        return self.bank.ids if self.bank is not None else self.running[layer].ids
 
     # ---- score routing (called from the project forward) ---------------
     def score_append(self, gdn_layer, attention_layer, decoder_layer, hidden):
@@ -81,8 +96,12 @@ class EpisodicSessionState:
             raise RuntimeError('Observation scores missing for some attention layer')
 
     # ---- promotion at a logical group boundary --------------------------
-    def promote(self, cache, step_id):
-        """Admit/evict every group older than the recent window, atomically."""
+    def promote(self, cache, step_id, generator=None):
+        """Admit/evict every group older than the recent window, atomically.
+
+        Idempotent per step. With MemFork retention, ``generator`` (the episode's sampling
+        generator) drives the stochastic memory decisions; greedy retention ignores it.
+        """
         recent = self.spec.recent_groups
         rebuilt, expired = {}, False
         while self.groups and self.groups[0].step_id <= step_id - recent:
@@ -91,6 +110,13 @@ class EpisodicSessionState:
             if group.end is None:
                 raise RuntimeError('Cannot promote an unclosed group')
             visual = np.arange(group.visual_start, group.visual_start + 300, dtype=np.int64)
+            if self.bank is not None:
+                from qwen_vl.stream.retention import frame_features
+                self.bank.admit(group.step_id, group.visual_start,
+                                frame_features(group.scores, self.attention_layers), step_id,
+                                self.retention, generator)
+                self.groups.popleft()
+                continue
             for layer in self.attention_layers:
                 if self.spec.budget_tokens:
                     if self.spec.score == 'random_hash_v1':
@@ -100,13 +126,15 @@ class EpisodicSessionState:
                         priorities = as_priorities(group.scores[layer])
                     self.running[layer].admit(visual, priorities, group.step_id)
             self.groups.popleft()
+        if self.bank is not None and expired:
+            self.bank.record_bank(step_id)
         if not expired:
             return
         recent_ids = (np.arange(self.groups[0].start, self.groups[-1].end, dtype=np.int64)
                       if self.groups else np.empty(0, np.int64))
         prefix = np.arange(self.prefix_length, dtype=np.int64)
         for layer in self.attention_layers:
-            keep = np.concatenate((prefix, self.running[layer].ids, recent_ids))
+            keep = np.concatenate((prefix, self.episodic_ids(layer), recent_ids))
             resident = self.resident[layer]
             if keep.size == resident.size and np.array_equal(keep, resident):
                 continue
@@ -123,9 +151,9 @@ class EpisodicSessionState:
         if rebuilt:
             digest = hashlib.sha256()
             for layer in self.attention_layers:
-                digest.update(self.running[layer].ids.tobytes())
+                digest.update(self.episodic_ids(layer).tobytes())
             self.promotions.append(dict(step_id=step_id, digest=digest.hexdigest(),
-                                        episodic_rows={l: int(self.running[l].ids.size)
+                                        episodic_rows={l: int(self.episodic_ids(l).size)
                                                        for l in self.attention_layers}))
         self.assert_invariants(cache)
 
@@ -142,7 +170,7 @@ class EpisodicSessionState:
             if self.prefix_length is not None:
                 if not np.array_equal(ids[:self.prefix_length], np.arange(self.prefix_length)):
                     raise RuntimeError('Prefix rows lost')
-                old = self.running[layer].ids
+                old = self.episodic_ids(layer)
                 if old.size:
                     first_recent = self.groups[0].start if self.groups else np.inf
                     if old.max() >= first_recent or old.min() < self.prefix_length:
@@ -152,6 +180,10 @@ class EpisodicSessionState:
             raise RuntimeError(f'Inconsistent resident row counts {counts}')
 
     def summary(self):
+        if self.bank is not None:
+            return {layer: dict(episodic_rows=int(self.bank.ids.size), source_groups=len(self.bank.sources),
+                                resident_rows=int(self.resident[layer].size), retained=list(self.bank.sources))
+                    for layer in self.attention_layers}
         return {layer: dict(episodic_rows=int(self.running[layer].ids.size),
                             source_groups=int(np.unique(self.running[layer].sources).size),
                             resident_rows=int(self.resident[layer].size))

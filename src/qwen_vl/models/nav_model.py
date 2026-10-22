@@ -233,6 +233,7 @@ class SimpleMemVLNForNavigation(nn.Module):
         episode_uid=None,
         episodic_serving=None,
         episodic_diagnostics=None,
+        episodic_plans=None,
         aux_visual_positions=None,
         aux_targets=None,
         aux_anchors=None,
@@ -296,8 +297,8 @@ class SimpleMemVLNForNavigation(nn.Module):
                     stream_append=stream_append, serving=episodic_serving,
                     window_attention_batch_steps=self.navigation_config['runtime'].get(
                         'window_attention_batch_steps', 1),
-                    diagnostics=episodic_diagnostics)
-        if any(x is not None for x in (episodic_layout, episodic_serving, episodic_diagnostics)):
+                    diagnostics=episodic_diagnostics, plans=episodic_plans)
+        if any(x is not None for x in (episodic_layout, episodic_serving, episodic_diagnostics, episodic_plans)):
             raise ValueError("Episodic metadata supplied to a non-episodic model")
         with timed(self, stage):
             return self.backbone.model.language_model(

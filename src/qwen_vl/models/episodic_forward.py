@@ -51,8 +51,12 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
                           layout=None, episode_uid=None, past_key_values=None, use_cache=False,
                           stream_append=False, serving=None, window_attention_batch_steps=1,
                           diagnostics=None, state_head=None, anchors=None, lags=None,
-                          targets=None, state_layer=24, state_heads=None):
-    """Return last hidden state [1, T, width] under the episodic visibility rule."""
+                          targets=None, state_layer=24, state_heads=None, plans=None):
+    """Return last hidden state [1, T, width] under the episodic visibility rule.
+
+    ``plans`` (offline only): precomputed per-layer plans (MemFork's realised banks,
+    ``stream/retention.injected_plans``); no score side pass runs then.
+    """
     config = text_model.config
     if inputs_embeds.shape[0] != 1:
         raise ValueError('Episodic forward requires one unpadded episode')
@@ -81,6 +85,8 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
             raise ValueError('Layout and step plan disagree')
     elif serving is None or past_key_values is None:
         raise ValueError('Serving append needs session episodic state and cache')
+    if plans is not None and (not offline or set(plans) != set(spec.attention_layers)):
+        raise ValueError('Injected plans are offline-only and cover every attention layer')
 
     causal_mask = create_causal_mask(
         config=config, inputs_embeds=inputs_embeds, attention_mask=None,
@@ -91,11 +97,12 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
     position_embeddings = text_model.rotary_emb(hidden, mrope_position_ids)
 
     scorer_layers = {gdn: attention for gdn, attention in spec.scoring_pairs}
-    plans = {}
+    injected = plans is not None
+    plans = dict(plans) if injected else {}
     # The separately versioned GDN sweep only swaps the plan builder/scorer;
     # visibility, attention and every native parameter computation are shared.
     sweep = spec.version == GDN_SWEEP_MODE
-    if offline and spec.budget_tokens and not spec.needs_write_scores:
+    if offline and spec.budget_tokens and not spec.needs_write_scores and not injected:
         for attention in spec.attention_layers:
             plans[attention] = (build_sweep_layer_plan if sweep else build_layer_plan)(
                 spec, episode_uid, attention, layout)
@@ -103,7 +110,7 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
     segments = layout.score_segments() if visual is not None else None
     for index, decoder_layer in enumerate(text_model.layers[:config.num_hidden_layers]):
         kind = config.layer_types[index]
-        if index in scorer_layers and spec.needs_write_scores:
+        if index in scorer_layers and spec.needs_write_scores and not injected:
             attention = scorer_layers[index]
             if offline and sweep:
                 plans[attention] = offline_sweep_plan(spec, episode_uid, attention, decoder_layer,

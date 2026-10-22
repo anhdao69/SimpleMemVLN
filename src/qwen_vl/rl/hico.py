@@ -213,3 +213,20 @@ def action_terms(logp_tokens, stop_logp_tokens, action_index, num_actions):
         raise ValueError('Every decision needs at least one response token')
     sigma = stop_logp_tokens[first].exp()
     return logpi, sigma
+
+
+def memory_coefficients(decision_steps, action_coefficients):
+    """MemFork: coefficient of each memory decision m_s (taken before observation s, s >= 1).
+
+    m_s precedes the fork snapshot at s, so it belongs to the history shared by every branch at s
+    and to the trajectory segment of action a_{s-1}: it takes that action's coefficient (the root
+    advantage up to the first fork point inclusive, the segment's sibling contrast after it, zero on
+    a branch's replayed prefix). tests/rl/test_memfork_estimator.py enumerates the joint estimator.
+    """
+    c = list(action_coefficients)
+    out = []
+    for s in decision_steps:
+        if not 1 <= int(s) < len(c):
+            raise ValueError(f'Memory decision {s} outside decisions 1..{len(c) - 1}')
+        out.append(float(c[int(s) - 1]))
+    return out
