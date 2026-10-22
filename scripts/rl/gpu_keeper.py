@@ -122,6 +122,12 @@ def run():
             while held[g] and len(held[g]) * GIB > want:
                 held[g].pop()
                 changed = True
+            if held[g] and pending.get(g):        # others' jobs may have taken the rest of the GPU
+                short = MARGIN + pending[g] - free_bytes(g)
+                while held[g] and short > 0:
+                    held[g].pop()
+                    short -= GIB
+                    changed = True
             if changed:
                 torch.cuda.empty_cache()
             # Pending requests stay free (not only out of the target): a request granted from memory
