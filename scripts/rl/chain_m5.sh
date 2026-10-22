@@ -4,7 +4,8 @@
 #   -> 2-step smokes: GRPO and GRPO+F-B on M5_E1, MemFork (all from this checkout, RL_m5)
 #   -> local val_unseen evaluation of M5_E1 (reference journal for paired tests), concurrently the
 #      val_seen-300 development pilot: M5_E1 native token memory vs the MemFork frame-level prior
-#   -> GRPO on M5_E1 -> GRPO+F-B on M5_E1 -> MemFork -> A2 (MemFork-GRPO, no forks)
+#   -> GRPO on M5_E1 -> GRPO+F-B on M5_E1 -> MemFork (memory forks) -> A3 (MemFork, action forks)
+#      -> A2 (MemFork-GRPO, no forks)
 #      -> A1 (frame-greedy memory + F-B) -> GRPO G = 8 on M5_E1 (matched interaction)
 #   each evaluated on val_unseen once at its final step 125.
 # Steps are idempotent (supervise.sh resumes training, skips finished shards, exits 0 when evaluated),
@@ -81,6 +82,7 @@ run "$ROOT" grpo_m5_r2r1k configs/rl/activevln_grpo_m5_r2r1k.yaml 125
 run "$ROOT" grpo_fork_bs_m5_r2r1k configs/rl/hico_grpo_fork_bs_m5_r2r1k.yaml 125
 if [ $memfork_ok = 1 ]; then
   run "$MF" memfork_m5_r2r1k configs/rl/memfork_m5_r2r1k.yaml 125
+  run "$MF" memfork_actfork_m5_r2r1k configs/rl/memfork_actfork_m5_r2r1k.yaml 125
   run "$MF" memfork_grpo_m5_r2r1k configs/rl/memfork_grpo_m5_r2r1k.yaml 125
   run "$MF" frame_greedy_fb_m5_r2r1k configs/rl/frame_greedy_fb_m5_r2r1k.yaml 125
 else
