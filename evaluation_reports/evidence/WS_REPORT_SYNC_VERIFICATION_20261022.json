@@ -1,0 +1,73 @@
+{
+  "verified_at_utc": "2026-10-22T13:48:05.312881+00:00",
+  "source_snapshot_at": "2026-10-22T20:40:50.657074+07:00",
+  "read_only": true,
+  "runs": {
+    "S1 BF16": {
+      "episodes": 1839,
+      "successes": 921,
+      "sr": 0.5008156606851549,
+      "spl": 0.46539054923016804,
+      "journal_prefix_sha256": "3142749865300d0dfae33eeac825c7b57d8b819fcdfbf60274a9a0ec88c32eb9",
+      "source_artifact_hashes_verified": 6,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "complete": true
+    },
+    "S1 FP32": {
+      "episodes": 1839,
+      "successes": 917,
+      "sr": 0.49864056552474173,
+      "spl": 0.4643285026605779,
+      "journal_prefix_sha256": "eb00c9c7c1837977b1102cc25ec7b5e366e033954957d5c867ccb50b22f1687c",
+      "source_artifact_hashes_verified": 4,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "complete": true
+    },
+    "S2 BF16": {
+      "episodes": 1839,
+      "successes": 926,
+      "sr": 0.5035345296356716,
+      "spl": 0.46896355092796443,
+      "journal_prefix_sha256": "4dd3942046900e55bea56b0bb582611226ae5e2d6ca92e9f01b8e6ca047884fd",
+      "source_artifact_hashes_verified": 5,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "complete": true
+    },
+    "S3 BF16": {
+      "episodes": 1839,
+      "successes": 928,
+      "sr": 0.5046220772158782,
+      "spl": 0.47152476007668287,
+      "journal_prefix_sha256": "6a7e4f44399e879c5f44ecae1fe083054e6f89089e0dbff84cbc8180471eceac",
+      "source_artifact_hashes_verified": 5,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "complete": true
+    },
+    "S5 BF16": {
+      "episodes": 1118,
+      "successes": 561,
+      "sr": 0.501788908765653,
+      "spl": 0.46343560076297924,
+      "journal_prefix_sha256": "fa7a9c1945fb95a86221b124a4020e5400034b01541c8ad07a62d703f596ec0d",
+      "source_artifact_hashes_verified": 5,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "complete": false
+    },
+    "M5 R2/B1800 seed431": {
+      "episodes": 1839,
+      "successes": 944,
+      "sr": 0.5133224578575313,
+      "spl": 0.47525481946040754,
+      "metrics_recomputed": true,
+      "ordered_unique_ids_and_actions_verified": true,
+      "source_artifact_hashes_verified": 5,
+      "complete": true
+    }
+  },
+  "matched_five_run_intersection_verified": 1118
+}
