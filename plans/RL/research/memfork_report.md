@@ -18,6 +18,10 @@ Method: `memfork_design.md`. Window8 predecessor (GRPO+F-B): `hico_po_report.md`
   from one checkout (identical evaluation sources); paired tests over episodes vs the local M5_E1 journal.
 - Compute: 2 shared GPUs (≈95 GB each) on a shared host; env/policy steps reported per run.
 
+**Bar to clear (Window8, 2026-10-22, `hico_po_report.md` §5.5).** At matched interaction, GRPO G = 8
+(SR 59.82 / SPL 53.96) is numerically ahead of GRPO+F-B (2 seeds, 58.24 / 53.14; n.s.). A fork-credit
+method is therefore only interaction-efficient if it beats the G = 8 row below, not just GRPO G = 4.
+
 ## 2. Runs (queue: `scripts/rl/chain_m5.sh`, unit `rl-chain-m5`)
 
 | Run | Config | Status |
