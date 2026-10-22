@@ -6,6 +6,13 @@ the per-episode records reproduces the single-process denominator and metrics.
 
 split: python scripts/rl/eval_shards.py split BASELINE_DIR N OUT_PREFIX   -> OUT_PREFIX{i}.json
 merge: python scripts/rl/eval_shards.py merge BASELINE_DIR OUT_DIR SHARD_DIR...
+retry: python scripts/rl/eval_shards.py retry SHARD_DIR   (before relaunching a stopped shard)
+
+retry: the evaluator journals a fatal model-process failure (request timeout, model process exit) as a
+failed episode and stops. On this shared host those come from host-RAM thrashing (2026-10-22), not from
+the policy, and kept in a journal they count as SR = SPL = 0 for that policy only. The final fatal record
+is moved to SHARD_DIR/infra_retries.jsonl so the relaunch re-runs that episode (same seed, greedy); after
+MAX_RETRIES retries of one episode its failure is kept. Every retry is reported.
 """
 import json
 import sys
@@ -21,6 +28,34 @@ def split(baseline, n, prefix):
     for i in range(n):
         Path(f'{prefix}{i}.json').write_text(json.dumps(ids[i * size:(i + 1) * size]))
     print(n, 'shards of', size)
+
+
+MAX_RETRIES = 2
+
+
+def retry(shard):
+    shard = Path(shard)
+    journal = shard / 'episodes.jsonl'
+    if not journal.exists():
+        return
+    lines = journal.read_text().splitlines()
+    if not lines or not json.loads(lines[-1]).get('fatal'):
+        return
+    row = json.loads(lines[-1])
+    log = shard / 'infra_retries.jsonl'
+    earlier = [json.loads(x) for x in log.read_text().splitlines()] if log.exists() else []
+    tries = sum(r['episode_id'] == row['episode_id'] for r in earlier)
+    if tries >= MAX_RETRIES:
+        print(f'{shard}: episode {row["episode_id"]} failed fatally {tries + 1} times; failure kept')
+        return
+    with log.open('a') as f:
+        f.write(json.dumps(dict(episode_id=row['episode_id'], failure_reason=row.get('failure_reason'),
+                                steps=len(row.get('actions', [])), retry=tries + 1)) + '\n')
+    tmp = journal.with_suffix('.tmp')
+    tmp.write_text(''.join(x + '\n' for x in lines[:-1]))
+    tmp.replace(journal)
+    print(f'{shard}: fatal record of episode {row["episode_id"]} ({row.get("failure_reason")}) moved to '
+          f'{log.name}; retry {tries + 1}')
 
 
 def merge(baseline, out, shards):
@@ -56,5 +91,7 @@ def merge(baseline, out, shards):
 if __name__ == '__main__':
     if sys.argv[1] == 'split':
         split(sys.argv[2], int(sys.argv[3]), sys.argv[4])
+    elif sys.argv[1] == 'retry':
+        retry(sys.argv[2])
     else:
         merge(sys.argv[2], sys.argv[3], sys.argv[4:])

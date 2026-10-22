@@ -34,7 +34,9 @@ HOST_AVAIL_MIB=${HOST_AVAIL_MIB:-20000}
 wait_gpus() {
   local logged=0 free avail
   while true; do
-    free=$(nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | sort -n | head -1)
+    # Memory our GPU keeper holds counts as free: the keeper gives it to our trainer when it starts.
+    free=$(python3 "$ROOT/scripts/rl/gpu_keeper.py" free 2>/dev/null ||
+           nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits | sort -n | head -1)
     avail=$(awk '/^MemAvailable:/ {print int($2 / 1024)}' /proc/meminfo)
     [ "${free:-0}" -ge "$GPU_FREE_MIB" ] && [ "${avail:-0}" -ge "$HOST_AVAIL_MIB" ] && break
     [ $logged = 1 ] || { say "waiting for ${GPU_FREE_MIB} MiB free on every GPU (min free ${free} MiB) and ${HOST_AVAIL_MIB} MiB host RAM available (${avail} MiB)"; logged=1; }
@@ -69,6 +71,7 @@ while true; do
       if complete "$shard"; then
         done_shards=$((done_shards + 1))
       elif stopped "rl-eval-$NAME-$1"; then
+        python3 scripts/rl/eval_shards.py retry "$shard" >> "$LOG" 2>&1
         say "launch eval shard $1 on GPU $2"
         mkdir -p "$shard"
         scripts/rl/launch_unit.sh "rl-eval-$NAME-$1" "$LOGS/eval-$NAME-shard$1.log" \

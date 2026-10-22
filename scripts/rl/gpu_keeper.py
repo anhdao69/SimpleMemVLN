@@ -167,10 +167,21 @@ def request(args):
           f'{free_bytes(args.gpu) / GIB:.1f} GiB after {time.time() - start:.0f} s', file=sys.stderr)
 
 
+def free_min():
+    """Min over GPUs of free + keeper-held MiB (supervise.sh's launch gate); fails without a live keeper."""
+    status = json.loads((KEEP / 'status.json').read_text())
+    if time.time() - status['time'] > 30:
+        raise SystemExit(1)
+    out = sh('nvidia-smi', '--query-gpu=index,memory.free', '--format=csv,noheader,nounits')
+    free = {int(i): int(m) for i, m in (line.split(',') for line in out.splitlines())}
+    print(min(m + status['gpus'][str(g)]['held_gib'] * 1024 for g, m in free.items()))
+
+
 def main():
     p = argparse.ArgumentParser()
     sub = p.add_subparsers(dest='command', required=True)
     sub.add_parser('run')
+    sub.add_parser('free')
     r = sub.add_parser('request')
     r.add_argument('--gpu', type=int, required=True)
     r.add_argument('--gib', type=float, required=True)
@@ -180,6 +191,8 @@ def main():
     args = p.parse_args()
     if args.command == 'run':
         run()
+    elif args.command == 'free':
+        free_min()
     else:
         try:
             request(args)
