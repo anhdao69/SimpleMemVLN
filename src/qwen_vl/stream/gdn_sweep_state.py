@@ -13,7 +13,9 @@ from dataclasses import dataclass, field
 import hashlib
 import numpy as np
 import torch
-from qwen_vl.models.gdn_features import GdnSweepScorer, drift_priority, frame_mean_priority
+from qwen_vl.models.gdn_features import (
+    RAW_FEATURE_SCHEMA, GdnFeatureExtractor, GdnSweepScorer, drift_priority, encode_features,
+    frame_mean_priority)
 from qwen_vl.research.episodic_contract import VISUAL_TOKENS_PER_GROUP
 from qwen_vl.stream.episodic import as_priorities, random_priorities
 from qwen_vl.stream.gdn_selectors import make_running, recency_priorities
@@ -26,6 +28,7 @@ class _Group:
     end: int | None = None
     visual_start: int | None = None
     scores: dict = field(default_factory=dict)   # layer -> FP32 [300] tokens | float64 frame
+    features: dict = field(default_factory=dict)  # learned arms: GDN layer -> encoded [300, Hv, C]
 
 
 class GdnSweepSessionState:
@@ -33,8 +36,16 @@ class GdnSweepSessionState:
         self.spec, self.episode_uid = spec, episode_uid
         layers = model.backbone.model.language_model.layers
         self.attention_layers = spec.attention_layers
-        self.scorers = ({gdn: GdnSweepScorer(spec, gdn, layers[gdn], device) for gdn, _ in spec.scoring_pairs}
-                        if spec.needs_write_scores else {})
+        self.learned = spec.is_learned
+        self.extractors = {}
+        if self.learned:
+            self.ranker = spec.ranker()
+            self.extractors = {gdn: GdnFeatureExtractor(layers[gdn], device, spec.feature_schema == 'F1_v2')
+                               for gdn in spec.feature_pairs}
+            self.scorers = {}
+        else:
+            self.scorers = ({gdn: GdnSweepScorer(spec, gdn, layers[gdn], device) for gdn, _ in spec.scoring_pairs}
+                            if spec.needs_write_scores else {})
         self.running = {layer: make_running(spec) for layer in self.attention_layers}
         self.resident = {layer: np.empty(0, np.int64) for layer in self.attention_layers}
         self.groups = deque()
@@ -64,6 +75,30 @@ class GdnSweepSessionState:
         visual = visual.cpu().numpy().astype(np.float32)
         group.scores[attention_layer] = (np.float64(frame_mean_priority(visual))
                                          if self.spec.is_frame else visual)
+
+    def feature_append(self, gdn_layer, attention_layer, decoder_layer, hidden):
+        """Learned arms: birth-time features of one window layer; the frozen ranker scores
+        the observation's 300 rows once its window is complete."""
+        from qwen_vl.research.gdn_ranker import flatten_window
+        fields = self.extractors[gdn_layer].append(hidden, self.segment_kind)
+        if self.segment_kind != 'observation':
+            return
+        group = self.groups[-1]
+        if gdn_layer in group.features or attention_layer in group.scores:
+            raise RuntimeError('Source features are written exactly once')
+        rows = slice(self.visual_offset, self.visual_offset + VISUAL_TOKENS_PER_GROUP)
+        raw = {name: value[rows] for name, value in fields.items()}
+        if raw['beta'].shape[0] != VISUAL_TOKENS_PER_GROUP:
+            raise ValueError('An observation must carry 300 visual rows')
+        group.features[gdn_layer] = encode_features(dict(schema=RAW_FEATURE_SCHEMA, fields=raw),
+                                                    self.spec.feature_schema)['values']
+        if gdn_layer != self.spec.scoring_layer_for(attention_layer):
+            return
+        window = self.spec.feature_layers_for(attention_layer)
+        scores = self.ranker.score(attention_layer, flatten_window(group.features, window))
+        for gdn in window:
+            del group.features[gdn]
+        group.scores[attention_layer] = scores.cpu().numpy().astype(np.float32)
 
     def begin_append(self, kind, logical_start, length, visual_offset=None):
         if kind not in ('prefix', 'observation', 'response_token', 'response_close'):

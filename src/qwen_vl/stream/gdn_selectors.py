@@ -225,3 +225,45 @@ def offline_sweep_plan(spec, episode_uid, attention_layer, decoder_layer, hidden
     if diagnostics is not None:
         record.setdefault('visual_scores', {})[attention_layer] = visual_scores
     return plan
+
+
+class OfflineRankerFeatures:
+    """Per-episode birth-time features and frozen-ranker plans for a learned arm (offline).
+
+    ``observe`` runs ``GdnFeatureExtractor`` (the extractor used by the label
+    collector and serving) over the detached input of one window GDN layer
+    and keeps the encoded visual-row features; ``plan`` flattens the window
+    in GDN-layer, head, channel order, scores 300-row frames with the frozen
+    FP64 ranker and builds the same immutable plan as every token arm.
+    """
+
+    def __init__(self, spec, layout, device):
+        self.spec, self.layout = spec, layout
+        self.ranker = spec.ranker()
+        self.rows = layout.visual_matrix().reshape(-1).to(device)
+        self.segments = layout.score_segments()
+        self.encoded = {}
+
+    @torch.no_grad()
+    def observe(self, gdn_layer, decoder_layer, hidden):
+        from qwen_vl.models.gdn_features import RAW_FEATURE_SCHEMA, GdnFeatureExtractor, encode_features
+        extractor = GdnFeatureExtractor(decoder_layer, hidden.device,
+                                        with_state=self.spec.feature_schema == 'F1_v2')
+        fields = extractor.sequence(hidden, self.segments)
+        raw = {name: value[self.rows] for name, value in fields.items()}
+        self.encoded[gdn_layer] = encode_features(dict(schema=RAW_FEATURE_SCHEMA, fields=raw),
+                                                  self.spec.feature_schema)['values']
+
+    @torch.no_grad()
+    def plan(self, attention_layer, episode_uid, diagnostics=None):
+        from qwen_vl.research.gdn_ranker import flatten_window
+        window = self.spec.feature_layers_for(attention_layer)
+        features = flatten_window(self.encoded, window)
+        for gdn in window:
+            del self.encoded[gdn]
+        scores = self.ranker.score(attention_layer, features)
+        visual_scores = scores.reshape(self.layout.groups, self.layout.visual_tokens).cpu()
+        plan = build_sweep_layer_plan(self.spec, episode_uid, attention_layer, self.layout, visual_scores)
+        if diagnostics is not None:
+            diagnostics.setdefault('visual_scores', {})[attention_layer] = visual_scores
+        return plan

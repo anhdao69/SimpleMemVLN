@@ -14,6 +14,11 @@ slow-head mask, S8 drift-denominator floors) are embedded with their SHA-256,
 so a checkpoint's navigation contract is self-contained; a missing or altered
 artifact raises, it never falls back to S0 or random.  The legacy
 ``episodic_window_v1`` contract (M5 = S0, M5c) is not modified.
+
+Phase-B learned arms (L0-L3, ``LEARNED_REGISTRY``) are separate entries: the
+frozen ranker artifact (normalizers + weights) is embedded with its canonical
+SHA-256 and validated against the arm's feature schema and GDN-layer window.
+The S-arm registry and every S-arm code path are unchanged.
 """
 from dataclasses import asdict, dataclass
 import hashlib
@@ -35,6 +40,9 @@ RESIDUAL_BACKEND = 'fp32_torch_unscaled_residual_block64_v1'
 # Native prepared beta/values only; no recurrent state is read.
 PREPARE_BACKEND = 'fp32_native_prepare_only_v1'
 NO_BACKEND = 'none'
+# Learned rankers: F0 inputs need only native preparation; F1_v2 also the residual scan.
+LEARNED_PREPARE_BACKEND = 'fp32_native_prepare_learned_ranker_v1'
+LEARNED_RESIDUAL_BACKEND = 'fp32_unscaled_residual_learned_ranker_v1'
 
 TOKEN, FRAME = 'token', 'frame300'
 SLOW_HEADS_PER_LAYER = 8          # 25% of 32 value heads
@@ -56,6 +64,15 @@ ARM_REGISTRY = {
     'C_RECENCY': (TOKEN, 'none', NO_BACKEND, 'latest_token_id'),
     'C_RANDOM': (TOKEN, 'none', NO_BACKEND, 'random_hash_v1'),
 }
+# Phase B: score_id -> (unit, head reduction, backend, statistic); window/schema in gdn_ranker.ARMS.
+LEARNED_REGISTRY = {
+    'L0': (TOKEN, 'learned_per_head', LEARNED_PREPARE_BACKEND, 'learned_near16_utility'),
+    'L1': (TOKEN, 'learned_per_head', LEARNED_PREPARE_BACKEND, 'learned_near16_utility'),
+    'L2': (TOKEN, 'learned_per_head', LEARNED_PREPARE_BACKEND, 'learned_near16_utility'),
+    'L3': (TOKEN, 'learned_per_head', LEARNED_RESIDUAL_BACKEND, 'learned_near16_utility'),
+}
+LEARNED_WINDOW = {'L0': 1, 'L1': 1, 'L2': 3, 'L3': 3}
+LEARNED_SCHEMA = {'L0': 'F0_v1', 'L1': 'F0_v1', 'L2': 'F0_v1', 'L3': 'F1_v2'}
 SLOW_HEAD_ARMS = ('S6',)
 DRIFT_ARMS = ('S8N', 'S8W')
 CONTROL_ARMS = ('C_RECENCY', 'C_RANDOM')
@@ -116,6 +133,35 @@ class GdnSweepSpec:
     drift_floor: tuple[tuple[int, float], ...] | None = None
     drift_floor_sha256: str | None = None
     calibration_sha256: str | None = None
+    ranker_sha256: str | None = None
+    ranker_json: str | None = None          # canonical JSON of the embedded artifact
+
+    @property
+    def is_learned(self):
+        return self.score in LEARNED_REGISTRY
+
+    @property
+    def feature_schema(self):
+        return LEARNED_SCHEMA[self.score]
+
+    def feature_layers_for(self, attention_layer):
+        window = LEARNED_WINDOW[self.score]
+        return tuple(range(attention_layer - window, attention_layer))
+
+    @property
+    def feature_pairs(self):
+        """GDN feature layer -> consuming attention layer (each GDN layer feeds one attention layer)."""
+        pairs = {}
+        for attention in self.attention_layers:
+            for gdn in self.feature_layers_for(attention):
+                pairs[gdn] = attention
+        return pairs
+
+    def ranker(self):
+        from qwen_vl.research.gdn_ranker import FrozenRanker
+        if self.ranker_json is None or self.ranker_sha256 is None:
+            raise ValueError(f'{self.score} has no embedded ranker artifact')
+        return FrozenRanker.load(self.ranker_json, self.ranker_sha256)
 
     @property
     def attention_layers(self):
@@ -157,6 +203,10 @@ class GdnSweepSpec:
             result['slow_head_mask'] = [[layer, list(heads)] for layer, heads in self.slow_head_mask]
         if self.drift_floor is not None:
             result['drift_floor'] = [[layer, value] for layer, value in self.drift_floor]
+        for key in ('ranker_sha256', 'ranker_json'):        # S-arm dicts are unchanged
+            if result[key] is None:
+                del result[key]
+        result.pop('ranker_json', None)                      # the hash identifies the embedded artifact
         return result
 
 
@@ -223,9 +273,10 @@ def parse_gdn_sweep_spec(config, text_config=None):
     if memory['evict_before_new_step'] is not True:
         raise ValueError('Episodic window promotes/evicts before each new observation')
     score = memory['score_id']
-    if score not in ARM_REGISTRY:
+    registry = LEARNED_REGISTRY if score in LEARNED_REGISTRY else ARM_REGISTRY
+    if score not in registry:
         raise ValueError(f'Unknown GDN sweep score_id {score!r}')
-    unit, reduction, backend, statistic = ARM_REGISTRY[score]
+    unit, reduction, backend, statistic = registry[score]
     declared = (memory['selection_unit'], memory['head_reduction'], memory['scorer_backend'])
     if declared != (unit, reduction, backend):
         raise ValueError(f'{score} must declare unit/reduction/backend {(unit, reduction, backend)}, '
@@ -252,8 +303,19 @@ def parse_gdn_sweep_spec(config, text_config=None):
     if not isinstance(artifacts, dict):
         raise ValueError('artifacts must be a mapping')
     allowed = set()
-    mask = mask_sha = floor = floor_sha = None
-    if score in SLOW_HEAD_ARMS:
+    mask = mask_sha = floor = floor_sha = ranker_sha = ranker_json = None
+    if score in LEARNED_REGISTRY:
+        from qwen_vl.research.gdn_ranker import validate_artifact
+        allowed = {'ranker', 'ranker_sha256'}
+        if not {'ranker', 'ranker_sha256'} <= set(artifacts) or not isinstance(artifacts['ranker'], dict):
+            raise ValueError(f'{score} requires an embedded frozen ranker artifact and its SHA-256')
+        ranker_sha = artifacts['ranker_sha256']
+        if canonical_sha256(artifacts['ranker']) != ranker_sha:
+            raise ValueError('ranker SHA-256 mismatch')
+        validate_artifact(artifacts['ranker'], score, tuple(a for _, a in pairs),
+                          list(text_config.layer_types) if text_config is not None else None, value_heads)
+        ranker_json = json.dumps(artifacts['ranker'], sort_keys=True, separators=(',', ':'), allow_nan=False)
+    elif score in SLOW_HEAD_ARMS:
         allowed = {'slow_head_mask', 'slow_head_mask_sha256', 'calibration_sha256'}
         if not {'slow_head_mask', 'slow_head_mask_sha256'} <= set(artifacts):
             raise ValueError(f'{score} requires an embedded frozen slow-head mask and its SHA-256')
@@ -281,6 +343,7 @@ def parse_gdn_sweep_spec(config, text_config=None):
         head_reduction=reduction, statistic=statistic,
         slow_head_mask=mask, slow_head_mask_sha256=mask_sha,
         drift_floor=floor, drift_floor_sha256=floor_sha, calibration_sha256=calibration,
+        ranker_sha256=ranker_sha, ranker_json=ranker_json,
         **{key: value for key, value in FIXED.items()})
     guard = derived_kv_guard(config, spec)
     if memory['kv_guard_tokens'] != guard:
@@ -291,7 +354,7 @@ def parse_gdn_sweep_spec(config, text_config=None):
 def arm_memory_config(score, *, recent=4, budget=1200, selector_seed=429, artifacts=None,
                       max_prefix_tokens=2048, max_step_group_tokens=384):
     """The complete memory section for one registry arm (configs are generated, not hand-edited)."""
-    unit, reduction, backend, _ = ARM_REGISTRY[score]
+    unit, reduction, backend, _ = (LEARNED_REGISTRY if score in LEARNED_REGISTRY else ARM_REGISTRY)[score]
     memory = dict(
         mode=GDN_SWEEP_MODE, recent_groups_including_current=recent,
         episodic_budget_tokens=budget, selection_unit=unit, score_id=score,

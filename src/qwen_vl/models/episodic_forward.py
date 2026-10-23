@@ -9,6 +9,9 @@ checkpointing and activation offload) and final norm.  The only additions:
   ``torch.no_grad`` side pass computes committed-write scores from that
   layer's input; this is outside the checkpointed call, so recomputation can
   never produce a different plan;
+* for the learned GDN-sweep arms, every GDN layer of an attention layer's
+  feature window gets the same kind of side pass, and the frozen ranker
+  scores the cached birth-time features before that window's last layer;
 * an immutable ``LayerSelectionPlan`` is passed explicitly to its consuming
   attention layer ``l`` (no global/hook state; the same object is captured by
   checkpoint recomputation).
@@ -24,7 +27,7 @@ from transformers.models.qwen3_5 import modeling_qwen3_5 as native
 from qwen_vl.models.committed_write import CommittedWriteScorer
 from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
 from qwen_vl.stream.episodic import build_layer_plan
-from qwen_vl.stream.gdn_selectors import build_sweep_layer_plan, offline_sweep_plan
+from qwen_vl.stream.gdn_selectors import OfflineRankerFeatures, build_sweep_layer_plan, offline_sweep_plan
 
 NATIVE_FORWARD_SHA256 = 'e56d7184954e7b1fc7f3bcc0120b38ea684c620e0b568fd687f41e1bcf9816db'
 
@@ -101,9 +104,23 @@ def episodic_text_forward(text_model, inputs_embeds, position_ids, spec, *, step
                 spec, episode_uid, attention, layout)
     visual = layout.visual_matrix().to(hidden.device) if offline and spec.needs_write_scores else None
     segments = layout.score_segments() if visual is not None else None
+    # Phase-B learned arms read birth-time features of every GDN layer in each
+    # attention layer's window (no_grad side passes outside the checkpointed
+    # call) and score with the frozen ranker; S arms never enter this branch.
+    feature_layers = spec.feature_pairs if sweep and spec.is_learned else {}
+    ranker_features = (OfflineRankerFeatures(spec, layout, hidden.device)
+                       if feature_layers and offline else None)
     for index, decoder_layer in enumerate(text_model.layers[:config.num_hidden_layers]):
         kind = config.layer_types[index]
-        if index in scorer_layers and spec.needs_write_scores:
+        if index in feature_layers:
+            attention = feature_layers[index]
+            if offline:
+                ranker_features.observe(index, decoder_layer, hidden.detach()[0])
+                if index == spec.scoring_layer_for(attention):
+                    plans[attention] = ranker_features.plan(attention, episode_uid, diagnostics)
+            else:
+                serving.feature_append(index, attention, decoder_layer, hidden.detach()[0])
+        elif index in scorer_layers and spec.needs_write_scores:
             attention = scorer_layers[index]
             if offline and sweep:
                 plans[attention] = offline_sweep_plan(spec, episode_uid, attention, decoder_layer,
