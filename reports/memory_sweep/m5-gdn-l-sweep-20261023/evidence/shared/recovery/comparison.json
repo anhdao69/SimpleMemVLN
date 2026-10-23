@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "weights": {
+    "relative_l2": 2.539556160819105e-08,
+    "max_abs": 2.384185791015625e-07,
+    "changed_elements": 57632,
+    "elements": 5174964736,
+    "bitwise_equal": false
+  },
+  "losses": [
+    0.47255170345306396,
+    0.47255170345306396
+  ],
+  "checkpoints": {
+    "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-l-sweep-20261023/shared/recovery/reference/train/checkpoint-2": {
+      "step": 2,
+      "files": 22
+    },
+    "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-l-sweep-20261023/shared/recovery/resumed/train/checkpoint-3": {
+      "step": 3,
+      "files": 22
+    }
+  }
+}

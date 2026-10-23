@@ -1,0 +1,55 @@
+{
+  "version": "m5_gdn_l_sweep_campaign_v1",
+  "root": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-l-sweep-20261023",
+  "source": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-l-source-022e526",
+  "source_commit": "022e526b279b6d7af0f0c5d861429a0d59a7f7e5",
+  "scientific_baseline": "fde1cbef213e27320920400a826addea8d5e114a",
+  "base": "/mnt/data/vmo-ai-task/anhdh35",
+  "manifest": "/mnt/data/vmo-ai-task/anhdh35/SimpleMemVLN/artifacts/r2r_rxr15_train_20260929.jsonl",
+  "manifest_sha256": "5deb425d2594ce96931dd6ce12bd6084b066cd44f04808c1dd3ee2e4b3672933",
+  "model": "/mnt/data/vmo-ai-task/anhdh35/cache/huggingface/hub/models--Qwen--Qwen3.5-4B/snapshots/851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a",
+  "m5_e1": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/publication-m5-epoch1-20261019/epoch-1",
+  "m5_e1_weights_sha256": "92089fa16096f5fb581a7fb85a670b539a887278d7f66bacd20b4d0424d70ea6",
+  "m5_e1_published_sums": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/publication-m5-epoch1-20261019/SHA256SUMS.json",
+  "m5_e1_reference_config": "/mnt/data/vmo-ai-task/anhdh35/m5-one-epoch-worker2-20261018/production/m5_joint_e1/train/resolved_config.json",
+  "fixtures": "/mnt/data/vmo-ai-task/anhdh35/g1-omega-20261013/fixtures",
+  "seed": 429,
+  "min_free_disk_gib": 220,
+  "recovery_arm": "L3",
+  "screening_arms": [
+    "S0",
+    "L0",
+    "L1",
+    "L2",
+    "L3"
+  ],
+  "lanes": {
+    "B": {
+      "job": "4925",
+      "host_guard_gib": 691.2,
+      "qualifies": true,
+      "predecessor": {
+        "step": "4925.172"
+      },
+      "arms": [
+        "L3",
+        "L1"
+      ]
+    },
+    "A": {
+      "job": "5248",
+      "host_guard_gib": 432.0,
+      "qualifies": false,
+      "predecessor": {
+        "state": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/lanes/A/state.json",
+        "step": "5248.27",
+        "final_status": "lane-complete"
+      },
+      "arms": [
+        "L2",
+        "L0"
+      ]
+    }
+  },
+  "s_campaign": "/mnt/data/vmo-ai-task/anhdh35/m5-gdn-s-sweep-dabf4ad-20261020/campaign.json"
+}
