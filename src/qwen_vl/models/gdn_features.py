@@ -408,3 +408,76 @@ def require_schema(encoded, schema):
     if encoded.get('schema') != schema:
         raise ValueError(f'Feature schema {encoded.get("schema")!r} is not {schema!r}')
     return encoded['values']
+
+
+class GdnFeatureExtractor:
+    """``gdn_raw_v2`` fields of one GDN layer for one episode (learned rankers, labels).
+
+    Same native preparation, segmentation, super-block batching and carried
+    conv tail/state as ``GdnSweepScorer``, so the label collector, the
+    offline training plans and serving promotions read the same features.
+    ``with_state=False`` (F0: beta, g, ||v||) never reads recurrent state.
+    ``sequence`` (offline) and ``append`` (serving) return field -> FP32 [N, Hv].
+    """
+
+    STATELESS_FIELDS = ('beta', 'log_decay_g', 'value_norm')
+
+    def __init__(self, decoder_layer, device, with_state=True, max_super_block_tokens=4096):
+        mixer = _gdn(decoder_layer)
+        self.layer, self.with_state = decoder_layer, with_state
+        self.value_per_key = mixer.num_v_heads // mixer.num_k_heads
+        self.conv_tail = empty_conv_tail(decoder_layer, device)
+        self.state = torch.zeros(mixer.num_v_heads, mixer.head_k_dim, mixer.head_v_dim,
+                                 device=device, dtype=torch.float32)
+        self.max_super_block_tokens = max_super_block_tokens
+        self.pending = []
+
+    def _prepare(self, hidden):
+        key, value, g, beta, self.conv_tail = prepare_gdn_inputs(self.layer, hidden, self.conv_tail)
+        return key, value, g, beta
+
+    def _fields(self, prepared, segments):
+        key, value, g, beta = prepared
+        if not self.with_state:
+            return dict(beta=beta, log_decay_g=g, value_norm=value.norm(dim=-1))
+        blocks = []
+        for start, end in segments:
+            blocks.extend(internal_blocks([(start, end)]))
+        raw, self.state = raw_features(key, value, g, beta, self.state, blocks, self.value_per_key)
+        return raw['fields']
+
+    @torch.no_grad()
+    def sequence(self, hidden, segments):
+        hidden = hidden.reshape(-1, hidden.shape[-1])
+        if segments[0][0] != 0 or segments[-1][1] != hidden.shape[0]:
+            raise ValueError('Feature segments must cover the whole sequence')
+        parts, batch, start = [], [], segments[0][0]
+        for segment in segments:
+            if batch and segment[1] - start > self.max_super_block_tokens:
+                parts.append(self._range(hidden, start, batch))
+                batch, start = [], segment[0]
+            batch.append(segment)
+        parts.append(self._range(hidden, start, batch))
+        return {name: torch.cat([p[name] for p in parts], 0) for name in parts[0]}
+
+    def _range(self, hidden, start, batch):
+        end = batch[-1][1]
+        return self._fields(self._prepare(hidden[start:end]), [(a - start, b - start) for a, b in batch])
+
+    @torch.no_grad()
+    def append(self, hidden, kind):
+        """``kind``: prefix | observation | response_token | response_close; None while a response is open."""
+        hidden = hidden.reshape(-1, hidden.shape[-1])
+        prepared = self._prepare(hidden)
+        if kind in ('prefix', 'observation'):
+            if self.pending:
+                raise RuntimeError('Unclosed response before a new segment')
+            return self._fields(prepared, [(0, hidden.shape[0])])
+        if kind not in ('response_token', 'response_close'):
+            raise ValueError(f'Unknown score segment kind {kind!r}')
+        self.pending.append(prepared)
+        if kind == 'response_token':
+            return None
+        joined = [torch.cat(parts, 0) for parts in zip(*self.pending)]
+        self.pending = []
+        return self._fields(joined, [(0, joined[0].shape[0])])
