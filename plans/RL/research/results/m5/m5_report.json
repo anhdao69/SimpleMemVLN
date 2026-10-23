@@ -1,0 +1,72 @@
+{
+  "done": [
+    "m5_e1",
+    "grpo"
+  ],
+  "pending": [
+    "grpo_fb",
+    "memfork",
+    "a3_actfork",
+    "a2_memfork_grpo",
+    "a1_frame_greedy_fb",
+    "grpo_g8"
+  ],
+  "results": {
+    "m5_e1": {
+      "sr": 0.5122349102773246,
+      "spl": 0.47956664925495945,
+      "navigation_error": 5.783041774894376,
+      "oracle_success": 0.5796628602501359,
+      "trajectory_length": 9.495914061980471,
+      "forced_stops": 142,
+      "failures": 0,
+      "mean_episode_steps": 94.95704187058183,
+      "episodes": 1839,
+      "infra_retries": 0
+    },
+    "grpo": {
+      "sr": 0.5568243610657966,
+      "spl": 0.49663560392210765,
+      "navigation_error": 5.320773165304337,
+      "oracle_success": 0.6568787384448069,
+      "trajectory_length": 11.035578534303449,
+      "forced_stops": 174,
+      "failures": 0,
+      "mean_episode_steps": 109.38607939097335,
+      "episodes": 1839,
+      "infra_retries": 0
+    }
+  },
+  "compute": {
+    "grpo": {
+      "updates": 125,
+      "main_rollouts": 4000,
+      "discarded": 1124,
+      "trained_sequences": 3680,
+      "main_env_steps": 280904,
+      "simulator_steps": 280904,
+      "policy_forward_steps": 280904,
+      "trained_tokens": 755237,
+      "wall_hours": 14.66
+    }
+  },
+  "paired": {
+    "grpo_vs_m5_e1": {
+      "dSR": 0.044589450788471985,
+      "dSPL": 0.017068954667148195,
+      "dNE": -0.4622686095900388,
+      "dOSR": 0.07721587819467102,
+      "ci_SR": [
+        0.021750951604132682,
+        0.0674279499728113
+      ],
+      "ci_SPL": [
+        -0.0030046965954815662,
+        0.037283600692758816
+      ],
+      "gained": 265,
+      "lost": 183,
+      "mcnemar_p": 0.00012468856860834476
+    }
+  }
+}
