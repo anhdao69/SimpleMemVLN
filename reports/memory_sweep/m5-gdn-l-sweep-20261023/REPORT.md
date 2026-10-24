@@ -306,6 +306,65 @@ Rank-0 compute per update is 15.9 s vs 12.5 s for S1 on the same updates: forwar
 
   The publisher refuses to upload if the embedded ranker differs from the fitted artifact.
 
+### 8.1 Unattended operation (2026-10-24, 02:15–02:30Z)
+
+Before the queue was left unattended, three risks were found and handled. None of them changed the sealed
+source, the qualification seal or a running training process.
+
+**1. Host-memory guard on lane B (fixed).**
+- The training supervisor kills a run when the job cgroup's working set (usage − clean inactive file pages)
+  exceeds the guard: 691.2 GiB on job 4925.
+- L3's working set peaked at **689.0 GiB**, against 459–472 GiB for every S arm on the same lane. The peaks came
+  at each rolling checkpoint save, from ~45 GiB of dirty pages on a slowly rising baseline. Successive peaks
+  were 674 → 679 → 684 → 689 GiB, so the next save (checkpoint 800) would probably have tripped the guard.
+- Cause: job 4925 carried **355 GiB of active page cache** (job 5248: 22 GiB). It came from the label
+  collection, the dataset build, the repeated ranker-fit reads and the recovery-gate checkpoints, all run inside
+  that allocation and read more than once.
+- Fix:
+  - `posix_fadvise(DONTNEED)` was applied to those no-longer-read files (labels, `ranker_data`,
+    `shared/recovery`, `rankers`, `reports`, scratch; 1,291 files, 458 GiB). Clean page-cache copies were
+    dropped; no file was modified.
+  - It ran as a short CPU step in job 5248, so lane B's controller never saw a foreign step.
+- Result: active cache 355 → 159 GiB, job usage 755 → 559 GiB, L3 working set **449 GiB** (S-arm level). L3
+  kept training throughout (update 760). Lane A never ran label or ranker work, so it is unaffected.
+
+**2. Lane A hand-off (made robust).**
+- Lane A's controller waited for S lane A to write `lane-complete` and for step 5248.27 to end. The S controller
+  writes `lane-complete` even when S7 fails, because arm errors are caught. A crash of the controller process
+  itself would have left lane A waiting forever.
+- `lanes/A/OVERRIDE_PREDECESSOR` (an existing, tested control) now lets lane A start as soon as step 5248.27 has
+  ended and its GPUs are idle, whatever the final status. When S7 completes normally, this is identical to the
+  previous behaviour.
+- Verified: lane A recorded `predecessor-overridden` at 02:27:09Z and now polls for an idle allocation, blocked
+  only by 5248.27.
+
+**3. Transient Slurm or driver errors and process deaths (guardian).**
+- The controllers call `squeue` and `nvidia-smi` without retries. A single failure during a wait would end a
+  controller as `blocked`; just before a production attempt, it would skip that arm. A dead publication watcher
+  would also never be restarted.
+- `scripts/memory_sweep/l_guardian.py` (standard library only) runs on login-1 as PID 699943, next to both
+  watchers, and checks every 2 minutes:
+  - A lane is relaunched with its original command (`srun --jobid=<job> --overlap --gpus=4
+    --nodelist=worker-2 --job-name=l-lane-<L> lanes/run_lane_<L>.sh`) only when no `l-lane-<L>` step has
+    existed for 5 minutes and the lane still has an arm with neither an `arm-complete` record nor a
+    complete/skipped outcome.
+  - Relaunches are capped at 3 per lane, at least 15 minutes apart. A relaunched controller passes qualification
+    from the seal and resumes from the arm's last rolling checkpoint (identity-bound, recovery-verified).
+  - An interrupted smoke directory is renamed aside first, never deleted.
+  - There is no relaunch after `stopped-by-request` or with `STOP_AFTER_CURRENT` present.
+  - A failed `squeue` only postpones the decision to the next cycle.
+  - The M5_L and M5_S watchers are restarted, at most 3 times each, if their process has died before finishing.
+  - It writes `guardian/status.json` and `guardian/guardian.log`. `guardian/STOP` ends it, and it exits by itself
+    once every lane arm is complete and both watchers have finished.
+- Tests: `tests/memory_sweep/test_l_guardian.py`, 8 passed on the cluster. A `--once --dry-run` against the live
+  campaign decided "controller alive" for both lanes and "alive" for both watchers.
+
+Remaining unprotected failure modes:
+- The `srun` clients of all running steps, both watchers and the guardian live on login-1. A reboot of login-1
+  would end them, which was already true of the S campaign.
+- The S lane A controller itself is not relaunched. If it died during S7, L2 would start (by design) and S7
+  would need a manual identity-bound resume afterwards.
+
 ## 9. Deviations, limitations and what is not done
 
 - capture@96 is a **sample-relative** top-budget metric over 24 sampled rows per source, not a complete
