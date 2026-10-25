@@ -15,11 +15,15 @@ Per arm: longest-RxR smoke, then production with identity-bound automatic resume
 validation and pruning of rolling checkpoints, exactly as for the S arms.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor
 import copy
 import fcntl
+import itertools
 import json
+import os
 from pathlib import Path
 import sys
+import threading
 import time
 
 from scripts.memory_sweep import l_campaign
@@ -69,6 +73,39 @@ def policy_text(source, arm):
     policy['training'].update(copy.deepcopy(arm_spec(arm)['training']))
     return (f'# {VERSION} {arm}: configs/vggt/g3_joint_one_epoch.yaml plus the arm\'s declared training keys\n'
             + yaml.safe_dump(policy, sort_keys=False))
+
+
+def working_set_gib(cgroup):
+    """The supervisor's host measure: job cgroup usage minus inactive file cache."""
+    stat = dict(line.split() for line in (Path(cgroup) / 'memory.stat').read_text().splitlines())
+    return (int((Path(cgroup) / 'memory.current').read_text()) - int(stat['inactive_file'])) / 2**30
+
+
+def drop_cache(path):
+    """posix_fadvise DONTNEED: clean cached pages are dropped, the file is untouched."""
+    try:
+        fd = os.open(path, os.O_RDONLY)
+    except OSError:
+        return 0
+    try:
+        os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
+        return os.fstat(fd).st_size
+    finally:
+        os.close(fd)
+
+
+def cached_paths(manifest, trees):
+    """Every training frame of the manifest, then every regular file under the given trees."""
+    with open(manifest) as f:
+        for line in f:
+            for step in json.loads(line)['steps']:
+                yield step['rgb_path']
+    for root in trees:
+        for directory, _, names in os.walk(root):
+            for name in names:
+                path = os.path.join(directory, name)
+                if not os.path.islink(path):
+                    yield path
 
 
 def exposure_plan(train_dir, updates=None):
@@ -240,6 +277,42 @@ def train_command(campaign, arm, out, **kwargs):
 
 # ---- lane controller ---------------------------------------------------------
 class Lane(l_campaign.Lane):
+    def relieve_cache(self, stop):
+        """Drop clean frame/tree cache whenever the job's working set nears the host guard.
+
+        The supervisor stops a run once the job's working set exceeds the guard. Frames that the other
+        lane re-reads become active file cache of this job and count toward it (L campaign, 2026-10-25).
+        Dropping them only costs a later re-read.
+        """
+        relief = self.campaign.data['cache_relief']
+        limit, last = relief['fraction'] * self.host_guard, 0.0
+        cgroup = next(Path('/sys/fs/cgroup').glob(f'**/job_{self.job}'), None)
+        log = self.dir / 'cache_relief.jsonl'
+        while cgroup is not None and not stop.wait(60):
+            try:
+                before = working_set_gib(cgroup)
+                if before < limit or time.time() - last < relief['cooldown_seconds']:
+                    continue
+                last = started = time.time()
+                paths, files = cached_paths(self.campaign.data['manifest'], relief['trees']), 0
+                with ThreadPoolExecutor(relief['threads']) as pool:
+                    while batch := list(itertools.islice(paths, 4096)):   # bounded: no 3M-future backlog
+                        files += sum(1 for _ in pool.map(drop_cache, batch))
+                row = dict(before_gib=before, after_gib=working_set_gib(cgroup), limit_gib=limit, files=files,
+                           seconds=time.time() - started)
+            except Exception as exc:              # relief is best effort; never disturb the controller
+                row = dict(error=repr(exc)[:500])
+            with log.open('a') as f:
+                f.write(json.dumps(dict(row, utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))) + '\n')
+
+    def main(self):
+        stop = threading.Event()
+        threading.Thread(target=self.relieve_cache, args=(stop,), daemon=True).start()
+        try:
+            super().main()
+        finally:
+            stop.set()
+
     def qualify(self):
         c, shared = self.campaign, self.campaign.shared
         seal = shared / 'QUALIFIED.json'

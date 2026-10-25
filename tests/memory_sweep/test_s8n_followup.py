@@ -114,3 +114,18 @@ def test_exposure_plan_reads_selected_updates(tmp_path):
         (tmp_path / f'exposures_rank{rank}.jsonl').write_text('\n'.join(json.dumps(r) for r in rows) + '\n')
     plan = f.exposure_plan(tmp_path, range(3))
     assert sorted(plan[0]) == [0, 1, 2] and plan[3][1] == ['r3u1e0', 'r3u1e1']
+
+
+def test_cache_relief_walks_frames_then_trees_and_reads_working_set(tmp_path):
+    frame = tmp_path / 'frame.png'
+    frame.write_bytes(b'x' * 10)
+    (tmp_path / 'manifest.jsonl').write_text(json.dumps(dict(steps=[dict(rgb_path=str(frame))])) + '\n')
+    (tmp_path / 'tree').mkdir()
+    (tmp_path / 'tree/a.bin').write_bytes(b'y' * 3)
+    (tmp_path / 'tree/link').symlink_to(frame)
+    paths = list(f.cached_paths(tmp_path / 'manifest.jsonl', [tmp_path / 'tree']))
+    assert paths == [str(frame), str(tmp_path / 'tree/a.bin')]
+    assert [f.drop_cache(p) for p in paths] == [10, 3] and f.drop_cache(tmp_path / 'missing') == 0
+    (tmp_path / 'memory.stat').write_text('anon 1\ninactive_file 1073741824\nactive_file 5\n')
+    (tmp_path / 'memory.current').write_text(str(3 * 2**30))
+    assert f.working_set_gib(tmp_path) == 2.0
