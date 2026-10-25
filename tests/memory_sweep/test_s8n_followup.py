@@ -29,8 +29,26 @@ def test_reproduction_passes_for_matching_runs():
     assert result['passed'], result['problems']
 
 
+def test_reproduction_tolerates_observed_backward_noise():
+    # 2026-10-25: S8N 0.50726/80.757 at update 3; identical S8N_REF reruns 0.51269/82.265 and 0.50925/81.676;
+    # gradient norms on identical weights scatter by up to 5e-4 (50.7389-50.7528 at update 1).
+    log = {1: dict(loss=0.48368269205093384, grad_norm=50.74060821533203),
+           2: dict(loss=0.48632121086120605, grad_norm=67.19896697998047),
+           3: dict(loss=0.5072635412216187, grad_norm=80.75703430175781)}
+    data = runs()
+    data[f.REFERENCE].update(losses=[0.48368269205093384, 0.48632121086120605, 0.5126926898956299],
+                             grad_norms=[50.739688873291016, 67.17771911621094, 82.26520538330078])
+    data['S8N_LR1E5'].update(losses=[0.48368269205093384, 0.48632121086120605, 0.5083454847335815],
+                             grad_norms=[50.7528, 67.2107, 80.4681])
+    data['S8N_MUON'].update(losses=[0.48368269205093384, 0.48632121086120605, 0.5110267996788025],
+                            grad_norms=[50.7389, 67.1895, 82.0636])
+    result = f.compare_reproduction(log, PLAN, data)
+    assert result['passed'], result['problems']
+
+
 @pytest.mark.parametrize('arm,field,index,value', [
-    (f.REFERENCE, 'losses', 2, 0.5083),          # update-3 loss off by 2e-3 relative
+    (f.REFERENCE, 'losses', 2, 0.5250),          # update 3 beyond the 3% band
+    (f.REFERENCE, 'grad_norms', 1, 67.40),       # identical weights: 3e-3 is beyond backward noise
     (f.REFERENCE, 'grad_norms', 0, 52.0),
     ('S8N_MUON', 'losses', 1, 0.4870),           # update 2 still holds the original weights
     ('S8N_LR1E5', 'grad_norms', 0, 49.0),

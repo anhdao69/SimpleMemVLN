@@ -45,7 +45,10 @@ REFERENCE = 'S8N_REF'           # S8N's own config on this source (reproduction 
 REFERENCE_SPEC = dict(training={}, threads=4)
 QUALIFICATION_GATES = ('parent', 'cpu-suite', 'zero-muon-ds', 'reproduction', 'recovery')
 CPU_SUITE = ('tests/train', *l_campaign.CPU_SUITE, 'tests/vln/test_training.py', 'tests/vln/test_campaign.py')
-LOSS_RTOL, GRAD_NORM_RTOL, REPRODUCED_UPDATES = 2e-4, 1e-2, 3
+# Updates 1-2 hold identical weights (LR 0 at update 1): forward is bitwise, backward varies ~5e-4 run to run.
+# Update 3 follows Adam's first, sign-like step, which amplifies that noise: two identical S8N_REF runs gave
+# losses 0.51269/0.50925 and S8N 0.50726 (2026-10-25), so update 3 only bounds gross optimizer errors.
+LOSS_RTOL, GRAD_NORM_RTOL, STEPPED_RTOL, REPRODUCED_UPDATES = 2e-4, 2e-3, 3e-2, 3
 
 
 def arm_spec(arm):
@@ -126,9 +129,10 @@ def compare_reproduction(parent_log, parent_plan, runs):
 
     ``parent_log``: step -> HF log row of S8N; ``parent_plan``: S8N's exposure plan of the same updates;
     ``runs``: arm -> dict(losses, grad_norms, plan).  S8N_REF must reproduce S8N's losses and gradient
-    norms and every first-epoch arm its data order.  The LR is 0 at update 1, so the LR1E5 and Muon arms
-    still hold the original weights at update 2 and must match S8N_REF there.  S8N_E2 must start from
-    the trained weights (loss far below the original model's) on a different data order.
+    norms at updates 1-2 (identical weights) and stay within a band at update 3; every first-epoch arm
+    must reproduce its data order.  The LR is 0 at update 1, so the LR1E5 and Muon arms still hold the
+    original weights at update 2 and must match S8N_REF there.  S8N_E2 must start from the trained
+    weights (loss far below the original model's) on a different data order.
     """
     def close(a, b, rtol):
         return abs(a - b) <= rtol * abs(b)
@@ -136,9 +140,10 @@ def compare_reproduction(parent_log, parent_plan, runs):
     reference = runs[REFERENCE]
     for i in range(REPRODUCED_UPDATES):
         row = parent_log[i + 1]
-        if not close(reference['losses'][i], row['loss'], LOSS_RTOL):
+        loss_rtol, norm_rtol = (LOSS_RTOL, GRAD_NORM_RTOL) if i < 2 else (STEPPED_RTOL, STEPPED_RTOL)
+        if not close(reference['losses'][i], row['loss'], loss_rtol):
             problems.append(f'update {i + 1} loss {reference["losses"][i]} != S8N {row["loss"]}')
-        if not close(reference['grad_norms'][i], row['grad_norm'], GRAD_NORM_RTOL):
+        if not close(reference['grad_norms'][i], row['grad_norm'], norm_rtol):
             problems.append(f'update {i + 1} grad norm {reference["grad_norms"][i]} != S8N {row["grad_norm"]}')
     for arm, run in runs.items():
         if len(run['losses']) != REPRODUCED_UPDATES:
