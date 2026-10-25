@@ -1,0 +1,206 @@
+{
+  "snapshot": "2026-10-25T10:00:28.687170+07:00",
+  "verification": {
+    "utc": "2026-10-25T03:00:23.474217+00:00",
+    "passed": true,
+    "checked": [
+      {
+        "name": "L2",
+        "samples": 192,
+        "journal_sha256": "70c7987fa5c7af42afc0e3d4e2e148360ce5d190b81a4437f6065f4b4e07fa08",
+        "median_ms": 109.71639200033678
+      },
+      {
+        "name": "L3",
+        "samples": 192,
+        "journal_sha256": "41251b285cad9ab032f7fc05a850a6137471a81d22a2e1479ce2ad71666673e7",
+        "median_ms": 153.12703349991352
+      }
+    ],
+    "issues": [],
+    "protected_navigation_report_unchanged": true,
+    "script_hashes": {
+      "run_all.py": "28d81392f7401e98df82c46ec6f726b37facbd8012ed75539d3801158508ecb1",
+      "verify.py": "36d242c48496a77faca7be148b0fdd4e64891ae52307c3903a7781f81dd69a14",
+      "worker.py": "5d3bbdb1792df73c3655af679aa30e49696cfb87d4fb9581d08f39fa907d32c0",
+      "update_reports.py": "16ee6d1dbdad153b8c18b195e66c719b0d69f0024398cd3c8bbec0fcbae134ad"
+    },
+    "manifest_sha256": "c9a21820c333c5ff42e43e3a4b8a1c7fa7102ac59350e3a91ca857df3206cea6"
+  },
+  "results": [
+    {
+      "model": {
+        "name": "L2",
+        "key": "l2",
+        "checkpoint": "/data14t/anhdh35/m5_l2_epoch1/checkpoint/L2",
+        "source": "/data14t/anhdh35/m5_l2_epoch1/source",
+        "weight_sha256": "fe9bf43822f5d26a3fde39a91d8ee732eaf8775a98d81957fa8727d87beb3d5a",
+        "source_commit": "ba8a1ca9f3dda5356b31e7502b31d95ea054cad5",
+        "precision": "bfloat16",
+        "navigation_status": "INTERRUPTED \u2014 partial after server reboot",
+        "historical_metrics": {
+          "episodes": 1384,
+          "failures": 0,
+          "sr": 0.48988439306358383,
+          "spl": 0.4541849943753578,
+          "navigation_error": 6.155220213286967,
+          "navigation_error_coverage": 1384,
+          "navigation_error_undefined": 0,
+          "trajectory_length": 9.639499104960928,
+          "trajectory_length_coverage": 1384,
+          "trajectory_length_undefined": 0,
+          "oracle_success": 0.5578034682080925,
+          "oracle_success_coverage": 1384,
+          "oracle_success_undefined": 0,
+          "ndtw": null,
+          "ndtw_coverage": 0,
+          "ndtw_undefined": 1384,
+          "forced_stops": 106,
+          "mean_episode_steps": 94.5592485549133,
+          "invalid_responses": 0,
+          "predicted_action_counts": {
+            "3": 12757,
+            "1": 101995,
+            "2": 14840,
+            "0": 1278
+          },
+          "executed_action_counts": {
+            "3": 12756,
+            "1": 101891,
+            "2": 14839,
+            "0": 1384
+          },
+          "predicted_stops": 1278,
+          "failure_reasons": {},
+          "model_latency_p50_seconds": 0.15324847551528364,
+          "model_latency_mean_seconds": 0.14880042048118056,
+          "model_latency_p95_seconds": 0.1718393105256837,
+          "transport_and_model_p50_seconds": 0.1591751435189508,
+          "transport_and_model_mean_seconds": 0.15473930874771802,
+          "transport_and_model_p95_seconds": 0.17772482795407996,
+          "environment_p50_seconds": 0.0023773820139467716,
+          "environment_mean_seconds": 0.002741246417504717,
+          "environment_p95_seconds": 0.004129638039739802,
+          "peak_kv_tokens": 2611,
+          "peak_allocated_gib": 8.71165132522583,
+          "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+          "scheduled_episodes": 1839,
+          "complete": false
+        }
+      },
+      "statistics": {
+        "actions": 192,
+        "mean_seconds": 0.11009430290101345,
+        "median_seconds": 0.10971639200033678,
+        "p90_seconds": 0.11018883539973104,
+        "p95_seconds": 0.11507933195016448,
+        "p99_seconds": 0.11917844049021369,
+        "std_seconds": 0.0020790412111039856,
+        "actions_per_second": 9.083122138473477,
+        "mean_generated_tokens": 3.0,
+        "peak_kv_tokens": 2546
+      },
+      "navigation": {
+        "episodes": 1384,
+        "successes": 678.0,
+        "sr": 0.48988439306358383,
+        "spl": 0.45418499437535725,
+        "errors": 0,
+        "journal_sha256": "3dff2cd4ce8bc5ac3247a8f6953c28bf2c30f8d3774be13f42fb3105fec15a9c",
+        "contract_sha256": "9b387c01509cc86b269a6241f1696e5bcaa925ec5768f4cd6a7a6c352025b953",
+        "root": "/data14t/anhdh35/m5_l2_epoch1/evaluation/results/full/L2_s429",
+        "source_verified": true
+      },
+      "repeat_tokens_identical": true,
+      "raw_result": "/data14t/anhdh35/latency_l_20261025/results/l2/result.json",
+      "result_sha256": "70c7987fa5c7af42afc0e3d4e2e148360ce5d190b81a4437f6065f4b4e07fa08"
+    },
+    {
+      "model": {
+        "name": "L3",
+        "key": "l3",
+        "checkpoint": "/data14t/anhdh35/m5_l3_epoch1/checkpoint/L3",
+        "source": "/data14t/anhdh35/m5_l3_epoch1/source",
+        "weight_sha256": "f4da7f73640cc0b37c262573973d015e913b4462e0590ea505e3fcb4108516a6",
+        "source_commit": "ba8a1ca9f3dda5356b31e7502b31d95ea054cad5",
+        "precision": "bfloat16",
+        "navigation_status": "INTERRUPTED \u2014 partial after server reboot",
+        "historical_metrics": {
+          "episodes": 1199,
+          "failures": 0,
+          "sr": 0.4945788156797331,
+          "spl": 0.4641235440252498,
+          "navigation_error": 6.347461936568175,
+          "navigation_error_coverage": 1199,
+          "navigation_error_undefined": 0,
+          "trajectory_length": 9.788872472220486,
+          "trajectory_length_coverage": 1199,
+          "trajectory_length_undefined": 0,
+          "oracle_success": 0.567139282735613,
+          "oracle_success_coverage": 1199,
+          "oracle_success_undefined": 0,
+          "ndtw": null,
+          "ndtw_coverage": 0,
+          "ndtw_undefined": 1199,
+          "forced_stops": 102,
+          "mean_episode_steps": 97.9232693911593,
+          "invalid_responses": 0,
+          "predicted_action_counts": {
+            "1": 93106,
+            "3": 10715,
+            "2": 12492,
+            "0": 1097
+          },
+          "executed_action_counts": {
+            "1": 93005,
+            "3": 10715,
+            "2": 12491,
+            "0": 1199
+          },
+          "predicted_stops": 1097,
+          "failure_reasons": {},
+          "model_latency_p50_seconds": 0.17006028594914824,
+          "model_latency_mean_seconds": 0.2612242486715683,
+          "model_latency_p95_seconds": 0.4304212231945712,
+          "transport_and_model_p50_seconds": 0.1770114165265113,
+          "transport_and_model_mean_seconds": 0.2673939707487935,
+          "transport_and_model_p95_seconds": 0.4364525214943569,
+          "environment_p50_seconds": 0.0020658749854192138,
+          "environment_mean_seconds": 0.0021901959683667573,
+          "environment_p95_seconds": 0.002909837011247873,
+          "peak_kv_tokens": 2600,
+          "peak_allocated_gib": 8.723441123962402,
+          "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+          "scheduled_episodes": 1839,
+          "complete": false
+        }
+      },
+      "statistics": {
+        "actions": 192,
+        "mean_seconds": 0.15563818023435752,
+        "median_seconds": 0.15312703349991352,
+        "p90_seconds": 0.16797655440050221,
+        "p95_seconds": 0.16828711489997658,
+        "p99_seconds": 0.16955110126968065,
+        "std_seconds": 0.005659153049857486,
+        "actions_per_second": 6.425158649980459,
+        "mean_generated_tokens": 3.0,
+        "peak_kv_tokens": 2546
+      },
+      "navigation": {
+        "episodes": 1199,
+        "successes": 593.0,
+        "sr": 0.4945788156797331,
+        "spl": 0.46412354402524975,
+        "errors": 0,
+        "journal_sha256": "68194a402995d80e2c5388415c83b84999df9539b6abeb3ec710619dde7f2331",
+        "contract_sha256": "9855f2ed62d7b98946b3920c677603ea478d0ec6d99cc8052b6ac787beb8263c",
+        "root": "/data14t/anhdh35/m5_l3_epoch1/evaluation/results/full/L3_s429",
+        "source_verified": true
+      },
+      "repeat_tokens_identical": true,
+      "raw_result": "/data14t/anhdh35/latency_l_20261025/results/l3/result.json",
+      "result_sha256": "41251b285cad9ab032f7fc05a850a6137471a81d22a2e1479ce2ad71666673e7"
+    }
+  ]
+}
