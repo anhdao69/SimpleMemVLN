@@ -1,10 +1,10 @@
 {
   "done": [
     "m5_e1",
-    "grpo"
+    "grpo",
+    "grpo_fb"
   ],
   "pending": [
-    "grpo_fb",
     "memfork",
     "a3_actfork",
     "a2_memfork_grpo",
@@ -35,6 +35,18 @@
       "mean_episode_steps": 109.38607939097335,
       "episodes": 1839,
       "infra_retries": 0
+    },
+    "grpo_fb": {
+      "sr": 0.600326264274062,
+      "spl": 0.5487068399570725,
+      "navigation_error": 4.664966359738587,
+      "oracle_success": 0.6492659053833605,
+      "trajectory_length": 9.627887675814542,
+      "forced_stops": 136,
+      "failures": 0,
+      "mean_episode_steps": 96.91027732463296,
+      "episodes": 1839,
+      "infra_retries": 0
     }
   },
   "compute": {
@@ -48,6 +60,17 @@
       "policy_forward_steps": 280904,
       "trained_tokens": 755237,
       "wall_hours": 14.66
+    },
+    "grpo_fb": {
+      "updates": 125,
+      "main_rollouts": 4000,
+      "discarded": 1040,
+      "trained_sequences": 6023,
+      "main_env_steps": 262593,
+      "simulator_steps": 582322,
+      "policy_forward_steps": 447711,
+      "trained_tokens": 1147368,
+      "wall_hours": 20.71
     }
   },
   "paired": {
@@ -67,6 +90,40 @@
       "gained": 265,
       "lost": 183,
       "mcnemar_p": 0.00012468856860834476
+    },
+    "grpo_fb_vs_m5_e1": {
+      "dSR": 0.0880913539967374,
+      "dSPL": 0.06914019070211302,
+      "dNE": -1.118075415155789,
+      "dOSR": 0.06960304513322457,
+      "ci_SR": [
+        0.06470908102229472,
+        0.11092985318107668
+      ],
+      "ci_SPL": [
+        0.047861299398733494,
+        0.09011390071005643
+      ],
+      "gained": 320,
+      "lost": 158,
+      "mcnemar_p": 1.0435369908068815e-13
+    },
+    "grpo_fb_vs_grpo": {
+      "dSR": 0.04350190320826541,
+      "dSPL": 0.05207123603496483,
+      "dNE": -0.6558068055657502,
+      "dOSR": -0.0076128330614464446,
+      "ci_SR": [
+        0.021207177814029365,
+        0.06579662860250136
+      ],
+      "ci_SPL": [
+        0.03208768837515219,
+        0.07176926833764599
+      ],
+      "gained": 258,
+      "lost": 178,
+      "mcnemar_p": 0.0001487437273254673
     }
   }
 }
