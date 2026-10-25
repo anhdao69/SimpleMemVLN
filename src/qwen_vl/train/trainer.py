@@ -98,6 +98,14 @@ class QwenSFTTrainer(Trainer):
         aux_names = {name for name,p in self.model.named_parameters()
                      if p.requires_grad and name.startswith('research_aux.')}
         aux_lr = getattr(self.model,'navigation_config',{}).get('research',{}).get('head_lr',1e-4)
+        from qwen_vl.research.matrix_optimizer_contract import parse_matrix_optimizer
+        from qwen_vl.train.zero_muon import is_muon_parameter
+        muon_spec = parse_matrix_optimizer(getattr(self.model, "navigation_config", {}).get("training", {}))
+        muon_names = set() if muon_spec is None else {
+            name for name, parameter in self.model.named_parameters()
+            if name not in merger_names | lane_names | aux_names
+            and is_muon_parameter(name, parameter, decay_names)
+        }
         grouped_parameters = []
         for kind, learning_rate in (
             ("backbone", self.args.learning_rate),
@@ -109,7 +117,7 @@ class QwenSFTTrainer(Trainer):
                 parameters = [
                     parameter
                     for name, parameter in self.model.named_parameters()
-                    if parameter.requires_grad
+                    if parameter.requires_grad and name not in muon_names
                     and (
                         "aux" if name in aux_names else
                         "lane" if name in lane_names else
@@ -146,6 +154,12 @@ class QwenSFTTrainer(Trainer):
                 if current:
                     split.append(dict(group, params=current))
             grouped_parameters = split
+        if muon_spec is not None:
+            # Hidden-layer matrices: ZeRO-partitioned Muon at the backbone LR and weight decay.
+            from qwen_vl.train.zero_muon import muon_groups
+            grouped_parameters += muon_groups(
+                [(n, p) for n, p in self.model.named_parameters() if n in muon_names],
+                muon_spec, self.args.learning_rate, self.args.weight_decay)
         assigned = [
             id(parameter)
             for group in grouped_parameters
@@ -172,6 +186,18 @@ class QwenSFTTrainer(Trainer):
             if not isinstance(ds, dict) or ds.get("zero_optimization", {}).get(
                     "offload_optimizer", {}).get("device") != "cpu":
                 raise ValueError("DeepSpeedCPUAdam requires explicit optimizer CPU offload")
+            if muon_spec is not None:
+                zero = ds["zero_optimization"]
+                if zero.get("stage") not in (1, 2) or zero.get("round_robin_gradients", False) \
+                        or zero.get("elastic_checkpoint", False):
+                    raise ValueError("ZeRO Muon needs stage 1/2 order-preserving, rigid-checkpoint partitions")
+                from qwen_vl.train.zero_muon import zero_muon_cpu_adam
+                self.optimizer = zero_muon_cpu_adam(
+                    grouped_parameters,
+                    {g["muon_group"]: g["params"] for g in grouped_parameters if g.get("use_muon")},
+                    lr=self.args.learning_rate, betas=(self.args.adam_beta1, self.args.adam_beta2),
+                    eps=self.args.adam_epsilon, adamw_mode=True, fp32_optimizer_states=True)
+                return self.optimizer
             from deepspeed.ops.adam import DeepSpeedCPUAdam
             self.optimizer = DeepSpeedCPUAdam(grouped_parameters,
                 lr=self.args.learning_rate, betas=(self.args.adam_beta1,self.args.adam_beta2),

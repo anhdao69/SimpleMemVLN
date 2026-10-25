@@ -168,6 +168,8 @@ def validate_config(cfg, world_size=None):
         parse_episodic_spec(cfg)  # rejects stray episodic keys in legacy modes
     from qwen_vl.research.vggt_g1 import parse_g1
     parse_g1(cfg)
+    from qwen_vl.research.matrix_optimizer_contract import parse_matrix_optimizer
+    parse_matrix_optimizer(train)  # absent = AdamW everywhere; a declared spec must be exact
     runtime_staging(cfg)
     return cfg
 

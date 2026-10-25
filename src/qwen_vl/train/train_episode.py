@@ -118,12 +118,13 @@ class MeasurementCallback(transformers.TrainerCallback):
 class EpisodeTrainer(QwenSFTTrainer):
     def __init__(
         self, *args, serializer, data_contract, recovery_save_steps=0,
-        episodic_diagnostics=False, **kwargs
+        episodic_diagnostics=False, sampler_epoch_offset=0, **kwargs
     ):
         self.serializer = serializer
         self.data_contract = data_contract
         self.recovery_save_steps = recovery_save_steps
         self.episodic_diagnostics = episodic_diagnostics
+        self.sampler_epoch_offset = sampler_epoch_offset
         super().__init__(*args, **kwargs)
 
     def get_train_dataloader(self):
@@ -342,6 +343,13 @@ def train_episode():
     initialization.add_argument("--resume_from_checkpoint")
     initialization.add_argument("--init-policy-checkpoint",
                                 help="Strict trained-wrapper weights, fresh lanes and optimizer")
+    p.add_argument("--init-weights-checkpoint",
+                   help="Continue from a trained checkpoint with the identical navigation contract: "
+                        "strict weights only, fresh optimizer and LR schedule (combinable with "
+                        "--resume_from_checkpoint auto, whose recovery state then takes precedence)")
+    p.add_argument("--init-weights-sha256", help="Required SHA-256 of the init checkpoint's weights file")
+    p.add_argument("--sampler-epoch-offset", type=int, default=0,
+                   help="Data order of this later epoch of the seed (0 = the seed's first epoch)")
     p.add_argument("--deepspeed", default="deepspeed.json")
     p.add_argument("--gradient_accumulation_steps", type=int)
     p.add_argument("--save_steps", type=int, default=500)
@@ -390,8 +398,23 @@ def train_episode():
     from qwen_vl.models.action_loss import resolve_class_balance
 
     resolve_class_balance(cfg, args.manifest, args.episode_limit, args.selection)
+    if args.sampler_epoch_offset < 0:
+        raise ValueError("Sampler epoch offset cannot be negative")
+    if args.init_weights_checkpoint and args.init_policy_checkpoint:
+        raise ValueError("Choose one initialization")
+    if bool(args.init_weights_checkpoint) != bool(args.init_weights_sha256):
+        raise ValueError("Weights initialization requires the checkpoint and its SHA-256 together")
     initialization_report = None
-    if args.init_policy_checkpoint:
+    if args.init_weights_checkpoint:
+        # Loaded on resume too, so every tensor the recovery checkpoint omits matches the parent.
+        from qwen_vl.train.lane_initialization import initialize_weights_from_checkpoint
+        model, serializer, initialization_report = initialize_weights_from_checkpoint(
+            args.init_weights_checkpoint, args.init_weights_sha256, args.model_name_or_path, cfg)
+        initialization_report["resumed_from"] = args.resume_from_checkpoint
+        if int(os.environ.get("RANK", 0)) == 0:
+            (out / "weights_initialization.json").write_text(
+                json.dumps(initialization_report, indent=2) + "\n")
+    elif args.init_policy_checkpoint:
         from qwen_vl.train.lane_initialization import (
             initialize_step_lane_from_policy, checkpoint_identity,
         )
@@ -430,6 +453,10 @@ def train_episode():
         world_size=world,
         accumulation=t["gradient_accumulation_steps"],
     )
+    if args.sampler_epoch_offset:
+        data_contract["sampler_epoch_offset"] = args.sampler_epoch_offset
+    if args.init_weights_checkpoint:
+        data_contract["init_weights_sha256"] = args.init_weights_sha256
     # HF's DeepSpeed branch bypasses _load_from_checkpoint. Validate before
     # Trainer starts and before publishing any new provenance files.
     if args.resume_from_checkpoint:
@@ -552,6 +579,7 @@ def train_episode():
         data_contract=data_contract,
         recovery_save_steps=args.recovery_save_steps if not args.profile_only else 0,
         episodic_diagnostics=cfg["runtime"].get("episodic_diagnostics", False),
+        sampler_epoch_offset=args.sampler_epoch_offset,
         callbacks=callbacks,
     )
     if cfg["model"]["output_mode"] == "candidate_logits":

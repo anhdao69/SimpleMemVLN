@@ -87,7 +87,8 @@ def _get_train_sampler(
         return EpisodeLengthSampler(train_dataset.encoded_lengths, seed=self.args.seed,
                                     group_size=self.args.world_size*self.args.gradient_accumulation_steps,
                                     pool_size=max(64,self.args.world_size*self.args.gradient_accumulation_steps),
-                                    world_size=self.args.world_size)
+                                    world_size=self.args.world_size,
+                                    epoch_offset=getattr(self, 'sampler_epoch_offset', 0))
     if getattr(self.args, "group_by_modality_length", False):
         return LengthGroupedSampler(
             batch_size=self.args.train_batch_size,

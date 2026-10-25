@@ -63,3 +63,25 @@ def initialize_step_lane_from_policy(parent_checkpoint, base_model_path, target_
                   lane_seed=lane_seed, inherited_parameters_preserved=len(inherited),
                   lane_spec=spec.to_dict(), optimizer='fresh', scheduler='fresh')
     return model, serializer, report
+
+
+def initialize_weights_from_checkpoint(checkpoint, weights_sha256, base_model_path, target_config):
+    """Strict trained weights for another epoch of the identical recipe; optimizer and schedule start fresh."""
+    from qwen_vl.train.vln_runtime import load_checkpoint
+    path = Path(checkpoint).resolve()
+    files = sorted(set(path.glob('*.safetensors')) | set(path.glob('pytorch_model*.bin')))
+    if len(files) != 1:
+        raise ValueError(f'Expected exactly one weights file in {path}')
+    digest = file_sha256(files[0])
+    if digest != weights_sha256:
+        raise ValueError(f'{files[0]}: SHA-256 {digest} differs from the declared {weights_sha256}')
+    metadata = json.loads((path / 'navigation.json').read_text())
+    if metadata['config'] != target_config:
+        raise ValueError('Weights initialization requires the parent navigation config to equal the target')
+    model, serializer = load_checkpoint(path, base_model_path)
+    if serializer.metadata() != metadata:
+        raise ValueError('Parent tokenizer/serializer contract differs')
+    report = dict(initialization='strict_weights_only', parent=str(path), weights_file=files[0].name,
+                  weights_sha256=digest, navigation_sha256=file_sha256(path / 'navigation.json'),
+                  parameters=sum(p.numel() for p in model.parameters()), optimizer='fresh', scheduler='fresh')
+    return model, serializer, report

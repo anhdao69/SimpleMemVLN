@@ -79,11 +79,13 @@ def episode_collator(items):
 
 
 class EpisodeLengthSampler(Sampler):
-    def __init__(self, lengths, seed=429, group_size=64, pool_size=64, world_size=4):
+    def __init__(self, lengths, seed=429, group_size=64, pool_size=64, world_size=4, epoch_offset=0):
         if pool_size % group_size or group_size % world_size:
             raise ValueError(
                 "Pools must contain complete update groups and rank assignments"
             )
+        if type(epoch_offset) is not int or epoch_offset < 0:
+            raise ValueError("epoch_offset must be a nonnegative integer")
         self.lengths, self.seed, self.group_size, self.pool_size, self.world_size = (
             lengths,
             seed,
@@ -91,6 +93,9 @@ class EpisodeLengthSampler(Sampler):
             pool_size,
             world_size,
         )
+        # A continuation run that starts from an earlier run's weights draws the
+        # order that run's next epoch would draw (Trainer epoch 0 -> data epoch offset).
+        self.epoch_offset = epoch_offset
         self.epoch = 0
 
     def set_epoch(self, epoch):
@@ -100,7 +105,7 @@ class EpisodeLengthSampler(Sampler):
         return len(self.lengths)
 
     def __iter__(self):
-        g = torch.Generator().manual_seed(self.seed + self.epoch)
+        g = torch.Generator().manual_seed(self.seed + self.epoch_offset + self.epoch)
         order = torch.randperm(len(self.lengths), generator=g).tolist()
         groups, tail = [], []
         for offset in range(0, len(order), self.pool_size):
