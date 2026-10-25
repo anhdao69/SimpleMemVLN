@@ -1,5 +1,40 @@
 # VGGT campaign — R2R evaluation report
 
+Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261024.json) covers 33 navigation journals and 35 latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261024.json) distinguishes original server snapshots from the merged reports.
+
+## Current journal refresh — 2026-10-24T21:21:47.211620+07:00
+
+| Model | Attempted / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status |
+|---|---:|---:|---:|---:|---:|---|
+| G1 | 1,839 | 914 | 49.700924 | 46.072125 | 0 | COMPLETE — recomputed |
+| G3 | 1,839 | 956 | 51.984774 | 48.095941 | 0 | COMPLETE — recomputed |
+| G3_fixed01_seed430 | 1,839 | 909 | 49.429038 | 45.655180 | 0 | COMPLETE — recomputed |
+| G3A1 | 1,839 | 877 | 47.688961 | 43.548813 | 0 | COMPLETE — recomputed |
+| G3_M5 | 135 | 64 | 47.407407 | 42.989009 | 0 | PARTIAL — archived |
+| G3 DINOv3 ViTB16 | 1,839 | 879 | 47.797716 | 44.574182 | 0 | COMPLETE — recomputed |
+| A0 | 1,839 | 910 | 49.483415 | 45.394182 | 0 | COMPLETE — recomputed |
+| A1 | 1,839 | 929 | 50.516585 | 46.873430 | 0 | COMPLETE — recomputed |
+| R1 | 1,839 | 907 | 49.320283 | 45.825211 | 0 | COMPLETE — recomputed |
+| Window8-B-E1 | 1,839 | 907 | 49.320283 | 45.561094 | 0 | COMPLETE — recomputed |
+| V0 | 1,839 | 852 | 46.329527 | 41.756802 | 0 | COMPLETE — recomputed |
+
+Metrics were freshly recomputed from the saved journals with unique episode IDs,
+contract order and action metadata checked. “COMPLETE — recomputed” describes
+journal verification, not a new GPU qualification run. Existing numerical and
+implementation caveats below remain applicable.
+
+G3_M5 remains an **archived partial run**. Its journal has135 episodes while the
+old summary contains134; the table above uses the complete captured journal and
+records the stale-summary discrepancy in the evidence. It is not a final score or
+an assertion that the process is still running. G3 DINOv3 ViTB16 is a distinct
+checkpoint from the original G3 and fixed01 seed430 variants.
+
+[Evidence snapshot](evidence/ALL_RESULTS_20261024.json) · [Current S-campaign report](S_CAMPAIGN_R2R_EVALUATION.md).
+Older snapshots below are preserved for provenance and are superseded for counts
+by this refresh. M5 R4/B1200 seed431 was not updated.
+
+## Preserved cross-server reports — through 2026-10-20
+
 **Cross-server report scope:** The refresh below records the `ws_anhdh35` campaign. The preserved October 19 sections later in this file record the six local evaluations from `ws_anhdh35_vinh`, including M5_E1. Historical tables retain their original dates; cross-host results retain their documented simulator and provenance caveats. The 134-episode G3_M5 row below is a separate partial rerun of the same weight SHA-256 `4e2d2095325fa779dcdece278f52213013d6889e72705ff860ab2eba1b13194f`. The completed 1,839-episode Vinh evaluation with 917 successes remains a final result in its own section.
 
 Current R2R val_unseen refresh: **G3 is the best completed result at 51.984774% SR**. Nine rows below completed all 1,839 episodes; the G3_M5 combined (ws_anhdh35 rerun) run remains a 134-episode partial and is not ranked as a final result. This refresh supersedes the archived 16 October result/status tables later in this document.
