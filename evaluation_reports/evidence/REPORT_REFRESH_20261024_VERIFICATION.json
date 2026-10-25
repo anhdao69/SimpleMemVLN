@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "result_rows_checked": 47,
+  "runs_in_snapshot": 31,
+  "s_reports_updated": 14,
+  "protected_report_unchanged": true,
+  "files": {
+    "S_CAMPAIGN_R2R_EVALUATION.md": "d3a3363e91902272a2653e8819820da12909dd34f143d8ed4364b236f9c8769b",
+    "EPISODIC_MEMORY_EVALUATION.md": "4124f785f32596ed03e4e24d82ab67b20f15df07cd7af886b571c030894cdf34",
+    "VGGT_EVALUATION.md": "d273304d1d01fa2d6b7ca7b5febd10cee5458b73dd76d4c9513b689dd5803ce0",
+    "evidence/ALL_RESULTS_20261024.json": "d6c50dd122385a13b5c99e14bbd1a17b66165f5f37700b68e0fac0f8f8fce5ee"
+  }
+}
