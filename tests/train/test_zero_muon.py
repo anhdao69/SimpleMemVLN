@@ -207,8 +207,9 @@ def _gloo_worker(rank, world, port, params, grads, adam_param, adam_grads, queue
     dist.destroy_process_group()
 
 
-def test_real_step_with_gloo_all_gather_and_adam_group():
+def test_real_step_with_gloo_all_gather_and_adam_group(monkeypatch):
     import torch.multiprocessing as mp
+    monkeypatch.setenv('CUDA_VISIBLE_DEVICES', '')        # workers orthogonalize on CPU, like the reference
     params, grads = make_problem(seed=7, steps=3)
     params = [p.bfloat16().float() for p in params]       # BF16-representable, like ZeRO's first masters
     adam_param = torch.randn(10)
