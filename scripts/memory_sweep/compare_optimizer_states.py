@@ -2,8 +2,8 @@
 
 For every rank, the fp32 master partitions and every base-optimizer state tensor (Muon momentum, Adam
 moments) of the two checkpoints must agree: masters to relative L2 <= 1e-5 (as for the weights) and state
-tensors to <= 1e-2.  A state lost at resume would differ by O(1) (the state would hold one gradient
-instead of three).  Muon groups must hold exactly a momentum buffer, AdamW groups exactly step/moments,
+tensors to <= 1e-2 (``--state-rtol``).  A state lost at resume would differ by O(1) (the state would hold
+one gradient instead of three).  Muon groups must hold exactly a momentum buffer, AdamW groups exactly step/moments,
 and step counters must be equal.
 """
 import argparse
@@ -62,13 +62,15 @@ def main():
     p.add_argument('--resumed', required=True)
     p.add_argument('--out', required=True)
     p.add_argument('--world', type=int, default=4)
+    p.add_argument('--state-rtol', type=float, default=STATE_RTOL)
     args = p.parse_args()
     ranks = [compare_rank(load(args.reference, r), load(args.resumed, r)) for r in range(args.world)]
     master = max(m for r in ranks for m in r['masters'])
     state = max(v for r in ranks for g in r['groups'] for k, v in g.items() if k.startswith(('exp_', 'momentum')))
     muon_groups = [sum(g['use_muon'] for g in r['groups']) for r in ranks]
-    passed = master <= MASTER_RTOL and state <= STATE_RTOL and min(muon_groups) > 0
+    passed = master <= MASTER_RTOL and state <= args.state_rtol and min(muon_groups) > 0
     summary = dict(passed=passed, max_master_relative_l2=master, max_state_relative_l2=state,
+                   state_rtol=args.state_rtol,
                    muon_groups_per_rank=muon_groups, steps=sorted({g['step'] for r in ranks for g in r['groups']
                                                                   if 'step' in g}))
     Path(args.out).write_text(json.dumps(dict(summary=summary, ranks=ranks), indent=2) + '\n')

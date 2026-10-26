@@ -5,12 +5,17 @@ S8N_E2     one more epoch from S8N's final weights (SHA-256 bound, strict weight
 S8N_LR1E5  S8N from the original Qwen3.5-4B with backbone/classifier LR 1e-5.
 S8N_MUON   S8N from the original Qwen3.5-4B at LR 5e-6 with ZeRO-partitioned Muon on the hidden-layer
            matrices; embeddings, LM head, norms, gates and conv filters keep the same CPU AdamW.
+S8N_MUON_E2  one more epoch of S8N_MUON, as S8N_E2 is of S8N: its final weights (SHA-256 bound once it
+           completes), fresh Muon/AdamW, the identical schedule and S8N_E2's second-epoch data order.
 
 Each arm's resolved config must equal S8N's bound config except the declared training keys, built
 from S8N's own memory and runtime files (byte copies, SHA-256 checked).  Lane B qualifies once and
 seals: CPU suite, a real-DeepSpeed ZeRO-2 offload Muon check, first-update reproduction of S8N's
 logged production on this source (every arm), and fresh-process Muon recovery including the
 optimizer state.  Lane A waits for the seal.  Both lanes wait for their L-campaign predecessor.
+A continuation campaign (``continuation`` in its campaign.json) trains an arm from another
+campaign's completed run instead; its gates bind that run's final weights, then check the first
+updates from them in the second-epoch order and a fresh-process resume of the continuation.
 Per arm: longest-RxR smoke, then production with identity-bound automatic resume, completion
 validation and pruning of rolling checkpoints, exactly as for the S arms.
 """
@@ -40,10 +45,15 @@ ARMS = {
     'S8N_E2': dict(training={}, continue_parent=True, threads=4),
     'S8N_LR1E5': dict(training=dict(backbone_lr=1.0e-05, classifier_lr=1.0e-05), threads=4),
     'S8N_MUON': dict(training=dict(matrix_optimizer=MUON), threads=8),
+    'S8N_MUON_E2': dict(training=dict(matrix_optimizer=MUON), continue_from='S8N_MUON', threads=8),
 }
 REFERENCE = 'S8N_REF'           # S8N's own config on this source (reproduction gate only)
 REFERENCE_SPEC = dict(training={}, threads=4)
 QUALIFICATION_GATES = ('parent', 'cpu-suite', 'zero-muon-ds', 'reproduction', 'recovery')
+CONTINUATION_GATES = ('parent', 'cpu-suite', 'zero-muon-ds', 'continuation', 'recovery')
+# Resume noise in optimizer state after one update: <= 7.5e-3 measured (2026-10-25); a state lost at resume
+# differs by O(1).  A continuation starts from trained weights with ~20x smaller gradients, so allow 0.1.
+CONTINUATION_STATE_RTOL = 0.1
 CPU_SUITE = ('tests/train', *l_campaign.CPU_SUITE, 'tests/vln/test_training.py', 'tests/vln/test_campaign.py')
 # Updates 1-2 hold identical weights (LR 0 at update 1): forward is bitwise, backward varies ~5e-4 run to run.
 # Update 3 follows Adam's first, sign-like step, which amplifies that noise: two identical S8N_REF runs gave
@@ -169,6 +179,33 @@ def compare_reproduction(parent_log, parent_plan, runs):
                 runs={arm: dict(losses=r['losses'], grad_norms=r['grad_norms']) for arm, r in runs.items()})
 
 
+def compare_continuation(parent_log, order_plan, first_epoch_plan, run, weights_sha256):
+    """First updates of a continuation arm (pure; unit-tested).
+
+    ``order_plan``: S8N_E2's exposure plan of the same updates (the seed's second-epoch order), which the
+    run must repeat exactly; ``first_epoch_plan``: S8N's, which it must not.  The run must start strictly
+    from the bound weights with a fresh optimizer and schedule, and its update-1 loss must be far below
+    the original model's (S8N's logged update 1).
+    """
+    problems = []
+    if len(run['losses']) != REPRODUCED_UPDATES:
+        problems.append(f'{len(run["losses"])} logged updates')
+    if run['plan'] != order_plan:
+        problems.append('data order differs from S8N_E2 (the second-epoch order)')
+    if run['plan'] == first_epoch_plan:
+        problems.append('repeats the first-epoch data order')
+    if not (run['losses'] and run['losses'][0] < 0.5 * parent_log[1]['loss']):
+        problems.append(f'update-1 loss {run["losses"][:1]} is not from trained weights')
+    init = run['weights_initialization']
+    expected = dict(initialization='strict_weights_only', weights_sha256=weights_sha256, optimizer='fresh',
+                    scheduler='fresh', resumed_from=None)
+    for key, value in expected.items():
+        if init.get(key) != value:
+            problems.append(f'weights initialization {key}={init.get(key)!r}, expected {value!r}')
+    return dict(passed=not problems, problems=problems, losses=run['losses'], grad_norms=run['grad_norms'],
+                original_model_update1_loss=parent_log[1]['loss'])
+
+
 # ---- campaign definition ---------------------------------------------------
 class Campaign(base.Campaign):
     def __init__(self, path):
@@ -182,6 +219,17 @@ class Campaign(base.Campaign):
         self.shared = self.root / 'shared'
         self.configs = self.root / 'configs'
         self.parent = self.data['parent']
+        self.continuation = self.data.get('continuation')
+        self.arms = [arm for lane in self.data['lanes'].values() for arm in lane['arms']]
+        for arm in self.arms:
+            source = ARMS[arm].get('continue_from')
+            if source and (self.continuation or {}).get('arm') != source:
+                raise ValueError(f'{arm} needs the completed {source} run as the campaign continuation')
+        self.gates = CONTINUATION_GATES if self.continuation else QUALIFICATION_GATES
+
+    def policy_arms(self):
+        """Arms with a policy file; a first-epoch campaign also has S8N's own (reproduction gate)."""
+        return tuple(self.arms) if self.continuation else (REFERENCE, *self.arms)
 
     def arm_memory_path(self, arm, role='training'):
         return self.configs / f'arm_{PARENT}.yaml'
@@ -231,7 +279,7 @@ class Campaign(base.Campaign):
         if spec.score != PARENT or spec.version != 'episodic_window_gdn_sweep_v1':
             raise ValueError(f'{arm}: config declares {spec.score}')
         muon = parse_matrix_optimizer(cfg['training'])
-        if muon != (MUON if arm == 'S8N_MUON' else None):
+        if muon != (MUON if 'matrix_optimizer' in arm_spec(arm)['training'] else None):
             raise ValueError(f'{arm}: unexpected matrix optimizer {muon}')
         seal = self.shared / 'QUALIFIED.json'
         identity = dict(campaign=VERSION, arm=arm, parent=PARENT, config=cfg, source_commit=self.source_identity(),
@@ -239,10 +287,71 @@ class Campaign(base.Campaign):
                         memory_sha256=sha(self.arm_memory_path(arm)), runtime_sha256=sha(self.configs / 'runtime.yaml'),
                         policy_sha256=sha(self.policy_path(arm)), parent_identity_sha256=self.parent['identity_sha256'],
                         qualification_sha256=sha(seal) if seal.exists() else None)
-        if arm_spec(arm).get('continue_parent'):
-            identity.update(init_weights_checkpoint=self.parent['weights_checkpoint'],
-                            init_weights_sha256=self.parent['weights_sha256'], sampler_epoch_offset=1)
+        initialization = self.initialization(arm)
+        if initialization:
+            identity.update(init_weights_checkpoint=initialization[0], init_weights_sha256=initialization[1],
+                            sampler_epoch_offset=1)
+        if arm_spec(arm).get('continue_from'):
+            identity.update(init_parent=self.continuation['arm'],
+                            init_parent_identity_sha256=self.continuation['identity_sha256'])
         return identity
+
+    def continuation_weights(self):
+        """The completed continuation run's final weights as bound by the parent gate, or None before it."""
+        path = self.shared / 'continuation_parent.json'
+        return json.loads(path.read_text()) if path.exists() else None
+
+    def initialization(self, arm):
+        """(checkpoint, weights SHA-256) a continuation arm starts from; None for an arm from the base model."""
+        spec = arm_spec(arm)
+        if spec.get('continue_parent'):
+            return self.parent['weights_checkpoint'], self.parent['weights_sha256']
+        if spec.get('continue_from'):
+            bound = self.continuation_weights()
+            if bound is None:
+                raise ValueError(f'{arm}: the final weights of {spec["continue_from"]} are not bound yet')
+            return bound['weights_checkpoint'], bound['weights_sha256']
+        return None
+
+    def bind_continuation(self):
+        """Check the continuation run completed as declared and bind its final weights (idempotent)."""
+        cont = self.continuation
+        run = Path(cont['run'])
+        if sha(run / 'run_identity.json') != cont['identity_sha256']:
+            raise ValueError(f'{cont["arm"]} run identity changed')
+        identity = json.loads((run / 'run_identity.json').read_text())
+        parent = self.parent_identity()
+        if (identity['arm'] != cont['arm'] or identity['config'] != self.expected_config(cont['arm'])
+                or identity['parent_identity_sha256'] != self.parent['identity_sha256']
+                or any(identity[k] != parent[k]
+                       for k in ('manifest_sha256', 'model', 'memory_sha256', 'runtime_sha256'))):
+            raise ValueError(f'{cont["arm"]} identity is not S8N\'s config plus its declared keys')
+        rows = [json.loads(line) for line in Path(cont['history']).read_text().splitlines() if line.strip()]
+        if not any(r.get('status') == 'arm-complete' and r.get('arm') == cont['arm'] for r in rows):
+            raise ValueError(f'{cont["arm"]}: its lane controller has not declared it complete')
+        if not run_complete(run, identity['config']):
+            raise ValueError(f'{cont["arm"]} did not complete its epoch')
+        final, checkpoint = run / 'train/final', run / f'train/checkpoint-{base.EXPECTED_STEPS}'
+        if str(final) != cont['weights_checkpoint']:
+            raise ValueError('Continuation weights must be the run\'s final export')
+        state = json.loads((checkpoint / 'trainer_state.json').read_text())
+        if state['global_step'] != state['max_steps'] or state['global_step'] != base.EXPECTED_STEPS:
+            raise ValueError(f'{cont["arm"]} did not complete its epoch')
+        if json.loads((final / 'navigation.json').read_text())['config'] != identity['config']:
+            raise ValueError(f'{cont["arm"]} final navigation config differs from its bound identity')
+        digest = sha(final / 'pytorch_model.bin')
+        if sha(checkpoint / 'pytorch_model.bin') != digest:
+            raise ValueError(f'{cont["arm"]} final export differs from checkpoint-{base.EXPECTED_STEPS}')
+        record = dict(arm=cont['arm'], run=str(run), identity_sha256=cont['identity_sha256'],
+                      source_commit=identity['source_commit'], weights_checkpoint=str(final), weights_sha256=digest,
+                      navigation_sha256=sha(final / 'navigation.json'))
+        path = self.shared / 'continuation_parent.json'
+        if path.exists():
+            if json.loads(path.read_text()) != record:
+                raise ValueError(f'{path} binds different weights')
+        else:
+            write(path, record)
+        return record
 
 
 def prepare(campaign):
@@ -256,7 +365,7 @@ def prepare(campaign):
             shutil.copy2(source, target)
         if sha(target) != parent[f'{name}_sha256'] or sha(source) != parent[f'{name}_sha256']:
             raise ValueError(f'{target} is not S8N\'s {name} file')
-    for arm in (REFERENCE, *ARMS):
+    for arm in c.policy_arms():
         path, text = c.policy_path(arm), policy_text(c.source, arm)
         if path.exists():
             if path.read_text() != text:
@@ -268,15 +377,16 @@ def prepare(campaign):
 
 # ---- commands ----------------------------------------------------------------
 def train_command(campaign, arm, out, **kwargs):
-    """The S-campaign command with the arm's policy file and, for a continuation, the parent weights."""
+    """The S-campaign command with the arm's policy file and, for a continuation, the bound weights."""
     command = base.train_command(campaign, arm, out, **kwargs)
     index = command.index('--policy_config') + 1
     if command[index] != 'configs/vggt/g3_joint_one_epoch.yaml':
         raise RuntimeError('Unexpected policy argument')
     command[index] = str(campaign.policy_path(arm))
-    if arm_spec(arm).get('continue_parent'):
-        command += ['--init-weights-checkpoint', campaign.parent['weights_checkpoint'],
-                    '--init-weights-sha256', campaign.parent['weights_sha256'], '--sampler-epoch-offset', '1']
+    initialization = campaign.initialization(arm)
+    if initialization:
+        command += ['--init-weights-checkpoint', initialization[0], '--init-weights-sha256', initialization[1],
+                    '--sampler-epoch-offset', '1']
     return command
 
 
@@ -335,6 +445,9 @@ class Lane(l_campaign.Lane):
             write(shared / 'gates.json', gates)
         source = c.source_identity()
         py = sys.executable
+        if c.continuation:
+            self.continuation_gates(gate, py)
+            return self.seal(gates, source)
 
         def parent():
             identity = c.parent_identity()
@@ -349,25 +462,13 @@ class Lane(l_campaign.Lane):
             if sha(c.data['manifest']) != c.data['manifest_sha256']:
                 raise RuntimeError('Manifest differs')
             arms = {arm: dict(policy_sha256=c.run_identity(arm)['policy_sha256'],
-                              changed=sorted(arm_spec(arm)['training'])) for arm in (REFERENCE, *ARMS)}
+                              changed=sorted(arm_spec(arm)['training'])) for arm in c.policy_arms()}
             return dict(weights_sha256=c.parent['weights_sha256'], manifest_sha256=c.data['manifest_sha256'],
                         configs=prepare(c), arms=arms)
         gate('parent', parent)
         gate('cpu-suite', lambda: self.run_logged('cpu-suite', [py, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
                                                                  *CPU_SUITE]) or 'pass')
-
-        def zero_muon_ds():
-            out = shared / 'zero_muon_ds'
-            if out.exists():
-                raise RuntimeError(f'Preserve interrupted ZeRO Muon check {out} before retry')
-            self.run_logged('zero-muon-ds', ['torchrun', '--standalone', f'--nproc_per_node={WORLD}', '-m',
-                                             'scripts.memory_sweep.zero_muon_ds_check', '--out', str(out)],
-                            env_extra=thread_env(8))
-            report = json.loads((out / 'zero_muon_ds_check.json').read_text())
-            if not report['passed']:
-                raise RuntimeError(f'ZeRO Muon check failed: {report}')
-            return {k: report[k] for k in ('muon_groups', 'steps_ok', 'clipping_exercised', 'resume_ok', 'resume')}
-        gate('zero-muon-ds', zero_muon_ds)
+        gate('zero-muon-ds', self.zero_muon_ds)
 
         def reproduction():
             parent_run = Path(c.parent['run']) / 'train'
@@ -376,7 +477,7 @@ class Lane(l_campaign.Lane):
             first = range(REPRODUCED_UPDATES)
             parent_plan = exposure_plan(parent_run, first)
             runs = {}
-            for arm in (REFERENCE, *ARMS):
+            for arm in c.policy_arms():
                 out = shared / 'reproduction' / arm
                 result_path = out / 'result.json'
                 if not result_path.exists():
@@ -431,11 +532,115 @@ class Lane(l_campaign.Lane):
             return dict(weights=json.loads((root / 'comparison.json').read_text()),
                         optimizer=json.loads((root / 'optimizer_states.json').read_text())['summary'])
         gate('recovery', recovery)
-        if set(gates) != set(QUALIFICATION_GATES) or not all(g['passed'] for g in gates.values()):
+        return self.seal(gates, source)
+
+    def seal(self, gates, source):
+        c, seal = self.campaign, self.campaign.shared / 'QUALIFIED.json'
+        if set(gates) != set(c.gates) or not all(g['passed'] for g in gates.values()):
             raise RuntimeError('Incomplete shared qualification')
         write(seal, dict(passed=True, source_commit=source, gates=gates))
         self.record('qualified')
         return json.loads(seal.read_text())
+
+    def zero_muon_ds(self):
+        out = self.campaign.shared / 'zero_muon_ds'
+        if out.exists():
+            raise RuntimeError(f'Preserve interrupted ZeRO Muon check {out} before retry')
+        self.run_logged('zero-muon-ds', ['torchrun', '--standalone', f'--nproc_per_node={WORLD}', '-m',
+                                         'scripts.memory_sweep.zero_muon_ds_check', '--out', str(out)],
+                        env_extra=thread_env(8))
+        report = json.loads((out / 'zero_muon_ds_check.json').read_text())
+        if not report['passed']:
+            raise RuntimeError(f'ZeRO Muon check failed: {report}')
+        return {k: report[k] for k in ('muon_groups', 'steps_ok', 'clipping_exercised', 'resume_ok', 'resume')}
+
+    def continuation_gates(self, gate, py):
+        """Bind the completed parent run, then check the continuation itself on the production config.
+
+        continuation: three updates of the full manifest from the bound weights (fresh optimizer and
+        schedule) in exactly S8N_E2's second-epoch order.  recovery: a fresh process restores the
+        reference's checkpoint-2 (initial weights first, then the recovery state) and repeats update 3;
+        weights, update-3 loss and optimizer state must agree.  The production runtime is used throughout
+        because the initial weights require the parent's exact navigation config (save policy included).
+        """
+        c, shared = self.campaign, self.campaign.shared
+        (arm,) = c.arms
+        threads = ARMS[arm]['threads']
+
+        def parent():
+            c.parent_identity()
+            if sha(c.data['manifest']) != c.data['manifest_sha256']:
+                raise RuntimeError('Manifest differs')
+            record = c.bind_continuation()
+            configs = prepare(c)
+            identity = c.run_identity(arm)
+            bound = json.loads((Path(c.continuation['run']) / 'run_identity.json').read_text())
+            if identity['config'] != bound['config']:
+                raise RuntimeError(f'{arm}: config differs from {c.continuation["arm"]}')
+            return dict(continuation=record, manifest_sha256=c.data['manifest_sha256'], configs=configs,
+                        arms={arm: dict(policy_sha256=identity['policy_sha256'], changed=sorted(ARMS[arm]['training']),
+                                        init_weights_sha256=identity['init_weights_sha256'])})
+        gate('parent', parent)
+        gate('cpu-suite', lambda: self.run_logged('cpu-suite', [py, '-m', 'pytest', '-q', '-p', 'no:cacheprovider',
+                                                                 *CPU_SUITE]) or 'pass')
+        gate('zero-muon-ds', self.zero_muon_ds)
+
+        def continuation():
+            out = shared / 'continuation' / arm
+            result_path = out / 'result.json'
+            if not result_path.exists():
+                if out.exists():
+                    raise RuntimeError(f'Preserve interrupted continuation run {out} before retry')
+                self.run_logged(f'continuation-{arm}', train_command(
+                    c, arm, out, updates=REPRODUCED_UPDATES, profile_only=True, host_guard=self.host_guard),
+                    env_extra=thread_env(threads))
+                check = self.check_profile(out / 'train', REPRODUCED_UPDATES)['check']
+                if json.loads((out / 'train/resolved_config.json').read_text()) != c.resolve(arm):
+                    raise RuntimeError(f'{arm}: continuation config differs from production')
+                write(result_path, dict(losses=check['losses'], grad_norms=check['grad_norms'],
+                                        peak_reserved_gib=check['peak_reserved_gib'],
+                                        weights_initialization=json.loads(
+                                            (out / 'train/weights_initialization.json').read_text())))
+            parent_run, first = Path(c.parent['run']) / 'train', range(REPRODUCED_UPDATES)
+            log = json.loads((parent_run / f'checkpoint-{base.EXPECTED_STEPS}/trainer_state.json').read_text())
+            comparison = compare_continuation(
+                {r['step']: r for r in log['log_history'] if 'loss' in r},
+                exposure_plan(c.continuation['order_reference'], first), exposure_plan(parent_run, first),
+                dict(json.loads(result_path.read_text()), plan=exposure_plan(out / 'train', first)),
+                c.continuation_weights()['weights_sha256'])
+            write(shared / 'continuation/comparison.json', comparison)
+            if not comparison['passed']:
+                raise RuntimeError(f'Continuation check failed: {comparison["problems"]}')
+            return comparison
+        gate('continuation', continuation)
+
+        def recovery():
+            root = shared / 'recovery'
+            for name, extra in (('reference', dict(save_every=2)),
+                                ('resumed', dict(save_every=2, resume=root / 'reference/train/checkpoint-2'))):
+                out = root / name
+                if out.exists():
+                    raise RuntimeError(f'Preserve interrupted recovery evidence {out} before retry')
+                # Three updates end the (truncated) epoch: the epoch save writes checkpoint-3 in both runs.
+                self.run_logged(f'recovery-{name}', train_command(c, arm, out, updates=3, host_guard=self.host_guard,
+                                                                  **extra),
+                                env_extra=thread_env(threads))
+                self.check_profile(out / 'train', 3, 1 if name == 'reference' else 3)
+                if json.loads((out / 'train/resolved_config.json').read_text()) != c.resolve(arm):
+                    raise RuntimeError('Recovery config differs from production')
+                report = json.loads((out / 'train/weights_initialization.json').read_text())
+                if report['weights_sha256'] != c.continuation_weights()['weights_sha256']:
+                    raise RuntimeError(f'{name}: unexpected initial weights {report}')
+            self.run_logged('recovery-compare', [py, '-m', 'scripts.memory_sweep.compare_recovery',
+                                                 '--root', str(root), '--out', str(root / 'comparison.json')])
+            self.run_logged('recovery-optimizer', [py, '-m', 'scripts.memory_sweep.compare_optimizer_states',
+                                                   '--reference', str(root / 'reference/train/checkpoint-3'),
+                                                   '--resumed', str(root / 'resumed/train/checkpoint-3'),
+                                                   '--state-rtol', str(CONTINUATION_STATE_RTOL),
+                                                   '--out', str(root / 'optimizer_states.json')])
+            return dict(weights=json.loads((root / 'comparison.json').read_text()),
+                        optimizer=json.loads((root / 'optimizer_states.json').read_text())['summary'])
+        gate('recovery', recovery)
 
     # -- per arm --
     def smoke(self, arm, run, threads):
@@ -503,8 +708,20 @@ def main():
     campaign = Campaign(args.campaign)
     if args.prepare:
         configs = prepare(campaign)
-        report = {arm: dict(policy_sha256=campaign.run_identity(arm)['policy_sha256'],
-                            changed=sorted(arm_spec(arm)['training'])) for arm in (REFERENCE, *ARMS)}
+        report = {}
+        for arm in campaign.policy_arms():
+            if arm_spec(arm).get('continue_from') and campaign.continuation_weights() is None:
+                # Everything but the weights binding, which waits for the parent run to complete.
+                cfg = campaign.resolve(arm)
+                if cfg != campaign.expected_config(arm) or campaign.policy_path(arm).read_text() != policy_text(
+                        campaign.source, arm):
+                    raise ValueError(f'{arm}: config differs from its declaration')
+                report[arm] = dict(policy_sha256=sha(campaign.policy_path(arm)),
+                                   changed=sorted(arm_spec(arm)['training']),
+                                   init_weights='pending: bound when ' + arm_spec(arm)['continue_from'] + ' completes')
+                continue
+            report[arm] = dict(policy_sha256=campaign.run_identity(arm)['policy_sha256'],
+                               changed=sorted(arm_spec(arm)['training']))
         print(json.dumps(dict(configs=configs, arms=report), indent=2))
         print('PREPARE_PASS', flush=True)
         return

@@ -2,7 +2,8 @@
 
 One arm at a time (each Hub commit is made on an optimistic parent revision), up to three publisher attempts
 per arm. State in ``status.json``; create ``STOP`` in the operations directory to end after the current step.
-Exits once every arm is uploaded or failed, or both lanes have ended with nothing left to publish.
+Exits once every arm is uploaded or failed, or every campaign lane has ended with nothing left to publish
+(a lane that has not started yet has not ended).
 """
 import datetime
 import fcntl
@@ -24,6 +25,8 @@ POLL, RETRY = 60, 300
 
 
 def lane_ended(lane):
+    if not (lane / 'history.jsonl').exists():
+        return False
     rows = [json.loads(line) for line in (lane / 'history.jsonl').read_text().splitlines()]
     return rows[-1]['status'] in ('lane-complete', 'stopped-by-request')
 
@@ -93,7 +96,7 @@ def main():
             break                                   # re-check controls and all arms after every publisher run
         else:
             settled = all((OPS / a / 'UPLOAD_VERIFIED.json').exists() or attempts[a] >= 3 for a in ARMS)
-            ended = all(lane_ended(lane) for lane in LANES.iterdir() if (lane / 'history.jsonl').exists())
+            ended = all(lane_ended(LANES / lane) for lane in campaign_data['lanes'])
             if settled or (ended and not any(declared_complete(a) and attempts[a] < 3 and not
                                              (OPS / a / 'UPLOAD_VERIFIED.json').exists() for a in ARMS)):
                 update(None, 'finished')

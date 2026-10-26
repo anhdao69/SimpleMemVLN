@@ -73,6 +73,9 @@ def test_arm_declarations_change_only_their_keys():
     assert f.ARMS['S8N_E2']['training'] == {} and f.ARMS['S8N_E2']['continue_parent']
     assert f.ARMS['S8N_LR1E5']['training'] == dict(backbone_lr=1e-5, classifier_lr=1e-5)
     assert f.ARMS['S8N_MUON']['training'] == dict(matrix_optimizer=f.MUON)
+    # The Muon continuation is S8N_MUON's recipe from S8N_MUON's weights, with S8N_MUON's threads.
+    assert f.ARMS['S8N_MUON_E2'] == dict(training=f.ARMS['S8N_MUON']['training'], continue_from='S8N_MUON',
+                                         threads=f.ARMS['S8N_MUON']['threads'])
     from qwen_vl.research.matrix_optimizer_contract import parse_matrix_optimizer
     assert parse_matrix_optimizer(dict(cpu_optimizer_impl='deepspeed_cpu_adam', matrix_optimizer=f.MUON)) == f.MUON
 
@@ -97,11 +100,16 @@ def test_config_diff_names_changed_paths():
 
 
 class FakeCampaign:
+    initialization = f.Campaign.initialization
+    continuation_weights = f.Campaign.continuation_weights
+
     def __init__(self, tmp_path):
         self.data = dict(manifest='/m.jsonl', model='/model', seed=429, min_free_disk_gib=220)
         self.parent = dict(weights_checkpoint='/s8n/final', weights_sha256='c' * 64)
+        self.continuation = dict(arm='S8N_MUON')
         self.base = tmp_path
         self.configs = tmp_path / 'configs'
+        self.shared = tmp_path / 'shared'
 
     def arm_memory_path(self, arm, role='training'):
         return self.configs / 'arm_S8N.yaml'
@@ -112,7 +120,16 @@ class FakeCampaign:
 
 def test_train_command_uses_the_arm_policy_and_parent_weights(tmp_path):
     c = FakeCampaign(tmp_path)
-    for arm in (f.REFERENCE, *f.ARMS):
+    with pytest.raises(ValueError, match='not bound yet'):
+        f.train_command(c, 'S8N_MUON_E2', tmp_path / 'x', production=True)
+    c.shared.mkdir()
+    (c.shared / 'continuation_parent.json').write_text(json.dumps(dict(weights_checkpoint='/muon/final',
+                                                                       weights_sha256='d' * 64)))
+    command = f.train_command(c, 'S8N_MUON_E2', tmp_path / 'S8N_MUON_E2', production=True, host_guard=691.2)
+    assert command[-6:] == ['--init-weights-checkpoint', '/muon/final', '--init-weights-sha256', 'd' * 64,
+                            '--sampler-epoch-offset', '1']
+    assert command[command.index('--policy_config') + 1] == str(c.policy_path('S8N_MUON_E2'))
+    for arm in (f.REFERENCE, 'S8N_E2', 'S8N_LR1E5', 'S8N_MUON'):
         command = f.train_command(c, arm, tmp_path / arm, production=True, host_guard=432.0)
         assert command[command.index('--policy_config') + 1] == str(c.policy_path(arm))
         assert command[command.index('--memory_config') + 1] == str(tmp_path / 'configs/arm_S8N.yaml')
@@ -147,3 +164,109 @@ def test_cache_relief_walks_frames_then_trees_and_reads_working_set(tmp_path):
     (tmp_path / 'memory.stat').write_text('anon 1\ninactive_file 1073741824\nactive_file 5\n')
     (tmp_path / 'memory.current').write_text(str(3 * 2**30))
     assert f.working_set_gib(tmp_path) == 2.0
+
+
+def continuation_run(**changes):
+    plan = {rank: {u: [f'second{rank}{u}'] for u in range(3)} for rank in range(4)}
+    run = dict(losses=[0.06, 0.05, 0.07], grad_norms=[3.0, 2.5, 2.8], plan=plan,
+               weights_initialization=dict(initialization='strict_weights_only', weights_sha256='d' * 64,
+                                           optimizer='fresh', scheduler='fresh', resumed_from=None))
+    run.update(changes)
+    return run, copy.deepcopy(plan)
+
+
+def test_continuation_check_passes_from_bound_weights_in_the_second_epoch_order():
+    run, order = continuation_run()
+    result = f.compare_continuation(PARENT_LOG, order, PLAN, run, 'd' * 64)
+    assert result['passed'], result['problems']
+
+
+@pytest.mark.parametrize('change', [
+    dict(losses=[0.45, 0.44, 0.43]),                                    # the original model's loss
+    dict(losses=[0.06, 0.05]),
+    dict(weights_initialization=dict(initialization='strict_weights_only', weights_sha256='e' * 64,
+                                     optimizer='fresh', scheduler='fresh', resumed_from=None)),
+    dict(weights_initialization=dict(initialization='strict_weights_only', weights_sha256='d' * 64,
+                                     optimizer='fresh', scheduler='fresh', resumed_from='/x/checkpoint-2')),
+    dict(plan=PLAN),                                                     # S8N's first-epoch order
+])
+def test_continuation_check_detects_deviations(change):
+    run, order = continuation_run(**change)
+    assert not f.compare_continuation(PARENT_LOG, order, PLAN, run, 'd' * 64)['passed']
+
+
+def test_continuation_check_requires_s8n_e2_order():
+    run, order = continuation_run()
+    order[1][2] = ['other']
+    assert not f.compare_continuation(PARENT_LOG, order, PLAN, run, 'd' * 64)['passed']
+
+
+def campaign_file(tmp_path, arms, continuation=None):
+    data = dict(version=f.VERSION, root=str(tmp_path), source=str(tmp_path), base=str(tmp_path),
+                parent=dict(arm='S8N'), lanes=dict(B=dict(arms=arms)))
+    if continuation:
+        data['continuation'] = continuation
+    path = tmp_path / 'campaign.json'
+    path.write_text(json.dumps(data))
+    return path
+
+
+def test_continuation_campaign_declares_its_parent_and_gates(tmp_path):
+    with pytest.raises(ValueError, match='S8N_MUON'):
+        f.Campaign(campaign_file(tmp_path, ['S8N_MUON_E2']))
+    with pytest.raises(ValueError, match='S8N_MUON'):
+        f.Campaign(campaign_file(tmp_path, ['S8N_MUON_E2'], dict(arm='S8N_E2')))
+    c = f.Campaign(campaign_file(tmp_path, ['S8N_MUON_E2'], dict(arm='S8N_MUON')))
+    assert c.gates == f.CONTINUATION_GATES and c.policy_arms() == ('S8N_MUON_E2',)
+    first = f.Campaign(campaign_file(tmp_path, ['S8N_E2', 'S8N_MUON']))
+    assert first.gates == f.QUALIFICATION_GATES and first.policy_arms() == (f.REFERENCE, 'S8N_E2', 'S8N_MUON')
+
+
+def test_bind_continuation_checks_the_completed_run_and_binds_its_final_weights(tmp_path, monkeypatch):
+    def put(path, data):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(data if isinstance(data, bytes) else json.dumps(data).encode())
+    s8n_config = dict(training=dict(seed=429), memory=dict(score_id='S8N'))
+    parent = dict(arm='S8N', config=s8n_config, manifest_sha256='m', model='/model', memory_sha256='a',
+                  runtime_sha256='r')
+    put(tmp_path / 's8n/run_identity.json', parent)
+    muon_config = dict(training=dict(seed=429, matrix_optimizer=f.MUON), memory=dict(score_id='S8N'))
+    run = tmp_path / 'muon'
+    identity = dict(parent, arm='S8N_MUON', config=muon_config, source_commit='a8bb0a2',
+                    parent_identity_sha256=f.sha(tmp_path / 's8n/run_identity.json'))
+    put(run / 'run_identity.json', identity)
+    put(run / 'train/final/pytorch_model.bin', b'weights')
+    put(run / 'train/final/navigation.json', dict(config=muon_config))
+    put(run / 'train/checkpoint-3852/pytorch_model.bin', b'weights')
+    put(run / 'train/checkpoint-3852/trainer_state.json', dict(global_step=3852, max_steps=3852))
+    history = tmp_path / 'history.jsonl'
+    history.write_text(json.dumps(dict(status='training', arm='S8N_MUON')) + '\n')
+    path = campaign_file(tmp_path, ['S8N_MUON_E2'], dict(
+        arm='S8N_MUON', run=str(run), identity_sha256=f.sha(run / 'run_identity.json'), history=str(history),
+        weights_checkpoint=str(run / 'train/final')))
+    data = json.loads(path.read_text())
+    data.update(manifest_sha256='m', model='/model', parent=dict(
+        arm='S8N', run=str(tmp_path / 's8n'), identity_sha256=f.sha(tmp_path / 's8n/run_identity.json')))
+    path.write_text(json.dumps(data))
+    c = f.Campaign(path)
+    c.shared.mkdir()
+    monkeypatch.setattr(f, 'run_complete', lambda run, cfg: cfg == muon_config)
+    with pytest.raises(ValueError, match='not declared it complete'):
+        c.bind_continuation()
+    with history.open('a') as h:
+        h.write(json.dumps(dict(status='arm-complete', arm='S8N_MUON')) + '\n')
+    record = c.bind_continuation()
+    assert record['weights_sha256'] == f.sha(run / 'train/final/pytorch_model.bin')
+    assert c.initialization('S8N_MUON_E2') == (str(run / 'train/final'), record['weights_sha256'])
+    assert c.bind_continuation() == record                                  # idempotent
+    (run / 'train/checkpoint-3852/pytorch_model.bin').write_bytes(b'other')
+    with pytest.raises(ValueError, match='differs from checkpoint-3852'):
+        c.bind_continuation()
+    (run / 'train/checkpoint-3852/pytorch_model.bin').write_bytes(b'weights')
+    (run / 'train/final/pytorch_model.bin').write_bytes(b'changed')
+    (run / 'train/checkpoint-3852/pytorch_model.bin').write_bytes(b'changed')
+    with pytest.raises(ValueError, match='binds different weights'):
+        c.bind_continuation()
+    put(run / 'run_identity.json', dict(identity, config=s8n_config))
+    with pytest.raises(ValueError, match='identity changed'):
+        c.bind_continuation()

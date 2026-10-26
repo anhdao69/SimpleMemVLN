@@ -9,7 +9,9 @@ Every two minutes, for each follow-up lane:
   relaunches wait out a five-minute grace period, are at least 15 minutes apart and capped at three.
 
 If a predecessor step has been absent for six hours without reaching ``lane-complete`` (its own guardian
-has given up), the lane's ``OVERRIDE_PREDECESSOR`` control is created and the lane is launched.
+has given up), the lane's ``OVERRIDE_PREDECESSOR`` control is created and the lane is launched.  A
+predecessor may also require one of its arms to have completed (``requires_arm_complete``); without that
+record the lane keeps waiting, since its gates would refuse the missing parent anyway.
 
 Controllers are identity-bound and resume from their last checkpoint, so a relaunch repeats nothing that
 finished.  Before a relaunch, interrupted smoke and qualification directories (no recorded result) are
@@ -18,6 +20,10 @@ after ``stopped-by-request`` or with ``STOP_AFTER_CURRENT`` present.  The public
 launched, is restarted at most three times if it dies before finishing.  The guardian never touches a
 running step or process and never deletes anything.  State is in ``<root>/guardian/status.json``, the log
 in ``guardian.log``; create ``<root>/guardian/STOP`` to end it.
+
+Deploy a copy as ``<root>/guardian/s8n_followup_guardian.py`` (the campaign root is its parent directory)
+and run it with the system python3 -I on the login node.  Lane step names and publication watchers come
+from the campaign's ``campaign.json`` (defaults: ``s8n-lane-<L>`` and the M5_S follow-up watcher).
 """
 import argparse
 import datetime
@@ -29,10 +35,11 @@ import subprocess
 import time
 
 BASE = Path('/mnt/data/vmo-ai-task/anhdh35')
-ROOT = BASE / 'm5-s8n-followup-20261025'
-OPS = ROOT / 'guardian'
+OPS = Path(__file__).resolve().parent
+ROOT = OPS.parent
 PYTHON = BASE / 'SimpleMemVLN/.venv/bin/python'
-WATCHERS = {'M5_S_followup': (BASE / 'm5-s8n-followup-publication-20261025', 'watch_publish_followup.py')}
+DEFAULT_WATCHERS = {'M5_S_followup': (BASE / 'm5-s8n-followup-publication-20261025', 'watch_publish_followup.py')}
+WATCHERS = {}
 POLL, GRACE, SPACING, MAX_RELAUNCH, ABANDONED = 120, 300, 900, 3, 6 * 3600
 FINAL = 'lane-complete'
 
@@ -89,6 +96,18 @@ def unfinished_arms(arms, rows):
     return [a for a in arms if a not in done]
 
 
+def campaign_watchers(campaign):
+    """Publication watchers the campaign declares; the first follow-up campaign predates the key."""
+    declared = campaign.get('watchers')
+    if declared is None:
+        return dict(DEFAULT_WATCHERS)
+    return {name: (Path(w['ops']), w['script']) for name, w in declared.items()}
+
+
+def step_name(lane, spec):
+    return spec.get('step_name', f's8n-lane-{lane}')
+
+
 def set_aside(path, moved):
     target = path.with_name(f'{path.name}.interrupted-{time.strftime("%Y%m%dT%H%M%S", time.gmtime())}')
     path.rename(target)
@@ -107,18 +126,19 @@ def set_aside_interrupted(arms):
     if not (shared / 'QUALIFIED.json').exists():
         if not gates.get('zero-muon-ds', {}).get('passed') and (shared / 'zero_muon_ds').is_dir():
             set_aside(shared / 'zero_muon_ds', moved)
-        if not gates.get('reproduction', {}).get('passed'):
-            for run in sorted((shared / 'reproduction').glob('S8N_*')):
-                if run.is_dir() and '.interrupted-' not in run.name and not (run / 'result.json').exists():
-                    set_aside(run, moved)
+        for name in ('reproduction', 'continuation'):
+            if not gates.get(name, {}).get('passed'):
+                for run in sorted((shared / name).glob('S8N_*')):
+                    if run.is_dir() and '.interrupted-' not in run.name and not (run / 'result.json').exists():
+                        set_aside(run, moved)
         if not gates.get('recovery', {}).get('passed') and (shared / 'recovery').is_dir():
             set_aside(shared / 'recovery', moved)
     return moved
 
 
-def launch_lane(lane, job, dry_run):
-    command = ['srun', f'--jobid={job}', '--overlap', '--gpus=4', '--nodelist=worker-2',
-               f'--job-name=s8n-lane-{lane}', str(ROOT / 'lanes' / f'run_lane_{lane}.sh')]
+def launch_lane(lane, spec, dry_run):
+    command = ['srun', f'--jobid={spec["job"]}', '--overlap', '--gpus=4', '--nodelist=worker-2',
+               f'--job-name={step_name(lane, spec)}', str(ROOT / 'lanes' / f'run_lane_{lane}.sh')]
     if dry_run:
         return dict(command=command, pid=None)
     out = (ROOT / 'lanes' / f'lane_{lane}.out').open('a')
@@ -173,8 +193,26 @@ def check_watcher(name, state, dry_run):
     log(f'{name} watcher pid {status.get("pid")} was dead; restarted (restart {record["restarts"]})')
 
 
+def required_arm_missing(predecessor):
+    """The arm the predecessor lane must have completed, while its ``arm-complete`` record is missing."""
+    arm = predecessor.get('requires_arm_complete')
+    if arm is None:
+        return None
+    rows = []
+    try:
+        text = Path(predecessor['history']).read_text()
+    except OSError:
+        return arm
+    for line in text.splitlines():
+        try:
+            rows.append(json.loads(line))
+        except ValueError:
+            continue
+    return None if any(r.get('status') == 'arm-complete' and r.get('arm') == arm for r in rows) else arm
+
+
 def predecessor_state(lane, spec, record, active, dry_run):
-    """'finished', or why the lane must keep waiting for its L-campaign predecessor."""
+    """'finished', or why the lane must keep waiting for its predecessor."""
     predecessor = spec['predecessor']
     status = read_json(predecessor['state'], {}).get('status')
     alive = predecessor['step'] in {s for s, _ in active}
@@ -182,15 +220,19 @@ def predecessor_state(lane, spec, record, active, dry_run):
     if alive:
         record['predecessor_absent_since'] = None
         return 'predecessor step alive'
-    if status == predecessor.get('final_status', FINAL):
-        return 'finished'
-    if any(name.strip().startswith('l-lane-') for _, name in active):
+    prefix = predecessor.get('step_name_prefix', 'l-lane-')
+    if any(name.strip().startswith(prefix) for _, name in active):
         record['predecessor_absent_since'] = None
-        return 'an L controller step is alive'
+        return f'a {prefix}* controller step is alive'
+    missing = required_arm_missing(predecessor)
+    if status == predecessor.get('final_status', FINAL):
+        return f'predecessor ended without completing {missing}' if missing else 'finished'
     record['predecessor_absent_since'] = record.get('predecessor_absent_since') or time.time()
     absent = time.time() - record['predecessor_absent_since']
     if absent < ABANDONED:
         return f'predecessor {status} and absent for {absent / 60:.0f} min'
+    if missing:
+        return f'predecessor {status}, absent and without completing {missing}'
     override = ROOT / 'lanes' / lane / 'OVERRIDE_PREDECESSOR'
     if not override.exists() and not dry_run:
         override.parent.mkdir(parents=True, exist_ok=True)
@@ -214,7 +256,7 @@ def check_lane(lane, spec, state, dry_run):
     if active is None:
         record['action'] = 'squeue failed; retry next cycle'
         return
-    own = [s for s, name in active if name.strip() == f's8n-lane-{lane}']
+    own = [s for s, name in active if name.strip() == step_name(lane, spec)]
     record['steps'] = own
     if own:
         record.update(action='none (controller alive)', missing_since=None)
@@ -224,7 +266,7 @@ def check_lane(lane, spec, state, dry_run):
         if waiting != 'finished':
             record['action'] = f'waiting: {waiting}'
             return
-        launched = launch_lane(lane, job, dry_run)
+        launched = launch_lane(lane, spec, dry_run)
         record.update(launches=1, last_launch=time.time(), missing_since=None, action='launched')
         log(f'lane {lane}: predecessor finished ({record.get("predecessor_status")}); launched {launched}')
         return
@@ -242,7 +284,7 @@ def check_lane(lane, spec, state, dry_run):
         record['action'] = 'controller step absent; waiting for relaunch spacing'
         return
     moved = [] if dry_run else set_aside_interrupted(unfinished)
-    launched = launch_lane(lane, job, dry_run)
+    launched = launch_lane(lane, spec, dry_run)
     record['relaunches'] += 1
     record.update(last_launch=time.time(), missing_since=None,
                   action=f'relaunched (relaunch {record["relaunches"]})', moved=moved)
@@ -255,10 +297,13 @@ def main():
     p.add_argument('--once', action='store_true', help='One cycle, print the state, then exit')
     p.add_argument('--dry-run', action='store_true', help='Decide but never launch, create or rename anything')
     args = p.parse_args()
-    OPS.mkdir(exist_ok=True)
+    campaign = read_json(ROOT / 'campaign.json')
+    if campaign is None or Path(campaign['root']).resolve() != ROOT:
+        raise SystemExit(f'Run the copy deployed as <campaign root>/guardian/ (not {OPS})')
     lock = (OPS / 'guardian.lock').open('a+')
     fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    lanes = read_json(ROOT / 'campaign.json')['lanes']
+    lanes = campaign['lanes']
+    WATCHERS.update(campaign_watchers(campaign))
     state = read_json(OPS / 'status.json', {}) if not args.dry_run else {}
     state.update(pid=os.getpid(), host=os.uname().nodename, lanes=state.get('lanes', {}),
                  watchers=state.get('watchers', {}))

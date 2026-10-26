@@ -2,13 +2,16 @@
 
 Adapted from the S-arm publisher. The follow-up lane controller must have declared the arm complete; the
 bound run identity is re-derived from the sealed source; all-rank coverage and finite losses are checked;
-the data order is S8N's (LR/Muon arms) or a reordering of S8N's episodes (the continuation); serving files
-are copied from checkpoint-3852 (bitwise checked) and the real navigation model strictly reloads on CPU.
+the data order is S8N's (LR/Muon arms) or a reordering of S8N's episodes (the continuations, S8N_MUON_E2
+in exactly S8N_E2's order); serving files are copied from checkpoint-3852 (bitwise checked) and the real
+navigation model strictly reloads on CPU.
 One Hub commit adds only ``<ARM>/`` on an optimistic parent revision and never overwrites; every file is
 then verified by SHA-256 and size at the immutable revision.
 
 Runs from an operations directory outside the sealed source (which must stay clean):
     publish_followup.py ARM [--check-only]
+The directory's ``publication.json`` names the campaign and its arms (the first follow-up campaign's
+directory predates it).
 """
 import argparse
 import datetime
@@ -24,10 +27,13 @@ for key in ('HF_HUB_OFFLINE', 'TRANSFORMERS_OFFLINE'):
     os.environ.pop(key, None)
 
 BASE = Path('/mnt/data/vmo-ai-task/anhdh35')
-CAMPAIGN = BASE / 'm5-s8n-followup-20261025/campaign.json'
 OPS = Path(__file__).resolve().parent
+SETTINGS = (json.loads((OPS / 'publication.json').read_text()) if (OPS / 'publication.json').exists() else
+            dict(campaign=str(BASE / 'm5-s8n-followup-20261025/campaign.json'),
+                 arms=['S8N_E2', 'S8N_LR1E5', 'S8N_MUON']))
+CAMPAIGN = Path(SETTINGS['campaign'])
 REPO = 'anhdao69/M5_S'
-ARMS = ('S8N_E2', 'S8N_LR1E5', 'S8N_MUON')
+ARMS = tuple(SETTINGS['arms'])
 SERVING = {'pytorch_model.bin', 'navigation.json', 'config.json', 'generation_config.json',
            'preprocessor_config.json', 'processor_config.json', 'tokenizer_config.json', 'tokenizer.json',
            'chat_template.jinja'}
@@ -41,7 +47,7 @@ sys.path[:0] = [str(SOURCE / 'src'), str(SOURCE)]
 from scripts.memory_sweep.s_campaign import EXPECTED_STEPS, WORLD, latest_resources, run_complete, sha, write  # noqa: E402
 from scripts.memory_sweep.s8n_followup import ARMS as DECLARED, MUON, Campaign, exposure_plan  # noqa: E402
 
-assert set(ARMS) == set(DECLARED)
+assert set(ARMS) == {arm for lane in campaign_data['lanes'].values() for arm in lane['arms']} <= set(DECLARED)
 
 
 def now():
@@ -80,15 +86,24 @@ def validate_training(arm):
     for key in ('losses', 'grad_norms'):
         checks.pop(key, None)
     exposures, parent = exposure_plan(run / 'train'), exposure_plan(PARENT_RUN / 'train')
-    if DECLARED[arm].get('continue_parent'):
+    bound = campaign.initialization(arm)
+    if bound:
         assert exposures != parent, f'{arm}: repeats S8N\'s first-epoch order'
         uids = lambda plan: {u for r in plan.values() for e in r.values() for u in e}   # noqa: E731
         assert uids(exposures) == uids(parent), f'{arm}: episodes differ from S8N\'s'
         initialization = json.loads((run / 'train/weights_initialization.json').read_text())
-        assert initialization['weights_sha256'] == campaign.parent['weights_sha256']
+        assert initialization['weights_sha256'] == bound[1] == identity['init_weights_sha256']
         assert initialization['optimizer'] == initialization['scheduler'] == 'fresh'
         checks['continuation'] = dict(parent_weights_sha256=initialization['weights_sha256'], sampler_epoch_offset=1,
                                       unique_episodes=len(uids(exposures)))
+        if DECLARED[arm].get('continue_from'):
+            assert sha(Path(bound[0]) / 'pytorch_model.bin') == bound[1], f'{bound[0]} changed'
+            order = exposure_plan(campaign.continuation['order_reference'])
+            assert exposures == order, f'{arm}: data order differs from S8N_E2 (the second-epoch order)'
+            checks['continuation'].update(init_parent=campaign.continuation['arm'], init_weights_checkpoint=bound[0],
+                                          exposures_identical_to_s8n_e2=sum(len(u) for r in exposures.values()
+                                                                            for u in r.values()),
+                                          init_weights_published=published_parent_weights(campaign, bound[1]))
     else:
         assert exposures == parent, f'{arm}: training exposures differ from S8N'
         checks['exposures_identical_to_s8n'] = sum(len(u) for r in exposures.values() for u in r.values())
@@ -100,6 +115,19 @@ def validate_training(arm):
     navigation = json.loads((checkpoint / 'navigation.json').read_text())
     assert navigation['config'] == config
     return campaign, run, identity, checkpoint, record, resources, checks, navigation
+
+
+def published_parent_weights(campaign, digest):
+    """Where the continuation parent's weights were published (verified receipt), or None if not yet."""
+    receipt = Path(SETTINGS.get('parent_publication', '/nonexistent')) / campaign.continuation['arm'] / \
+        'UPLOAD_VERIFIED.json'
+    if not receipt.exists():
+        return None
+    saved = json.loads(receipt.read_text())
+    name = f'{campaign.continuation["arm"]}/pytorch_model.bin'
+    entry = next(f for f in saved['files'] if f['path'] == name)
+    assert saved['passed'] and entry['sha256'] == digest, f'published {name} differs from the initial weights'
+    return dict(repo=saved['repo'], revision=saved['revision'], path=name, sha256=entry['sha256'])
 
 
 def stage(arm, checkpoint, navigation, root):
@@ -146,7 +174,7 @@ def stage(arm, checkpoint, navigation, root):
 
 RECIPE = {
     'S8N_E2': lambda c: f"""S8N trained for **one more epoch**. The run starts from S8N's final weights
-(`pytorch_model.bin` SHA-256 `{c['parent']['weights_sha256']}`, the `S8N/` folder of this repository) with a
+(`pytorch_model.bin` SHA-256 `{c.parent['weights_sha256']}`, the `S8N/` folder of this repository) with a
 fresh AdamW state and the same schedule as S8N's epoch (116 warmup updates, cosine to 0.1 of peak LR 5e-6),
 over the same 30,815 episodes in the seed's second-epoch order (sampler seed 429 + 1). With S8N's epoch it
 has seen every episode twice (7,704 optimizer updates in total). The navigation config is S8N's exactly.""",
@@ -162,17 +190,44 @@ filters and scalars keep S8N's AdamW. Same warmup, cosine decay to 0.1 of peak, 
 and the exact episodes in the exact order. Muon runs on the ZeRO-2 CPU-offload partitions: each rank
 gathers the momentum update in BF16, orthogonalizes whole matrices on its GPU and updates its own slice,
 element for element as `torch.optim.Muon`.""",
+    'S8N_MUON_E2': lambda c: f"""S8N_MUON trained for **one more epoch**, exactly as S8N_E2 continues S8N. The run
+starts from S8N_MUON's final weights (`pytorch_model.bin` SHA-256 `{c.continuation_weights()['weights_sha256']}`,
+the `S8N_MUON/` folder of this repository) with a fresh optimizer state (S8N_MUON's Muon on the hidden-layer
+matrices, AdamW elsewhere) and the same schedule as an S8N epoch (116 warmup updates, cosine to 0.1 of peak
+LR 5e-6), over the same 30,815 episodes in the seed's second-epoch order (sampler seed 429 + 1): S8N_E2's
+order, update for update. With S8N_MUON's epoch it has seen every episode twice (7,704 optimizer updates in
+total). The navigation config is S8N_MUON's exactly.""",
+}
+
+VERIFICATION = {
+    False: """Before training, this source reproduced S8N's logged first updates (loss and gradient norm) and every
+first-epoch arm matched S8N's data order; the ZeRO Muon optimizer was checked against `torch.optim.Muon`
+under real DeepSpeed and through a fresh-process resume.""",
+    True: """Before training, this source bound the completed parent run's final weights (equal to its epoch
+checkpoint), ran the first updates from them with a fresh optimizer in S8N_E2's exact data order, checked the
+ZeRO Muon optimizer against `torch.optim.Muon` under real DeepSpeed, and resumed the continuation in a fresh
+process (weights, loss and optimizer state).""",
 }
 
 
-def readme(arm, run, identity, resources):
-    epoch = json.loads((run / 'train/reports/epoch-1.json').read_text())
-    parent = json.loads((PARENT_RUN / 'train/reports/epoch-1.json').read_text())
+def readme(campaign, arm, run, identity, resources):
+    columns = [(arm, run)]
+    if DECLARED[arm].get('continue_from'):
+        columns += [(campaign.continuation['arm'], Path(campaign.continuation['run'])),
+                    ('S8N_E2', Path(campaign.continuation['order_reference']).parent)]
+    else:
+        columns.append(('S8N', PARENT_RUN))
+    reports = [json.loads((path / 'train/reports/epoch-1.json').read_text()) for _, path in columns]
+    rows = '\n'.join(f'| {label} | ' + ' | '.join(f'{r[key]:.5f}' for r in reports) + ' |'
+                     for label, key in (('Action-weighted epoch loss', 'loss_action_weighted'),
+                                        ('First update loss', 'first_update_loss'),
+                                        ('Final update loss', 'last_update_loss')))
     hours = resources['seconds'] / 3600
     training = identity['config']['training']
+    continuation = bool(campaign.initialization(arm))
     return f"""# {arm} — S8N follow-up (M5 GDN S sweep), completed epoch
 
-{RECIPE[arm](campaign_data)}
+{RECIPE[arm](campaign)}
 
 Memory: S8N's (`episodic_window_gdn_sweep_v1`, score S8N: net state drift
 ‖S_after − S_before‖_F / max(‖S_before‖_F, ε_l), frame-level) with S8N's own calibrated memory file.
@@ -187,20 +242,16 @@ Asserted before launch: the resolved config equals S8N's bound config except
 updates, global batch 8 (4 H100 x 1 episode x accumulation 2), seed {training['seed']}, peak LR
 {training['backbone_lr']}, Adam 0.9/0.95, weight decay {training['weight_decay']}, clip 1, ZeRO-2 with CPU optimizer offload.
 
-| | {arm} | S8N |
-|---|---:|---:|
-| Action-weighted epoch loss | {epoch['loss_action_weighted']:.5f} | {parent['loss_action_weighted']:.5f} |
-| First update loss | {epoch['first_update_loss']:.5f} | {parent['first_update_loss']:.5f} |
-| Final update loss | {epoch['last_update_loss']:.5f} | {parent['last_update_loss']:.5f} |
+| | {' | '.join(label for label, _ in columns)} |
+|---|{'---:|' * len(columns)}
+{rows}
 
-Training loss is not navigation success{'' if arm != 'S8N_E2' else ', and this arm saw its episodes a second time'}.
+Training loss is not navigation success{', and this arm saw its episodes a second time' if continuation else ''}.
 Wall time {hours:.2f} h including load and saves; no GPU or host OOM.
 
 ## Verification
 
-Before training, this source reproduced S8N's logged first updates (loss and gradient norm) and every
-first-epoch arm matched S8N's data order; the ZeRO Muon optimizer was checked against `torch.optim.Muon`
-under real DeepSpeed and through a fresh-process resume. The lane controller declared the run complete; the
+{VERIFICATION[bool(campaign.continuation)]} The lane controller declared the run complete; the
 bound identity re-derives from the sealed source; all 3,852 updates and exposures are covered on every rank
 with finite losses; checkpoint-3852 is a complete epoch-boundary recovery checkpoint. Serving tensors are
 bitwise identical to it and the real navigation model strictly reloads on CPU with exact serializer and
@@ -231,18 +282,21 @@ def collect(campaign, arm, run, identity, checkpoint, record, resources, checks,
                (campaign.arm_memory_path(arm), 'arm_S8N.yaml'),
                (campaign.configs / 'runtime.yaml', 'runtime.yaml'),
                (campaign.policy_path(arm), f'policy_{arm}.yaml')]
-    if DECLARED[arm].get('continue_parent'):
+    if campaign.initialization(arm):
         sources.append((run / 'train/weights_initialization.json', 'weights_initialization.json'))
+    init_parent = campaign.continuation['arm'] if DECLARED[arm].get('continue_from') else None
+    if init_parent:
+        sources.append((campaign.shared / 'continuation_parent.json', 'continuation_parent.json'))
     for source, name in sources:
         shutil.copy2(source, provenance / name)
     if not (provenance / 'source_and_completion.json').exists():
         write(provenance / 'source_and_completion.json', dict(
             source_commit=SOURCE_COMMIT, source_directory=str(SOURCE), checkpoint=str(checkpoint), arm=arm,
-            parent='S8N', completed_epoch=1, optimizer_updates=EXPECTED_STEPS, global_batch=8,
+            parent='S8N', init_parent=init_parent, completed_epoch=1, optimizer_updates=EXPECTED_STEPS, global_batch=8,
             recovery_inventory=record, controller_completion=declared_complete(arm),
             export_source_weights_sha256=sha(checkpoint / 'pytorch_model.bin'),
             export_weights_sha256=sha(export / 'pytorch_model.bin'), verified_utc=now()))
-    (root / 'README.md').write_text(readme(arm, run, identity, resources))
+    (root / 'README.md').write_text(readme(campaign, arm, run, identity, resources))
     files = {f'{arm}/{p.name}': p for p in export.iterdir() if p.is_file() and p.name in SERVING}
     files.update({f'{arm}/provenance/{p.name}': p for p in provenance.iterdir() if p.is_file()})
     files[f'{arm}/README.md'] = root / 'README.md'
