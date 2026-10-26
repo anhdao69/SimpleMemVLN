@@ -98,7 +98,33 @@ GRPO, so whether it is interaction-efficient is decided by the M5 G = 8 control 
 
 ## 4. Memory behaviour
 
-Pending (`scripts/rl/analyze_memfork.py` on the MemFork training records).
+### 4.1 MemFork training records (`scripts/rl/analyze_memfork.py`, `results/m5/memfork_memory_behaviour.json`)
+
+Main trajectories of both ranks, per block of 25 RL steps (~48 k memory decisions per block). This is
+training-time behaviour, not an evaluation; the greedy-retention val_unseen result is in §3.
+
+| steps | decision entropy | agrees with M5 frame prior | drops the new candidate | drops the oldest | kept-frame age | memory fork re-drew a different m_t | |R_main − R_branch| differs / same | success flip differs / same |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0–24 | 1.33 | 0.35 | 0.33 | 0.11 | 12.2 | 0.75 | 2.70 / 3.08 | 0.16 / 0.19 |
+| 25–49 | 0.82 | 0.34 | 0.56 | 0.06 | 21.7 | 0.62 | 2.54 / 2.52 | 0.18 / 0.15 |
+| 50–74 | 0.61 | 0.46 | 0.68 | 0.03 | 25.9 | 0.51 | 2.89 / 2.25 | 0.15 / 0.16 |
+| 75–99 | 0.66 | 0.60 | 0.64 | 0.03 | 26.4 | 0.58 | 2.68 / 2.33 | 0.17 / 0.14 |
+| 100–124 | 0.21 | 0.87 | 0.86 | 0.02 | 36.2 | 0.20 | 1.96 / 2.48 | 0.14 / 0.15 |
+
+(Entropy of a uniform choice over the 5-frame pool is ln 5 = 1.61; ages in decision steps.)
+
+Reading, stated as observed:
+- Retention first spreads out (near-uniform early), then **collapses back onto the M5 prior**: by the
+  last block 87 % of sampled drops equal the frame-level GDN prior's choice and 86 % reject the newly
+  expiring candidate, so long-lived frames are kept (kept-frame age 12 → 36 steps). RL rediscovered
+  M5's own "keep old evidence, reject the new frame" rule rather than finding a different policy.
+- **Memory-fork credit fades with the entropy**: in the last block only 20 % of memory forks re-draw a
+  different m_t, so most memory forks carry no contrast for φ.
+- **No measurable causal effect of the re-drawn memory on return at the fork**: sibling return gaps and
+  success flips are not larger when the branch's memory differs than when it is identical (e.g. last
+  block 1.96 vs 2.48, 0.14 vs 0.15). Branch outcomes vary through action sampling either way.
+These are a warning for the memory-credit hypothesis: whatever MemFork gains over GRPO+F-B on val_unseen
+must be checked against A1 (frame-greedy memory + F-B), which isolates learned retention.
 
 ## 5. Verification done so far (CPU)
 
