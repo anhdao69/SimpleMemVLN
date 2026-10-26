@@ -2,10 +2,10 @@
   "done": [
     "m5_e1",
     "grpo",
-    "grpo_fb"
+    "grpo_fb",
+    "memfork"
   ],
   "pending": [
-    "memfork",
     "a3_actfork",
     "a2_memfork_grpo",
     "a1_frame_greedy_fb",
@@ -47,6 +47,18 @@
       "mean_episode_steps": 96.91027732463296,
       "episodes": 1839,
       "infra_retries": 0
+    },
+    "memfork": {
+      "sr": 0.6073953235454052,
+      "spl": 0.5540718341399813,
+      "navigation_error": 4.584581651057908,
+      "oracle_success": 0.6802610114192496,
+      "trajectory_length": 10.146468865992851,
+      "forced_stops": 153,
+      "failures": 0,
+      "mean_episode_steps": 103.04078303425774,
+      "episodes": 1839,
+      "infra_retries": 0
     }
   },
   "compute": {
@@ -71,6 +83,17 @@
       "policy_forward_steps": 447711,
       "trained_tokens": 1147368,
       "wall_hours": 20.71
+    },
+    "memfork": {
+      "updates": 125,
+      "main_rollouts": 4000,
+      "discarded": 1024,
+      "trained_sequences": 5654,
+      "main_env_steps": 278395,
+      "simulator_steps": 556041,
+      "policy_forward_steps": 437833,
+      "trained_tokens": 1134477,
+      "wall_hours": 21.46
     }
   },
   "paired": {
@@ -108,6 +131,24 @@
       "lost": 158,
       "mcnemar_p": 1.0435369908068815e-13
     },
+    "memfork_vs_m5_e1": {
+      "dSR": 0.09516041326808056,
+      "dSPL": 0.07450518488502184,
+      "dNE": -1.198460123836468,
+      "dOSR": 0.10059815116911364,
+      "ci_SR": [
+        0.07123436650353453,
+        0.11854268624252311
+      ],
+      "ci_SPL": [
+        0.053261913559824646,
+        0.09576717083729086
+      ],
+      "gained": 339,
+      "lost": 164,
+      "mcnemar_p": 4.583176874291725e-15,
+      "holm_p": 1.3749530622875175e-14
+    },
     "grpo_fb_vs_grpo": {
       "dSR": 0.04350190320826541,
       "dSPL": 0.05207123603496483,
@@ -124,6 +165,45 @@
       "gained": 258,
       "lost": 178,
       "mcnemar_p": 0.0001487437273254673
+    },
+    "memfork_vs_grpo": {
+      "dSR": 0.05057096247960857,
+      "dSPL": 0.05743623021787364,
+      "dNE": -0.7361915142464293,
+      "dOSR": 0.02338227297444262,
+      "ci_SR": [
+        0.028276237085372486,
+        0.07232191408374117
+      ],
+      "ci_SPL": [
+        0.03755712094989363,
+        0.07677133600149061
+      ],
+      "gained": 261,
+      "lost": 168,
+      "mcnemar_p": 8.263649220580357e-06,
+      "holm_p": 1.6527298441160713e-05
+    },
+    "memfork_vs_grpo_fb": {
+      "dSR": 0.007069059271343159,
+      "dSPL": 0.005364994182908811,
+      "dNE": -0.08038470868067904,
+      "dOSR": 0.030995106035889064,
+      "ci_SR": [
+        -0.01468189233278956,
+        0.028820010875475803
+      ],
+      "ci_SPL": [
+        -0.013782980475380754,
+        0.024760841303335408
+      ],
+      "gained": 212,
+      "lost": 199,
+      "mcnemar_p": 0.5539591044500166,
+      "holm_p": 0.5539591044500166
     }
+  },
+  "memory_behaviour": {
+    "memfork": "/data/anh/code/SimpleMem-memfork/plans/RL/research/results/m5/memfork_memory_behaviour.json"
   }
 }
