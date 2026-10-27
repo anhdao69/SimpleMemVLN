@@ -1,5 +1,13 @@
 # SimpleMemVLN
 
+## S8N DAgger for R2R and RxR 15°
+
+Use the [S8N collection runbook](docs/S8N_DAGGER.md) for the supported
+`s8n_dagger` collector, two-server queue, validation and merge tools. Expert
+takeovers commit the executed response to S8N's streaming memory. The
+[implementation review and validation report](evaluation_reports/S8N_DAGGER_COLLECTION.md)
+compares this protocol with `dagger_s8n_test` and records the production gates.
+
 ## Episodic memory campaign (`c2_episodic`)
 
 `episodic_window_v1` keeps, in each full-attention layer, the instruction prefix, the

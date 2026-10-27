@@ -1,5 +1,11 @@
 # On-policy DAgger for S8N (R2R-VLNCE train) — design and runbook
 
+> Historical R2R-only experiment retained for comparison. The supported joint
+> R2R/RxR15 collection on `dagger_s8n` uses the [new runbook](../docs/S8N_DAGGER.md)
+> and `s8n_dagger` entry points. See the
+> [comparison and validation report](../evaluation_reports/S8N_DAGGER_COLLECTION.md)
+> for the immediate-takeover, memory-feedback, length and merge decisions.
+
 Code: `src/qwen_vl/dagger/`, `scripts/dagger/`, tests `tests/dagger/` (44 CPU tests, no simulator or
 GPU needed). Branch base: `m5_s8n_followup` (S8N training/serving source).
 

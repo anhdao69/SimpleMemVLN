@@ -1,0 +1,352 @@
+{
+  "checkpoint": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/S8N",
+  "rgb": [
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0000.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0001.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0002.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0003.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0004.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0005.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0006.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0007.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0008.png",
+    "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0009.png"
+  ],
+  "steps": 10,
+  "episodic": {
+    "version": "episodic_window_gdn_sweep_v1",
+    "recent_groups": 4,
+    "budget_tokens": 1200,
+    "granularity": "frame300",
+    "score": "S8N",
+    "scoring_pairs": [
+      [
+        2,
+        3
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        14,
+        15
+      ],
+      [
+        18,
+        19
+      ],
+      [
+        22,
+        23
+      ],
+      [
+        26,
+        27
+      ],
+      [
+        30,
+        31
+      ]
+    ],
+    "selector_seed": 429,
+    "per_source_cap": null,
+    "score_backend": "fp32_torch_wy_block64_boundary_v1",
+    "score_segmentation": "prefix_obs_response_block64_v1",
+    "attention_backend": "episodic_fa2_varlen_gather_fp32acc_v1",
+    "head_reduction": "full_state_frobenius",
+    "statistic": "net_state_drift",
+    "priority_timing": "birth_fixed",
+    "score_dtype": "float32",
+    "key_normalization": "native_additive_eps_1e-6",
+    "cosine_epsilon": 1e-06,
+    "zero_value_threshold": 1e-06,
+    "state_layout": "value_heads_key_by_value",
+    "logical_position_policy": "preserve",
+    "candidate_policy": "resident_plus_newly_eligible",
+    "tie_break": "priority_desc_original_id_asc",
+    "slow_head_mask": null,
+    "slow_head_mask_sha256": null,
+    "drift_floor": [
+      [
+        2,
+        0.002814926028251648
+      ],
+      [
+        6,
+        0.003170354127883911
+      ],
+      [
+        10,
+        0.004197894811630249
+      ],
+      [
+        14,
+        0.003946574568748474
+      ],
+      [
+        18,
+        0.0036241079568862917
+      ],
+      [
+        22,
+        0.005562212705612183
+      ],
+      [
+        26,
+        0.014644123077392579
+      ],
+      [
+        30,
+        0.010751618385314942
+      ]
+    ],
+    "drift_floor_sha256": "40620ea74e9a551ac605d850fe6b16a411ab06ee7942e62ab1507245aaec778b",
+    "calibration_sha256": "293e780914ac105f7ba090716124f5c3c3e3aa55f8cabea14f92a0ea3a043cc8"
+  },
+  "provenance": {
+    "schema": "s8n_policy_gate_provenance_v1",
+    "weights_file": "pytorch_model.bin",
+    "weights_sha256": "c89de946f3cb05aa91a5cc498fd63991c901852ba0c05e6546cbaddf23446a2b",
+    "navigation_sha256": "12e94ae65e40d30422e1b0f1894c91788f9441c24a781b4a957a471d94ecd15b",
+    "model_path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/g3_m5_epoch1_20261017/base_model",
+    "instruction": "Go to the tub\r\nGo to the rug\r\nGo to the couch\r\nGo to the thermostat\r\nGo to the electrical receptacle\r\nGo to the bed.",
+    "source_root": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/source/src/qwen_vl",
+    "source_git_revision": null,
+    "source_sha256": {
+      "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "contracts.py": "8b2c459e0f9d9fd4686fc3a397fceb88a0ed3a94c6e52317b82785905bb14405",
+      "data/__init__.py": "bde5ddc22a4a6bdd770ad2f33654de2f132c817b2a0cfe25779a6c597d2a433f",
+      "data/candidates.py": "c141198487ee8a7144d145262ad6b701b7c02c123aaa215126dd0125dce322e4",
+      "data/data_qwen.py": "69049e220bdbf6f5f6e495a6d36c85c024af3b7792d8f9b5b4d5f905ed15bbd1",
+      "data/episode_dataset.py": "f5311840d13acaea17089cf9d881999d33ce40114002539584b24600e7ef9ad6",
+      "data/episode_serializer.py": "8f75bc9a4e0b6d366e5dc5c2ece108711d8afb870bf08ec3ffd9e85eb401508b",
+      "data/episodic_metadata.py": "b894b5012fc371e6a88258dae8d847df946ed4d2937f5ab629def685577dc6a3",
+      "data/lane_metadata.py": "760ebe7361d54e686363e14ae4a9ae03c000393339c266b35204b8a80f57f529",
+      "data/vggt_online.py": "f97798ae5770a06a7133d537a84724c903df56a96d2b83f46062a185e58ec5e6",
+      "eval/__init__.py": "cd0716138ae19d0b83d24c7c7812b767937769730a68e8b38cfe1c888cc3e9b0",
+      "eval/action_metrics.py": "88750e66aa5d2cd5bfde2eadc4b559150049901a6c0ee342d373095a16e0e6af",
+      "eval/habitat_r2r.py": "3494770ee7080f6e49df8f6bf1a2137ed5a66a595eb530675ebacd972a32f19d",
+      "eval/metrics.py": "12e5af6b38ce9273b8b619138f12865dca4cd3883cc687525e6d33293ebda794",
+      "models/__init__.py": "91a67bfc89269b248fd117c1bee2e89bf4508419c52bfb36a5802ec795d05e78",
+      "models/action_loss.py": "f8b48e84048ef9005b0a30cb22618a58db2da6776838a64653c257e5d9b353c2",
+      "models/activation_offload.py": "cc8c0270cdd1dcf587e1ba8289e836ba35b308d96b57816c458adf1dfdafb812",
+      "models/committed_write.py": "9a351e80c7054bcd97b967223baa3b63d24e59433d55911495bd7d1dabe22b16",
+      "models/episodic_forward.py": "b9b3a03d0de5224ac7d92ce3ff3854d26dfcc9149b15ff570f4ffe06a78bbf76",
+      "models/gdn_features.py": "154b7aa2363eadce75c2c742961f3b931e9f461221a3f540646f2109b5f9de15",
+      "models/install_step_lane.py": "4fd58fe4920e995f88d333c2dcb7bfffe4a2e34ec4dd4d26fcbfd0d751086145",
+      "models/nav_model.py": "8202d95940ad9d83859b93e36f8b2ffb8c4d1d8396e93f8e2eac47880c36b3c5",
+      "models/parallel_step_lane.py": "58e2e4ec29974715ba18b211285f57016bdc94798ae7f60590bfe16aeb21e494",
+      "models/research_forward.py": "774787fc8058b551201cc70781b70abd0c5aad7e38d88da9e540e4c483b43550",
+      "models/vggt_aux_heads.py": "01deff468eafc161c6bbc2a9fe0226862d1f14c33f0b5dda68a4b4658eba9831",
+      "models/vggt_g3_forward.py": "2395bac66a7dd2456fd8ab1138730553bdb390127ded337d43740771cd9c5c12",
+      "models/vggt_g3_heads.py": "59dbdad045c460762b7e61da7f88071edf828af1a993ded21c8fffc5b9834e82",
+      "research/episodic_contract.py": "7e49eed80d2601a0ab43d4d18c14b56577c2b568f112aa44b1c4c6471e80c07c",
+      "research/gdn_sweep_contract.py": "dda3fe816a312b763e517486d71ecea95afd50506a81253d56cf3d37dc72090c",
+      "research/lane_contract.py": "2aef55eec7cf74b2ea1347f929da3dae1c7f2b49c4ebd056f84b9cd04f57f27c",
+      "research/vggt_g1.py": "3959d42b03721ec6944540a6e76303921ceaec89af9ddfcc3d9b102daca8d048",
+      "research/vggt_g3.py": "09b914e04440459cd7a5e2c35b68e01b2744935b00f9bb40fffe0060ec846839",
+      "research/vggt_g3_teacher.py": "91fab33372f42c22de5991bc7bcfb85480193eb00d3c94b7c3df563419c5fb5e",
+      "research/vggt_omega.py": "86a343a553147c5c15c10c24289e9b46392a6ef51fd720eb8c83cb7141282a60",
+      "research/vggt_sampling.py": "f195efb0b1867c98286a340a56e23f53da02d5d4affa94c451356d64269a418f",
+      "stream/__init__.py": "f2fc60a24705fd98f663ad59abb8ed980150771a1e74f91ed3ad16d86cf7d1ec",
+      "stream/cache.py": "9fd3cf471f115024ae695cea534fdeafa1e58a36be8a567abb5f4984e3ccbc18",
+      "stream/episodic.py": "a6985800e650016500e81afaa8fe0acfc8840cb00e513b8d347d7916c5959fbb",
+      "stream/episodic_cache.py": "9580dbc1152cfad00a358016da449c12fc56f47cc69616833f2ee3c31ce92732",
+      "stream/gdn_selectors.py": "9d0d46ca0e9bc37dc20e7309c6021c9bc61e54df77fada30b762e142f936c5df",
+      "stream/gdn_sweep_state.py": "218b82690f4c246c16bfaba348576145e248e91cd6dd3a67285832ca4feb370d",
+      "stream/lane_cache.py": "15116208eb11f811c5eeb4fdb681e5e0094517c1b5db324d6585625e83613dfd",
+      "stream/positions.py": "9e9b397cd3abdfd0aa7d42646f1aa817ac8c58027827c9773cfbf46bb1774279",
+      "stream/server.py": "2e5a733b0b0826104afd7f0b1ea6966cfa1759bbbd798bae8cbb0cb7f56e6ca5",
+      "stream/session.py": "007e05e9b0acbbb1fd528d4e0dd1afa2e4b6b98d2c31530233a8fc2828b0e563",
+      "stream/timing.py": "405d2c114ab565ff497b91a9160f86958f72eb01fc648a20a7d8d31825006240",
+      "stream/transport.py": "c612971bdd8e55673aca5fc5514143ad215dc9fc67023b9aa3c2cc14a2f74f2c",
+      "stream/window_attention.py": "7e20add42952c8a15ce2e3e56b04ef1aaace4457e1c90a32240a44ad21cbfb4a",
+      "train/action_reporting.py": "8f41cf1ffd41aca1d0d45c16c7f962eaffbd534fd1f3aeaeccc3aa36c7de6488",
+      "train/argument.py": "1cd337494566de239c80d95aefdcac1996a5cc1a787a266ccea8a4d0259a9822",
+      "train/campaign.py": "cca3dcdc8c21478a1c0b790cdf1772f1796ab963a06b29257c9af80bdde64fe5",
+      "train/campaign_lease.py": "20c666fc0b587f3a41bde181d65601f746783632a49384704ef27a12600f928d",
+      "train/host_memory.py": "f8e8c2d4028eb11efeb72cbc22c2bde8e56d1f5b694e2a51135dc9b66cbc7179",
+      "train/lane_initialization.py": "d68e763f637600874c1db83c3bf082f3138e7cc9b868df417968d016ba74f30b",
+      "train/lane_reporting.py": "8a8107c6541896cec9c680c915cd58c4746f49ed17ef6ce5898e23cf127ca552",
+      "train/recovery.py": "038213b04ca165fb335ac16cea07d80233de3318cb2038e9805880098f61858e",
+      "train/sampler.py": "63ae756ee57b429bcb48f2ab5f2d97f8685fa4a29d8288df78babca73a884dc5",
+      "train/train_episode.py": "57bc4a256c35ddec0c76ed71bab5c5086c2b375f9834ac9e7374c7e33d2b973c",
+      "train/train_qwen.py": "799a41a03b929dc73bed9fe8fc9e899854a20e5901b608876d706467536fdb49",
+      "train/trainer.py": "104728b52eb749dff2e6f1b040156a53a3d71fd79a71b6de99239b5cf488841b",
+      "train/vln_runtime.py": "dfe1159e6e2a252ac9b7f72cc619c1141961744920f59a731635ed4fe0875544"
+    },
+    "adapter_root": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/janus_v2/code/s8n_dagger",
+    "adapter_git_revision": "295e85e6081be2a8d8d9d786f2ba47ca22e0667b",
+    "adapter_sha256": {
+      "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "campaign.py": "618164f5719bc924d73eff3aca36425748989f17fc89c9d8283cf74faf6f8cb1",
+      "check_policy.py": "a15046aae31ed11b37781036e97d60a0e3c94cd8d41a8f505c74b5e4fb43ed7b",
+      "collect.py": "ce988ebe05aa93f43c34a9fd8c0661a1d18d1243160b0c46517c87512c598900",
+      "common.py": "afda1dcc7d5fde41ea5af80db470dd322fc2b837e3edb61eb9f99ac56c0842eb",
+      "merge.py": "6a53494440f00dc2c263238f4e963c61f57d32fc4d916f3ed1e58c54268668c5",
+      "model_server.py": "7071af5baadb02da3e07514eac14f8eec1da7ff41aeec0195bb9b46306588120",
+      "oracle.py": "e348b1f7b75365bf4ac854e18779dffaf519eef53056ca3d6730e91c2cee145d",
+      "policy.py": "defbe2f22d20883fd50798d4ba9dd3f3711c9a9edd7ab85b943e0ddb785519e0",
+      "run.py": "fd52f1b214148bdc2943a84a67563f7a8cd7580b265140798841097e1f204823",
+      "validate.py": "03feb89853bcb422a7eb7b0893f7306bcd32b1134abc62eee50b5d68e77897c1"
+    },
+    "rgb": [
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0000.png",
+        "file_sha256": "75d2e9003dbc9dde85680846d455206b1b56f0520781ba03d5bb57ecac0db91a",
+        "decoded_rgb_sha256": "22fa9779c227cdd50825fae1aa13b739d725a0cc6ad46b825a551f426cf9a85e",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0001.png",
+        "file_sha256": "ff89dcc6c49f06f31b2fcc79c24ff62ab08c2b48e7e9e34aff490bff12a81219",
+        "decoded_rgb_sha256": "879053cec5e009d8b87647c91a32736b43f1fc9f87c7a03c371ebe629a95dbe0",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0002.png",
+        "file_sha256": "e3b8616d593a0819d7935640b9fe96cdb60373d1361ab1067cf14aae3a13846d",
+        "decoded_rgb_sha256": "150184ef1ea9639eed866a3babba2bfd55076b2b1636fb14789603fa2261ee85",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0003.png",
+        "file_sha256": "66d8cc0c6eb4a7a780229ef08903e1dabdec34c6c377f31125744bc054361564",
+        "decoded_rgb_sha256": "8ff01ee601f5eb7af1878e8444e238f4d0455d111eb76c1428869f8ca86d0126",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0004.png",
+        "file_sha256": "de5b95c35e5d6f294e993a9b4e77228468155a212f7942c6c2addd3df7f9c815",
+        "decoded_rgb_sha256": "f0da09f9cbb50da358830a9d12be506e8328aa2bd6e9349fe4a7ada20e57e90c",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0005.png",
+        "file_sha256": "21323ad8c0f15ad7f8dc372a468f6aa9313a00991727e70bd0ddbe5ca2d1ce30",
+        "decoded_rgb_sha256": "3ddd6b931edc7a193a6808b062f6216974cd23efee5a490e7208eb361398205a",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0006.png",
+        "file_sha256": "315aebd9e988aba9606984b60ab3c152f093200aca8455ec9a9555bec11d4159",
+        "decoded_rgb_sha256": "24661fd1e051f404a45849625ecb7dada81d48418b51f358038c180e512a467a",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0007.png",
+        "file_sha256": "c590d3d6496d634c56284e988515be64d4ff44120ba42d44337eef470f11fd2c",
+        "decoded_rgb_sha256": "5a653cb9a13dff406ada4c077362fedb5430b65dcfcb98a76a6a5b62fcf5cd45",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0008.png",
+        "file_sha256": "a80b6ad9d19bf69008c9c77d12c6b6ea2135b3344195204e7952af2412754f2d",
+        "decoded_rgb_sha256": "a18c0e5aac1228ed21584b2881424f8388a79d3790d80cc40d780068d8238a55",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      },
+      {
+        "path": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/dagger/s8n_20261027/smoke/r2r/episodes/1760/rgb/0009.png",
+        "file_sha256": "322227e972350ac252c09ad7fb0856e4334de983eec1b6ee4c444af8a1f5f84c",
+        "decoded_rgb_sha256": "e41b106dcdb00e01c46088b71331662deb7b3fa120c086dc80b35dc52d27ce02",
+        "shape": [
+          480,
+          640,
+          3
+        ],
+        "dtype": "uint8"
+      }
+    ],
+    "runtime": {
+      "python": "3.12.13",
+      "torch": "2.10.0+cu129",
+      "cuda_runtime": "12.9",
+      "dependencies": {
+        "transformers": "5.11.0",
+        "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+        "flash-linear-attention": "0.5.2",
+        "numpy": "2.4.4",
+        "pillow": "12.2.0",
+        "tokenizers": "0.22.2",
+        "fla-core": "0.5.2",
+        "triton": "3.6.0"
+      },
+      "torch_threads": 2,
+      "cuda_visible_devices": "0",
+      "allocator_config": "",
+      "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "capability": [
+        12,
+        0
+      ]
+    }
+  },
+  "pure_learner_bitwise_equal": true,
+  "override_force_bitwise_equal": true,
+  "executed_override_actions": [
+    0,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2
+  ],
+  "continuation_bitwise_equal": true,
+  "reset_bitwise_equal": true,
+  "peak_allocated_gib": 8.768721103668213,
+  "status": "passed"
+}
