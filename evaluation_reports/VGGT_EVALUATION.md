@@ -1,5 +1,44 @@
 # VGGT campaign — R2R evaluation report
 
+Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261026.json) covers 43 navigation journals and the 35 existing latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261026.json) distinguishes the server snapshot from these merged reports.
+
+Verified snapshot: **2026-10-27T07:08:12.063755+07:00**. Metrics independently recomputed from saved episode journals; unique IDs, panel membership, available contract order and action metadata checked. There are **43 navigation runs** in this index: 40 full-panel attempts and three partial runs (L2, L3, G3_M5). Of the full-panel attempts, S7 contains one execution failure and failed final navigation validation. Numerical qualification is separate from navigation validation. No evaluation was restarted by this report update.
+
+S8N_MUON, L0/L1, both S8N training follow-ups and all four resumed budget arms are complete. L2/L3 remain interrupted; G3_M5 is archived partial. S8N_MUON finished on `10.148.182.137`, and all 1,839 episodes were gathered and validated locally. Its migration preserved 1,301 episodes and verified weights/source/assets plus 169 matching smoke frames; only path prefixes changed.
+
+S8N epoch1 has the highest completed SR in this index: **964/1,839 (52.419793%)**. Comparisons below are descriptive, not significance claims. Partial rows must not be ranked as full-panel results. S6, S8N epoch2, S8N_MUON, R4/B2400 and R2/B1200 retain explicit unqualified-diagnostic labels. S1 BF16, S4, S5 and M5_E1 R4/B1200 also retain native numerical-replay failures despite navigation validation passing.
+
+[Machine-readable evidence](evidence/ALL_RESULTS_20261027.json) · [CSV](evidence/ALL_RESULTS_20261027.csv) · [Latency and SR](evidence/ALL_LATENCY_SR_20261027.csv).
+
+## VGGT results
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| G1 | 1,839 | 914 | 49.700924 | 46.072125 | 0 | COMPLETE — recomputed | See historical evidence |
+| G3 | 1,839 | 956 | 51.984774 | 48.095941 | 0 | COMPLETE — recomputed | PASS (4/4 passed) |
+| G3_fixed01_seed430 | 1,839 | 909 | 49.429038 | 45.655180 | 0 | COMPLETE — recomputed | See historical evidence |
+| G3 DINOv3 ViTB16 | 1,839 | 879 | 47.797716 | 44.574182 | 0 | COMPLETE — recomputed | See historical evidence |
+| G3A1 | 1,839 | 877 | 47.688961 | 43.548813 | 0 | COMPLETE — recomputed | See historical evidence |
+| G3_M5 | 135 | 64 | 47.407407 | 42.989009 | 0 | PARTIAL — archived | PASS (2/2 passed) |
+| A0 | 1,839 | 910 | 49.483415 | 45.394182 | 0 | COMPLETE — recomputed | See historical evidence |
+| A1 | 1,839 | 929 | 50.516585 | 46.873430 | 0 | COMPLETE — recomputed | See historical evidence |
+| R1 | 1,839 | 907 | 49.320283 | 45.825211 | 0 | COMPLETE — recomputed | See historical evidence |
+
+## Reference baselines
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| V0 | 1,839 | 852 | 46.329527 | 41.756802 | 0 | COMPLETE — recomputed | FAIL (0/3 passed) |
+| Window8-B-E1 | 1,839 | 907 | 49.320283 | 45.561094 | 0 | COMPLETE — recomputed | See historical evidence |
+
+G3_M5 is archived with 135 completed episodes, 64 successes; its earlier 134-episode snapshot is superseded. It is not a final SR. G3_M5 combined and the separately named L8/L16/L24 TRIPLE latency configuration must not be conflated. No verified TRIPLE navigation result is added here.
+
+The [archived implementation and provenance narrative](archive/20261027_pre_refresh/VGGT_EVALUATION.md) preserves original model descriptions and historical qualification details. Use the current evidence index for metrics. See [all results](ALL_RESULTS.md) and [latency](LATENCY_EVALUATION.md).
+
+## Preserved cross-server narrative — through the October 24 sync
+
+The following dated sections retain the earlier Vinh evaluations, source identities, qualification details and historical snapshots. Current server counts are given above; dated partial or running labels below describe their original snapshot.
+
 Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261024.json) covers 33 navigation journals and 35 latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261024.json) distinguishes original server snapshots from the merged reports.
 
 ## Current journal refresh — 2026-10-24T21:21:47.211620+07:00

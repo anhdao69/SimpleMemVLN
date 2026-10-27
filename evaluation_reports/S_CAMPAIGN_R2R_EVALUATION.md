@@ -1,6 +1,24 @@
 # M5 GDN S campaign — R2R evaluation results
 
-Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261024.json) covers 33 navigation journals and 35 latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261024.json) distinguishes original server snapshots from the merged reports.
+## Final follow-up update — 2026-10-27
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| S8N epoch 2 | 1,839 | 912 | 49.592170 | 44.939655 | 0 | FINAL — unqualified diagnostic | FAIL (2/3 passed) |
+| S8N LR1E5 | 1,839 | 908 | 49.374660 | 46.435271 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S8N_MUON | 1,839 | 779 | 42.359978 | 37.786090 | 0 | FINAL — unqualified diagnostic | FAIL (0/3 passed) |
+
+### Completed inference-budget sweep
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| S8N_R4_B600 | 1,839 | 947 | 51.495378 | 47.809805 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S8N_R4_B2400 | 1,839 | 947 | 51.495378 | 47.924136 | 0 | FINAL — unqualified diagnostic | FAIL (1/3 passed) |
+| S8N_R2_B1200 | 1,839 | 915 | 49.755302 | 46.151563 | 0 | FINAL — unqualified diagnostic | FAIL (1/3 passed) |
+| S8N_R8_B1200 | 1,839 | 931 | 50.625340 | 47.094037 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+
+All rows above cover 1,839 episodes with zero execution errors; qualification warnings remain. The original 14-run campaign below is preserved with its dated evidence. For all 43 navigation runs, see [the consolidated report](ALL_RESULTS.md).
+
 
 Verified snapshot: **2026-10-24T21:21:47.211620+07:00** (Asia/Ho_Chi_Minh).
 This supersedes the October 22 partial snapshot and baseline launch-only entries.
@@ -108,7 +126,7 @@ episode in its observed trajectory/error statistics, with zero SR/SPL credit.
 All S arms use R4 including current and B1200. Token arms select individual
 visual rows; frame arms retain four complete 300-row visual frames. Priority is
 fixed at birth, original logical positions are retained, and native GDN state
-persists. All listed S checkpoints are epoch 1 / seed429; FP32 reuses S1 weights.
+persists. All listed S checkpoints are epoch 1 / seed 429; FP32 reuses S1 weights.
 
 | Arm | Priority | Selection |
 |---|---|---|
@@ -215,7 +233,7 @@ this documentation refresh.
 
 ## Evaluation protocol and provenance
 
-R2R VLN-CE val_unseen, 1,839 IDs, Habitat-Lab/Sim0.2.4, seed42, max500 actions,
+R2R VLN-CE val_unseen, 1,839 IDs, Habitat-Lab/Sim0.2.4, seed 42, max500 actions,
 3m success radius, RGB640×480/HFOV79°, forward0.25m/turn15°, greedy canonical
 text actions. Model and simulator use separate Python environments. Dataset hash
 `1767a407e2c8a011fbb7abece76cd64c5b39ff9fa0e9e340ebdce5a490d167c3`;
