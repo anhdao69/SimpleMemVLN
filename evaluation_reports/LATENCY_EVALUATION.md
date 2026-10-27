@@ -1,6 +1,9 @@
 # Controlled inference latency — all available evaluated models
 
-Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261024.json) covers 33 navigation journals and 35 latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261024.json) distinguishes original server snapshots from the merged reports.
+## Navigation results refreshed — 2026-10-27
+
+[Updated latency/SR CSV](evidence/ALL_LATENCY_SR_20261027.csv) includes all43 navigation results plus the latency-only TRIPLE configuration. All35 previously measured latency values are preserved exactly. L0, L1, S8N epoch2, LR1E5, MUON and the four budget variants have **no controlled latency measurement**; their cells are intentionally blank. Live shared-load inference timings are not substituted. The older tables below are dated benchmark snapshots, not current navigation status. [Current navigation results](ALL_RESULTS.md).
+
 
 ## L2/L3 latency and SR update — 2026-10-25
 
