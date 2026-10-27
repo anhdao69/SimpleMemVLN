@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "utc": "2026-10-27T07:11:21.648704+07:00",
+  "navigation_runs": 43,
+  "full_panel": 40,
+  "partial": [
+    "L2",
+    "L3",
+    "G3_M5"
+  ],
+  "master_table_rows_verified": 43,
+  "latency_rows": 44,
+  "controlled_latency_values_preserved": 35,
+  "unmeasured_latency_rows": 9,
+  "protected_report_unchanged": true,
+  "muon_handoff_prefix_and_final_gather_verified": true,
+  "files": {
+    "EPISODIC_MEMORY_EVALUATION.md": "683811c81c27b42bc4611cb616623fc0680a9a9a19e010a6c9b28a1dd8b49719",
+    "S8N_LR1E5_R2R_EVALUATION.md": "3c5cdcda84e22d1217467059442cd459681d824fc46603df5ce742937e324b98",
+    "L1_R2R_EVALUATION.md": "a27fd41970b2a10984e3c4acbf856b1eef21dab052055e7bab90491843b14b09",
+    "S8N_E2_R2R_EVALUATION.md": "c22c2b2fe85acc70426fed1049272ca94ba7a09938554a15fccfa7a89e19cb10",
+    "L2_R2R_EVALUATION.md": "e58728ddcced393efdd9798ddbb23ca88c33a848f97f279c0706c9040e3f1b48",
+    "ALL_RESULTS.md": "dbd475ff64347cb53cae2e1fde10bb04a582985f1388238930134e0dbcc944ee",
+    "VGGT_EVALUATION.md": "908eabde6f8c4fb3f58a7642179f12333dea90e8ec31efb7418890a1e39ecbb5",
+    "L0_R2R_EVALUATION.md": "8d5d116c94038cb0354b6f5f24087edd684373eda64465704f2fc5cc0a3c4998",
+    "L3_R2R_EVALUATION.md": "d92f8401dfd446e4a75b38f1c819c320345571c6201faf83697cee19bf4ae229",
+    "S8N_MUON_R2R_EVALUATION.md": "8f5448a8405840c9d4c0755b24f7be9c3f2c9ed0ee0c67a0ca1fe4c51d393555",
+    "LATENCY_EVALUATION.md": "69c04f7f8c726d97fae7ec36deda528efeaa563b052de0d2386f7808743cd912",
+    "S8N_R_B_SWEEP.md": "e790769a98c84a3afb6cad35e89f55a3f17e44cef2649ee06c27c7b7da1ab771",
+    "S_CAMPAIGN_R2R_EVALUATION.md": "78f5b32b01df73350b3366a2d6518fbf96525e1002239e319b09fb72f744e832"
+  }
+}

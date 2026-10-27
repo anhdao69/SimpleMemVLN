@@ -1,0 +1,142 @@
+{
+  "source_host": "ws_anhdh35",
+  "source_root": "/storage/anhdh35/SimpleMemVLN",
+  "source_files": {
+    "evaluation_reports/ALL_RESULTS.md": {
+      "bytes": 8888,
+      "sha256": "dbd475ff64347cb53cae2e1fde10bb04a582985f1388238930134e0dbcc944ee"
+    },
+    "evaluation_reports/EPISODIC_MEMORY_EVALUATION.md": {
+      "bytes": 7471,
+      "sha256": "683811c81c27b42bc4611cb616623fc0680a9a9a19e010a6c9b28a1dd8b49719"
+    },
+    "evaluation_reports/L0_R2R_EVALUATION.md": {
+      "bytes": 4577,
+      "sha256": "8d5d116c94038cb0354b6f5f24087edd684373eda64465704f2fc5cc0a3c4998"
+    },
+    "evaluation_reports/L1_R2R_EVALUATION.md": {
+      "bytes": 4574,
+      "sha256": "a27fd41970b2a10984e3c4acbf856b1eef21dab052055e7bab90491843b14b09"
+    },
+    "evaluation_reports/L2_R2R_EVALUATION.md": {
+      "bytes": 7921,
+      "sha256": "e58728ddcced393efdd9798ddbb23ca88c33a848f97f279c0706c9040e3f1b48"
+    },
+    "evaluation_reports/L3_R2R_EVALUATION.md": {
+      "bytes": 8592,
+      "sha256": "d92f8401dfd446e4a75b38f1c819c320345571c6201faf83697cee19bf4ae229"
+    },
+    "evaluation_reports/LATENCY_EVALUATION.md": {
+      "bytes": 33197,
+      "sha256": "69c04f7f8c726d97fae7ec36deda528efeaa563b052de0d2386f7808743cd912"
+    },
+    "evaluation_reports/S8N_E2_R2R_EVALUATION.md": {
+      "bytes": 5202,
+      "sha256": "c22c2b2fe85acc70426fed1049272ca94ba7a09938554a15fccfa7a89e19cb10"
+    },
+    "evaluation_reports/S8N_LR1E5_R2R_EVALUATION.md": {
+      "bytes": 4552,
+      "sha256": "3c5cdcda84e22d1217467059442cd459681d824fc46603df5ce742937e324b98"
+    },
+    "evaluation_reports/S8N_MUON_R2R_EVALUATION.md": {
+      "bytes": 6481,
+      "sha256": "8f5448a8405840c9d4c0755b24f7be9c3f2c9ed0ee0c67a0ca1fe4c51d393555"
+    },
+    "evaluation_reports/S8N_R_B_SWEEP.md": {
+      "bytes": 6052,
+      "sha256": "e790769a98c84a3afb6cad35e89f55a3f17e44cef2649ee06c27c7b7da1ab771"
+    },
+    "evaluation_reports/S_CAMPAIGN_R2R_EVALUATION.md": {
+      "bytes": 20154,
+      "sha256": "78f5b32b01df73350b3366a2d6518fbf96525e1002239e319b09fb72f744e832"
+    },
+    "evaluation_reports/VGGT_EVALUATION.md": {
+      "bytes": 3588,
+      "sha256": "908eabde6f8c4fb3f58a7642179f12333dea90e8ec31efb7418890a1e39ecbb5"
+    },
+    "evaluation_reports/archive/20261027_pre_refresh/EPISODIC_MEMORY_EVALUATION.md": {
+      "bytes": 38330,
+      "sha256": "86ec9f8f699d8d435b8c7c496b522e3751792e666141d05f0e5f2740e12a13fd"
+    },
+    "evaluation_reports/archive/20261027_pre_refresh/VGGT_EVALUATION.md": {
+      "bytes": 30920,
+      "sha256": "d273304d1d01fa2d6b7ca7b5febd10cee5458b73dd76d4c9513b689dd5803ce0"
+    },
+    "evaluation_reports/evidence/ALL_LATENCY_SR_20261025.csv": {
+      "bytes": 6175,
+      "sha256": "b3721ccac9738cc7a200f1ba123d6fbd82354e6dcea4f916e639b85986d50c14"
+    },
+    "evaluation_reports/evidence/ALL_LATENCY_SR_20261027.csv": {
+      "bytes": 8033,
+      "sha256": "4481bdaafe8e6739ac441974eb2426ec0c8cbcc9f9c61313e850d7611d084656"
+    },
+    "evaluation_reports/evidence/ALL_RESULTS_20261024.json": {
+      "bytes": 2160064,
+      "sha256": "d6c50dd122385a13b5c99e14bbd1a17b66165f5f37700b68e0fac0f8f8fce5ee"
+    },
+    "evaluation_reports/evidence/ALL_RESULTS_20261027.csv": {
+      "bytes": 7128,
+      "sha256": "58632edd983d9c919e5346f2a0b0b14dd0e384c25884cb70c2f2e3a94db6017a"
+    },
+    "evaluation_reports/evidence/ALL_RESULTS_20261027.json": {
+      "bytes": 8713343,
+      "sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024.csv": {
+      "bytes": 4570,
+      "sha256": "de47f4311b7d4848b9766e17ca4547ccfbc1ad4be203b475332c3f19e04cdf97"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024.json": {
+      "bytes": 143374,
+      "sha256": "9cd5273ea811a62c5e9d5e75ba6f11169f2c2b3ef9f4cddb5edd9260da17be38"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024_MANIFEST.json": {
+      "bytes": 90818,
+      "sha256": "35ee7bb6ee59c1be283936918590ad16b4707a6b9836a3efe590f8467bf0ad6d"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024_VERIFICATION.json": {
+      "bytes": 7032,
+      "sha256": "8a61981368ffb9bf641b7634b7e38389d06c5805e34820e57168b57bfa130a56"
+    },
+    "evaluation_reports/evidence/L_LATENCY_SR_20261025.json": {
+      "bytes": 8293,
+      "sha256": "d03f716c219e62b36b5cc1aa3e5c2dec5820402967aa00e243a1df8eb38cddc9"
+    },
+    "evaluation_reports/evidence/L_LATENCY_SR_20261025_VERIFICATION.json": {
+      "bytes": 983,
+      "sha256": "9594fe4c7133f5325ac58b221364658c2f64c216a71cc7e726fffaefa5f2bf8f"
+    },
+    "evaluation_reports/evidence/M5_E1_S_CAMPAIGN_B1200_B0_LAUNCH_20261022.json": {
+      "bytes": 86561,
+      "sha256": "186b3ae5cdb0d6d5836ce0920bca2aed176741be838757124a1ceb19bc3905b9"
+    },
+    "evaluation_reports/evidence/M5_R2_B1800_SEED431_FINAL_20261021.json": {
+      "bytes": 3955,
+      "sha256": "d5f307b0bdfe945002afdd86566c243bf86f05f391ae6b6bf28125f0fd8beb5a"
+    },
+    "evaluation_reports/evidence/REPORT_REFRESH_20261024_VERIFICATION.json": {
+      "bytes": 571,
+      "sha256": "9dc746ee9000ffa3915911c70b9ca06cbe766ca880271deaabaee25552544571"
+    },
+    "evaluation_reports/evidence/REPORT_REFRESH_20261027_VERIFICATION.json": {
+      "bytes": 1681,
+      "sha256": "e6776afa5da07866abaacee9f6e341ee3329f000c17e320a5fa5634a2d5aa8c2"
+    },
+    "evaluation_reports/evidence/S8N_R_B_SWEEP_LAUNCH_20261025.json": {
+      "bytes": 3231,
+      "sha256": "1ef6bc9b931f28b19abb01a5b7c1c16a84c30caeeb4aa41e155106e8c6f4fc6b"
+    },
+    "evaluation_reports/evidence/S_CAMPAIGN_SNAPSHOT_20261022T204050+0700.json": {
+      "bytes": 262910,
+      "sha256": "ccf2da54ec195f51328028fedc9ff8a6b2ccae15046a23ab2a7146ab98d3b68b"
+    }
+  },
+  "notes": [
+    "Earlier Vinh and historical report narratives remain in the campaign reports.",
+    "Server-only Markdown paths are displayed as filesystem paths.",
+    "Original server verification hashes describe source snapshots; merged reports have distinct hashes.",
+    "Source timestamps, including October 27 Asia/Ho_Chi_Minh, are preserved.",
+    "No new latency benchmark or navigation evaluation was launched."
+  ],
+  "fresh_verification": "WS_REPORT_SYNC_VERIFICATION_20261026.json"
+}
