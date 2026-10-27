@@ -1,0 +1,98 @@
+{
+  "utc": "2026-10-25T04:39:02.315133+00:00",
+  "passed": true,
+  "original_baseline_journal_unchanged": true,
+  "baseline_control_exact": true,
+  "all_four_evaluators_alive": true,
+  "arms": [
+    {
+      "arm": "S8N_R4_B600",
+      "R": 4,
+      "B": 600,
+      "guard": 4184,
+      "validation": {
+        "passed": true,
+        "complete": false,
+        "episodes": 3,
+        "scheduled_episodes": 1839,
+        "failures": 0,
+        "strict_action_metadata": true,
+        "journal_is_contract_ordered_prefix": true,
+        "metrics_recomputed": true,
+        "sr": 0.6666666666666666,
+        "spl": 0.6666666666666666,
+        "contract_sha256": "d4df3eb47fc5fd1b7b6839e5677669f3949ad31d115000c4855f0f181e171342"
+      },
+      "numerical_qualification_passed": true,
+      "contract_sha256": "d4df3eb47fc5fd1b7b6839e5677669f3949ad31d115000c4855f0f181e171342"
+    },
+    {
+      "arm": "S8N_R4_B2400",
+      "R": 4,
+      "B": 2400,
+      "guard": 5984,
+      "validation": {
+        "passed": true,
+        "complete": false,
+        "episodes": 3,
+        "scheduled_episodes": 1839,
+        "failures": 0,
+        "strict_action_metadata": true,
+        "journal_is_contract_ordered_prefix": true,
+        "metrics_recomputed": true,
+        "sr": 0.3333333333333333,
+        "spl": 0.3333333333333333,
+        "contract_sha256": "42a98fabc044699de7cc2b1b7689fb4e988c518d7ae50aca3e0a9e9de7cec502"
+      },
+      "numerical_qualification_passed": false,
+      "contract_sha256": "42a98fabc044699de7cc2b1b7689fb4e988c518d7ae50aca3e0a9e9de7cec502"
+    },
+    {
+      "arm": "S8N_R2_B1200",
+      "R": 2,
+      "B": 1200,
+      "guard": 4016,
+      "validation": {
+        "passed": true,
+        "complete": false,
+        "episodes": 3,
+        "scheduled_episodes": 1839,
+        "failures": 0,
+        "strict_action_metadata": true,
+        "journal_is_contract_ordered_prefix": true,
+        "metrics_recomputed": true,
+        "sr": 0.6666666666666666,
+        "spl": 0.6552193016045883,
+        "contract_sha256": "63f4837721465290ccb7027b681ae75dcc5fd05d79fdfb19203ee361a8deeae4"
+      },
+      "numerical_qualification_passed": false,
+      "contract_sha256": "63f4837721465290ccb7027b681ae75dcc5fd05d79fdfb19203ee361a8deeae4"
+    },
+    {
+      "arm": "S8N_R8_B1200",
+      "R": 8,
+      "B": 1200,
+      "guard": 6320,
+      "validation": {
+        "passed": true,
+        "complete": false,
+        "episodes": 3,
+        "scheduled_episodes": 1839,
+        "failures": 0,
+        "strict_action_metadata": true,
+        "journal_is_contract_ordered_prefix": true,
+        "metrics_recomputed": true,
+        "sr": 0.6666666666666666,
+        "spl": 0.6666666666666666,
+        "contract_sha256": "3c07b266573153322d69e2cc2eb7dfe9ecef142969250c0c4a01262b3c9572bd"
+      },
+      "numerical_qualification_passed": true,
+      "contract_sha256": "3c07b266573153322d69e2cc2eb7dfe9ecef142969250c0c4a01262b3c9572bd"
+    }
+  ],
+  "script_hashes": {
+    "campaign.py": "7e6cc2ec704750feb4ecabfdb5e8f0f9c7c44434fdde093d60ed4445b8031eb5",
+    "report.py": "92c6d7c2286afacbe4dbf0d509646b1939be10ce99e0332f805842f060c56951",
+    "prepare.py": "443ca54ac02bf550790c2802618acd5c205eadf2b1e15ac437ed1ebdf06cfbfc"
+  }
+}
