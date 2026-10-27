@@ -1,5 +1,213 @@
 # Episodic-memory campaign — R2R evaluation report
 
+Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261026.json) covers 43 navigation journals and the 35 existing latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261026.json) distinguishes the server snapshot from these merged reports.
+
+Verified snapshot: **2026-10-27T07:08:12.063755+07:00**. Metrics independently recomputed from saved episode journals; unique IDs, panel membership, available contract order and action metadata checked. There are **43 navigation runs** in this index: 40 full-panel attempts and three partial runs (L2, L3, G3_M5). Of the full-panel attempts, S7 contains one execution failure and failed final navigation validation. Numerical qualification is separate from navigation validation. No evaluation was restarted by this report update.
+
+S8N_MUON, L0/L1, both S8N training follow-ups and all four resumed budget arms are complete. L2/L3 remain interrupted; G3_M5 is archived partial. S8N_MUON finished on `10.148.182.137`, and all 1,839 episodes were gathered and validated locally. Its migration preserved 1,301 episodes and verified weights/source/assets plus 169 matching smoke frames; only path prefixes changed.
+
+S8N epoch1 has the highest completed SR in this index: **964/1,839 (52.419793%)**. Comparisons below are descriptive, not significance claims. Partial rows must not be ranked as full-panel results. S6, S8N epoch2, S8N_MUON, R4/B2400 and R2/B1200 retain explicit unqualified-diagnostic labels. S1 BF16, S4, S5 and M5_E1 R4/B1200 also retain native numerical-replay failures despite navigation validation passing.
+
+[Machine-readable evidence](evidence/ALL_RESULTS_20261027.json) · [CSV](evidence/ALL_RESULTS_20261027.csv) · [Latency and SR](evidence/ALL_LATENCY_SR_20261027.csv).
+
+## S campaign and matched controls
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| M5_E1 R4/B1200 | 1,839 | 950 | 51.658510 | 48.401034 | 0 | FINAL — navigation validated | FAIL (1/3 passed) |
+| M5_E1 served B0 | 1,839 | 919 | 49.972811 | 45.991456 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| R4B0 trained | 1,839 | 896 | 48.722132 | 44.964877 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S1 BF16 | 1,839 | 921 | 50.081566 | 46.539055 | 0 | FINAL — navigation validated | FAIL (1/3 passed) |
+| S1 FP32 | 1,839 | 917 | 49.864057 | 46.432850 | 0 | FINAL — navigation validated | PASS (saved FP32 diagnosis) |
+| S2 | 1,839 | 926 | 50.353453 | 46.896355 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S3 | 1,839 | 928 | 50.462208 | 47.152476 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S4 | 1,839 | 917 | 49.864057 | 46.671319 | 0 | FINAL — navigation validated | FAIL (1/3 passed) |
+| S5 | 1,839 | 901 | 48.994018 | 45.378002 | 0 | FINAL — navigation validated | FAIL (2/3 passed) |
+| S6 | 1,839 | 929 | 50.516585 | 47.013465 | 0 | FINAL — unqualified diagnostic | FAIL; diagnostic |
+| S7 | 1,839 | 907 | 49.320283 | 45.529253 | 1 | ALL ATTEMPTED — final validation FAILED | PASS (3/3 passed) |
+| S8N | 1,839 | 964 | 52.419793 | 48.679311 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S8W | 1,839 | 948 | 51.549755 | 48.690482 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S9 | 1,839 | 932 | 50.679717 | 47.439929 | 0 | FINAL — navigation validated | PASS 2/2 (migrated fixtures) |
+
+## Learned rankers
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| L0 | 1,839 | 951 | 51.712887 | 48.202080 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| L1 | 1,839 | 932 | 50.679717 | 47.172627 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| L2 | 1,384 | 678 | 48.988439 | 45.418499 | 0 | PARTIAL — interrupted; not running | PASS (3/3 passed) |
+| L3 | 1,199 | 593 | 49.457882 | 46.412354 | 0 | PARTIAL — interrupted; not running | PASS (3/3 passed) |
+
+## S8N training follow-ups
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| S8N epoch 2 | 1,839 | 912 | 49.592170 | 44.939655 | 0 | FINAL — unqualified diagnostic | FAIL (2/3 passed) |
+| S8N LR1E5 | 1,839 | 908 | 49.374660 | 46.435271 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S8N_MUON | 1,839 | 779 | 42.359978 | 37.786090 | 0 | FINAL — unqualified diagnostic | FAIL (0/3 passed) |
+
+## S8N inference-budget sweep
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| S8N_R4_B600 | 1,839 | 947 | 51.495378 | 47.809805 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+| S8N_R4_B2400 | 1,839 | 947 | 51.495378 | 47.924136 | 0 | FINAL — unqualified diagnostic | FAIL (1/3 passed) |
+| S8N_R2_B1200 | 1,839 | 915 | 49.755302 | 46.151563 | 0 | FINAL — unqualified diagnostic | FAIL (1/3 passed) |
+| S8N_R8_B1200 | 1,839 | 931 | 50.625340 | 47.094037 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
+
+## Earlier episodic models and baselines
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| V0 | 1,839 | 852 | 46.329527 | 41.756802 | 0 | COMPLETE — recomputed | FAIL (0/3 passed) |
+| Window8-B-E1 | 1,839 | 907 | 49.320283 | 45.561094 | 0 | COMPLETE — recomputed | See historical evidence |
+| M1 | 1,839 | 799 | 43.447526 | 40.204753 | 0 | COMPLETE — recomputed | PASS (2/2 passed) |
+| M2 | 1,839 | 906 | 49.265905 | 45.877272 | 0 | COMPLETE — recomputed | FAIL (0/3 passed) |
+| M2c | 1,839 | 848 | 46.112017 | 43.365987 | 0 | COMPLETE — recomputed | FAIL (0/3 passed) |
+| M5 | 1,839 | 938 | 51.005982 | 47.438938 | 0 | COMPLETE — recomputed | PASS (4/4 passed) |
+| M5c | 1,839 | 877 | 47.688961 | 43.944998 | 0 | COMPLETE — recomputed | PASS (2/2 passed) |
+| M5 E1 R2/B1800 seed431 | 1,839 | 944 | 51.332246 | 47.525482 | 0 | FINAL — navigation validated | PASS (2/2 passed) |
+| M5 E1 R4/B1200 seed431 | 1,839 | 884 | 48.069603 | 44.099314 | 0 | FINAL — navigation validated | FAIL (1/2 passed) |
+
+## Final S8N comparisons
+
+| Variant | Δ successes vs S8N | Δ SR (percentage points) | Δ SPL (percentage points) |
+|---|---:|---:|---:|
+| L0 | -13 | -0.706906 | -0.477230 |
+| L1 | -32 | -1.740076 | -1.506684 |
+| S8N epoch 2 | -52 | -2.827624 | -3.739655 |
+| S8N LR1E5 | -56 | -3.045133 | -2.244039 |
+| S8N_MUON | -185 | -10.059815 | -10.893221 |
+| S8N_R4_B600 | -17 | -0.924415 | -0.869506 |
+| S8N_R4_B2400 | -17 | -0.924415 | -0.755175 |
+| S8N_R2_B1200 | -49 | -2.664492 | -2.527748 |
+| S8N_R8_B1200 | -33 | -1.794454 | -1.585273 |
+
+All comparison rows cover the same full episode-ID set; outcome-pair counts are retained in the JSON evidence. These differences do not establish statistical significance. R4/B600 and R4/B2400 have equal SR (947 successes each), but differ in SPL and qualification status.
+
+## Detailed reports and preserved methods
+
+See [S campaign](S_CAMPAIGN_R2R_EVALUATION.md), [budget sweep](S8N_R_B_SWEEP.md), [MUON](S8N_MUON_R2R_EVALUATION.md), [epoch2](S8N_E2_R2R_EVALUATION.md), [LR1E5](S8N_LR1E5_R2R_EVALUATION.md), [L0](L0_R2R_EVALUATION.md), [L1](L1_R2R_EVALUATION.md), [L2](L2_R2R_EVALUATION.md), [L3](L3_R2R_EVALUATION.md), and [controlled latency](LATENCY_EVALUATION.md). The [pre-refresh campaign narrative](archive/20261027_pre_refresh/EPISODIC_MEMORY_EVALUATION.md) is archived historical evidence; its partial snapshots are superseded by this report.
+
+## Preserved cross-server narrative — through the October 24 sync
+
+The following dated sections retain the earlier Vinh evaluations, source identities, qualification details and historical snapshots. Current server counts are given above; dated partial or running labels below describe their original snapshot.
+
+Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261024.json) covers 33 navigation journals and 35 latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261024.json) distinguishes original server snapshots from the merged reports.
+
+## L2/L3 latency and SR update — 2026-10-25
+
+| Model | Median ms | p95 ms | Mean ms | Actions/s | R2R successes / completed | SR | SPL | Navigation status |
+|---|---:|---:|---:|---:|---|---:|---:|---|
+| L2 | 109.716 | 115.079 | 110.094 | 9.083 | 678 / 1384 | 48.99% | 45.42% | Interrupted; partial / 1,839 |
+| L3 | 153.127 | 168.287 | 155.638 | 6.425 | 593 / 1199 | 49.46% | 46.41% | Interrupted; partial / 1,839 |
+
+Measured 2026-10-25T10:00:28.687170+07:00 on the same RTX PRO6000 Blackwell Max-Q, driver580.178.04 and 300W limit. This is a **separate post-reboot session** using the unchanged original benchmark worker: batch1, the same 80 preloaded RGB frames/instruction, three trials of16 warm-up +64 timed actions (192 samples/model), CUDA-synchronized observe wall time; simulator, transport and disk reads excluded. No detected foreign GPU process. Native BF16 backbone and embedded learned rankers retained (feature preparation FP32, ranker FP64, priorities FP32). Warm-up/initialization excluded; this is not a cold-start benchmark or a proof of cross-session statistical superiority.
+
+Navigation results were independently recomputed from saved journals with contract-order and source/config identity checks. The workstation rebooted at **2026-10-25 08:35:33 +07:00**; both evaluation processes are absent. These SRs are **partial, interrupted results**, not completed evaluations. L2 and L3 cover different-sized ordered prefixes, so their SRs are not a matched full-panel comparison. No navigation evaluation was restarted by this latency measurement.
+
+Raw benchmark evidence (`/data14t/anhdh35/latency_l_20261025/manifest.json`) · [Verification](evidence/L_LATENCY_SR_20261025_VERIFICATION.json) · [All 35 configurations: latency and SR CSV](evidence/ALL_LATENCY_SR_20261025.csv).
+
+
+## Current verified results — 2026-10-24T21:21:47.211620+07:00
+
+### S campaign and matched baselines
+
+| Model | Attempted / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status |
+|---|---:|---:|---:|---:|---:|---|
+| M5_E1 R4/B1200 | 1,839 | 950 | 51.658510 | 48.401034 | 0 | FINAL — navigation validated |
+| M5_E1 served B0 | 1,839 | 919 | 49.972811 | 45.991456 | 0 | FINAL — navigation validated |
+| R4B0 trained | 1,839 | 896 | 48.722132 | 44.964877 | 0 | FINAL — navigation validated |
+| S1 BF16 | 1,839 | 921 | 50.081566 | 46.539055 | 0 | FINAL — navigation validated |
+| S1 FP32 | 1,839 | 917 | 49.864057 | 46.432850 | 0 | FINAL — navigation validated |
+| S2 | 1,839 | 926 | 50.353453 | 46.896355 | 0 | FINAL — navigation validated |
+| S3 | 1,839 | 928 | 50.462208 | 47.152476 | 0 | FINAL — navigation validated |
+| S4 | 1,839 | 917 | 49.864057 | 46.671319 | 0 | FINAL — navigation validated |
+| S5 | 1,839 | 901 | 48.994018 | 45.378002 | 0 | FINAL — navigation validated |
+| S6 | 1,839 | 929 | 50.516585 | 47.013465 | 0 | FINAL — unqualified diagnostic |
+| S7 | 1,839 | 907 | 49.320283 | 45.529253 | 1 | ALL ATTEMPTED — final validation FAILED |
+| S8N | 1,839 | 964 | 52.419793 | 48.679311 | 0 | FINAL — navigation validated |
+| S8W | 1,839 | 948 | 51.549755 | 48.690482 | 0 | FINAL — navigation validated |
+| S9 | 1,839 | 932 | 50.679717 | 47.439929 | 0 | FINAL — navigation validated |
+
+S7 has one invalid-response failure (`MOVE`, episode672), so its observed full-panel
+SR/SPL are failure-adjusted and final navigation validation failed. S6 remains an
+unqualified diagnostic. S1 BF16, S4, S5 and M5_E1 B1200 retain numerical-replay
+failures despite passing navigation validation. All other listed S-campaign
+navigation results have zero execution failures and stored final validation passes.
+
+[Complete S-campaign report](S_CAMPAIGN_R2R_EVALUATION.md) · [Evidence snapshot](evidence/ALL_RESULTS_20261024.json).
+
+### Historical episodic checkpoints — refreshed from saved journals
+
+| Model | Attempted / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status |
+|---|---:|---:|---:|---:|---:|---|
+| V0 | 1,839 | 852 | 46.329527 | 41.756802 | 0 | COMPLETE — recomputed |
+| M1 | 1,839 | 799 | 43.447526 | 40.204753 | 0 | COMPLETE — recomputed |
+| M2 | 1,839 | 906 | 49.265905 | 45.877272 | 0 | COMPLETE — recomputed |
+| M2c | 1,839 | 848 | 46.112017 | 43.365987 | 0 | COMPLETE — recomputed |
+| M5 | 1,839 | 938 | 51.005982 | 47.438938 | 0 | COMPLETE — recomputed |
+| M5c | 1,839 | 877 | 47.688961 | 43.944998 | 0 | COMPLETE — recomputed |
+| Window8-B-E1 | 1,839 | 907 | 49.320283 | 45.561094 | 0 | COMPLETE — recomputed |
+| M5 E1 R2/B1800 seed431 | 1,839 | 944 | 51.332246 | 47.525482 | 0 | FINAL — navigation validated |
+
+These are distinct checkpoint/source identities from the matched S-campaign
+baselines. M1 and M5c are now complete (799 and877 successes); historical partial
+tables below are retained as dated evidence. “COMPLETE — recomputed” means this
+refresh verified full unique coverage, recorded action metadata and recomputed
+metrics against saved summaries; it does not assert an unavailable final-validator
+file or new numerical qualification. No reruns were launched.
+
+## Preserved earlier results and provenance
+
+The dated sections below retain their checkpoint and host identities. Their historical status labels are superseded by the current refresh above. The October 22 S-campaign snapshot remains available in its [evidence file](evidence/S_CAMPAIGN_SNAPSHOT_20261022T204050+0700.json).
+
+## Final M5 E1 R2/B1800 seed431 — 2026-10-21
+
+Full R2R VLN-CE val_unseen evaluation completed on 2026-10-21. Final validation
+recomputed metrics from the complete journal and verified unique episode IDs,
+contract order, checkpoint hashes and action metadata.
+
+| Model | Successes / episodes | SR (%) | SPL (%) | NE (m) | Oracle success (%) | State |
+|---|---:|---:|---:|---:|---:|---|
+| M5 E1 R2/B1800 seed431 | 944 / 1,839 | 51.332246 | 47.525482 | 5.726252 | 58.945079 | FINAL |
+
+Zero execution failures and zero invalid responses. Mean episode length:
+104.2447 actions; mean trajectory length: 9.6024 m; forced STOPs: 175.
+Peak KV occupancy: 2,610 rows against the 4,616 structural guard;
+peak allocated GPU memory: 8.6931 GiB.
+
+This is the separately trained **seed431, R2/B1800, one-epoch-schedule** model,
+not the historical P2-M5 seed429 R4/B1200 export. It retains two recent groups
+including current and 1,800 episodic visual tokens per attention layer,
+committed_mean_l2_v1 scoring, text action history and the saved serving contract.
+The inactive selector seed is 429. Training completed 3,852 updates with 116 warmup
+updates. No teacher, auxiliary heads, PCA or step lanes are enabled.
+
+Checkpoint: `anhdao69/Streaming_VGGT/M5_E1_R2_B1800_seed431/epoch-1`.
+Pinned HF revision: `e1d614ab3eb5f2737dbe27de69906b05bea372e3`.
+Weights SHA256: `5ed04b21391ce8a92c070cdd53ab4e3b0be56b30952302f7c999daadd766c76c`.
+Source branch: `c2_vggt_omega_g3_m5_layers`, frozen commit
+`fde1cbef213e27320920400a826addea8d5e114a`; src/config trees match training revision
+`f4d1c2f216e68a960a5a691d21cbf1f08ea4a901`.
+
+Qualification: all 18 published artifact hashes verified, 724 finite backbone
+tensors, strict GPU load, 59 targeted tests, native scorer check, 64/128-step
+replays, reset/retry checks and 520-step bounded stream passed. The 128-step replay
+had one raw next-token disagreement out of 383 but passed the unchanged
+atol0.75 + rtol0.03 and RMS<=0.15 criteria; passing does not imply bitwise or greedy
+trajectory equivalence. Full evaluation used Habitat-Lab/Sim0.2.4, seed42,
+500-action cap, 3m success radius, 640x480 RGB, 79-degree HFOV, 0.25m forward
+steps and 15-degree turns. Final journal validation passed.
+
+Run root: `/data14t/anhdh35/m5_e1_r2_b1800_seed431_epoch1/evaluation/`.
+Results: `results/full/M5_R2_B1800_s431/{episodes.jsonl,summary.json}`.
+Validation: `full_validation.json`; qualification: `audit/M5/passed.json`.
+This additional result does not replace historical checkpoint identities or
+establish a causal memory-budget/seed advantage.
+
+## Preserved cross-server results — through 2026-10-20
+
 **Cross-server report scope:** The refresh below records the `ws_anhdh35` campaign. The preserved October 19 sections later in this file record the six local evaluations from `ws_anhdh35_vinh`, including M5_E1. Historical tables retain their original dates; cross-host results retain their documented simulator and provenance caveats. The seven-row refresh concerns the original episodic arms/reference; the newer M5_E1 checkpoint remains separately documented below.
 
 Current R2R val_unseen refresh: all seven episodic/reference rows below have completed the full 1,839 episodes. **M5 has the highest SR (51.005982%) among these runs.** M1 and M5 c are no longer partial. The result table and status statements in the archived 16 October snapshot later in this document are superseded by this refresh.
@@ -457,4 +665,4 @@ The frozen source's [M5_E1 implementation report](../evaluation/m5_e1_epoch1_202
 
 ## Next update
 
-M5_E1 and all six local evaluations in the October 19 comparison are complete. The historical M1 and M5 c rows should be refreshed only after obtaining verified 1,839-episode final journals; their current status was not checked in this update. Then replace the dated partial comparisons and perform the intended paired uncertainty/gate analysis before asserting selector superiority. No automatic report refresh is configured. Copies on other branches are documentation only; use the pinned runtime above for inference.
+The October 24 S-campaign report supersedes the October 22 partial snapshot: S5 is complete, S7 retains one invalid-response failure and failed final validation, and S6 remains unqualified. The October 25 server snapshot records L2/L3 as interrupted partial evaluations, with latency measured in a separate session. All six Vinh evaluations and the distinct M5 R2/B1800 seed431 result remain preserved. Refresh results only from newly verified journals, retaining checkpoint identities, host differences and qualification limits. No automatic report refresh is configured. Copies on other branches are documentation only; use the pinned runtime above for inference.
