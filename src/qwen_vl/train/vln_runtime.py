@@ -74,4 +74,6 @@ def load_checkpoint(path, model_path=None):
         )
     from qwen_vl.stream.retention import load_retention
     model.retention_policy = load_retention(path)   # MemFork memory_retention.pt, else None (plain M5)
+    from qwen_vl.stream.sweep_retention import load_sweep_retention
+    model.sweep_retention = load_sweep_retention(path)   # S8N sweep_retention.json, else None (plain S8N)
     return model, serializer

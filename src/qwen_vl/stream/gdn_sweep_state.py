@@ -29,6 +29,8 @@ class _Group:
 
 
 class GdnSweepSessionState:
+    tilt = None   # stream/sweep_retention.RetentionTilt: learned per-layer frame priority; None = the arm's own
+
     def __init__(self, spec, model, episode_uid, device):
         self.spec, self.episode_uid = spec, episode_uid
         layers = model.backbone.model.language_model.layers
@@ -94,6 +96,10 @@ class GdnSweepSessionState:
 
     def _priorities(self, group, layer, visual):
         score = self.spec.score
+        if self.tilt is not None:
+            if score not in ('S8N', 'S8W') or not self.spec.is_frame:
+                raise ValueError('A retention tilt is defined for the S8 frame drift arms only')
+            return self.tilt.priority(group.scores, layer, group.step_id)
         if score == 'C_RANDOM':
             return random_priorities(self.spec.selector_seed, self.episode_uid, layer, visual)
         if score == 'C_RECENCY':

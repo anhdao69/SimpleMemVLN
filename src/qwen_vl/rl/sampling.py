@@ -40,16 +40,19 @@ def clone_cache(cache):
 
 
 def clone_episodic(state):
-    """Independent copy of an ``EpisodicSessionState`` taken between steps.
+    """Independent copy of an ``EpisodicSessionState`` (or S8N ``SweepRolloutState``) taken between steps.
 
     Copies the bank selection (running top-B), resident row IDs, open recent groups with
     their source scores, and every committed-write scorer's carried FP32 state and conv
     tail. The scorers keep their reference to the (shared, read-only) GDN layer.
     """
+    from qwen_vl.rl.sweep_memory import SweepRolloutState, clone_sweep_state
     from qwen_vl.stream.episodic_cache import EpisodicSessionState
 
     if state is None:
         return None
+    if type(state) is SweepRolloutState:
+        return clone_sweep_state(state)
     if type(state) is not EpisodicSessionState:
         raise ValueError(f'Snapshots are defined for EpisodicSessionState, not {type(state).__name__}')
     if state.segment_kind is not None:
@@ -85,6 +88,7 @@ def tempered_token(logits, temperature, generator, probe=None):
 
 class SamplingSession(StreamSession):
     retention = None      # stream/retention.RetentionControl for MemFork rollouts; None = plain M5
+    tilt = None           # stream/sweep_retention.RetentionTilt for S8N memory twins; None = plain S8N
 
     @torch.inference_mode()
     def reset(self, episode_uid, instruction):
@@ -112,13 +116,22 @@ class SamplingSession(StreamSession):
             from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
             from qwen_vl.stream.episodic_cache import EpisodicSessionState
             if spec.version == GDN_SWEEP_MODE:
-                raise ValueError('RL sampling supports episodic_window_v1 (M5/M5c), not the GDN sweep')
-            self.episodic = EpisodicSessionState(spec, self.model, episode_uid,
-                                                 device=next(self.model.parameters()).device)
+                # S8N: the serving state plus the realised per-layer frame record (rl/sweep_memory.py).
+                from qwen_vl.rl.sweep_memory import SweepRolloutState
+                if self.retention is not None:
+                    raise ValueError('MemFork retention is defined for episodic_window_v1, not the GDN sweep')
+                self.episodic = SweepRolloutState(spec, self.model, episode_uid,
+                                                  device=next(self.model.parameters()).device)
+                self.episodic.tilt = self.tilt
+            else:
+                if self.tilt is not None:
+                    raise ValueError('A retention tilt needs an S8N (GDN-sweep frame) checkpoint')
+                self.episodic = EpisodicSessionState(spec, self.model, episode_uid,
+                                                     device=next(self.model.parameters()).device)
             if self.retention is not None:
                 self.episodic.set_retention(self.retention)
-        elif self.retention is not None:
-            raise ValueError('Retention policies need an episodic_window_v1 checkpoint')
+        elif self.retention is not None or self.tilt is not None:
+            raise ValueError('Retention policies need an episodic checkpoint')
         self._append_with_role(prefix, 0, kind='prefix')
         self.prefix_length = self.positions.logical_token_count
         self.valid = True
@@ -186,9 +199,13 @@ class SamplingSession(StreamSession):
             image = block['input_ids'][0].eq(self.serializer.image_id).nonzero().reshape(-1)
             self.episodic.open_group(step_id, start, start + int(image[0]))
         hidden = self._append_with_role(block, 1, kind='observation')
+        # S8N: per-layer normalised state drift of this observation (known before a_t is drawn).
+        drift = getattr(self.episodic, 'observation_drift', lambda: None)()
         forbidden = set(self.serializer.tokenizer.all_special_ids) - {self.serializer.eos}
         tokens, logps, entropies, greedy = [], [], [], []
         result = dict(valid=False, class_id=None, complete=False)
+        if drift is not None:
+            result['drift'] = drift
         for _ in range(MAX_RESPONSE_TOKENS):
             logits = self.model.backbone.lm_head(hidden[0, -1])
             greedy.append(int(logits.argmax()))

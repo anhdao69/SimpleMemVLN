@@ -344,6 +344,9 @@ def main():
                     failure_policy='zero_sr_spl_keep_partial_metrics', transport='raw_rgb_base64',
                     model_startup_timeout_seconds=args.model_startup_timeout,
                     model_request_timeout_seconds=600)
+    from qwen_vl.stream.sweep_retention import SWEEP_RETENTION_FILE
+    if (checkpoint / SWEEP_RETENTION_FILE).exists():     # learned S8N retention rule (absent: plain S8N)
+        contract['sweep_retention_sha256'] = sha256(checkpoint / SWEEP_RETENTION_FILE)
     if args.dataset_kind == 'rxr15':
         contract['ground_truth_sha256'] = sha256(resolve_dataset_path(args.ground_truth_path, args.split))
     contract_file = out / 'evaluation_contract.json'

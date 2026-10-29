@@ -1,0 +1,15 @@
+# Simulator environment on HiPerGator: aihabitat ships habitat-sim 0.2.4 (source commit
+# f179b584, the project's pinned commit) only for Python 3.9, so the simulator process runs 3.9.
+# Same pins as docs/evaluation_setup/habitat-constraints.txt except the three packages whose pinned
+# versions require Python >= 3.10 (last 3.9-compatible releases below).
+numpy==1.26.4
+gym==0.23.0
+hydra-core==1.3.4
+omegaconf==2.3.1
+numpy-quaternion==2024.0.13
+numba==0.60.0
+llvmlite==0.43.0
+scipy==1.13.1
+opencv-python==4.11.0.86
+pillow==11.3.0
+fastdtw==0.3.4

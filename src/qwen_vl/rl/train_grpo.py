@@ -33,7 +33,7 @@ import yaml
 
 from qwen_vl.rl.algos import (activevln_budget, grpo_advantages, loss_weights, micro_batches,
                               policy_loss_terms)
-from qwen_vl.rl import memfork
+from qwen_vl.rl import memfork, memory_tilt
 from qwen_vl.rl.checkpoint import load_rank_state, save_rank_state
 from qwen_vl.rl.env_client import EnvClient, EnvironmentError_
 from qwen_vl.rl.episode import encode_rollout, response_log_probs
@@ -169,11 +169,12 @@ def build_engine(model, cfg, world):
     return engine, ds_config
 
 
-def export(engine, serializer, base_navigation, path, provenance, retention=None):
+def export(engine, serializer, base_navigation, path, provenance, retention=None, tilt=None):
     """EpisodeTrainer._save format; navigation.json must be byte-identical to the base.
 
     ``retention`` (MemFork): the learned retention policy, saved as stream/retention.RETENTION_FILE,
-    which the serving loader attaches (greedy decisions at evaluation)."""
+    which the serving loader attaches (greedy decisions at evaluation). ``tilt`` (memory twins): the
+    learned S8N retention rule w, saved as stream/sweep_retention.SWEEP_RETENTION_FILE."""
     path = Path(path)
     tmp = path.with_name(path.name + '.tmp')
     if tmp.exists():
@@ -192,6 +193,10 @@ def export(engine, serializer, base_navigation, path, provenance, retention=None
         from qwen_vl.stream.retention import RETENTION_FILE
         torch.save(retention.export(), tmp / RETENTION_FILE)
         provenance['retention_sha256'] = sha256_file(tmp / RETENTION_FILE)
+    if tilt is not None:
+        from qwen_vl.stream.sweep_retention import RetentionTilt, save_sweep_retention
+        written = save_sweep_retention(RetentionTilt.from_dict(tilt.tilt()), tmp)
+        provenance['sweep_retention_sha256'] = sha256_file(written)
     (tmp / 'rl_provenance.json').write_text(json.dumps(provenance, indent=2) + '\n')
     if path.exists():
         shutil.rmtree(path)
@@ -305,8 +310,14 @@ def rollout_rank(workers, items, step, cfg, fork=None, retention=None):
     return groups, history
 
 
-def rollout_rank_pool(pool, items, step, cfg, fork=None, retention=None):
-    """rollout_rank for multi-process IPC helpers (rl/rollout_pool.py); same scheduling."""
+def rollout_rank_pool(pool, items, step, cfg, fork=None, retention=None, tilt=None):
+    """rollout_rank for multi-process IPC helpers (rl/rollout_pool.py); same scheduling.
+
+    ``tilt`` (rl/memory_tilt.TiltLearner, S8N memory twins): samples k < tilt.twins act with the
+    retention rule w + sigma * eps_k, the others with w; once a group is final (no further re-roll),
+    each of those samples gets a twin with the same seed, no forks and w - sigma * eps_k (ablation
+    ``common_random_numbers: false``: the twin draws an independent seed instead). Returns
+    (groups, history, twins) with twins = [(main record, twin record, eps)] of this rank."""
     r = cfg['rollout']
     attempts = 1 + (r['dynamic_sampling']['max_sample_attempts'] if r['dynamic_sampling']['enabled'] else 0)
     G = r['group_size']
@@ -315,21 +326,43 @@ def rollout_rank_pool(pool, items, step, cfg, fork=None, retention=None):
         budget = activevln_budget(item['N_star'], item['activevln_merged_len'], r['budget_factor'], r['budget_cap'])
         budgets.append(min(budget, r['budget_limit']) if r.get('budget_limit') else budget)
     groups, history, pending = [None] * len(items), [[] for _ in items], {}
+    eps, twin_results, twins_out = {}, {}, [0]
+    seed_of = lambda i, attempt, k: rollout_seed(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k)
+    twin_seed_of = lambda i, attempt, k: (seed_of(i, attempt, k) if tilt.crn else rollout_seed(
+        cfg['run']['seed'], 'independent-twin', step, items[i]['episode_id'], attempt, k))
 
     def submit(i, attempt):
         for k in range(G):
+            rule = None
+            if tilt is not None:
+                if k < tilt.twins:
+                    eps[(i, attempt, k)] = tilt.epsilon(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k)
+                    rule = tilt.tilt(eps[(i, attempt, k)], +1.0)
+                else:
+                    rule = tilt.tilt()
             pool.submit((i, attempt, k), items[i], temperature=r['temperature'], budget=budgets[i],
-                        seed=rollout_seed(cfg['run']['seed'], step, items[i]['episode_id'], attempt, k),
-                        sample_idx=k, reward_cfg=cfg['reward'], fork=fork, retention=retention)
+                        seed=seed_of(i, attempt, k), sample_idx=k, reward_cfg=cfg['reward'], fork=fork,
+                        retention=retention, tilt=rule)
         pending[i] = (attempt, {})
+
+    def submit_twins(i, attempt):
+        for k in range(min(tilt.twins, G)):
+            pool.submit((i, attempt, ('twin', k)), items[i], temperature=r['temperature'], budget=budgets[i],
+                        seed=twin_seed_of(i, attempt, k), sample_idx=k, reward_cfg=cfg['reward'], fork=None,
+                        retention=None, tilt=tilt.tilt(eps[(i, attempt, k)], -1.0), keep_frames=False)
+            twins_out[0] += 1
 
     for i in range(len(items)):
         submit(i, 0)
-    while pending:
+    while pending or twins_out[0]:
         (i, attempt, k), episode = pool.get()
+        episode.update(attempt=attempt, budget=budgets[i])
+        if isinstance(k, tuple):
+            twin_results[(i, k[1])] = episode
+            twins_out[0] -= 1
+            continue
         if pending[i][0] != attempt:
             raise RuntimeError('Out-of-order rollout result')
-        episode.update(attempt=attempt, budget=budgets[i])
         pending[i][1][k] = episode
         if len(pending[i][1]) == G:
             finished = pending.pop(i)[1]
@@ -339,7 +372,17 @@ def rollout_rank_pool(pool, items, step, cfg, fork=None, retention=None):
             groups[i] = group  # the last re-rolled group replaces earlier ones (ActiveVLN)
             if not any(e['success'] for e in group) and attempt + 1 < attempts:
                 submit(i, attempt + 1)
-    return groups, history
+            elif tilt is not None:
+                submit_twins(i, attempt)
+    twins = []
+    if tilt is not None:
+        for i, group in enumerate(groups):
+            for k in range(min(tilt.twins, G)):
+                main, twin = group[k], twin_results[(i, k)]
+                if twin['seed'] != twin_seed_of(i, main['attempt'], k) or main['attempt'] != twin['attempt']:
+                    raise RuntimeError('A twin does not carry its scheduled seed')
+                twins.append((main, twin, eps[(i, main['attempt'], k)]))
+    return (groups, history, twins) if tilt is not None else (groups, history)
 
 
 def branch_steps(episode):
@@ -348,19 +391,43 @@ def branch_steps(episode):
     return [sum(b['num_steps'] for b in branches), sum(b['fork_t'] for b in branches)]
 
 
-def fork_threshold(out, step, fork_cfg):
-    """Entropy threshold for this step's fork points: a quantile of the previous step's first-token
-    entropies (main trajectories, all ranks), or with ``placement: memory`` of its memory-decision entropies.
+MIN_BUCKET = 16                 # decisions a position bucket needs for its own drift threshold
+
+
+def fork_threshold(out, step, fork_cfg, signal='entropy'):
+    """Threshold for this step's fork points: a quantile of the previous step's first-token entropies
+    (main trajectories, all ranks), with ``placement: memory`` of its memory-decision entropies, or with
+    ``signal='drift'`` of its S8N event scores (rl/rollout.event_score of every main observation); with
+    ``drift_by_position`` one quantile per rl/rollout.position_bucket, where a bucket with fewer than
+    MIN_BUCKET decisions inherits the previous bucket's threshold (the first: the pooled quantile).
     It never depends on this step's samples."""
+    from qwen_vl.rl.rollout import event_score, position_bucket
     values = []
     memory = fork_cfg.get('placement', 'action') == 'memory'
     for path in sorted((out / 'rollouts').glob(f'step_{step - 1:04d}_rank*.jsonl')):
         for line in path.read_text().splitlines():
             record = json.loads(line)
-            if memory:
+            if signal == 'drift':
+                values += [(t, event_score(v)) for t, v in enumerate(record.get('step_drift') or []) if v is not None]
+            elif memory:
                 values += [d['entropy'] for d in (record.get('memory') or {}).get('decisions', [])]
             else:
                 values += [v for v in record.get('step_entropy') or [] if v is not None]
+    if signal == 'drift':
+        q = fork_cfg['drift_quantile']
+        if not values:
+            initial = fork_cfg['initial_min_drift']
+            return [float(v) for v in initial] if isinstance(initial, list) else float(initial)
+        scores = np.asarray([v for _, v in values])
+        if not fork_cfg.get('drift_by_position'):
+            return float(np.quantile(scores, q))
+        buckets = np.asarray([position_bucket(t) for t, _ in values])
+        thresholds, previous = [], float(np.quantile(scores, q))
+        for b in range(int(buckets.max()) + 1):
+            inside = scores[buckets == b]
+            previous = float(np.quantile(inside, q)) if len(inside) >= MIN_BUCKET else previous
+            thresholds.append(previous)
+        return thresholds
     if not values:
         return float(fork_cfg['initial_min_entropy'])
     return float(np.quantile(values, fork_cfg['entropy_quantile']))
@@ -437,12 +504,13 @@ def fork_prepare(groups, weights_by_uid, cfg, step_scale=None):
     return items, stats
 
 
-def fork_metrics(gathered, threshold):
+def fork_metrics(gathered, threshold, drift_threshold=None):
     if not gathered[0].get('fork'):
         return {}
     total = lambda k: sum(g['fork'][k] for g in gathered)
     branches = max(1, total('branches'))
-    return dict(fork_min_entropy=threshold, forks_per_main=total('forks') / max(1, total('mains')),
+    return dict(fork_min_entropy=threshold, fork_min_drift=drift_threshold,
+                forks_per_main=total('forks') / max(1, total('mains')),
                 branches=total('branches'), branch_success_rate=total('branch_success') / branches,
                 branch_same_first_action=total('branch_same_first') / branches,
                 branch_nonzero_fraction=total('local_nonzero') / branches,
@@ -631,9 +699,32 @@ def main():
         raise ValueError(f'Non-string fork config keys {list(fork_cfg)} (YAML 1.1 reads "on:" as True)')
     if fork_cfg.get('placement', 'action') not in ('action', 'memory'):
         raise ValueError(f"Unknown fork placement {fork_cfg['placement']!r}")
+    if fork_cfg.get('trigger', 'entropy') not in ('entropy', 'drift', 'drift_entropy'):
+        raise ValueError(f"Unknown fork trigger {fork_cfg['trigger']!r}")
+    if fork_cfg.get('trigger', 'entropy') != 'entropy':
+        spec = getattr(model, 'episodic_spec', None)
+        if spec is None or spec.score not in ('S8N', 'S8W') or fork_cfg.get('placement', 'action') != 'action':
+            raise ValueError('Drift-triggered forks need an S8N/S8W policy and action forks')
+        if fork_cfg.get('drift_by_position') and not isinstance(fork_cfg.get('initial_min_drift'), list):
+            raise ValueError('drift_by_position needs initial_min_drift as one threshold per position bucket')
+    elif fork_cfg.get('drift_by_position'):
+        raise ValueError('drift_by_position needs a drift trigger')
     if fork_cfg.get('placement') == 'memory' and (
             memory_policy is None or memory_cfg.get('rollout_mode', 'sample') != 'sample'):
         raise ValueError('Memory forks need a sampled MemFork retention policy')
+    tilt_cfg = cfg.get('memory_tilt') or {}
+    tilt_learner = None
+    if tilt_cfg.get('enabled'):
+        spec = getattr(model, 'episodic_spec', None)
+        if spec is None or spec.score not in ('S8N', 'S8W') or not spec.is_frame:
+            raise ValueError('memory_tilt needs an S8N/S8W frame-memory policy')
+        if memory_policy is not None:
+            raise ValueError('memory_tilt and the MemFork memory_policy are exclusive')
+        if cfg['rollout'].get('backend', 'threads') != 'processes':
+            raise ValueError('memory_tilt twins need the processes rollout backend')
+        if not 0 < int(tilt_cfg.get('twins', 1)) <= cfg['rollout']['group_size']:
+            raise ValueError('memory_tilt.twins must be in [1, group_size]')
+        tilt_learner = memory_tilt.TiltLearner(tilt_cfg, spec.attention_layers)
 
     state_file = out / 'rl_state.json'
     start_step = 0
@@ -647,6 +738,8 @@ def main():
         if memory_policy is not None:
             memory_calibration = memfork.load(memory_policy, memory_opt, torch.load(
                 out / 'resumable' / rl_state['tag'] / 'memory_policy.pt', weights_only=False))
+        if tilt_learner is not None:
+            tilt_learner.load(json.loads((out / 'resumable' / rl_state['tag'] / 'memory_tilt.json').read_text()))
         start_step = rl_state['next_step']
         if engine.global_steps != start_step:
             raise RuntimeError('Optimizer step counter disagrees with the RL state')
@@ -746,28 +839,54 @@ def main():
         model.eval()
         torch.cuda.reset_peak_memory_stats()
         tick = time.perf_counter()
-        fork, threshold = None, None
+        fork, threshold, drift_threshold = None, None, None
         # rollout_mode greedy (ablation): deterministic frame memory, q_phi not trained.
         memory_mode = memory_cfg.get('rollout_mode', 'sample')
         retention = memfork.payload(memory_policy, memory_mode) if memory_policy is not None else None
         if estimator == 'grpo_fork':
             f = a['fork']
-            threshold = fork_threshold(out, step, f)
+            trigger = f.get('trigger', 'entropy')
+            threshold = fork_threshold(out, step, f) if trigger != 'drift' else None
             fork = dict(max_forks=f['max_forks'], branches=f['branches'], min_entropy=threshold,
-                        window=f['window'])
+                        window=f['window'], trigger=trigger)
+            if trigger != 'entropy':            # S8N event-boundary forks (rl/rollout.event_score)
+                fork['min_drift'] = drift_threshold = fork_threshold(out, step, f, signal='drift')
             if f.get('placement', 'action') == 'memory':
                 spec = model.episodic_spec          # first memory decision: pool of R + F frames full
                 fork.update(placement='memory', min_t=spec.recent_groups + spec.budget_tokens // 300)
         if helpers is not None:
             torch.cuda.synchronize()  # the last optimizer all-gather must land before helpers read
             helpers.check_storage()
-            groups, reroll = rollout_rank_pool(helpers, local, step, cfg, fork, retention)
+            result = rollout_rank_pool(helpers, local, step, cfg, fork, retention, tilt_learner)
+            groups, reroll = result[:2]
+            twin_pairs = result[2] if tilt_learner is not None else []
         else:
             groups, reroll = rollout_rank(workers, local, step, cfg, fork, retention)
         torch.cuda.synchronize()
         rollout_seconds = time.perf_counter() - tick
         rollout_peak = torch.cuda.max_memory_allocated() / 2 ** 30
         release_cache()
+
+        tilt_update = {}
+        if tilt_learner is not None:
+            # Antithetic common-random-number step on the retention rule (all ranks, identical).
+            pairs = [p for g in gather_objects([(m['reward'], t['reward'], e.tolist()) for m, t, e in twin_pairs])
+                     for p in g]
+            rewards = [x for g in gather_objects([e['reward'] for grp in groups for e in grp]) for x in g]
+            tilt_scale = batch_scale(rewards, floor=a.get('scale_floor', 0.05) * cfg['reward']['success_reward_base'])
+            tilt_grad_norm, tilt_step_max = tilt_learner.step(tilt_learner.gradient(pairs, tilt_scale))
+            behaviour = [p for g in gather_objects([(
+                dict(actions=m['actions'], reward=m['reward'], success=m['success']),
+                dict(actions=t['actions'], reward=t['reward'], success=t['success'], num_steps=t['num_steps']))
+                for m, t, _ in twin_pairs]) for p in g]
+            tilt_update = dict(memory_tilt.pair_stats(behaviour), tilt_scale=tilt_scale, tilt_grad_norm=tilt_grad_norm,
+                               tilt_step_max=tilt_step_max, **tilt_learner.summary())
+            with (out / 'rollouts' / f'step_{step:04d}_rank{rank}_twins.jsonl').open('w') as f:
+                for m, t, e in twin_pairs:
+                    f.write(json.dumps(dict(main_uid=m['uid'], eps=e.tolist(), main_tilt=m.get('memory_tilt'),
+                                            twin={k: v for k, v in t.items()
+                                                  if not k.startswith('_') and k != 'rollout_logps'})) + '\n')
+            del twin_pairs
 
         hico_stats = {}
         stop_token = serializer.action_ids[3][0]
@@ -844,7 +963,8 @@ def main():
                 memory = e.get('memory')
                 batch = to_device(encode_rollout(serializer, e['instruction'], e['_frames'],
                                                  e['_responses'], episode_uid=e.get('memory_uid', e['uid']),
-                                                 memory_banks=memory['banks'] if memory else None),
+                                                 memory_banks=(memory or {}).get('banks'),
+                                                 layer_banks=(memory or {}).get('layer_banks')),
                                   device)
                 if estimator == 'grpo':
                     logp, entropy = response_log_probs(model, batch, T, with_entropy=True)
@@ -943,9 +1063,10 @@ def main():
                 update_wait_seconds=gathered[0]['placement'].get('update_wait', 0),
                 offloaded_trajectories=sum(g['stats']['offloaded'] for g in gathered),
                 **hico_metrics(gathered, critic),
-                **fork_metrics(gathered, threshold),
+                **fork_metrics(gathered, threshold, drift_threshold),
                 **(memfork.merged_metrics([g['memory'] for g in gathered]) if memory_policy is not None else {}),
                 **gathered[0]['memory_update'],
+                **tilt_update,
                 sampled_branch_env_steps=sum(g['sampled_branch_steps'][0] for g in gathered),
                 sampled_replay_env_steps=sum(g['sampled_branch_steps'][1] for g in gathered),
                 pg_loss=sum(g['stats']['pg_loss'] for g in gathered) / world,
@@ -982,9 +1103,10 @@ def main():
                 digest = export(engine, serializer, base_navigation, out / 'exports' / f'step_{done:04d}',
                                 dict(base_checkpoint=str(base), base_weight_sha256=cfg['base']['weight_sha256'],
                                      rl_step=done, total_steps=total_steps, pool_sha256=cfg['data']['pool_sha256'],
-                                     algorithm='memfork' if memory_policy is not None else 'activevln_grpo',
+                                     algorithm=('memfork' if memory_policy is not None else
+                                                'memory_twins' if tilt_learner is not None else 'activevln_grpo'),
                                      config=cfg, git_commit=git, smoke=smoke, memory_calibration=memory_calibration),
-                                retention=memory_policy)
+                                retention=memory_policy, tilt=tilt_learner)
                 log('exported step', done, digest)
             dist.barrier()
         if (done % cfg['run']['save_every'] == 0 or done == total_steps
@@ -996,6 +1118,8 @@ def main():
             if memory_policy is not None and rank == 0:
                 torch.save(memfork.state(memory_policy, memory_opt, memory_calibration),
                            out / 'resumable' / tag / 'memory_policy.pt')
+            if tilt_learner is not None and rank == 0:
+                (out / 'resumable' / tag / 'memory_tilt.json').write_text(json.dumps(tilt_learner.state()) + '\n')
             dist.barrier()
             if rank == 0:
                 state_file.write_text(json.dumps(dict(next_step=done, tag=tag, total_steps=total_steps)) + '\n')

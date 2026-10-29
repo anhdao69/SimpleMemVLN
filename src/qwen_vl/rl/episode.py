@@ -14,12 +14,15 @@ from qwen_vl.research.episodic_contract import parse_episodic_spec
 
 
 def encode_rollout(serializer, instruction, frames, responses, model_max_length=None, episode_uid=None,
-                   memory_banks=None):
+                   memory_banks=None, layer_banks=None):
     """frames[t]: uint8 HxWx3; responses[t]: dict(tokens=[...], complete=bool).
 
     ``memory_banks`` (MemFork): the realised frame banks per step (``FrameBank.banks``); the
     training forward then uses exactly that memory (``stream/retention.injected_plans``).
+    ``layer_banks`` (S8N): the realised per-layer frames per step (``rl/sweep_memory``), likewise.
     """
+    if memory_banks is not None and layer_banks is not None:
+        raise ValueError('One realised memory record per rollout')
     if serializer.mode != 'qwen_text':
         raise ValueError('Rollout encoding is defined for text-action policies only')
     if not frames or len(frames) != len(responses):
@@ -67,8 +70,15 @@ def encode_rollout(serializer, instruction, frames, responses, model_max_length=
             from qwen_vl.stream.retention import injected_plans
             spec = parse_episodic_spec(serializer.config)
             result['episodic_plans'] = injected_plans(spec, result['episodic_layout'], memory_banks)
-    elif memory_banks is not None:
-        raise ValueError('Memory banks need an episodic_window_v1 policy')
+        if layer_banks is not None:
+            from qwen_vl.research.episodic_contract import GDN_SWEEP_MODE
+            from qwen_vl.rl.sweep_memory import injected_layer_plans
+            spec = parse_episodic_spec(serializer.config)
+            if spec.version != GDN_SWEEP_MODE:
+                raise ValueError('Per-layer frame banks need a GDN-sweep frame policy')
+            result['episodic_plans'] = injected_layer_plans(spec, result['episodic_layout'], layer_banks)
+    elif memory_banks is not None or layer_banks is not None:
+        raise ValueError('Memory banks need an episodic-memory policy')
     return result
 
 

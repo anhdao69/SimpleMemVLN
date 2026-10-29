@@ -85,8 +85,30 @@ def _summary(run, item, reward_cfg, start_distance=None):
         step_d=finite[:len(responses)], step_bearing=run['bearings'][:len(responses)],
         step_stop_logp=[r.get('stop_logp') for r in responses],
         step_entropy=[r['entropies'][0] if r['entropies'] else None for r in responses],
+        step_drift=[r.get('drift') for r in responses],
         _frames=run['frames'], _responses=[dict(tokens=r['tokens'], complete=r['complete']) for r in responses],
         **outcome)
+
+
+def event_score(drift):
+    """S8N event signal of one observation: mean over attention layers of the log normalised GDN state
+    drift ||S_after - S_before||_F / max(||S_before||_F, eps_l) (rl/sweep_memory; None without S8N)."""
+    if drift is None:
+        return None
+    values = np.asarray(drift, dtype=np.float64)
+    if values.ndim != 1 or not values.size or not np.isfinite(values).all() or (values <= 0).any():
+        raise ValueError(f'Invalid drift priorities {drift!r}')
+    return float(np.log(values).mean())
+
+
+TRIGGERS = ('entropy', 'drift', 'drift_entropy')
+
+
+def position_bucket(t):
+    """Episode-position bucket of decision t for position-normalised event thresholds: t = 0 | 1-2 | 3-6 |
+    7-14 | ... (floor(log2(t + 1))). The S8N drift of o_t shrinks as ||S_before|| grows over the episode,
+    so a single threshold would mostly select early decisions."""
+    return (t + 1).bit_length() - 1
 
 
 def replay(env, episode_id, actions):
@@ -100,24 +122,31 @@ def replay(env, episode_id, actions):
 
 
 def memory_record(session):
-    """MemFork bank record (decisions + realised banks per step) of the session's episode, or None."""
+    """Realised memory of the session's episode: MemFork bank record (decisions + banks per step),
+    S8N per-layer frame record (``layer_banks``, rl/sweep_memory.py), or None."""
+    from qwen_vl.rl.sweep_memory import SweepRolloutState
     state = getattr(session, 'episodic', None)
+    if isinstance(state, SweepRolloutState):
+        return state.export()
     if state is None or state.bank is None:
         return None
     return state.bank.export()
 
 
 def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, reward_cfg,
-                device, keep_frames=True, fork=None, retention=None):
+                device, keep_frames=True, fork=None, retention=None, tilt=None):
     """One sampled episode: format error or budget exhaustion ends it with reward 0.
 
-    ``fork`` (estimator ``grpo_fork``): dict(max_forks, branches, min_entropy, window[, horizon]);
-    the horizon defaults to the item's reference length N*.
+    ``fork`` (estimator ``grpo_fork``): dict(max_forks, branches, min_entropy, window[, horizon, trigger,
+    min_drift]); the horizon defaults to the item's reference length N*. ``min_drift`` is one threshold or
+    one per ``position_bucket`` of t (the last one also serves later buckets).
     Before the episode, ``max_forks`` target decisions are drawn uniformly from [1, horizon) with an
     independent generator (the main trajectory's draws are unchanged). Fork k is placed at the first
-    decision t in [target_k, target_k + window] whose first-token entropy is >= ``min_entropy`` (a
-    property of pi(.|h_t), not of the sampled a_t); a target without such a decision is skipped. So
-    whether t is a fork point never depends on a_t or later events. The streaming memory is
+    decision t in [target_k, target_k + window] whose trigger holds: ``entropy`` (default) first-token
+    entropy >= ``min_entropy``; ``drift`` S8N event score of o_t (``event_score``) >= ``min_drift``;
+    ``drift_entropy`` both. Each is a property of h_t (o_t included) and pi(.|h_t), not of the sampled
+    a_t; a target without such a decision is skipped. So whether t is a fork point never depends on
+    a_t or later events. The streaming memory is
     snapshotted before each candidate decision and kept only at fork points; after the main episode,
     each fork gets ``branches`` on-policy continuations from the identical history (simulator prefix
     replayed deterministically and verified).
@@ -125,7 +154,16 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
     ``retention`` (MemFork): dict(export=RetentionPolicy.export(), mode='sample'|'greedy'). Memory
     decisions draw from the same generator as the actions (a branch re-draws them with its own), and
     each record carries ``memory`` (decisions and realised banks, rl/rollout.memory_record).
+
+    ``tilt`` (S8N memory twins, rl/memory_tilt.py): RetentionTilt.to_dict() of the frame retention rule
+    this trajectory (and its branches) uses; the record carries it as ``memory_tilt``. It consumes no
+    randomness, so two rollouts with one seed share their action random stream (common random numbers).
     """
+    if tilt is not None:
+        from qwen_vl.stream.sweep_retention import RetentionTilt
+        session.tilt = RetentionTilt.from_dict(tilt)
+    else:
+        session.tilt = None
     if retention is not None:
         from qwen_vl.stream.retention import RetentionControl, RetentionPolicy
         session.retention = RetentionControl(RetentionPolicy.from_export(retention['export']), retention['mode'])
@@ -165,6 +203,9 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
                 while cursor[0] < len(targets) and targets[cursor[0]] <= t:
                     targets[cursor[0]] = t + 1
     elif fork:
+        trigger = fork.get('trigger', 'entropy')
+        if trigger not in TRIGGERS:
+            raise ValueError(f'Unknown fork trigger {trigger!r}')
         coin = torch.Generator().manual_seed(rollout_seed(seed, 'fork-targets'))
         horizon = max(2, int(fork.get('horizon') or item['N_star']))
         targets = sorted(int(torch.randint(1, horizon, (), generator=coin)) for _ in range(fork['max_forks']))
@@ -179,8 +220,17 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
                 pending.update(t=t, snapshot=session.snapshot(), obs=obs_t)
                 return
             entropy = response['entropies'][0] if response['entropies'] else 0.0
-            if pending.get('t') == t and entropy >= fork['min_entropy']:   # never uses a_t itself
-                forks.append(dict(pending, entropy=entropy, target=targets[cursor[0]]))
+            drift = event_score(response.get('drift'))
+            if trigger != 'entropy' and drift is None:
+                raise ValueError('Drift-triggered forks need an S8N (GDN-sweep drift) policy')
+            min_drift = fork.get('min_drift')
+            if isinstance(min_drift, (list, tuple)):
+                min_drift = min_drift[min(position_bucket(t), len(min_drift) - 1)]
+            fires = {'entropy': lambda: entropy >= fork['min_entropy'],
+                     'drift': lambda: drift >= min_drift,
+                     'drift_entropy': lambda: drift >= min_drift and entropy >= fork['min_entropy']}[trigger]
+            if pending.get('t') == t and fires():   # never uses a_t itself
+                forks.append(dict(pending, entropy=entropy, drift=drift, target=targets[cursor[0]]))
                 cursor[0] += 1
                 # later targets that fall before the next free decision move with it
                 while cursor[0] < len(targets) and targets[cursor[0]] <= t:
@@ -226,6 +276,8 @@ def run_episode(session, env, item, *, temperature, budget, seed, sample_idx, re
         # Per-decision geometry at the pose where decision t was made (training-time only).
         step_path=[float(x) for x in np.concatenate(([0.0], np.cumsum(np.linalg.norm(
             np.diff(np.asarray(main['positions'], dtype=np.float64), axis=0), axis=1))))[:record['num_steps']]])
+    if tilt is not None:
+        record['memory_tilt'] = session.tilt.vector().tolist()
     if fork:
         record['_branches'] = branches
         record['fork_points'] = sorted({b['fork_t'] for b in branches})

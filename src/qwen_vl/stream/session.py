@@ -52,6 +52,11 @@ class StreamSession:
                 from qwen_vl.stream.episodic_cache import EpisodicSessionState as State
             self.episodic = State(
                 spec, self.model, episode_uid, device=next(self.model.parameters()).device)
+            tilt = getattr(self.model, "sweep_retention", None)
+            if tilt is not None:
+                if spec.version != GDN_SWEEP_MODE:
+                    raise ValueError("sweep_retention.json is defined for the GDN-sweep frame memory only")
+                self.episodic.tilt = tilt
             policy = getattr(self.model, "retention_policy", None)
             if policy is not None:
                 # MemFork checkpoints: deterministic frame retention at evaluation.

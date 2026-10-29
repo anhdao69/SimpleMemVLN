@@ -19,10 +19,15 @@ class EnvClient:
                '--split', split, '--data-path', data_path, '--scenes-dir', str(scenes_dir),
                '--gpu', str(gpu), '--episode-list', str(episode_list)]
         env = dict(os.environ)
-        # On this host Habitat resolves gpu_device_id as a CUDA ordinal of the
-        # simulator process; with the full device set visible that ordinal is the
-        # physical GPU (verified by nvidia-smi in the environment smoke test).
-        env.pop('CUDA_VISIBLE_DEVICES', None)
+        # Habitat resolves gpu_device_id as a CUDA ordinal of the simulator process.
+        # Under a scheduler mask (Slurm sets CUDA_VISIBLE_DEVICES) the trainer's device
+        # `gpu` is the gpu-th masked entry, so the simulator sees only that device, as
+        # ordinal 0, like the evaluator; without a mask the ordinal is the physical GPU
+        # (verified by nvidia-smi in the environment smoke test).
+        visible = [d for d in env.pop('CUDA_VISIBLE_DEVICES', '').split(',') if d.strip()]
+        if visible:
+            env['CUDA_VISIBLE_DEVICES'] = visible[int(gpu)]
+            cmd[cmd.index('--gpu') + 1] = '0'
         if pythonpath:
             env['PYTHONPATH'] = pythonpath
         self.log = open(log_path, 'a') if log_path else None

@@ -53,6 +53,9 @@ def main():
     if getattr(model, "episodic_spec", None) is not None:
         # Exported metadata drives evaluator memory behavior; record it in every journal.
         runtime.update(episodic=model.episodic_spec.to_dict())
+        tilt = getattr(model, "sweep_retention", None)
+        if tilt is not None:
+            runtime.update(sweep_retention=dict(tilt.to_dict(), sha256=tilt.sha256()))
         policy = getattr(model, "retention_policy", None)
         if policy is not None:
             runtime.update(retention=dict(policy.config(), mode="greedy",
