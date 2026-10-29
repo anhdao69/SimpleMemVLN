@@ -79,11 +79,14 @@ def main():
     p.add_argument('--name-base', default='base')
     p.add_argument('--name-new', default='new')
     p.add_argument('--out', required=True)
+    p.add_argument('--allow-source-diff', action='store_true',
+                   help='compare although evaluation sources differ (listed in the output as source_diff); only '
+                        'after a separate check that the source change leaves every episode unchanged')
     args = p.parse_args()
     (sb, cb, rb), (sn, cn, rn) = load(args.base), load(args.new)
     protocol_diff = [k for k in PROTOCOL_KEYS if cb.get(k) != cn.get(k)]
     source_diff = [k for k in EVAL_SOURCES if cb['source_sha256'].get(k) != cn['source_sha256'].get(k)]
-    if protocol_diff or source_diff:
+    if protocol_diff or (source_diff and not args.allow_source_diff):
         raise SystemExit(f'Protocol differs: {protocol_diff}; evaluation sources differ: {source_diff}')
     ids = cb['episode_ids']
     eb = {i: episode_metrics(rb[i]) for i in ids}
@@ -114,6 +117,8 @@ def main():
                   transitions=dict(sorted(transitions.items(), key=lambda kv: -kv[1])),
                   checkpoints=dict(base=cb['checkpoint'], new=cn['checkpoint'],
                                    base_weights=cb['weights_sha256'], new_weights=cn['weights_sha256']))
+    if source_diff:
+        result['source_diff'] = source_diff
     Path(args.out).write_text(json.dumps(result, indent=2) + '\n')
     print(json.dumps({k: result[k] for k in ('metrics', 'paired_success', 'bootstrap_95ci', 'failure_taxonomy')},
                      indent=1))

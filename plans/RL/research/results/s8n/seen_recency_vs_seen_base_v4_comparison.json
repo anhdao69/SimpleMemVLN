@@ -1,0 +1,129 @@
+{
+  "base": "seen_base_v4",
+  "new": "seen_recency",
+  "episodes": 300,
+  "metrics": {
+    "SR": {
+      "base": 0.5166666666666667,
+      "new": 0.53,
+      "abs_delta": 0.013333333333333308,
+      "rel_delta": 0.025806451612903174
+    },
+    "SPL": {
+      "base": 0.48674889099220714,
+      "new": 0.49525206823485246,
+      "abs_delta": 0.008503177242645321,
+      "rel_delta": 0.01746933049053718
+    },
+    "NE": {
+      "base": 5.4966315631832305,
+      "new": 5.403607788321873,
+      "abs_delta": -0.09302377486135782,
+      "rel_delta": -0.016923778461783154
+    },
+    "OSR": {
+      "base": 0.6266666666666667,
+      "new": 0.64,
+      "abs_delta": 0.013333333333333308,
+      "rel_delta": 0.02127659574468081
+    },
+    "TL": {
+      "base": 9.782326025342643,
+      "new": 10.329310630933229,
+      "abs_delta": 0.5469846055905858,
+      "rel_delta": 0.05591559759647519
+    },
+    "steps": {
+      "base": 92.24333333333334,
+      "new": 100.64666666666666,
+      "abs_delta": 8.403333333333322,
+      "rel_delta": 0.09109962779604655
+    },
+    "forced_stops": {
+      "base": 20,
+      "new": 24,
+      "abs_delta": 4,
+      "rel_delta": 0.2
+    },
+    "invalid": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    }
+  },
+  "paired_success": {
+    "both": 126,
+    "only_base": 29,
+    "only_new": 33,
+    "neither": 112,
+    "mcnemar_exact_p": 0.7035366713552734
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.04,
+      0.06666666666666667
+    ],
+    "SPL": [
+      -0.03786013946125879,
+      0.05510964840170422
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 20,
+      "new": 24
+    },
+    "near_miss_3_to_5m": {
+      "base": 12,
+      "new": 14
+    },
+    "never_within_3m": {
+      "base": 81,
+      "new": 72
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 32,
+      "new": 31
+    },
+    "success": {
+      "base": 155,
+      "new": 159
+    }
+  },
+  "transitions": {
+    "success -> success": 126,
+    "never_within_3m -> never_within_3m": 55,
+    "passed_goal_then_stopped_outside -> passed_goal_then_stopped_outside": 17,
+    "never_within_3m -> success": 14,
+    "success -> passed_goal_then_stopped_outside": 13,
+    "forced_stop_at_cap -> forced_stop_at_cap": 13,
+    "passed_goal_then_stopped_outside -> success": 11,
+    "never_within_3m -> forced_stop_at_cap": 8,
+    "success -> near_miss_3_to_5m": 7,
+    "success -> never_within_3m": 7,
+    "near_miss_3_to_5m -> success": 5,
+    "forced_stop_at_cap -> never_within_3m": 4,
+    "forced_stop_at_cap -> success": 3,
+    "near_miss_3_to_5m -> near_miss_3_to_5m": 3,
+    "passed_goal_then_stopped_outside -> never_within_3m": 3,
+    "never_within_3m -> near_miss_3_to_5m": 3,
+    "near_miss_3_to_5m -> never_within_3m": 3,
+    "success -> forced_stop_at_cap": 2,
+    "never_within_3m -> passed_goal_then_stopped_outside": 1,
+    "passed_goal_then_stopped_outside -> near_miss_3_to_5m": 1,
+    "near_miss_3_to_5m -> forced_stop_at_cap": 1
+  },
+  "checkpoints": {
+    "base": "/blue/yu954774.ucf/an221229.ucf/checkpoints/svln/M5_S/S8N",
+    "new": "/blue/yu954774.ucf/an221229.ucf/svln_runs/probes/s8n_tilt_recency",
+    "base_weights": "c89de946f3cb05aa91a5cc498fd63991c901852ba0c05e6546cbaddf23446a2b",
+    "new_weights": "c89de946f3cb05aa91a5cc498fd63991c901852ba0c05e6546cbaddf23446a2b"
+  }
+}

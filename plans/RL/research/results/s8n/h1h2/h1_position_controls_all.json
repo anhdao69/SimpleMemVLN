@@ -1,0 +1,103 @@
+{
+ "event+entropy": {
+  "event": {
+   "coef": 0.196,
+   "z": 5.51
+  },
+  "entropy": {
+   "coef": -0.075,
+   "z": -2.11
+  }
+ },
+ "event+entropy+log1p_t": {
+  "event": {
+   "coef": 0.091,
+   "z": 2.19
+  },
+  "entropy": {
+   "coef": -0.066,
+   "z": -1.85
+  },
+  "log1p_t": {
+   "coef": -0.213,
+   "z": -4.9
+  }
+ },
+ "event+entropy+t/N*+log1p_t": {
+  "event": {
+   "coef": 0.065,
+   "z": 1.54
+  },
+  "entropy": {
+   "coef": -0.089,
+   "z": -2.46
+  },
+  "t_over_n": {
+   "coef": 0.407,
+   "z": 7.1
+  },
+  "log1p_t": {
+   "coef": -0.548,
+   "z": -8.49
+  }
+ },
+ "event_pos+entropy+t/N*+log1p_t": {
+  "event_pos": {
+   "coef": 0.047,
+   "z": 1.32
+  },
+  "entropy": {
+   "coef": -0.089,
+   "z": -2.46
+  },
+  "t_over_n": {
+   "coef": 0.41,
+   "z": 7.15
+  },
+  "log1p_t": {
+   "coef": -0.581,
+   "z": -9.76
+  }
+ },
+ "log1p_t+entropy": {
+  "log1p_t": {
+   "coef": -0.261,
+   "z": -6.93
+  },
+  "entropy": {
+   "coef": -0.065,
+   "z": -1.84
+  }
+ },
+ "p_informative_by_position_bucket": {
+  "b1 (t 1-2)": [
+   43,
+   0.744
+  ],
+  "b2 (t 3-6)": [
+   180,
+   0.778
+  ],
+  "b3 (t 7-14)": [
+   599,
+   0.74
+  ],
+  "b4 (t 15-30)": [
+   1149,
+   0.677
+  ],
+  "b5 (t 31-62)": [
+   1449,
+   0.618
+  ],
+  "b6 (t 63-126)": [
+   177,
+   0.565
+  ],
+  "b7 (t 127-254)": [
+   1,
+   0.0
+  ]
+ },
+ "forks_with_entropy": 3598
+}
