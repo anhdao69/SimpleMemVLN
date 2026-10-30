@@ -6,13 +6,19 @@ from qwen_vl.stream.positions import PositionLedger
 from qwen_vl.stream.timing import timed
 
 
-def per_action_token_loss(logits, targets, action_index, num_actions):
+def per_action_token_loss(logits, targets, action_index, num_actions, lengths=None):
     losses = torch.nn.functional.cross_entropy(
         logits.float(), targets, reduction="none"
     )
     counts = torch.bincount(action_index, minlength=num_actions)
     if (counts == 0).any():
         raise ValueError("Every action must have supervised response tokens")
+    if lengths is not None:
+        # Relabeled steps supervise only a prefix of the target response; normalising by its
+        # full length keeps every step's weight equal to an ordinary step with that target.
+        if lengths.shape != counts.shape or (lengths < counts).any():
+            raise ValueError("Response lengths must cover the supervised tokens")
+        counts = lengths
     return losses.new_zeros(num_actions).scatter_add(0, action_index, losses) / counts
 
 
@@ -335,7 +341,13 @@ class SimpleMemVLNForNavigation(nn.Module):
         aux_lags=None,
         aux_frame_count=None,
         aux_pair_count=None,
+        response_target_ids=None,
+        response_action_lengths=None,
     ):
+        if (response_target_ids is None) != (response_action_lengths is None) or (
+            response_target_ids is not None and self.output_mode != "qwen_text"
+        ):
+            raise ValueError("Oracle response targets need qwen_text and their lengths")
         episodic = {}
         if self.episodic_spec is not None:
             if episodic_layout is None or episode_uid is None:
@@ -385,9 +397,12 @@ class SimpleMemVLNForNavigation(nn.Module):
             logits = self.backbone.lm_head(hidden[0, response_target_positions - 1])
             losses = per_action_token_loss(
                 logits,
-                input_ids[0, response_target_positions],
+                input_ids[0, response_target_positions]
+                if response_target_ids is None
+                else response_target_ids,
                 response_action_index,
                 num_actions,
+                response_action_lengths,
             )
             predictions = None
         result = dict(

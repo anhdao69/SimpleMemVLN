@@ -95,6 +95,14 @@ def validate_episode(episode, root=None, check_images=True):
         parse_action(step["action_name"])
         if (step["action_name"] == "STOP") != (index == len(steps) - 1):
             raise ValueError("Exactly one final STOP observation is required")
+        # Optional DAgger relabel: action_name stays the executed action (history and the
+        # next observation follow it); target_action_name is the oracle's supervised action.
+        target = step.get("target_action_name")
+        if target is not None:
+            if target not in ACTIONS:
+                raise ValueError(f"Invalid target action: {target!r}")
+            if (target == "STOP") != (index == len(steps) - 1):
+                raise ValueError("Oracle targets keep the single final STOP")
         path = Path(step["rgb_path"])
         if root is not None:
             path = Path(root) / path

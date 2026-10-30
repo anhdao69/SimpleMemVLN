@@ -151,3 +151,40 @@ def test_weights_initialization_checks_hash_and_contract(tmp_path, monkeypatch):
     _, _, report = lane_initialization.initialize_weights_from_checkpoint(tmp_path, digest, None, config)
     assert report['weights_sha256'] == digest and report['optimizer'] == report['scheduler'] == 'fresh'
     assert report['parameters'] == 9
+
+
+def test_weights_initialization_new_schedule_changes_only_the_epoch_schedule(tmp_path, monkeypatch):
+    from qwen_vl.data import episode_serializer
+    from qwen_vl.train import lane_initialization, vln_runtime
+    parent = dict(model=dict(output_mode='qwen_text'),
+                  training=dict(backbone_lr=5e-6, expected_total_steps=3852, warmup_steps=116, expected_warmup_steps=116))
+    target = dict(parent, training=dict(parent['training'], expected_total_steps=1775, warmup_steps=54,
+                                        expected_warmup_steps=54))
+    assert lane_initialization.schedule_changes(parent, target) == dict(
+        expected_total_steps=[3852, 1775], warmup_steps=[116, 54], expected_warmup_steps=[116, 54])
+    assert lane_initialization.schedule_changes(parent, parent) == {}
+    with pytest.raises(ValueError, match='epoch schedule'):
+        lane_initialization.schedule_changes(parent, dict(target, training=dict(target['training'], backbone_lr=1e-5)))
+    (tmp_path / 'navigation.json').write_text(json.dumps(dict(config=parent, serializer='v1')))
+    (tmp_path / 'pytorch_model.bin').write_bytes(b'weights')
+    digest = hashlib.sha256(b'weights').hexdigest()
+    with pytest.raises(ValueError, match='navigation config'):   # without the flag the schedule must match too
+        lane_initialization.initialize_weights_from_checkpoint(tmp_path, digest, None, target)
+    model = torch.nn.Linear(2, 3)
+    model.navigation_config = parent
+    serializer = types.SimpleNamespace(processor='processor', metadata=lambda: dict(config=parent, serializer='v1'))
+    monkeypatch.setattr(vln_runtime, 'load_checkpoint', lambda path, base: (model, serializer))
+
+    class Serializer:
+        def __init__(self, processor, config):
+            assert processor == 'processor'
+            self.config = config
+
+        def metadata(self):
+            return dict(config=self.config, serializer='v1')
+    monkeypatch.setattr(episode_serializer, 'EpisodeSerializer', Serializer)
+    loaded, rebuilt, report = lane_initialization.initialize_weights_from_checkpoint(
+        tmp_path, digest, None, target, new_schedule=True)
+    assert loaded.navigation_config == target and rebuilt.metadata() == dict(config=target, serializer='v1')
+    assert report['schedule_changes']['expected_total_steps'] == [3852, 1775]
+    assert report['weights_sha256'] == digest and report['optimizer'] == report['scheduler'] == 'fresh'

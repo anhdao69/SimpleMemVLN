@@ -65,9 +65,33 @@ def initialize_step_lane_from_policy(parent_checkpoint, base_model_path, target_
     return model, serializer, report
 
 
-def initialize_weights_from_checkpoint(checkpoint, weights_sha256, base_model_path, target_config):
-    """Strict trained weights for another epoch of the identical recipe; optimizer and schedule start fresh."""
+# The epoch length of a different manifest; nothing the model, serializer or loss reads.
+SCHEDULE_KEYS = ('expected_total_steps', 'warmup_steps', 'expected_warmup_steps')
+
+
+def schedule_changes(parent, target):
+    """Schedule keys the target changes relative to the parent; any other difference raises."""
+    parent, target = deepcopy(parent), deepcopy(target)
+    changes = {}
+    for key in SCHEDULE_KEYS:
+        old, new = parent['training'].pop(key, None), target['training'].pop(key, None)
+        if old != new:
+            changes[key] = [old, new]
+    if parent != target:
+        raise ValueError('Weights initialization requires the parent navigation config to equal the target '
+                         'outside the epoch schedule')
+    return changes
+
+
+def initialize_weights_from_checkpoint(checkpoint, weights_sha256, base_model_path, target_config,
+                                       new_schedule=False):
+    """Strict trained weights for another epoch of the identical recipe; optimizer and schedule start fresh.
+
+    ``new_schedule``: the target trains one epoch of a different manifest, so only its epoch schedule
+    (SCHEDULE_KEYS) may differ; the model and serializer then carry the target config.
+    """
     from qwen_vl.train.vln_runtime import load_checkpoint
+    from qwen_vl.data.episode_serializer import EpisodeSerializer
     path = Path(checkpoint).resolve()
     files = sorted(set(path.glob('*.safetensors')) | set(path.glob('pytorch_model*.bin')))
     if len(files) != 1:
@@ -76,12 +100,20 @@ def initialize_weights_from_checkpoint(checkpoint, weights_sha256, base_model_pa
     if digest != weights_sha256:
         raise ValueError(f'{files[0]}: SHA-256 {digest} differs from the declared {weights_sha256}')
     metadata = json.loads((path / 'navigation.json').read_text())
-    if metadata['config'] != target_config:
+    changes = schedule_changes(metadata['config'], target_config) if new_schedule else {}
+    if not new_schedule and metadata['config'] != target_config:
         raise ValueError('Weights initialization requires the parent navigation config to equal the target')
     model, serializer = load_checkpoint(path, base_model_path)
     if serializer.metadata() != metadata:
         raise ValueError('Parent tokenizer/serializer contract differs')
+    if changes:
+        model.navigation_config = deepcopy(target_config)
+        serializer = EpisodeSerializer(serializer.processor, model.navigation_config)
+        if dict(serializer.metadata(), config=metadata['config']) != metadata:
+            raise ValueError('Schedule change altered the serializer contract')
     report = dict(initialization='strict_weights_only', parent=str(path), weights_file=files[0].name,
                   weights_sha256=digest, navigation_sha256=file_sha256(path / 'navigation.json'),
                   parameters=sum(p.numel() for p in model.parameters()), optimizer='fresh', scheduler='fresh')
+    if new_schedule:
+        report['schedule_changes'] = changes
     return model, serializer, report

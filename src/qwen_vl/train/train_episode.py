@@ -348,6 +348,9 @@ def train_episode():
                         "strict weights only, fresh optimizer and LR schedule (combinable with "
                         "--resume_from_checkpoint auto, whose recovery state then takes precedence)")
     p.add_argument("--init-weights-sha256", help="Required SHA-256 of the init checkpoint's weights file")
+    p.add_argument("--init-weights-new-schedule", action="store_true",
+                   help="The init target trains a different manifest: only its epoch schedule "
+                        "(expected_total_steps, warmup_steps, expected_warmup_steps) may differ")
     p.add_argument("--sampler-epoch-offset", type=int, default=0,
                    help="Data order of this later epoch of the seed (0 = the seed's first epoch)")
     p.add_argument("--deepspeed", default="deepspeed.json")
@@ -404,12 +407,15 @@ def train_episode():
         raise ValueError("Choose one initialization")
     if bool(args.init_weights_checkpoint) != bool(args.init_weights_sha256):
         raise ValueError("Weights initialization requires the checkpoint and its SHA-256 together")
+    if args.init_weights_new_schedule and not args.init_weights_checkpoint:
+        raise ValueError("A new init schedule requires --init-weights-checkpoint")
     initialization_report = None
     if args.init_weights_checkpoint:
         # Loaded on resume too, so every tensor the recovery checkpoint omits matches the parent.
         from qwen_vl.train.lane_initialization import initialize_weights_from_checkpoint
         model, serializer, initialization_report = initialize_weights_from_checkpoint(
-            args.init_weights_checkpoint, args.init_weights_sha256, args.model_name_or_path, cfg)
+            args.init_weights_checkpoint, args.init_weights_sha256, args.model_name_or_path, cfg,
+            new_schedule=args.init_weights_new_schedule)
         initialization_report["resumed_from"] = args.resume_from_checkpoint
         if int(os.environ.get("RANK", 0)) == 0:
             (out / "weights_initialization.json").write_text(

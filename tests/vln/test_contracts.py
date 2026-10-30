@@ -48,6 +48,13 @@ class ContractTests(unittest.TestCase):
         ep["steps"][1]["action_name"] = "TURN_LEFT"
         with self.assertRaises(ValueError):
             validate_episode(ep, check_images=False)
+        ep["steps"][1]["action_name"] = "STOP"
+        ep["steps"][0]["target_action_name"] = "TURN_RIGHT"
+        validate_episode(ep, check_images=False)
+        for bad in ["STOP", "RIGHT"]:
+            ep["steps"][0]["target_action_name"] = bad
+            with self.assertRaises(ValueError):
+                validate_episode(ep, check_images=False)
 
     def test_deep_merge_preserves_nested_fields(self):
         from qwen_vl.contracts import deep_merge

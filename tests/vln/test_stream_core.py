@@ -89,6 +89,19 @@ def test_action_token_loss_is_action_mean_not_token_mean():
     assert torch.isfinite(logits.grad).all()
 
 
+def test_relabeled_action_loss_keeps_full_response_weight():
+    from qwen_vl.models.nav_model import per_action_token_loss
+
+    logits = torch.tensor([[2.0, 0.0], [0.0, 2.0], [1.0, 0.0]])
+    targets = torch.tensor([0, 0, 1])
+    index = torch.tensor([0, 1, 1])
+    expected = torch.nn.functional.cross_entropy(logits, targets, reduction="none")
+    result = per_action_token_loss(logits, targets, index, 2, torch.tensor([3, 2]))
+    torch.testing.assert_close(result, torch.stack([expected[0] / 3, expected[1:].sum() / 2]))
+    with pytest.raises(ValueError):
+        per_action_token_loss(logits, targets, index, 2, torch.tensor([3, 1]))
+
+
 def test_fla_hopper_backward_matches_fp32_recurrent_oracle():
     if not torch.cuda.is_available():
         pytest.skip("H100 FLA backward gate")

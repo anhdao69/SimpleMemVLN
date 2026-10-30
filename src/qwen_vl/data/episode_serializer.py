@@ -24,6 +24,17 @@ SYSTEM = (
 )
 
 
+def supervised_response(executed, oracle):
+    """Oracle tokens supervised at an executed response's positions: the oracle response up to and including its
+    first token that differs, since later executed tokens condition on a token the oracle would not emit."""
+    for k, (a, b) in enumerate(zip(executed, oracle)):
+        if a != b:
+            return oracle[: k + 1]
+    if len(executed) != len(oracle):
+        raise ValueError("Action responses must be distinct and EOS-terminated")
+    return oracle
+
+
 class EpisodeSerializer:
     def __init__(self, processor, config):
         self.processor, self.config = processor, config
@@ -165,6 +176,10 @@ class EpisodeSerializer:
         lane_spec = parse_step_lane_spec(self.config)
         observation_spans = []
         spans, reads, target_positions, action_index, classes = [], [], [], [], []
+        relabeled = any("target_action_name" in step for step in episode["steps"])
+        if relabeled and self.mode != "qwen_text":
+            raise ValueError("Oracle target actions are supported for qwen_text responses only")
+        target_ids = []
         for t, step in enumerate(episode["steps"]):
             with Image.open(step["rgb_path"]) as image:
                 block = self.encode_observation(image, t)
@@ -173,7 +188,7 @@ class EpisodeSerializer:
             cursor += block["input_ids"].numel()
             observation_spans.append((start, cursor))
             cls = ACTIONS.index(step["action_name"])
-            classes.append(cls)
+            classes.append(ACTIONS.index(step.get("target_action_name", step["action_name"])))
             if self.mode == "classification":
                 reads.append(cursor - 1)
             elif self.mode == "candidate_logits":
@@ -183,8 +198,12 @@ class EpisodeSerializer:
                 cursor += len(feedback)
             else:
                 ids = self.action_ids[cls]
-                target_positions.extend(range(cursor, cursor + len(ids)))
-                action_index.extend([t] * len(ids))
+                targets = ids
+                if relabeled:
+                    targets = supervised_response(ids, self.action_ids[classes[-1]])
+                    target_ids.extend(targets)
+                target_positions.extend(range(cursor, cursor + len(targets)))
+                action_index.extend([t] * len(targets))
                 blocks.append(self.text_block(ids + self.separator))
                 cursor += len(ids) + len(self.separator)
             spans.append((start, cursor))
@@ -213,6 +232,12 @@ class EpisodeSerializer:
             num_actions=len(classes),
             episode_uid=episode["episode_uid"],
         )
+        if relabeled:
+            # Present only for relabeled episodes, so every other episode encodes exactly as before.
+            result["response_target_ids"] = torch.tensor(target_ids, dtype=torch.long)
+            result["response_action_lengths"] = torch.tensor(
+                [len(self.action_ids[c]) for c in classes], dtype=torch.long
+            )
         if parse_episodic_spec(self.config) is not None:
             # Metadata only: identical tokens, images, targets and loss positions.
             result["episodic_layout"] = build_episodic_layout(
