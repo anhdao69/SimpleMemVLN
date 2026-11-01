@@ -1,0 +1,34 @@
+{
+ "decisions": 115221,
+ "bend 0-6 deg": {
+  "n": 96065,
+  "mean_event_pos": -0.0968,
+  "p_event_pos_top20": 0.191
+ },
+ "bend 6-17 deg": {
+  "n": 13790,
+  "mean_event_pos": -0.075,
+  "p_event_pos_top20": 0.234
+ },
+ "bend 17-34 deg": {
+  "n": 3190,
+  "mean_event_pos": -0.0567,
+  "p_event_pos_top20": 0.294
+ },
+ "bend 34-69 deg": {
+  "n": 1546,
+  "mean_event_pos": -0.0675,
+  "p_event_pos_top20": 0.281
+ },
+ "bend 69-229 deg": {
+  "n": 630,
+  "mean_event_pos": -0.0784,
+  "p_event_pos_top20": 0.203
+ },
+ "spearman_eventpos_bend": 0.166,
+ "spearman_eventpos_dslope": 0.112,
+ "p_bend_gt_35deg | top20 event_pos": 0.024,
+ "p_bend_gt_35deg | rest": 0.017,
+ "p_agent_turns_next | top20": 0.29,
+ "p_agent_turns_next | rest": 0.222
+}
