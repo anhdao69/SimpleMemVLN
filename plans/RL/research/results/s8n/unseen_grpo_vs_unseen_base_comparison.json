@@ -1,0 +1,133 @@
+{
+  "base": "unseen_base",
+  "new": "unseen_grpo",
+  "episodes": 1839,
+  "metrics": {
+    "SR": {
+      "base": 0.5149537792278412,
+      "new": 0.6041326808047852,
+      "abs_delta": 0.08917890157694397,
+      "rel_delta": 0.1731784582893347
+    },
+    "SPL": {
+      "base": 0.47930763127206055,
+      "new": 0.5465800644182743,
+      "abs_delta": 0.06727243314621378,
+      "rel_delta": 0.1403533529555451
+    },
+    "NE": {
+      "base": 5.703149520763707,
+      "new": 4.779167316923128,
+      "abs_delta": -0.9239822038405787,
+      "rel_delta": -0.16201262135537497
+    },
+    "OSR": {
+      "base": 0.5807504078303426,
+      "new": 0.6715606307775965,
+      "abs_delta": 0.09081022294725394,
+      "rel_delta": 0.15636704119850187
+    },
+    "TL": {
+      "base": 9.427166646190264,
+      "new": 10.192887359791648,
+      "abs_delta": 0.7657207136013842,
+      "rel_delta": 0.08122490482448717
+    },
+    "steps": {
+      "base": 91.21098423056009,
+      "new": 100.10331702011963,
+      "abs_delta": 8.892332789559546,
+      "rel_delta": 0.09749190697341675
+    },
+    "forced_stops": {
+      "base": 128,
+      "new": 146,
+      "abs_delta": 18,
+      "rel_delta": 0.140625
+    },
+    "invalid": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    }
+  },
+  "paired_success": {
+    "both": 792,
+    "only_base": 155,
+    "only_new": 319,
+    "neither": 573,
+    "mcnemar_exact_p": 3.9512215210637504e-14
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      0.06579662860250136,
+      0.1120174007612833
+    ],
+    "SPL": [
+      0.04602609781112862,
+      0.08810796424469426
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 127,
+      "new": 136
+    },
+    "near_miss_3_to_5m": {
+      "base": 92,
+      "new": 52
+    },
+    "never_within_3m": {
+      "base": 553,
+      "new": 418
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 120,
+      "new": 122
+    },
+    "success": {
+      "base": 947,
+      "new": 1111
+    }
+  },
+  "transitions": {
+    "success -> success": 792,
+    "never_within_3m -> never_within_3m": 301,
+    "never_within_3m -> success": 171,
+    "success -> never_within_3m": 68,
+    "passed_goal_then_stopped_outside -> success": 65,
+    "forced_stop_at_cap -> forced_stop_at_cap": 59,
+    "success -> passed_goal_then_stopped_outside": 53,
+    "passed_goal_then_stopped_outside -> passed_goal_then_stopped_outside": 43,
+    "never_within_3m -> forced_stop_at_cap": 43,
+    "near_miss_3_to_5m -> success": 42,
+    "forced_stop_at_cap -> success": 41,
+    "forced_stop_at_cap -> never_within_3m": 24,
+    "success -> forced_stop_at_cap": 23,
+    "never_within_3m -> passed_goal_then_stopped_outside": 20,
+    "near_miss_3_to_5m -> near_miss_3_to_5m": 20,
+    "near_miss_3_to_5m -> never_within_3m": 20,
+    "never_within_3m -> near_miss_3_to_5m": 18,
+    "success -> near_miss_3_to_5m": 11,
+    "near_miss_3_to_5m -> forced_stop_at_cap": 6,
+    "passed_goal_then_stopped_outside -> forced_stop_at_cap": 5,
+    "passed_goal_then_stopped_outside -> never_within_3m": 5,
+    "near_miss_3_to_5m -> passed_goal_then_stopped_outside": 4,
+    "forced_stop_at_cap -> passed_goal_then_stopped_outside": 2,
+    "passed_goal_then_stopped_outside -> near_miss_3_to_5m": 2,
+    "forced_stop_at_cap -> near_miss_3_to_5m": 1
+  },
+  "checkpoints": {
+    "base": "/blue/yu954774.ucf/an221229.ucf/checkpoints/svln/M5_S/S8N",
+    "new": "/blue/yu954774.ucf/an221229.ucf/svln_runs/rl/activevln_grpo_s8n_r2r1k/exports/step_0125",
+    "base_weights": "c89de946f3cb05aa91a5cc498fd63991c901852ba0c05e6546cbaddf23446a2b",
+    "new_weights": "c060bf8825f4325f8c9a27428aadcf97af520aaa1f48a540fd9e62d6e6eb5fbc"
+  }
+}
