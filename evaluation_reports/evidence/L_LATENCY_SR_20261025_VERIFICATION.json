@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-25T03:00:23.474217+00:00",
+  "passed": true,
+  "checked": [
+    {
+      "name": "L2",
+      "samples": 192,
+      "journal_sha256": "70c7987fa5c7af42afc0e3d4e2e148360ce5d190b81a4437f6065f4b4e07fa08",
+      "median_ms": 109.71639200033678
+    },
+    {
+      "name": "L3",
+      "samples": 192,
+      "journal_sha256": "41251b285cad9ab032f7fc05a850a6137471a81d22a2e1479ce2ad71666673e7",
+      "median_ms": 153.12703349991352
+    }
+  ],
+  "issues": [],
+  "protected_navigation_report_unchanged": true,
+  "script_hashes": {
+    "run_all.py": "28d81392f7401e98df82c46ec6f726b37facbd8012ed75539d3801158508ecb1",
+    "verify.py": "36d242c48496a77faca7be148b0fdd4e64891ae52307c3903a7781f81dd69a14",
+    "worker.py": "5d3bbdb1792df73c3655af679aa30e49696cfb87d4fb9581d08f39fa907d32c0",
+    "update_reports.py": "16ee6d1dbdad153b8c18b195e66c719b0d69f0024398cd3c8bbec0fcbae134ad"
+  },
+  "manifest_sha256": "c9a21820c333c5ff42e43e3a4b8a1c7fa7102ac59350e3a91ca857df3206cea6"
+}

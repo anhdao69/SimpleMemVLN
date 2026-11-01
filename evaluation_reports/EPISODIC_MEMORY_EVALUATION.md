@@ -2,11 +2,13 @@
 
 Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261026.json) covers 43 navigation journals and the 35 existing latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261026.json) distinguishes the server snapshot from these merged reports.
 
-Verified snapshot: **2026-10-27T07:08:12.063755+07:00**. Metrics independently recomputed from saved episode journals; unique IDs, panel membership, available contract order and action metadata checked. There are **43 navigation runs** in this index: 40 full-panel attempts and three partial runs (L2, L3, G3_M5). Of the full-panel attempts, S7 contains one execution failure and failed final navigation validation. Numerical qualification is separate from navigation validation. No evaluation was restarted by this report update.
+Verified snapshot: **2026-10-27T07:08:12.063755+07:00**. Metrics independently recomputed from saved episode journals; unique IDs, panel membership, available contract order and action metadata checked. This snapshot indexed **43 navigation runs**: 40 full-panel attempts and three partial runs (L2, L3, G3_M5). Of the full-panel attempts, S7 contains one execution failure and failed final navigation validation. Numerical qualification is separate from navigation validation. No evaluation was restarted by this report update.
+
+**2026-11-01 update — S8N stage 2.** Three full-panel runs were added: S8N_DAGGER_SF, S8N_DAGGER_SF_REMAINING and S8N_DAGGER_SF_FULL. Each covers all 1,839 episodes with zero execution errors and passed final verification. The index now has **46 navigation runs**: 43 full-panel attempts and three partial runs. The 2026-10-27 snapshot, the publication check and the JSON/CSV links below do not cover these three rows. They are verified by their own [evidence](evidence/S8N_STAGE2_SF_R2R_20261101.json), [per-episode CSV](evidence/S8N_STAGE2_SF_R2R_20261101_EPISODES.csv) and [verifier](evidence/verify_s8n_stage2_sf_20261101.py), described in the [stage-2 report](S8N_STAGE2_STOPFIX_R2R_EVALUATION.md). No earlier row or verification claim was changed.
 
 S8N_MUON, L0/L1, both S8N training follow-ups and all four resumed budget arms are complete. L2/L3 remain interrupted; G3_M5 is archived partial. S8N_MUON finished on `10.148.182.137`, and all 1,839 episodes were gathered and validated locally. Its migration preserved 1,301 episodes and verified weights/source/assets plus 169 matching smoke frames; only path prefixes changed.
 
-S8N epoch1 has the highest completed SR in this index: **964/1,839 (52.419793%)**. Comparisons below are descriptive, not significance claims. Partial rows must not be ranked as full-panel results. S6, S8N epoch2, S8N_MUON, R4/B2400 and R2/B1200 retain explicit unqualified-diagnostic labels. S1 BF16, S4, S5 and M5_E1 R4/B1200 also retain native numerical-replay failures despite navigation validation passing.
+S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **1,171/1,839 (63.675911%)**. Among first-stage models, S8N epoch1 remains highest at **964/1,839 (52.419793%)**. Comparisons below are descriptive, not significance claims. The exception is the stage-2 section, whose paired McNemar tests and bootstrap intervals are in its report. Partial rows must not be ranked as full-panel results. S6, S8N epoch2, S8N_MUON, R4/B2400 and R2/B1200 retain explicit unqualified-diagnostic labels. S1 BF16, S4, S5 and M5_E1 R4/B1200 also retain native numerical-replay failures despite navigation validation passing.
 
 [Machine-readable evidence](evidence/ALL_RESULTS_20261027.json) · [CSV](evidence/ALL_RESULTS_20261027.csv) · [Latency and SR](evidence/ALL_LATENCY_SR_20261027.csv).
 
@@ -46,6 +48,23 @@ S8N epoch1 has the highest completed SR in this index: **964/1,839 (52.419793%)*
 | S8N LR1E5 | 1,839 | 908 | 49.374660 | 46.435271 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
 | S8N_MUON | 1,839 | 779 | 42.359978 | 37.786090 | 0 | FINAL — unqualified diagnostic | FAIL (0/3 passed) |
 
+## S8N stage 2: DAgger with the STOP-label fix
+
+| Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
+|---|---:|---:|---:|---:|---:|---|---|
+| S8N_DAGGER_SF | 1,839 | 1,117 | 60.739532 | 48.838608 | 0 | FINAL — navigation validated | PASS (serving audit 2/2) |
+| S8N_DAGGER_SF_REMAINING | 1,839 | 1,171 | 63.675911 | 56.654234 | 0 | FINAL — navigation validated | PASS (serving audit 2/2) |
+| S8N_DAGGER_SF_FULL | 1,839 | 1,111 | 60.413268 | 51.854865 | 0 | FINAL — navigation validated | PASS (serving audit 2/2) |
+
+- **Training:** each model is one epoch starting from S8N epoch1's weights, with fresh AdamW, on oracle-relabeled DAgger data with the STOP-label fix.
+  - SF trains on that data alone.
+  - SF_REMAINING adds the 16,620 original R2R/RxR15deg episodes whose instructions DAgger did not re-collect.
+  - SF_FULL adds all 30,815 original episodes.
+- **Inference:** the same R4/B1200 configuration as S8N.
+- **Navigation status:** from each campaign's `finish_verify.py`, which checks order, uniqueness, shard/merged equality and the recomputed summary.
+- **"Serving audit 2/2":** the stage-2 qualification. It requires 64- and 128-step forced replays within allclose(0.75, 0.03) with RMS ≤ 0.15, a bitwise reset and a 520-step bounded stream. It is not the first-stage three-fixture native gate.
+- **Significance:** against S8N on the same episodes, all three SR gains remain significant after Bonferroni correction over six comparisons. See the [stage-2 report](S8N_STAGE2_STOPFIX_R2R_EVALUATION.md).
+
 ## S8N inference-budget sweep
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
@@ -82,12 +101,15 @@ S8N epoch1 has the highest completed SR in this index: **964/1,839 (52.419793%)*
 | S8N_R4_B2400 | -17 | -0.924415 | -0.755175 |
 | S8N_R2_B1200 | -49 | -2.664492 | -2.527748 |
 | S8N_R8_B1200 | -33 | -1.794454 | -1.585273 |
+| S8N_DAGGER_SF (stage 2) | +153 | +8.319739 | +0.159298 |
+| S8N_DAGGER_SF_REMAINING (stage 2) | +207 | +11.256117 | +7.974923 |
+| S8N_DAGGER_SF_FULL (stage 2) | +147 | +7.993475 | +3.175554 |
 
-All comparison rows cover the same full episode-ID set; outcome-pair counts are retained in the JSON evidence. These differences do not establish statistical significance. R4/B600 and R4/B2400 have equal SR (947 successes each), but differ in SPL and qualification status.
+All comparison rows cover the same full episode-ID set; outcome-pair counts are retained in the JSON evidence. These differences do not establish statistical significance. The exception is the three stage-2 rows: their paired tests are in the [stage-2 report](S8N_STAGE2_STOPFIX_R2R_EVALUATION.md), and all three SR gains remain significant after Bonferroni correction. R4/B600 and R4/B2400 have equal SR (947 successes each), but differ in SPL and qualification status.
 
 ## Detailed reports and preserved methods
 
-See [S campaign](S_CAMPAIGN_R2R_EVALUATION.md), [budget sweep](S8N_R_B_SWEEP.md), [MUON](S8N_MUON_R2R_EVALUATION.md), [epoch2](S8N_E2_R2R_EVALUATION.md), [LR1E5](S8N_LR1E5_R2R_EVALUATION.md), [L0](L0_R2R_EVALUATION.md), [L1](L1_R2R_EVALUATION.md), [L2](L2_R2R_EVALUATION.md), [L3](L3_R2R_EVALUATION.md), and [controlled latency](LATENCY_EVALUATION.md). The [pre-refresh campaign narrative](archive/20261027_pre_refresh/EPISODIC_MEMORY_EVALUATION.md) is archived historical evidence; its partial snapshots are superseded by this report.
+See [S campaign](S_CAMPAIGN_R2R_EVALUATION.md), [budget sweep](S8N_R_B_SWEEP.md), [MUON](S8N_MUON_R2R_EVALUATION.md), [epoch2](S8N_E2_R2R_EVALUATION.md), [LR1E5](S8N_LR1E5_R2R_EVALUATION.md), [L0](L0_R2R_EVALUATION.md), [L1](L1_R2R_EVALUATION.md), [L2](L2_R2R_EVALUATION.md), [L3](L3_R2R_EVALUATION.md), [S8N stage 2 STOP-fix](S8N_STAGE2_STOPFIX_R2R_EVALUATION.md), and [controlled latency](LATENCY_EVALUATION.md). The [pre-refresh campaign narrative](archive/20261027_pre_refresh/EPISODIC_MEMORY_EVALUATION.md) is archived historical evidence; its partial snapshots are superseded by this report.
 
 ## Preserved cross-server narrative — through the October 24 sync
 
