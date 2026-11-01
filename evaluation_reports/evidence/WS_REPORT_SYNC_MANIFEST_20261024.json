@@ -1,0 +1,85 @@
+{
+  "source_host": "ws_anhdh35",
+  "source_root": "/storage/anhdh35/SimpleMemVLN",
+  "source_files": {
+    "evaluation_reports/EPISODIC_MEMORY_EVALUATION.md": {
+      "bytes": 38330,
+      "sha256": "86ec9f8f699d8d435b8c7c496b522e3751792e666141d05f0e5f2740e12a13fd"
+    },
+    "evaluation_reports/L2_R2R_EVALUATION.md": {
+      "bytes": 7921,
+      "sha256": "e58728ddcced393efdd9798ddbb23ca88c33a848f97f279c0706c9040e3f1b48"
+    },
+    "evaluation_reports/L3_R2R_EVALUATION.md": {
+      "bytes": 8592,
+      "sha256": "d92f8401dfd446e4a75b38f1c819c320345571c6201faf83697cee19bf4ae229"
+    },
+    "evaluation_reports/LATENCY_EVALUATION.md": {
+      "bytes": 32613,
+      "sha256": "7d667ba573f087b39062761f5c7bd47747411630925e9239ecddbb9830a27d8b"
+    },
+    "evaluation_reports/S_CAMPAIGN_R2R_EVALUATION.md": {
+      "bytes": 18748,
+      "sha256": "d3a3363e91902272a2653e8819820da12909dd34f143d8ed4364b236f9c8769b"
+    },
+    "evaluation_reports/VGGT_EVALUATION.md": {
+      "bytes": 30920,
+      "sha256": "d273304d1d01fa2d6b7ca7b5febd10cee5458b73dd76d4c9513b689dd5803ce0"
+    },
+    "evaluation_reports/evidence/ALL_LATENCY_SR_20261025.csv": {
+      "bytes": 6175,
+      "sha256": "b3721ccac9738cc7a200f1ba123d6fbd82354e6dcea4f916e639b85986d50c14"
+    },
+    "evaluation_reports/evidence/ALL_RESULTS_20261024.json": {
+      "bytes": 2160064,
+      "sha256": "d6c50dd122385a13b5c99e14bbd1a17b66165f5f37700b68e0fac0f8f8fce5ee"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024.csv": {
+      "bytes": 4570,
+      "sha256": "de47f4311b7d4848b9766e17ca4547ccfbc1ad4be203b475332c3f19e04cdf97"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024.json": {
+      "bytes": 143374,
+      "sha256": "9cd5273ea811a62c5e9d5e75ba6f11169f2c2b3ef9f4cddb5edd9260da17be38"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024_MANIFEST.json": {
+      "bytes": 90818,
+      "sha256": "35ee7bb6ee59c1be283936918590ad16b4707a6b9836a3efe590f8467bf0ad6d"
+    },
+    "evaluation_reports/evidence/LATENCY_20261024_VERIFICATION.json": {
+      "bytes": 7032,
+      "sha256": "8a61981368ffb9bf641b7634b7e38389d06c5805e34820e57168b57bfa130a56"
+    },
+    "evaluation_reports/evidence/L_LATENCY_SR_20261025.json": {
+      "bytes": 8293,
+      "sha256": "d03f716c219e62b36b5cc1aa3e5c2dec5820402967aa00e243a1df8eb38cddc9"
+    },
+    "evaluation_reports/evidence/L_LATENCY_SR_20261025_VERIFICATION.json": {
+      "bytes": 983,
+      "sha256": "9594fe4c7133f5325ac58b221364658c2f64c216a71cc7e726fffaefa5f2bf8f"
+    },
+    "evaluation_reports/evidence/M5_E1_S_CAMPAIGN_B1200_B0_LAUNCH_20261022.json": {
+      "bytes": 86561,
+      "sha256": "186b3ae5cdb0d6d5836ce0920bca2aed176741be838757124a1ceb19bc3905b9"
+    },
+    "evaluation_reports/evidence/M5_R2_B1800_SEED431_FINAL_20261021.json": {
+      "bytes": 3955,
+      "sha256": "d5f307b0bdfe945002afdd86566c243bf86f05f391ae6b6bf28125f0fd8beb5a"
+    },
+    "evaluation_reports/evidence/REPORT_REFRESH_20261024_VERIFICATION.json": {
+      "bytes": 571,
+      "sha256": "9dc746ee9000ffa3915911c70b9ca06cbe766ca880271deaabaee25552544571"
+    },
+    "evaluation_reports/evidence/S_CAMPAIGN_SNAPSHOT_20261022T204050+0700.json": {
+      "bytes": 262910,
+      "sha256": "ccf2da54ec195f51328028fedc9ff8a6b2ccae15046a23ab2a7146ab98d3b68b"
+    }
+  },
+  "notes": [
+    "Earlier Vinh results and historical evidence are retained.",
+    "Server-only Markdown links are displayed as filesystem paths for GitHub.",
+    "Source report-verification hashes describe the original server snapshot; merged publication reports have distinct hashes.",
+    "Original timestamps, including October 25 Asia/Ho_Chi_Minh measurements, are preserved."
+  ],
+  "fresh_verification": "WS_REPORT_SYNC_VERIFICATION_20261024.json"
+}
