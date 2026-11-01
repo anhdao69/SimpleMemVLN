@@ -10,6 +10,11 @@ warmup, i.e. 1,775/54, 3,852/116 (S8N's own) and 5,627/169.  Lane A trains S8N_D
 S8N_DAGGER_SF_REMAINING on GPUs 0-3 with socket-0 CPUs; lane B trains S8N_DAGGER_SF_FULL on GPUs 4-7 with socket-1
 CPUs.
 
+A second campaign version, ``s8n_stage2_stopfix_scalevln_campaign_v1``, trains one more arm the same way:
+
+S8N_DAGGER_SF_REMAINING_SCALEVLN50K  S8N_DAGGER_SF_REMAINING's 30,815 rows plus the 50,000 best-ranked clean
+                                     ScaleVLN episodes (selection ranks 0-49,999); 80,815 episodes, 10,102/304.
+
 Gates per lane, all before its first production: parent (S8N identity, final weights, manifests, configs),
 cpu-suite, and an init run of every arm of the lane (three updates of the arm's full manifest from the bound
 weights: finite losses and gradients, the production config, a strict weights-only start that changes nothing but
@@ -40,19 +45,25 @@ VERSION = 's8n_stage2_stopfix_campaign_v1'
 ARMS = {'S8N_DAGGER_SF': 'dagger_oracle_stopfix',
         'S8N_DAGGER_SF_REMAINING': 'dagger_oracle_stopfix+r2r_rxr15_not_recollected',
         'S8N_DAGGER_SF_FULL': 'dagger_oracle_stopfix+r2r_rxr15_full'}
+SCALEVLN_VERSION = 's8n_stage2_stopfix_scalevln_campaign_v1'
+SCALEVLN_ARMS = {'S8N_DAGGER_SF_REMAINING_SCALEVLN50K':
+                 'dagger_oracle_stopfix+r2r_rxr15_not_recollected+scalevln_ranks_0_50000'}
+CAMPAIGN_ARMS = {VERSION: ARMS, SCALEVLN_VERSION: SCALEVLN_ARMS}   # campaign version -> the arms it trains once
 STEP_PREFIX = 's8n-stage2-sf-lane-'
 
 
 # ---- small pure helpers (unit-tested) ------------------------------------
-def policy_text(source, arm, schedule):
+def policy_text(source, arm, schedule, version=VERSION):
     """The one-epoch policy file with the epoch schedule of the arm's manifest."""
     import yaml
     policy = yaml.safe_load((Path(source) / 'configs/vggt/g3_joint_one_epoch.yaml').read_text())
     if set(policy) != {'training'} or set(policy['training']) != {'epochs', *SCHEDULE_KEYS} \
             or policy['training']['epochs'] != 1:
         raise ValueError('Unexpected one-epoch policy')
+    if arm not in CAMPAIGN_ARMS[version]:
+        raise ValueError(f'{arm} is not an arm of {version}')
     policy['training'].update(schedule)
-    return (f'# {VERSION} {arm}: configs/vggt/g3_joint_one_epoch.yaml with the epoch schedule of its manifest\n'
+    return (f'# {version} {arm}: configs/vggt/g3_joint_one_epoch.yaml with the epoch schedule of its manifest\n'
             + yaml.safe_dump(policy, sort_keys=False))
 
 
@@ -100,8 +111,10 @@ class Campaign(stage2.Campaign):
     def __init__(self, path):
         self.path = Path(path)
         self.data = json.loads(self.path.read_text())
-        if self.data['version'] != VERSION:
+        if self.data['version'] not in CAMPAIGN_ARMS:
             raise ValueError('Unknown campaign version')
+        self.version = self.data['version']
+        self.arm_data = CAMPAIGN_ARMS[self.version]
         self.root = Path(self.data['root'])
         self.source = Path(self.data['source'])
         self.base = Path(self.data['base'])
@@ -109,7 +122,7 @@ class Campaign(stage2.Campaign):
         self.configs = self.root / 'configs'
         self.parent = self.data['parent']
         self.arms = [arm for lane in self.data['lanes'].values() for arm in lane['arms']]
-        if sorted(self.arms) != sorted(ARMS) or set(self.data['manifests']) != set(ARMS):
+        if sorted(self.arms) != sorted(self.arm_data) or set(self.data['manifests']) != set(self.arm_data):
             raise ValueError('The campaign must train each stopfix arm exactly once')
         self.schedules = {arm: epoch_schedule(m['episodes'], self.data['accumulation'])
                           for arm, m in self.data['manifests'].items()}
@@ -132,7 +145,7 @@ class Campaign(stage2.Campaign):
             if sha(path) != parent[f'{name}_sha256']:
                 raise ValueError(f'{path} is not S8N\'s {name} file')
         schedule = self.schedules[arm]
-        if self.policy_path(arm).read_text() != policy_text(self.source, arm, schedule):
+        if self.policy_path(arm).read_text() != policy_text(self.source, arm, schedule, self.version):
             raise ValueError(f'{arm}: policy file differs from its declaration')
         cfg = self.resolve(arm)
         expected = self.expected_config(arm)
@@ -147,9 +160,9 @@ class Campaign(stage2.Campaign):
         if parse_matrix_optimizer(cfg['training']) is not None:
             raise ValueError(f'{arm}: S8N trains with AdamW only')
         manifest = self.data['manifests'][arm]
-        return dict(campaign=VERSION, arm=arm, parent=PARENT, config=cfg, source_commit=self.source_identity(),
+        return dict(campaign=self.version, arm=arm, parent=PARENT, config=cfg, source_commit=self.source_identity(),
                     manifest=manifest['path'], manifest_sha256=manifest['sha256'], episodes=manifest['episodes'],
-                    data=ARMS[arm], model=self.data['model'], memory_sha256=sha(self.arm_memory_path(arm)),
+                    data=self.arm_data[arm], model=self.data['model'], memory_sha256=sha(self.arm_memory_path(arm)),
                     runtime_sha256=sha(self.configs / 'runtime.yaml'), policy_sha256=sha(self.policy_path(arm)),
                     parent_identity_sha256=self.parent['identity_sha256'],
                     init_weights_checkpoint=self.parent['weights_checkpoint'],
@@ -167,8 +180,8 @@ def prepare(campaign):
             shutil.copy2(source, target)
         if sha(target) != parent[f'{name}_sha256'] or sha(source) != parent[f'{name}_sha256']:
             raise ValueError(f'{target} is not S8N\'s {name} file')
-    for arm in ARMS:
-        path, text = c.policy_path(arm), policy_text(c.source, arm, c.schedules[arm])
+    for arm in c.arm_data:
+        path, text = c.policy_path(arm), policy_text(c.source, arm, c.schedules[arm], c.version)
         if path.exists():
             if path.read_text() != text:
                 raise ValueError(f'{path} exists with different content')
@@ -376,7 +389,7 @@ def main():
     if args.prepare:
         configs = prepare(campaign)
         report = {arm: dict(schedule=campaign.schedules[arm], policy_sha256=campaign.run_identity(arm)['policy_sha256'],
-                            manifest_sha256=campaign.data['manifests'][arm]['sha256']) for arm in ARMS}
+                            manifest_sha256=campaign.data['manifests'][arm]['sha256']) for arm in campaign.arm_data}
         print(json.dumps(dict(configs=configs, arms=report), indent=2))
         print('PREPARE_PASS', flush=True)
         return

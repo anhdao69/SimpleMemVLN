@@ -80,6 +80,67 @@ def test_check_init():
     assert 'episodes outside the manifest' in sf.check_init(good, plan, uids[1:])['problems'][0]
 
 
+SCALEVLN_ARM = 'S8N_DAGGER_SF_REMAINING_SCALEVLN50K'
+
+
+def write_scalevln_campaign(tmp_path, arms=(SCALEVLN_ARM,), version=None):
+    data = campaign_data(tmp_path, lanes=dict(A=dict(arms=list(arms))))
+    data.update(version=version or sf.SCALEVLN_VERSION,
+                manifests={arm: dict(path=f'/m/{arm}.jsonl', episodes=80815, sha256='0' * 64) for arm in arms})
+    path = tmp_path / 'campaign.json'
+    path.write_text(json.dumps(data))
+    return path
+
+
+def test_scalevln_campaign_trains_its_arm_with_its_manifest_epoch_schedule(tmp_path):
+    campaign = sf.Campaign(write_scalevln_campaign(tmp_path))
+    assert campaign.version == sf.SCALEVLN_VERSION and campaign.arm_data == sf.SCALEVLN_ARMS
+    schedule = dict(expected_total_steps=10102, warmup_steps=304, expected_warmup_steps=304)
+    assert campaign.schedules == {SCALEVLN_ARM: schedule}
+    assert sf.schedule_changes(S8N_TRAINING, schedule) == dict(
+        expected_total_steps=[3852, 10102], warmup_steps=[116, 304], expected_warmup_steps=[116, 304])
+
+
+@pytest.mark.parametrize('arms', [('S8N_DAGGER_SF_REMAINING',), (SCALEVLN_ARM, 'S8N_DAGGER_SF_REMAINING'),
+                                  (SCALEVLN_ARM, SCALEVLN_ARM)])
+def test_scalevln_campaign_trains_only_its_arm_exactly_once(tmp_path, arms):
+    with pytest.raises(ValueError, match='exactly once'):
+        sf.Campaign(write_scalevln_campaign(tmp_path, arms))
+
+
+def test_campaign_versions_do_not_mix_arms(tmp_path):
+    with pytest.raises(ValueError, match='exactly once'):           # the first campaign cannot train the new arm
+        sf.Campaign(write_scalevln_campaign(tmp_path, version=sf.VERSION))
+    with pytest.raises(ValueError, match='Unknown campaign version'):
+        sf.Campaign(write_scalevln_campaign(tmp_path, version='s8n_stage2_stopfix_campaign_v2'))
+
+
+def test_policy_text_names_its_campaign_version():
+    import yaml
+    text = sf.policy_text(Path('.'), SCALEVLN_ARM, sf.epoch_schedule(80815, 2), sf.SCALEVLN_VERSION)
+    assert text.startswith(f'# {sf.SCALEVLN_VERSION} {SCALEVLN_ARM}: ')
+    assert yaml.safe_load(text) == dict(training=dict(epochs=1, expected_total_steps=10102, warmup_steps=304,
+                                                      expected_warmup_steps=304))
+    # the first campaign's policy files keep their exact text
+    assert sf.policy_text(Path('.'), 'S8N_DAGGER_SF', sf.epoch_schedule(14195, 2)).startswith(
+        f'# {sf.VERSION} S8N_DAGGER_SF: ')
+    with pytest.raises(ValueError, match='not an arm'):
+        sf.policy_text(Path('.'), SCALEVLN_ARM, sf.epoch_schedule(80815, 2))
+    with pytest.raises(ValueError, match='not an arm'):
+        sf.policy_text(Path('.'), 'S8N_DAGGER_SF', sf.epoch_schedule(14195, 2), sf.SCALEVLN_VERSION)
+
+
+def test_train_command_binds_the_scalevln_arm(tmp_path):
+    campaign = sf.Campaign(write_scalevln_campaign(tmp_path))
+    command = sf.train_command(campaign, SCALEVLN_ARM, tmp_path / 'run', production=True, host_guard=691.2)
+    torchrun = command[command.index('--') + 1:]
+    assert torchrun[torchrun.index('--manifest') + 1] == f'/m/{SCALEVLN_ARM}.jsonl'
+    assert torchrun[torchrun.index('--policy_config') + 1] == str(tmp_path / 'configs' / f'policy_{SCALEVLN_ARM}.yaml')
+    assert torchrun[torchrun.index('--memory_config') + 1] == str(tmp_path / 'configs/arm_S8N.yaml')
+    assert torchrun[-5:] == ['--init-weights-checkpoint', '/s8n/final', '--init-weights-sha256', 'c' * 64,
+                             '--init-weights-new-schedule']
+
+
 def test_train_command_binds_each_arms_manifest_policy_and_weights(tmp_path):
     campaign = sf.Campaign(write_campaign(tmp_path))
     for arm in SCHEDULES:
