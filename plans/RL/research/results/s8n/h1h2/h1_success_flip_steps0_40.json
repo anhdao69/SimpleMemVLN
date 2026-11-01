@@ -1,0 +1,76 @@
+{
+ "forks": 1147,
+ "p_flip": 0.192,
+ "event_pos+entropy+t/N*+log1p_t": {
+  "event_pos": [
+   0.053,
+   0.67
+  ],
+  "entropy": [
+   0.133,
+   1.61
+  ],
+  "t_over_n": [
+   -0.941,
+   -6.65
+  ],
+  "log1p_t": [
+   0.344,
+   2.85
+  ]
+ },
+ "event+entropy+t/N*+log1p_t": {
+  "event": [
+   0.051,
+   0.55
+  ],
+  "entropy": [
+   0.134,
+   1.62
+  ],
+  "t_over_n": [
+   -0.942,
+   -6.64
+  ],
+  "log1p_t": [
+   0.37,
+   2.74
+  ]
+ },
+ "event_pos+entropy+t/N*+log1p_t+main_success": {
+  "event_pos": [
+   0.052,
+   0.66
+  ],
+  "entropy": [
+   0.143,
+   1.72
+  ],
+  "t_over_n": [
+   -1.02,
+   -6.75
+  ],
+  "log1p_t": [
+   0.407,
+   3.18
+  ],
+  "main_success": [
+   0.133,
+   1.63
+  ]
+ },
+ "flip_by_event_pos_quintile": [
+  0.2,
+  0.162,
+  0.197,
+  0.218,
+  0.183
+ ],
+ "flip_by_event_quintile": [
+  0.204,
+  0.148,
+  0.175,
+  0.205,
+  0.226
+ ]
+}
