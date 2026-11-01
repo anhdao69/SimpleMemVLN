@@ -1,0 +1,812 @@
+{
+ "title": "S8N stage 2 (DAgger, STOP-label fix) - R2R val_unseen evaluation",
+ "created_utc": "2026-11-01T18:16:38+00:00",
+ "dataset": "R2R val_unseen, 1,839 episodes, fixed order, seed 42, 500-step cap, 0.25 m moves, 15-degree turns, 3 m success radius",
+ "protocol": "Codex pipeline from evaluation/s8n_dagger_sf_20261101 (Vinh): pinned Hub revision + weights SHA-256, published SHA256SUMS, simulator preflight, serving audit (64/128-step forced-history replays: allclose(atol 0.75, rtol 0.03) and RMS <= 0.15; bitwise reset; 520-step bounded stream under guard 4784), 2-episode Habitat smoke, four disjoint contiguous panels on one GPU, shard validation, parallel-vs-smoke action identity, finish_verify.py. Evaluation source 97cbd14 (src identical to 11baeb1).",
+ "crosshost_check": {
+  "summary": "ws_anhdh35 reproduces Vinh with the published S8N_DAGGER_SF model",
+  "identical": true,
+  "episode_ids_equal": true,
+  "fixture_frames": 139,
+  "fixture_pixels_differ": [],
+  "scenes_equal": true,
+  "render_check_differences": [],
+  "serving_audit_passed": true,
+  "serving_audit_differences": [
+   ".replay[0].max_abs: 0.34375 != 0.25",
+   ".replay[0].mean_overlap: 0.9989583333333333 != 1.0",
+   ".replay[0].min_overlap: 0.75 != 1.0",
+   ".replay[0].rms: 0.02293488010764122 != 0.023041818290948868"
+  ],
+  "smoke_episodes": [
+   "10",
+   "1006"
+  ],
+  "smoke_differences": {
+   "10": [],
+   "1006": []
+  },
+  "sample_episodes": 22,
+  "sample_scenes": 11,
+  "sample_differing_episodes": [],
+  "sample_success": {
+   "vinh": 12.0,
+   "ws": 12.0
+  },
+  "simulator_packages": {
+   "vinh": {
+    "habitat-lab": "0.2.4",
+    "habitat-sim": "0.2.4",
+    "numpy": "1.26.4",
+    "gym": "0.23.0",
+    "hydra-core": "1.3.2",
+    "omegaconf": "2.3.0"
+   },
+   "ws": {
+    "habitat-lab": "0.2.4",
+    "habitat-sim": "0.2.4",
+    "numpy": "1.26.4",
+    "gym": "0.23.0",
+    "hydra-core": "1.3.4",
+    "omegaconf": "2.3.1"
+   },
+   "vinh_python": "3.9.25",
+   "ws_python": "3.10.20"
+  }
+ },
+ "models": {
+  "S8N": {
+   "role": "reference (first-stage S8N epoch 1, ALL_RESULTS row S8N)",
+   "host": "ws_anhdh35 (10.148.183.119)",
+   "journal": "/data14t/anhdh35/m5_s8n_epoch1/evaluation/results/full/S8N_s429/episodes.jsonl",
+   "journal_sha256": "2249dacc332f3d31f3aaeb6c30b9d367439903474d5ee09b8163a84325a9b487",
+   "final_verified": {
+    "successes": 964,
+    "sr_percent": 52.41979336595976,
+    "spl_percent": 48.67931065915625,
+    "failures": 0,
+    "source": "evidence/ALL_RESULTS_20261027.csv row S8N (same journal SHA-256)"
+   },
+   "huggingface": {
+    "repo": "anhdao69/M5_S",
+    "folder": "S8N",
+    "weights_sha256": "c89de946f3cb05aa91a5cc498fd63991c901852ba0c05e6546cbaddf23446a2b"
+   }
+  },
+  "S8N_DAGGER_SF": {
+   "host": "ws_anhdh35_vinh (10.148.182.137)",
+   "campaign": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/s8n_dagger_sf_20261101",
+   "journal": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/s8n_dagger_sf_20261101/S8N/full/episodes.jsonl",
+   "journal_sha256": "7fb493b468dd78fc36115ac9146d86d03f537075d2f2b257fd0a6daeef9ae583",
+   "huggingface": {
+    "repo": "anhdao69/stage2_S8N",
+    "folder": "S8N_DAGGER_SF",
+    "revision": "dc25073d6f989c8709802f5924ffdb2dfe0f568d",
+    "weights_sha256": "d6f0dedd99aab2572cd7ad4388168cb835c875a584d221f3ad1d43fadeb4c047"
+   },
+   "training": {
+    "data": "S8N DAgger rollouts, oracle-relabeled, STOP-label fix",
+    "episodes": 14195,
+    "steps": 1607249,
+    "updates": 1775,
+    "warmup": 54,
+    "manifest_sha256": "f3e477b8b56000cfb6333a4bfc59ef9286e993b45a651dd32ae9dd1956bb75c8",
+    "epoch_loss": 0.17695,
+    "first_update_loss": 0.61822,
+    "final_update_loss": 0.17563,
+    "wall_hours": 6.82,
+    "initialization": "strict weights-only from S8N final weights (anhdao69/M5_S/S8N, SHA-256 c89de946...), fresh AdamW and schedule",
+    "source_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc (branch s8n_stage2)"
+   },
+   "final_verified": {
+    "passed": true,
+    "episodes": 1839,
+    "successes": 1117,
+    "sr_percent": 60.73953235454051,
+    "spl_percent": 48.8386082768543,
+    "failures": 0,
+    "exact_order_unique_complete": true,
+    "shard_rows_equal_merged": true,
+    "summary_recomputed": true,
+    "stop_and_success_checks": true,
+    "parallel_smoke_actions_identical": true
+   },
+   "shard_validation": {
+    "passed": true,
+    "episodes": 1839,
+    "unique_ids": true,
+    "exact_order_and_membership": true,
+    "shard_contracts_equal": true,
+    "shard_runtimes_equal": true,
+    "shard_metrics_recomputed": true,
+    "metric_tolerance": 1e-12
+   },
+   "published_files_checked": 25,
+   "serving_audit": {
+    "passed": true,
+    "tensors": 724,
+    "finite": true,
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "python": "3.12.13",
+    "packages": {
+     "torch": "2.10.0+cu129",
+     "transformers": "5.11.0",
+     "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+     "fla-core": "0.5.2",
+     "numpy": "2.4.4",
+     "triton": "3.6.0"
+    },
+    "native_forward_sha256": "e56d7184954e7b1fc7f3bcc0120b38ea684c620e0b568fd687f41e1bcf9816db",
+    "replay": [
+     {
+      "steps": 64,
+      "response_tokens": 191,
+      "raw_argmax_flips": 0,
+      "outcome": {
+       "action_name": "TURN_RIGHT",
+       "response_token_ids": [
+        15834,
+        20549,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.02293488010764122,
+      "max_abs": 0.34375,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9989583333333333,
+      "min_overlap": 0.75
+     },
+     {
+      "steps": 128,
+      "response_tokens": 383,
+      "raw_argmax_flips": 0,
+      "outcome": {
+       "action_name": "TURN_RIGHT",
+       "response_token_ids": [
+        15834,
+        20549,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.02321580797433853,
+      "max_abs": 0.625,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9994959677419355,
+      "min_overlap": 0.75
+     }
+    ],
+    "long_stream": {
+     "arm": "S8N",
+     "steps": 520,
+     "peak_resident_kv": 2546,
+     "guard": 4784,
+     "seconds": 55.67773841298185,
+     "peak_allocated_gib": 14.476630687713623
+    }
+   },
+   "smoke": {
+    "episodes": 2,
+    "failures": 0,
+    "sr": 0.5,
+    "spl": 0.4368277329900568,
+    "episode_ids": [
+     "10",
+     "1006"
+    ]
+   },
+   "evaluator_summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.6073953235454052,
+    "spl": 0.488386082768543,
+    "navigation_error": 4.7463030603022,
+    "oracle_success": 0.7319195214790647,
+    "trajectory_length": 15.118387177663918,
+    "forced_stops": 73,
+    "mean_episode_steps": 118.74768896139206,
+    "invalid_responses": 0,
+    "predicted_stops": 1766,
+    "peak_kv_tokens": 2646,
+    "peak_allocated_gib": 8.674878120422363,
+    "model_latency_p50_seconds": 0.35248537501320243,
+    "complete": true
+   },
+   "source_identity": {
+    "source_commit": "97cbd14e79a91922f3806670f1dc8a4de0836ce7",
+    "documented_inference_reference": "11baeb1",
+    "src_identical_to_documented_reference": true,
+    "training_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc",
+    "training_commit_available_on_origin": false
+   },
+   "full_evaluation_started_utc_unix": 1793508322.7334507,
+   "complete_utc_unix": 1793512351.5598338,
+   "reboot_resume": {
+    "pid": 23779,
+    "resumed_unix": 1793508322.5632544,
+    "reason": "Previous worker processes absent after host reboot; resume existing journals",
+    "completed_before_resume": 1520
+   }
+  },
+  "S8N_DAGGER_SF_REMAINING": {
+   "host": "ws_anhdh35_vinh (10.148.182.137)",
+   "campaign": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/s8n_dagger_sf_remaining_20261101",
+   "journal": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/s8n_dagger_sf_remaining_20261101/S8N/full/episodes.jsonl",
+   "journal_sha256": "e4d672fc22ea2cdfd3735ee037e628c09253ef381035033a4b7ec4a34ac86088",
+   "huggingface": {
+    "repo": "anhdao69/stage2_S8N",
+    "folder": "S8N_DAGGER_SF_REMAINING",
+    "revision": "7ef60965c4b35ad56a886026d347ddb08545e09d",
+    "weights_sha256": "e3ada114b9b8d9435c6d92f02304ac8232c3d3905599b3d6aa38312dec46bb5a"
+   },
+   "training": {
+    "data": "S8N_DAGGER_SF data + the 16,620 original S8N R2R/RxR15deg training episodes whose instruction DAgger did not re-collect (R2R 7,776 + RxR15deg 8,844)",
+    "episodes": 30815,
+    "steps": 2875045,
+    "updates": 3852,
+    "warmup": 116,
+    "manifest_sha256": "ffc860b3009a22232ba9169f49fbbe9ba7659f0674e5c4e3f18538139cdf32d7",
+    "epoch_loss": 0.14824,
+    "first_update_loss": 0.36689,
+    "final_update_loss": 0.04811,
+    "wall_hours": 12.6,
+    "initialization": "strict weights-only from S8N final weights (anhdao69/M5_S/S8N, SHA-256 c89de946...), fresh AdamW and schedule",
+    "source_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc (branch s8n_stage2)"
+   },
+   "final_verified": {
+    "passed": true,
+    "episodes": 1839,
+    "successes": 1171,
+    "sr_percent": 63.67591082109843,
+    "spl_percent": 56.654233696696835,
+    "failures": 0,
+    "exact_order_unique_complete": true,
+    "shard_rows_equal_merged": true,
+    "summary_recomputed": true,
+    "stop_and_success_checks": true,
+    "parallel_smoke_actions_identical": true
+   },
+   "shard_validation": {
+    "passed": true,
+    "episodes": 1839,
+    "unique_ids": true,
+    "exact_order_and_membership": true,
+    "shard_contracts_equal": true,
+    "shard_runtimes_equal": true,
+    "shard_metrics_recomputed": true,
+    "metric_tolerance": 1e-12
+   },
+   "published_files_checked": 25,
+   "serving_audit": {
+    "passed": true,
+    "tensors": 724,
+    "finite": true,
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "python": "3.12.13",
+    "packages": {
+     "torch": "2.10.0+cu129",
+     "transformers": "5.11.0",
+     "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+     "fla-core": "0.5.2",
+     "numpy": "2.4.4",
+     "triton": "3.6.0"
+    },
+    "native_forward_sha256": "e56d7184954e7b1fc7f3bcc0120b38ea684c620e0b568fd687f41e1bcf9816db",
+    "replay": [
+     {
+      "steps": 64,
+      "response_tokens": 191,
+      "raw_argmax_flips": 1,
+      "outcome": {
+       "action_name": "TURN_RIGHT",
+       "response_token_ids": [
+        15834,
+        20549,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.025106139481067657,
+      "max_abs": 0.625,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9994791666666667,
+      "min_overlap": 0.75
+     },
+     {
+      "steps": 128,
+      "response_tokens": 383,
+      "raw_argmax_flips": 1,
+      "outcome": {
+       "action_name": "TURN_RIGHT",
+       "response_token_ids": [
+        15834,
+        20549,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.025481339544057846,
+      "max_abs": 0.59375,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9994959677419355,
+      "min_overlap": 0.75
+     }
+    ],
+    "long_stream": {
+     "arm": "S8N",
+     "steps": 520,
+     "peak_resident_kv": 2546,
+     "guard": 4784,
+     "seconds": 199.99172249099865,
+     "peak_allocated_gib": 14.476630687713623
+    }
+   },
+   "smoke": {
+    "episodes": 2,
+    "failures": 0,
+    "sr": 0.5,
+    "spl": 0.27797849907898625,
+    "episode_ids": [
+     "10",
+     "1006"
+    ]
+   },
+   "evaluator_summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.6367591082109842,
+    "spl": 0.5665423369669683,
+    "navigation_error": 4.234074634050645,
+    "oracle_success": 0.7063621533442088,
+    "trajectory_length": 11.215178929197597,
+    "forced_stops": 50,
+    "mean_episode_steps": 91.29091897770527,
+    "invalid_responses": 0,
+    "predicted_stops": 1789,
+    "peak_kv_tokens": 2646,
+    "peak_allocated_gib": 8.674878120422363,
+    "model_latency_p50_seconds": 0.3586409960007586,
+    "complete": true
+   },
+   "source_identity": {
+    "source_commit": "97cbd14e79a91922f3806670f1dc8a4de0836ce7",
+    "documented_inference_reference": "11baeb1",
+    "src_identical_to_documented_reference": true,
+    "training_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc",
+    "training_commit_available_on_origin": false
+   },
+   "full_evaluation_started_utc_unix": 1793537842.2737162,
+   "complete_utc_unix": 1793555640.8382096,
+   "full_attempt1_failure_note": {
+    "attempt": 1,
+    "failed_utc": "2026-11-01T09:53:43Z",
+    "cause": "CUDA OOM at model load in panels 00/01: the GPU is shared and another user's training job (~66 GiB, started 09:24Z) left 8.6 GiB free when panels 00/01 loaded",
+    "episodes_written": 0,
+    "qualification": "simulator preflight, published-hash check, serving audit and 2-episode smoke all passed before the failure",
+    "next": "pipeline.py --resume-full when the GPU has room for 4 panels"
+   },
+   "campaign_setup": {
+    "host": "vinh",
+    "arm": "S8N_DAGGER_SF_REMAINING",
+    "revision": "7ef60965c4b35ad56a886026d347ddb08545e09d",
+    "weights_sha256": "e3ada114b9b8d9435c6d92f02304ac8232c3d3905599b3d6aa38312dec46bb5a",
+    "template": "/media/vmo-perception/disk_2/anhdh35/SimpleMemVLN/evaluation/s8n_dagger_sf_20261101",
+    "edited_files": {
+     "download.py": [
+      "dc25073d6f989c8709802f5924ffdb2dfe0f568d",
+      "d6f0dedd99aab2572cd7ad4388168cb835c875a584d221f3ad1d43fadeb4",
+      "'S8N_DAGGER_SF/*'",
+      "'download/S8N_DAGGER_SF/pytorch_model.bin'",
+      "folder='S8N_DAGGER_SF'"
+     ],
+     "pipeline.py": [
+      "'download/S8N_DAGGER_SF/SHA256SUMS.json'",
+      "\n run('full_evaluation',"
+     ]
+    }
+   }
+  },
+  "S8N_DAGGER_SF_FULL": {
+   "host": "ws_anhdh35 (10.148.183.119)",
+   "campaign": "/data14t/anhdh35/s8n_stage2_sf_eval_20261101/S8N_DAGGER_SF_FULL",
+   "journal": "/data14t/anhdh35/s8n_stage2_sf_eval_20261101/S8N_DAGGER_SF_FULL/S8N/full/episodes.jsonl",
+   "journal_sha256": "d47b2b19a14e290ddeffe819ed6dbcd3c042b7554b3275655a5b3ac1034d917a",
+   "huggingface": {
+    "repo": "anhdao69/stage2_S8N",
+    "folder": "S8N_DAGGER_SF_FULL",
+    "revision": "20ce0b057b343eff833760e980588e980c7f9509",
+    "weights_sha256": "a86d0d35df7b755ea88e524a20c1c2a11abb80b0451dddcb1f202347f850c0d3"
+   },
+   "training": {
+    "data": "S8N_DAGGER_SF data + all 30,815 original S8N R2R/RxR15deg training episodes (R2R 10,819 + RxR15deg 19,996)",
+    "episodes": 45010,
+    "steps": 4735873,
+    "updates": 5627,
+    "warmup": 169,
+    "manifest_sha256": "2e5913fab31248a8b43dcc977eced2f98ca251f189a8d8cee426bbc4a15bcdd2",
+    "epoch_loss": 0.12996,
+    "first_update_loss": 0.16536,
+    "final_update_loss": 0.08881,
+    "wall_hours": 20.43,
+    "initialization": "strict weights-only from S8N final weights (anhdao69/M5_S/S8N, SHA-256 c89de946...), fresh AdamW and schedule",
+    "source_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc (branch s8n_stage2)"
+   },
+   "final_verified": {
+    "passed": true,
+    "episodes": 1839,
+    "successes": 1111,
+    "sr_percent": 60.413268080478524,
+    "spl_percent": 51.85486467282947,
+    "failures": 0,
+    "exact_order_unique_complete": true,
+    "shard_rows_equal_merged": true,
+    "summary_recomputed": true,
+    "stop_and_success_checks": true,
+    "parallel_smoke_actions_identical": true
+   },
+   "shard_validation": {
+    "passed": true,
+    "episodes": 1839,
+    "unique_ids": true,
+    "exact_order_and_membership": true,
+    "shard_contracts_equal": true,
+    "shard_runtimes_equal": true,
+    "shard_metrics_recomputed": true,
+    "metric_tolerance": 1e-12
+   },
+   "published_files_checked": 25,
+   "serving_audit": {
+    "passed": true,
+    "tensors": 724,
+    "finite": true,
+    "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "python": "3.12.13",
+    "packages": {
+     "torch": "2.10.0+cu129",
+     "transformers": "5.11.0",
+     "flash-attn": "2.8.3+cu.12.9.torch.2.10",
+     "fla-core": "0.5.2",
+     "numpy": "2.4.4",
+     "triton": "3.6.0"
+    },
+    "native_forward_sha256": "e56d7184954e7b1fc7f3bcc0120b38ea684c620e0b568fd687f41e1bcf9816db",
+    "replay": [
+     {
+      "steps": 64,
+      "response_tokens": 191,
+      "raw_argmax_flips": 1,
+      "outcome": {
+       "action_name": "MOVE_FORWARD",
+       "response_token_ids": [
+        28164,
+        61846,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.029011661186814308,
+      "max_abs": 0.5625,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9739583333333334,
+      "min_overlap": 0.75
+     },
+     {
+      "steps": 128,
+      "response_tokens": 383,
+      "raw_argmax_flips": 1,
+      "outcome": {
+       "action_name": "MOVE_FORWARD",
+       "response_token_ids": [
+        28164,
+        61846,
+        248046
+       ]
+      },
+      "allclose": true,
+      "rms": 0.02837652899324894,
+      "max_abs": 0.5625,
+      "peak_kv": 2546,
+      "mean_overlap": 0.9712701612903226,
+      "min_overlap": 0.75
+     }
+    ],
+    "long_stream": {
+     "arm": "S8N",
+     "steps": 520,
+     "peak_resident_kv": 2546,
+     "guard": 4784,
+     "seconds": 55.464590239000245,
+     "peak_allocated_gib": 14.476630687713623
+    }
+   },
+   "smoke": {
+    "episodes": 2,
+    "failures": 0,
+    "sr": 0.0,
+    "spl": 0.0,
+    "episode_ids": [
+     "10",
+     "1006"
+    ]
+   },
+   "evaluator_summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.6041326808047852,
+    "spl": 0.5185486467282947,
+    "navigation_error": 4.421714632432096,
+    "oracle_success": 0.7079934747145188,
+    "trajectory_length": 11.981803146054652,
+    "forced_stops": 76,
+    "mean_episode_steps": 103.56606851549755,
+    "invalid_responses": 0,
+    "predicted_stops": 1763,
+    "peak_kv_tokens": 2646,
+    "peak_allocated_gib": 8.674878120422363,
+    "model_latency_p50_seconds": 0.3486561910012824,
+    "complete": true
+   },
+   "source_identity": {
+    "source_commit": "97cbd14e79a91922f3806670f1dc8a4de0836ce7",
+    "documented_inference_reference": "11baeb1",
+    "src_identical_to_documented_reference": true,
+    "training_commit": "15cfca0dd1860708385d12a4babe2c36f1490cbc",
+    "training_commit_available_on_origin": false
+   },
+   "full_evaluation_started_utc_unix": 1793529938.3796504,
+   "complete_utc_unix": 1793547341.7211108,
+   "campaign_setup": {
+    "host": "ws",
+    "arm": "S8N_DAGGER_SF_FULL",
+    "revision": "20ce0b057b343eff833760e980588e980c7f9509",
+    "weights_sha256": "a86d0d35df7b755ea88e524a20c1c2a11abb80b0451dddcb1f202347f850c0d3",
+    "template": "/data14t/anhdh35/s8n_stage2_sf_eval_20261101/template_codex",
+    "edited_files": {
+     "download.py": [
+      "dc25073d6f989c8709802f5924ffdb2dfe0f568d",
+      "d6f0dedd99aab2572cd7ad4388168cb835c875a584d221f3ad1d43fadeb4",
+      "'S8N_DAGGER_SF/*'",
+      "'download/S8N_DAGGER_SF/pytorch_model.bin'",
+      "folder='S8N_DAGGER_SF'"
+     ],
+     "pipeline.py": [
+      "'download/S8N_DAGGER_SF/SHA256SUMS.json'",
+      "\n run('full_evaluation',",
+      "repo=root.parents[1]",
+      "str(repo.parent/'JanusVLN/.venv/bin/python')"
+     ],
+     "simulator_preflight.py": [
+      "data=repo.parent/'JanusVLN/data'",
+      "str(data/'scene_datasets')"
+     ],
+     "S8N/run_eval.sh": [
+      "\"$REPO_ROOT/../JanusVLN/.venv/bin/python\"",
+      "\"$REPO_ROOT/.venv/bin/python\"",
+      "--data-root \"$REPO_ROOT/../JanusVLN/data\""
+     ]
+    }
+   }
+  }
+ },
+ "computed": {
+  "episodes": 1839,
+  "models": {
+   "S8N": {
+    "episodes": 1839,
+    "successes": 964,
+    "sr": 52.41979336595976,
+    "spl": 48.67931065915622,
+    "ne": 5.710046047083993,
+    "osr": 58.02066340402393,
+    "tl": 9.401665609123848,
+    "forced_stops": 130,
+    "mean_steps": 91.87928221859707,
+    "sr_over_osr": 0.9034676663542643
+   },
+   "S8N_DAGGER_SF": {
+    "episodes": 1839,
+    "successes": 1117,
+    "sr": 60.739532354540515,
+    "spl": 48.83860827685435,
+    "ne": 4.7463030603022,
+    "osr": 73.19195214790646,
+    "tl": 15.118387177663907,
+    "forced_stops": 73,
+    "mean_steps": 118.74768896139206,
+    "sr_over_osr": 0.8298662704309065
+   },
+   "S8N_DAGGER_SF_REMAINING": {
+    "episodes": 1839,
+    "successes": 1171,
+    "sr": 63.67591082109843,
+    "spl": 56.654233696696885,
+    "ne": 4.234074634050645,
+    "osr": 70.63621533442088,
+    "tl": 11.215178929197585,
+    "forced_stops": 50,
+    "mean_steps": 91.29091897770527,
+    "sr_over_osr": 0.9014626635873749
+   },
+   "S8N_DAGGER_SF_FULL": {
+    "episodes": 1839,
+    "successes": 1111,
+    "sr": 60.413268080478524,
+    "spl": 51.85486467282945,
+    "ne": 4.421714632432096,
+    "osr": 70.79934747145188,
+    "tl": 11.981803146054641,
+    "forced_stops": 76,
+    "mean_steps": 103.56606851549755,
+    "sr_over_osr": 0.8533026113671275
+   }
+  },
+  "pairs": {
+   "S8N_DAGGER_SF vs S8N": {
+    "sr_diff": 8.319738988580749,
+    "spl_diff": 0.15929761769812867,
+    "both_success": 674,
+    "new_only": 443,
+    "reference_only": 290,
+    "both_failure": 432,
+    "mcnemar_p": 1.760389690222333e-08,
+    "mcnemar_p_bonferroni": 1.0562338141333998e-07,
+    "sr_diff_ci95": [
+     5.43773790103317,
+     11.256117455138662
+    ],
+    "spl_diff_ci95": [
+     -2.4004365228323805,
+     2.7462533012355745
+    ],
+    "sr_diff_ci_bonferroni": [
+     4.567699836867863,
+     12.234910277324634
+    ],
+    "spl_diff_ci_bonferroni": [
+     -3.3098048340642205,
+     3.5754945367311857
+    ]
+   },
+   "S8N_DAGGER_SF_REMAINING vs S8N": {
+    "sr_diff": 11.256117455138659,
+    "spl_diff": 7.974923037540665,
+    "both_success": 741,
+    "new_only": 430,
+    "reference_only": 223,
+    "both_failure": 445,
+    "mcnemar_p": 4.3029605150724614e-16,
+    "mcnemar_p_bonferroni": 2.5817763090434768e-15,
+    "sr_diff_ci95": [
+     8.537248504622077,
+     13.974986405655248
+    ],
+    "spl_diff_ci95": [
+     5.4967521665529295,
+     10.476789092982436
+    ],
+    "sr_diff_ci_bonferroni": [
+     7.612833061446438,
+     14.845024469820554
+    ],
+    "spl_diff_ci_bonferroni": [
+     4.6596695716915555,
+     11.289223219998753
+    ]
+   },
+   "S8N_DAGGER_SF_FULL vs S8N": {
+    "sr_diff": 7.993474714518756,
+    "spl_diff": 3.175554013673226,
+    "both_success": 703,
+    "new_only": 408,
+    "reference_only": 261,
+    "both_failure": 467,
+    "mcnemar_p": 1.455155495410253e-08,
+    "mcnemar_p_bonferroni": 8.730932972461517e-08,
+    "sr_diff_ci95": [
+     5.220228384991843,
+     10.766721044045678
+    ],
+    "spl_diff_ci95": [
+     0.6963704090102361,
+     5.668065079737898
+    ],
+    "sr_diff_ci_bonferroni": [
+     4.3501903208265364,
+     11.691136487221316
+    ],
+    "spl_diff_ci_bonferroni": [
+     -0.11380176447154085,
+     6.495209612366796
+    ]
+   },
+   "S8N_DAGGER_SF_REMAINING vs S8N_DAGGER_SF": {
+    "sr_diff": 2.9363784665579096,
+    "spl_diff": 7.815625419842537,
+    "both_success": 835,
+    "new_only": 336,
+    "reference_only": 282,
+    "both_failure": 386,
+    "mcnemar_p": 0.032925204150248646,
+    "mcnemar_p_bonferroni": 0.19755122490149188,
+    "sr_diff_ci95": [
+     0.27188689505165853,
+     5.600870038064166
+    ],
+    "spl_diff_ci95": [
+     5.470581708048592,
+     10.149747001048208
+    ],
+    "sr_diff_ci_bonferroni": [
+     -0.7069059271343121,
+     6.4709081022294725
+    ],
+    "spl_diff_ci_bonferroni": [
+     4.718035556753745,
+     10.90964754989707
+    ]
+   },
+   "S8N_DAGGER_SF_FULL vs S8N_DAGGER_SF": {
+    "sr_diff": -0.32626427406199365,
+    "spl_diff": 3.0162563959750974,
+    "both_success": 799,
+    "new_only": 312,
+    "reference_only": 318,
+    "both_failure": 410,
+    "mcnemar_p": 0.842122409786274,
+    "mcnemar_p_bonferroni": 1.0,
+    "sr_diff_ci95": [
+     -2.9907558455682435,
+     2.4469820554649266
+    ],
+    "spl_diff_ci95": [
+     0.7027874350120764,
+     5.424644682026519
+    ],
+    "sr_diff_ci_bonferroni": [
+     -3.9151712887438825,
+     3.3713974986405657
+    ],
+    "spl_diff_ci_bonferroni": [
+     -0.07706647487229351,
+     6.121950770708331
+    ]
+   },
+   "S8N_DAGGER_SF_REMAINING vs S8N_DAGGER_SF_FULL": {
+    "sr_diff": 3.2626427406199032,
+    "spl_diff": 4.799369023867439,
+    "both_success": 867,
+    "new_only": 304,
+    "reference_only": 244,
+    "both_failure": 424,
+    "mcnemar_p": 0.011655227241217763,
+    "mcnemar_p_bonferroni": 0.06993136344730658,
+    "sr_diff_ci95": [
+     0.7612833061446438,
+     5.76400217509516
+    ],
+    "spl_diff_ci95": [
+     2.5409395510029826,
+     7.04634017465191
+    ],
+    "sr_diff_ci_bonferroni": [
+     -0.1631321370309951,
+     6.634040239260468
+    ],
+    "spl_diff_ci_bonferroni": [
+     1.7128012188791364,
+     7.777694619394811
+    ]
+   }
+  },
+  "bootstrap": {
+   "rounds": 10000,
+   "seed": 0,
+   "method": "percentile, paired resampling of episodes",
+   "bonferroni_alpha": 0.008333333333333333,
+   "comparisons": 6
+  }
+ },
+ "training_commit_note": "15cfca0 was local-only during evaluation (source_identity.training_commit_available_on_origin=false); it is published unchanged as branch s8n_stage2 together with this report.",
+ "not_included": "S8N_DAGGER and S8N_DAGGER_ORACLE (stage-2 DAgger without the STOP-label fix, anhdao69/stage2_S8N) have no verified R2R journal in this evidence."
+}

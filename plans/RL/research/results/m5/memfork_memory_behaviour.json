@@ -1,0 +1,356 @@
+{
+  "run": "/data/anh/rl_baseline/runs/memfork_m5_r2r1k",
+  "block": 25,
+  "blocks": {
+    "000-024": {
+      "branch_success_rate": {
+        "mean": 0.5900126399860401,
+        "n": 25
+      },
+      "candidate_drop": {
+        "mean": 0.3265288599823985,
+        "n": 46587
+      },
+      "drop_age": {
+        "mean": 7.414450383154099,
+        "n": 46587
+      },
+      "fork_redraw_differs": {
+        "mean": 0.7457627118644068,
+        "n": 590
+      },
+      "fork_redraw_differs_contrast": {
+        "mean": 2.698674060679464,
+        "n": 440
+      },
+      "fork_redraw_differs_success_flip": {
+        "mean": 0.16136363636363638,
+        "n": 440
+      },
+      "fork_redraw_same_contrast": {
+        "mean": 3.078481651687374,
+        "n": 150
+      },
+      "fork_redraw_same_success_flip": {
+        "mean": 0.19333333333333333,
+        "n": 150
+      },
+      "kept_age": {
+        "mean": 12.157957155429626,
+        "n": 186348
+      },
+      "memory_c_abs": {
+        "mean": 0.63769057807697,
+        "n": 25
+      },
+      "memory_credited_decisions": {
+        "mean": 1928.08,
+        "n": 25
+      },
+      "memory_entropy": {
+        "mean": 1.3339461665183314,
+        "n": 25
+      },
+      "memory_log_kappa": {
+        "mean": 3.199613791437395,
+        "n": 25
+      },
+      "oldest_drop": {
+        "mean": 0.11187670380148969,
+        "n": 46587
+      },
+      "prior_agreement": {
+        "mean": 0.34526799321699186,
+        "n": 46587
+      },
+      "spl": {
+        "mean": 0.5537814522216987,
+        "n": 25
+      },
+      "success_rate": {
+        "mean": 0.58125,
+        "n": 25
+      }
+    },
+    "025-049": {
+      "branch_success_rate": {
+        "mean": 0.5936586366934193,
+        "n": 25
+      },
+      "candidate_drop": {
+        "mean": 0.5584128752232614,
+        "n": 52069
+      },
+      "drop_age": {
+        "mean": 6.532005607943306,
+        "n": 52069
+      },
+      "fork_redraw_differs": {
+        "mean": 0.6237623762376238,
+        "n": 606
+      },
+      "fork_redraw_differs_contrast": {
+        "mean": 2.5421295781181286,
+        "n": 378
+      },
+      "fork_redraw_differs_success_flip": {
+        "mean": 0.17724867724867724,
+        "n": 378
+      },
+      "fork_redraw_same_contrast": {
+        "mean": 2.517207613819393,
+        "n": 228
+      },
+      "fork_redraw_same_success_flip": {
+        "mean": 0.14912280701754385,
+        "n": 228
+      },
+      "kept_age": {
+        "mean": 21.66203979335113,
+        "n": 208276
+      },
+      "memory_c_abs": {
+        "mean": 0.6071009171390355,
+        "n": 25
+      },
+      "memory_credited_decisions": {
+        "mean": 2047.24,
+        "n": 25
+      },
+      "memory_entropy": {
+        "mean": 0.8205266698312983,
+        "n": 25
+      },
+      "memory_log_kappa": {
+        "mean": 3.2071107563149672,
+        "n": 25
+      },
+      "oldest_drop": {
+        "mean": 0.05479267894524573,
+        "n": 52069
+      },
+      "prior_agreement": {
+        "mean": 0.3400679867099426,
+        "n": 52069
+      },
+      "spl": {
+        "mean": 0.5743125277972105,
+        "n": 25
+      },
+      "success_rate": {
+        "mean": 0.605,
+        "n": 25
+      }
+    },
+    "050-074": {
+      "branch_success_rate": {
+        "mean": 0.6500735595923958,
+        "n": 25
+      },
+      "candidate_drop": {
+        "mean": 0.6758481138114018,
+        "n": 48431
+      },
+      "drop_age": {
+        "mean": 5.989304371167227,
+        "n": 48431
+      },
+      "fork_redraw_differs": {
+        "mean": 0.5055467511885895,
+        "n": 631
+      },
+      "fork_redraw_differs_contrast": {
+        "mean": 2.8888972338907957,
+        "n": 319
+      },
+      "fork_redraw_differs_success_flip": {
+        "mean": 0.1536050156739812,
+        "n": 319
+      },
+      "fork_redraw_same_contrast": {
+        "mean": 2.2518049781669665,
+        "n": 312
+      },
+      "fork_redraw_same_success_flip": {
+        "mean": 0.15705128205128205,
+        "n": 312
+      },
+      "kept_age": {
+        "mean": 25.863140343994548,
+        "n": 193724
+      },
+      "memory_c_abs": {
+        "mean": 0.5888957225721152,
+        "n": 25
+      },
+      "memory_credited_decisions": {
+        "mean": 2085.36,
+        "n": 25
+      },
+      "memory_entropy": {
+        "mean": 0.6090464515436871,
+        "n": 25
+      },
+      "memory_log_kappa": {
+        "mean": 3.2095240520093413,
+        "n": 25
+      },
+      "oldest_drop": {
+        "mean": 0.02898969668187731,
+        "n": 48431
+      },
+      "prior_agreement": {
+        "mean": 0.46073795709359705,
+        "n": 48431
+      },
+      "spl": {
+        "mean": 0.6296214097359157,
+        "n": 25
+      },
+      "success_rate": {
+        "mean": 0.665,
+        "n": 25
+      }
+    },
+    "075-099": {
+      "branch_success_rate": {
+        "mean": 0.6180794136620222,
+        "n": 25
+      },
+      "candidate_drop": {
+        "mean": 0.642896092093305,
+        "n": 49515
+      },
+      "drop_age": {
+        "mean": 6.012985963849339,
+        "n": 49515
+      },
+      "fork_redraw_differs": {
+        "mean": 0.58,
+        "n": 600
+      },
+      "fork_redraw_differs_contrast": {
+        "mean": 2.67796981488301,
+        "n": 348
+      },
+      "fork_redraw_differs_success_flip": {
+        "mean": 0.16954022988505746,
+        "n": 348
+      },
+      "fork_redraw_same_contrast": {
+        "mean": 2.333627922149996,
+        "n": 252
+      },
+      "fork_redraw_same_success_flip": {
+        "mean": 0.1349206349206349,
+        "n": 252
+      },
+      "kept_age": {
+        "mean": 26.3510956275876,
+        "n": 198060
+      },
+      "memory_c_abs": {
+        "mean": 0.6110822396889941,
+        "n": 25
+      },
+      "memory_credited_decisions": {
+        "mean": 1999.12,
+        "n": 25
+      },
+      "memory_entropy": {
+        "mean": 0.6579137599713566,
+        "n": 25
+      },
+      "memory_log_kappa": {
+        "mean": 3.1979912148828054,
+        "n": 25
+      },
+      "oldest_drop": {
+        "mean": 0.026274866202160962,
+        "n": 49515
+      },
+      "prior_agreement": {
+        "mean": 0.6009895991113804,
+        "n": 49515
+      },
+      "spl": {
+        "mean": 0.589521213772645,
+        "n": 25
+      },
+      "success_rate": {
+        "mean": 0.6225,
+        "n": 25
+      }
+    },
+    "100-124": {
+      "branch_success_rate": {
+        "mean": 0.6979681447987294,
+        "n": 25
+      },
+      "candidate_drop": {
+        "mean": 0.8615267206233808,
+        "n": 49793
+      },
+      "drop_age": {
+        "mean": 4.976663386419778,
+        "n": 49793
+      },
+      "fork_redraw_differs": {
+        "mean": 0.1986863711001642,
+        "n": 609
+      },
+      "fork_redraw_differs_contrast": {
+        "mean": 1.955913691666008,
+        "n": 121
+      },
+      "fork_redraw_differs_success_flip": {
+        "mean": 0.14049586776859505,
+        "n": 121
+      },
+      "fork_redraw_same_contrast": {
+        "mean": 2.4788407228131337,
+        "n": 488
+      },
+      "fork_redraw_same_success_flip": {
+        "mean": 0.15368852459016394,
+        "n": 488
+      },
+      "kept_age": {
+        "mean": 36.22182334866347,
+        "n": 199172
+      },
+      "memory_c_abs": {
+        "mean": 0.6048973412763163,
+        "n": 25
+      },
+      "memory_credited_decisions": {
+        "mean": 2091.24,
+        "n": 25
+      },
+      "memory_entropy": {
+        "mean": 0.21324554074732346,
+        "n": 25
+      },
+      "memory_log_kappa": {
+        "mean": 3.2202517636520365,
+        "n": 25
+      },
+      "oldest_drop": {
+        "mean": 0.01474102785532103,
+        "n": 49793
+      },
+      "prior_agreement": {
+        "mean": 0.8696804771755066,
+        "n": 49793
+      },
+      "spl": {
+        "mean": 0.6448852845642253,
+        "n": 25
+      },
+      "success_rate": {
+        "mean": 0.68125,
+        "n": 25
+      }
+    }
+  }
+}
