@@ -1,0 +1,11 @@
+32 trajectories, 2198 decisions; median event score -0.8632 (initial_min_drift candidate)
+t-bucket  decisions  mean_score  P(score>=median)
+[  0,   1)         32      -0.188              1.00
+[  1,   3)         64      -0.555              1.00
+[  3,   6)         96      -0.705              0.93
+[  6,  12)        192      -0.767              0.75
+[ 12,  25)        416      -0.826              0.57
+[ 25,  50)        643      -0.865              0.49
+[ 50,1000)        755      -0.946              0.29
+Spearman(score, t/N): -0.361
+local surprise P(>=median) by t: {'[1,3)': 0.0, '[3,6)': 0.04, '[6,12)': 0.25, '[12,25)': 0.5, '[25,50)': 0.57, '[50,1000)': 0.6}
