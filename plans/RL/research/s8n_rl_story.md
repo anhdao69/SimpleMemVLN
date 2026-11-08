@@ -141,6 +141,7 @@ R2R val_unseen episodes. Full table: `s8n_local_campaign.md` §4.1.
 | path_mix1k | path-aware rewind, 500 R2R + 500 RxR | 69.66 / 62.29 | 69.00 / 55.92 |
 | ActiveVLN 1k | GRPO on mix1k's 1,000 prompts (8k pool rows 0-999) | 66.83 / 60.01 | 69.75 / 57.61 |
 | ActiveVLN 2k | the same run at 2,000 prompts | 67.92 / 61.27 | (later) |
+| ActiveVLN 4k | the same run at 4,000 prompts | 69.33 / 61.44 | (later) |
 
 - **Rewind beats outcome-only GRPO** [done]: B vs A +4.40 (p 7e-5) on the same prompts. At matched compute, B vs E
   +2.23 (p 0.037).
@@ -150,7 +151,8 @@ R2R val_unseen episodes. Full table: `s8n_local_campaign.md` §4.1.
 - **Mixed R2R + RxR prompts help** [done]: mix1k vs B +3.21 on R2R (p 0.0026), RxR equal. Goal-distance rewind
   beats path-aware rewind (path_mix1k vs mix1k -2.28, p 0.036).
 - **Same prompts, only the estimator differs** [done]: ActiveVLN GRPO on mix1k's prompts in the same order is
-  -5.11 vs mix1k (p 2e-6). At twice the prompts (2k) it is still -4.02 (p 4e-4).
+  -5.11 vs mix1k (p 2e-6). At twice the prompts (2k) it is still -4.02 (p 4e-4). At 4k it is -2.61 (p 0.023), which
+  ties B (+0.60, p 0.63).
 - RxR transfer: R2R-only rewind B lifts RxR val_unseen A from 64.40 to 71.80 (p 2e-6). Full RxR (3,669) exists so
   far only for ActiveVLN 1k (69.96 / 57.67).
 - **Scaling to 8k** [pending]: rewind (gpu2) and ActiveVLN (local) on the same A+ 8k pool, compared at 1k / 2k / 4k /
