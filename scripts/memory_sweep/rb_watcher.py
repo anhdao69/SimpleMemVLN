@@ -170,13 +170,17 @@ class Watcher:
         self.save()
 
     def release_eval(self):
-        for path in self.state.get('exit_markers', []):
+        # EXIT files this watcher created, and the dispatcher's own EXIT where the watcher removed its .auto
+        # partner (the dispatcher would have lifted it once LoopWAM training left the job)
+        auto_exits = [p[:-len('.auto')] for p in self.state.get('removed_auto', [])]
+        for path in [*self.state.get('exit_markers', []), *auto_exits]:
             try:
                 Path(path).unlink()
                 self.log(f'removed {Path(path).name}')
             except FileNotFoundError:
                 pass
         self.state['exit_markers'] = []
+        self.state['removed_auto'] = []
         self.save()
 
     # -- assignment --
