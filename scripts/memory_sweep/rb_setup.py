@@ -85,7 +85,7 @@ def main():
                 break
     if line is None:
         raise SystemExit('Longest RxR episode not found')
-    put(root / 'fixtures/rxrce_longest.jsonl', line)
+    put(root / 'fixtures/rxrce_longest.jsonl', line * 8)    # prepare_g1_fixtures.py: [longest] * 8 = 4 ranks x GAS2
     campaign = dict(
         version=VERSION, root=str(root), source=str(source), source_commit=commit, base=str(root),
         manifest=str(args.manifest), manifest_sha256=sha(args.manifest), model=str(args.model),
