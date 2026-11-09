@@ -239,17 +239,18 @@ def drop_cache(path):
 
 
 def cached_paths(manifest, trees):
-    """Every training frame of the manifest, then every regular file under the given trees."""
-    with open(manifest) as f:
-        for line in f:
-            for step in json.loads(line)['steps']:
-                yield step['rgb_path']
+    """Every regular file under the given trees (few large files: staged caches, checkpoints), then every
+    training frame of the manifest (3.1M small Lustre files, a slow walk)."""
     for root in trees:
         for directory, _, names in os.walk(root):
             for name in names:
                 path = os.path.join(directory, name)
                 if not os.path.islink(path):
                     yield path
+    with open(manifest) as f:
+        for line in f:
+            for step in json.loads(line)['steps']:
+                yield step['rgb_path']
 
 
 # ---- campaign ------------------------------------------------------------------
@@ -383,14 +384,16 @@ class Lane:
         self.end = None
         self.host_guard = campaign.data['host_guard_gib']
 
-    def record(self, status, **fields):
-        data = dict(status=status, unix=time.time(), utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+    def record(self, event, /, **fields):
+        if 'status' in fields:                    # a field named status never collides with the event name
+            fields['field_status'] = fields.pop('status')
+        data = dict(status=event, unix=time.time(), utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
                     job=self.job, step=self.step, task=self.task, pid=os.getpid(), **fields)
         write(self.dir / 'state.json', data)
         for path in (self.dir / 'history.jsonl', self.campaign.root / 'events.jsonl'):
             with path.open('a') as f:
                 f.write(json.dumps(data, sort_keys=True) + '\n')
-        print(status, json.dumps(fields, sort_keys=True), flush=True)
+        print(event, json.dumps(fields, sort_keys=True), flush=True)
 
     def job_end(self):
         out = subprocess.run(['squeue', '-h', '-j', self.job, '-o', '%e'], capture_output=True, text=True).stdout.strip()
@@ -432,6 +435,23 @@ class Lane:
             limit = relief['fraction'] * self.host_guard
             if stop.wait(60):
                 return
+
+    def gpu_attempts(self, name, out, command, attempts=2):
+        """Run a short GPU job; a failed attempt's directory is preserved (renamed) and the job retried once
+        after a fresh CUDA probe (newton raises transient CUDA 802/999 and NCCL init errors)."""
+        for attempt in range(attempts):
+            if out.exists():
+                failed = out.with_name(f'{out.name}.failed-{time.time_ns()}')
+                out.rename(failed)
+                self.record('preserved-failed-attempt', name=name, path=str(failed))
+            status = self.run_logged(name, command, check=False)
+            if status == 0:
+                return
+            self.record('attempt-failed', name=name, attempt=attempt, exit_code=status)
+            if attempt + 1 < attempts:
+                time.sleep(60)
+                self.cuda_ready()
+        raise RuntimeError(f'{name} failed {attempts} times; see {self.dir}')
 
     def run_logged(self, name, command, threads=THREADS, check=True):
         env = dict(os.environ, OMP_NUM_THREADS=str(threads), MKL_NUM_THREADS=str(threads))
@@ -581,10 +601,8 @@ class Lane:
             out = c.run_dir(arm)
             result_path = out / 'result.json'
             if not result_path.exists():
-                if out.exists():
-                    raise RuntimeError(f'Preserve interrupted reproduction {out} before retry')
                 self.record('reproduction', arm=arm)
-                self.run_logged(f'reproduction-{arm}', train_command(
+                self.gpu_attempts(f'reproduction-{arm}', out, train_command(
                     c, arm, out, updates=REPRODUCED_UPDATES, profile_only=True, host_guard=self.host_guard))
                 check = self.check_profile(out / 'train', REPRODUCED_UPDATES)
                 if json.loads((out / 'train/resolved_config.json').read_text()) != c.resolve(arm):
@@ -607,12 +625,10 @@ class Lane:
         result_path = out / 'result.json'
         if result_path.exists():
             return json.loads(result_path.read_text())
-        if out.exists():
-            raise RuntimeError(f'Preserve interrupted smoke {out} before retry')
         fixture = Path(self.campaign.data['fixtures']) / 'rxrce_longest.jsonl'
         self.record('smoke', arm=arm)
-        self.run_logged(f'{arm}-smoke', train_command(self.campaign, arm, out, manifest=fixture, updates=2,
-                                                      profile_only=True, host_guard=self.host_guard))
+        self.gpu_attempts(f'{arm}-smoke', out, train_command(self.campaign, arm, out, manifest=fixture, updates=2,
+                                                             profile_only=True, host_guard=self.host_guard))
         result = self.check_profile(out / 'train', 2)
         if json.loads((out / 'train/resolved_config.json').read_text()) != self.campaign.resolve(arm):
             raise RuntimeError(f'{arm}: smoke config differs from production')
@@ -667,7 +683,7 @@ class Lane:
             stop.set()
             thread.join()
         request.unlink(missing_ok=True)
-        return dict(status=status, log=str(log), start_step=start_step, end_step=latest_checkpoint_step(run),
+        return dict(exit_code=status, log=str(log), start_step=start_step, end_step=latest_checkpoint_step(run),
                     requested=events['requested'], killed=events['killed'])
 
     def complete(self, arm, run, cfg):

@@ -153,6 +153,38 @@ def test_cache_relief_walks_frames_then_trees_and_skips_links(tmp_path):
     manifest = tmp_path / 'm.jsonl'
     manifest.write_text(json.dumps(dict(steps=[dict(rgb_path=str(frame))])) + '\n')
     paths = list(rb.cached_paths(manifest, [tree, tmp_path / 'missing']))
-    assert paths == [str(frame), str(tree / 'sub' / 'a.bin')]
-    assert [rb.drop_cache(p) for p in paths] == [10, 5] and rb.drop_cache(tmp_path / 'nope') == 0
+    assert paths == [str(tree / 'sub' / 'a.bin'), str(frame)]          # staged trees before the slow frame walk
+    assert [rb.drop_cache(p) for p in paths] == [5, 10] and rb.drop_cache(tmp_path / 'nope') == 0
     assert frame.read_bytes() == b'x' * 10
+
+
+def test_gpu_attempts_preserve_failed_directories_and_retry(tmp_path, monkeypatch):
+    lane = rb.Lane.__new__(rb.Lane)
+    lane.dir, records, statuses = tmp_path, [], iter([1, 0])
+    lane.record = lambda status, **kw: records.append(status)
+    lane.cuda_ready = lambda: 'ok'
+    out = tmp_path / 'run'
+
+    def fake_run(name, command, check=True):
+        out.mkdir()
+        return next(statuses)
+    lane.run_logged = fake_run
+    monkeypatch.setattr(rb.time, 'sleep', lambda s: None)
+    lane.gpu_attempts('x', out, ['cmd'])
+    assert out.is_dir() and len(list(tmp_path.glob('run.failed-*'))) == 1
+    assert records == ['attempt-failed', 'preserved-failed-attempt']
+    lane.run_logged = lambda name, command, check=True: 1
+    with pytest.raises(RuntimeError):
+        lane.gpu_attempts('x', tmp_path / 'other', ['cmd'])
+
+
+def test_lane_record_accepts_segment_fields(tmp_path, monkeypatch):
+    lane = rb.Lane.__new__(rb.Lane)
+    lane.dir, lane.job, lane.step, lane.task = tmp_path, '1', '1.0', 'R8B0'
+    lane.campaign = type('C', (), dict(root=tmp_path))()
+    segment = dict(exit_code=1, log='x', start_step=0, end_step=10, requested=None, killed=None)
+    lane.record('segment-stopped', arm='R8B0', **segment)
+    lane.record('odd', status='inner')
+    rows = [json.loads(l) for l in (tmp_path / 'events.jsonl').read_text().splitlines()]
+    assert rows[0]['status'] == 'segment-stopped' and rows[0]['end_step'] == 10
+    assert rows[1]['status'] == 'odd' and rows[1]['field_status'] == 'inner'

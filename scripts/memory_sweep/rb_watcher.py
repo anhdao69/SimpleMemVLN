@@ -20,7 +20,6 @@ import json
 import os
 from pathlib import Path
 import subprocess
-import sys
 import time
 
 from scripts.memory_sweep.rb_ablation import ARMS, EXPECTED_STEPS, VERSION
