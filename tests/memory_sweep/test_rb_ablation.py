@@ -155,6 +155,7 @@ def test_cache_relief_walks_frames_then_trees_and_skips_links(tmp_path):
     paths = list(rb.cached_paths(manifest, [tree, tmp_path / 'missing']))
     assert paths == [str(tree / 'sub' / 'a.bin'), str(frame)]          # staged trees before the slow frame walk
     assert [rb.drop_cache(p) for p in paths] == [5, 10] and rb.drop_cache(tmp_path / 'nope') == 0
+    assert list(rb.cached_paths(None, [tree])) == [str(tree / 'sub' / 'a.bin')]   # trees-only first pass
     assert frame.read_bytes() == b'x' * 10
 
 

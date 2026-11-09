@@ -240,13 +240,15 @@ def drop_cache(path):
 
 def cached_paths(manifest, trees):
     """Every regular file under the given trees (few large files: staged caches, checkpoints), then every
-    training frame of the manifest (3.1M small Lustre files, a slow walk)."""
+    training frame of the manifest (3.1M small Lustre files, a slow walk) unless ``manifest`` is None."""
     for root in trees:
         for directory, _, names in os.walk(root):
             for name in names:
                 path = os.path.join(directory, name)
                 if not os.path.islink(path):
                     yield path
+    if manifest is None:
+        return
     with open(manifest) as f:
         for line in f:
             for step in json.loads(line)['steps']:
@@ -413,7 +415,7 @@ class Lane:
         from qwen_vl.train.host_memory import cgroup_sample, job_cgroup
         relief = self.campaign.data['cache_relief']
         location = job_cgroup()
-        limit, last = initial_limit, 0.0
+        limit, last, frames = initial_limit, 0.0, False   # first pass: the staged trees only
         log = self.dir / 'cache_relief.jsonl'
         while True:
             try:
@@ -421,18 +423,19 @@ class Lane:
                 if before >= limit and time.time() - last >= relief['cooldown_seconds']:
                     last = started = time.time()
                     trees = [*relief['trees'], str(self.campaign.root / 'runs')]
-                    paths, files = cached_paths(self.campaign.data['manifest'], trees), 0
+                    paths = cached_paths(self.campaign.data['manifest'] if frames else None, trees)
+                    files = 0
                     with ThreadPoolExecutor(relief['threads']) as pool:
                         while batch := list(itertools.islice(paths, 4096)):   # bounded: no 3M-future backlog
                             files += sum(1 for _ in pool.map(drop_cache, batch))
                     row = dict(before_gib=before, after_gib=cgroup_sample(location)['working_set_gib'],
-                               limit_gib=limit, files=files, seconds=time.time() - started)
+                               limit_gib=limit, files=files, frames=frames, seconds=time.time() - started)
                     with log.open('a') as f:
                         f.write(json.dumps(dict(row, utc=time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()))) + '\n')
             except Exception as exc:              # relief is best effort; never disturb the lane
                 with log.open('a') as f:
                     f.write(json.dumps(dict(error=repr(exc)[:500], unix=time.time())) + '\n')
-            limit = relief['fraction'] * self.host_guard
+            limit, frames = relief['fraction'] * self.host_guard, True
             if stop.wait(60):
                 return
 
