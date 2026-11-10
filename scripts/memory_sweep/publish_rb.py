@@ -6,7 +6,7 @@ single exposure plan are re-checked; serving files are hard links of checkpoint-
 the real navigation model strictly reloads on CPU. One Hub commit adds only ``<ARM>/`` on an optimistic parent
 revision and never overwrites; every file is then verified by SHA-256 and size at the immutable revision.
 
-    publish_rb.py --create-repo          one-time: create the (private) repository with its README
+    publish_rb.py --create-repo          one-time: create the public repository with its README
     publish_rb.py ARM [--check-only]     validate, stage and hash; upload unless --check-only
 Outputs (staging, receipts) go to <campaign root>/publication/<ARM>/.
 """
@@ -269,7 +269,7 @@ def create_repo():
     from huggingface_hub import HfApi
     api = HfApi()
     assert api.whoami()['name'].lower() == 'anhdao69'
-    api.create_repo(REPO, repo_type='model', private=True, exist_ok=False)
+    api.create_repo(REPO, repo_type='model', private=False, exist_ok=False)
     api.upload_file(path_or_fileobj=REPO_README.encode(), path_in_repo='README.md', repo_id=REPO,
                     commit_message='Describe the S8N R/B ablation repository')
     print('CREATED', REPO, flush=True)
@@ -299,6 +299,7 @@ def publish(arm, files, digests, root):
         revision = saved['revision']
     else:
         info = api.model_info(REPO, files_metadata=True)
+        assert not info.private, 'the repository must be public'
         assert not any(f.rfilename.startswith(arm + '/') for f in info.siblings), 'destination exists; inspect first'
         write(root / 'prior_repo_files.json', dict(revision=info.sha, files={
             f.rfilename: dict(blob_id=f.blob_id, size=f.size) for f in info.siblings}))
