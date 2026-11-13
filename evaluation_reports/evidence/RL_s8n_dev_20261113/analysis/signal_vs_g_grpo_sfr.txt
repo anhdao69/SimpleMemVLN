@@ -1,0 +1,9 @@
+prompts 1000, prior Beta(2.10,0.76) mean 0.735
+G= 2  informative 0.277   by quarter 0.312 / 0.281 / 0.256 / 0.257
+G= 3  informative 0.415   by quarter 0.468 / 0.421 / 0.384 / 0.386
+G= 4  informative 0.502   by quarter 0.563 / 0.508 / 0.466 / 0.468
+G= 5  informative 0.562   by quarter 0.627 / 0.568 / 0.524 / 0.526
+G= 6  informative 0.607   by quarter 0.673 / 0.613 / 0.569 / 0.570
+G= 8  informative 0.671   by quarter 0.736 / 0.677 / 0.634 / 0.635
+G=12  informative 0.747   by quarter 0.805 / 0.751 / 0.714 / 0.714
+G=16  informative 0.791   by quarter 0.844 / 0.795 / 0.763 / 0.761

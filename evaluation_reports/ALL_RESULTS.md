@@ -1,5 +1,9 @@
 # Evaluation results
 
+## Stage-3 RL campaign — latest server snapshot
+
+[Consolidated Stage-3 report and verification](S8N_RL_STAGE3_20261113.md). Corrected full RxR: CoRe run 1 **73.62% (2,701/3,669)**; GRPO run 1 **72.44% (2,658/3,669)**. The snapshot includes 85 verified evaluation summaries, per-episode metrics, historical journals, analysis records and configuration provenance. These Stage-3 results are separate from the trained R/B ablations below.
+
 ## Trained R/B ablations — final SR
 
 Updated: **2026-11-13**. Final observed success rates for eight trained R/B configurations, including the original S8N baseline. Every configuration has complete R2R and RxR results; R12B0's resumed R2R evaluation has finished.

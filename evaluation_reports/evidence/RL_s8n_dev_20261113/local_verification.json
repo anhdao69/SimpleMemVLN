@@ -1,0 +1,6 @@
+{
+  "verified_evaluations": 85,
+  "episode_records": 114788,
+  "unique_ids_checked_within_each_run": true,
+  "scope": "Counts and success rates recomputed from compact metrics; source file checksums verified. Stored GPU2 summary-only records and narrative statistical claims are not independently revalidated here. No training or simulations rerun."
+}

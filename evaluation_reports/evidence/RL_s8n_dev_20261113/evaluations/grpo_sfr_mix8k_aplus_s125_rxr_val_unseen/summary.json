@@ -1,0 +1,52 @@
+{
+  "episodes": 1000,
+  "failures": 25,
+  "sr": 0.699,
+  "spl": 0.5711821345247186,
+  "navigation_error": 3.8056863174624893,
+  "navigation_error_coverage": 976,
+  "navigation_error_undefined": 24,
+  "trajectory_length": 17.446786625052827,
+  "trajectory_length_coverage": 1000,
+  "trajectory_length_undefined": 0,
+  "oracle_success": 0.771,
+  "oracle_success_coverage": 1000,
+  "oracle_success_undefined": 0,
+  "ndtw": 0.6983399460801187,
+  "ndtw_coverage": 1000,
+  "ndtw_undefined": 0,
+  "forced_stops": 102,
+  "mean_episode_steps": 138.42,
+  "invalid_responses": 1,
+  "predicted_action_counts": {
+    "3": 21199,
+    "1": 89207,
+    "2": 27117,
+    "0": 897
+  },
+  "executed_action_counts": {
+    "3": 21179,
+    "1": 89146,
+    "2": 27096,
+    "0": 999
+  },
+  "predicted_stops": 897,
+  "failure_reasons": {
+    "ValueError: ValueError: Invalid navigation response: 'MOVE'": 1,
+    "Required simulator metrics unavailable": 24
+  },
+  "model_latency_p50_seconds": 0.271185907011386,
+  "model_latency_mean_seconds": 0.2608822071186722,
+  "model_latency_p95_seconds": 0.2818932365713408,
+  "transport_and_model_p50_seconds": 0.2782209845026955,
+  "transport_and_model_mean_seconds": 0.26795105173341854,
+  "transport_and_model_p95_seconds": 0.2893103600392351,
+  "environment_p50_seconds": 0.00847192748915404,
+  "environment_mean_seconds": 0.009045662167111857,
+  "environment_p95_seconds": 0.015414883597986763,
+  "peak_kv_tokens": 3011,
+  "peak_allocated_gib": 8.686017036437988,
+  "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+  "scheduled_episodes": 1000,
+  "complete": true
+}

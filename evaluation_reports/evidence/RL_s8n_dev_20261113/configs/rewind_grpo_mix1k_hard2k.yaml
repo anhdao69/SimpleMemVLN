@@ -1,0 +1,81 @@
+# HARD-2K from mix1k (rewind_mix1k_hard2k, LOCAL 2026-11-09 22:30). User: "choose the best 2k dataset ... the current is
+# almost [all] success so [the] model does not learn much"; chose "Continue from mix1k" and "Pause ActiveVLN at 6k".
+# Rewind (mix1k's exact recipe, every key below unchanged) continued from rewind_sfr_mix1k step 125 (R2R 71.94 / SPL
+# 63.65) on 2,000 prompts it has never seen: data/rl/hard2k_mix1k.jsonl = scripts/rl/s8n_analysis/select_hard_pool.py
+# over A+ pool rows 1,000-4,879 (seen by both 8k runs), the 1,000 R2R + 1,000 RxR prompts with the highest posterior
+# probability of a mixed group of 4 under the policies' own logged samples (never-solved prompts excluded),
+# interleaved R2R / RxR (audit alongside: expected mixed groups 0.58 vs 0.35-0.37 for the same rows in pool order).
+# Changed keys only: base (mix1k's export; fresh optimizer state, constant LR as before), data.pool / hashes /
+# max_prompts (2000 = 250 steps), run.export_steps [125, 250]. Comparisons: the gpu2 Rewind 8k run at 3k / 4k prompts
+# (same algorithm, random order) and mix1k itself. Drift guard: R2R mains vs the gpu2 Rewind 8k run's mains on the
+# same prompts (--reference-table; two healthy Rewind runs agree within +-0.03).
+base:
+  checkpoint: /nvme/public/svln/runs/rewind_sfr_mix1k/exports/step_0125     # mix1k: Rewind from SFR, 500 R2R + 500 RxR, 125 steps (R2R 71.94 / SPL 63.65)
+  weight_sha256: 647580d3779fe5f73c61733cddbc785db110f888e951c0aff032bd9b6056c622
+  model_path: /nvme/public/svln/checkpoints/qwen-base                    # Qwen/Qwen3.5-4B @ 851bf6e8 (processor/config only)
+data:
+  pool: data/rl/hard2k_mix1k.jsonl             # select_hard_pool.py (audit: data/rl/hard2k_mix1k.audit.json)
+  pool_sha256: 70c4a2dd29ca5d4f09b181ac216121c75d95e5e2fb62e619e16c3f7b1b6efa44
+  max_prompts: 2000                             # the whole hard-2k pool
+  subset_sha256: 70c4a2dd29ca5d4f09b181ac216121c75d95e5e2fb62e619e16c3f7b1b6efa44
+  prompts_per_step: 8                           # data.train_batch_size
+  shuffle: false                                # data.shuffle false: fixed parquet order
+  epochs: 1                                     # 2000 / 8 = 250 steps (4 R2R + 4 RxR each; 2 + 2 per rank)
+env:
+  habitat_config: docs/evaluation_setup/vln_r2r.yaml   # port: SimpleMem's Habitat 0.2.4 / HFOV 79 contract
+  split: train
+  rxr: true                                     # rxr-<id> episodes: English-guide RxR15 (rl/env_server; same simulator contract)
+  route_progress: true                          # log route progress (step_rho) of every decision
+rollout:
+  group_size: 4                                 # actor_rollout_ref.rollout.n
+  temperature: 1.2
+  top_p: 1.0
+  budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
+  budget_cap: 120                               # port: converted to primitives with N*/M per episode
+  dynamic_sampling: {enabled: true, max_sample_attempts: 2}
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 3                           # local (systems only): with optimizer offload each trainer rank holds ~59 GB of host RAM; 3 helpers + their Habitat servers per rank keep ~30 GB of the 188 GB free (5 left 9 GB, 2026-10-30 18:30)
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
+reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
+algorithm:
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+  estimator: grpo_rescue                        # GRPO + rescue branches (rl/train_grpo.rescue_prepare)
+  scale_floor: 0.05                             # branch contrasts / max(std of the step's main rewards, 0.05 * R_max), as F-B
+  rescue:                                       # trigger and takeover (rl/rollout._rescue)
+    delta: 1.0                                  # fire at the first t >= 1 with d_t >= min_{k<t} d_k + 1 m (pose before a_t)
+    goal_radius: 1.0                            # the follower's STOP radius ends a takeover
+    max_takeover: 16                            # at most 16 forced expert decisions (a 180-degree turn is 12)
+    takeover_forward: 3                         # hand back after the expert's 3rd forward move
+    rewind: true                                # fork at the closest approach before the trigger; forced STOP allowed
+  rescue_credit:
+    imitation: verified                         # forced decisions: max(0, R_rescue - R_main) / scale
+optim:
+  lr: 1.0e-6
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 32                              # systems only: smaller flat Adam temporaries on the shared GPU 0
+  grad_clip: 1.0
+  warmup_steps: 0
+trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
+runtime:
+  activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
+  checkpoint_decoder_layers: true
+  optimizer_offload: true                       # local (systems only): fp32 master + AdamW moments in host RAM (DeepSpeed CPU Adam), frees ~25 GB per GPU for the update
+  placement_margin_gib: 8                       # local (systems only): GPU 0 also holds another user's 33 GB job; 4 GiB OOMed rank 0 of run 1 at step 48, so long episodes go to GPU 1
+run:
+  seed: 20261010
+  save_every: 5                                 # systems only
+  extra_save_steps: []
+  export_steps: [125, 250]                      # 1k / 2k hard prompts, both evaluated and kept
+  keep_resumable: 1

@@ -1,0 +1,494 @@
+{
+ "summaries": {
+  "rewind_sfr_mix8k_aplus_s125": {
+   "rxr": {
+    "episodes": 1000,
+    "failures": 0,
+    "sr": 0.738,
+    "spl": 0.5925992091080654,
+    "oracle_success": 0.802,
+    "ndtw": 0.7112985399082629,
+    "navigation_error": 3.484591055236757,
+    "trajectory_length": 18.245021933166957,
+    "forced_stops": 99,
+    "invalid_responses": 0,
+    "mean_episode_steps": 145.512,
+    "failure_reasons": {}
+   },
+   "rxrb_rxr": {
+    "episodes": 1000,
+    "failures": 0,
+    "sr": 0.719,
+    "spl": 0.5820380113119653,
+    "oracle_success": 0.796,
+    "ndtw": 0.693177398399027,
+    "navigation_error": 3.6724233885053543,
+    "trajectory_length": 17.561478726271634,
+    "forced_stops": 94,
+    "invalid_responses": 0,
+    "mean_episode_steps": 143.828,
+    "failure_reasons": {}
+   },
+   "rxrc_rxr": {
+    "episodes": 1669,
+    "failures": 0,
+    "sr": 0.7339724385859796,
+    "spl": 0.6040655070958613,
+    "oracle_success": 0.8022768124625524,
+    "ndtw": 0.7077049375887574,
+    "navigation_error": 3.5210911272609255,
+    "trajectory_length": 17.765071462845203,
+    "forced_stops": 150,
+    "invalid_responses": 0,
+    "mean_episode_steps": 142.4319952067106,
+    "failure_reasons": {}
+   },
+   "rxr2k": {
+    "episodes": 2000,
+    "failures": 0,
+    "sr": 0.7285,
+    "spl": 0.5873186102100152,
+    "oracle_success": 0.799,
+    "ndtw": 0.702237969153645,
+    "navigation_error": 3.578507221871056,
+    "trajectory_length": 17.903250329719345,
+    "forced_stops": 193,
+    "invalid_responses": 0,
+    "mean_episode_steps": 144.67,
+    "failure_reasons": {}
+   },
+   "rxrfull": {
+    "episodes": 3669,
+    "failures": 0,
+    "sr": 0.7309893704006541,
+    "spl": 0.5949366453428788,
+    "oracle_success": 0.8004905968928864,
+    "ndtw": 0.7047248512245637,
+    "navigation_error": 3.552389080169146,
+    "trajectory_length": 17.840393821457408,
+    "forced_stops": 343,
+    "invalid_responses": 0,
+    "mean_episode_steps": 143.65194875988007,
+    "failure_reasons": {}
+   }
+  }
+ },
+ "old": {
+  "rewind_sfr_mix8k_aplus_s125": {
+   "rxr": {
+    "episodes": 1000,
+    "failures": 24,
+    "sr": 0.717,
+    "spl": 0.5752682740242417,
+    "oracle_success": 0.779,
+    "ndtw": 0.7026398125872167,
+    "navigation_error": 3.536092793714011,
+    "trajectory_length": 18.417898566610596,
+    "forced_stops": 118,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.877,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 24
+    }
+   },
+   "rxrb_rxr": {
+    "episodes": 1000,
+    "failures": 28,
+    "sr": 0.692,
+    "spl": 0.5608870173637928,
+    "oracle_success": 0.768,
+    "ndtw": 0.6864213705456306,
+    "navigation_error": 3.7468470517917702,
+    "trajectory_length": 17.557537902964135,
+    "forced_stops": 117,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.905,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 28
+    }
+   },
+   "rxrc_rxr": {
+    "episodes": 1669,
+    "failures": 47,
+    "sr": 0.70760934691432,
+    "spl": 0.5820256174394173,
+    "oracle_success": 0.774715398442181,
+    "ndtw": 0.6969071730337631,
+    "navigation_error": 3.587690517894864,
+    "trajectory_length": 17.82330729824898,
+    "forced_stops": 187,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.14739364889155,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 47
+    }
+   },
+   "rxr2k": {
+    "episodes": 2000,
+    "failures": 52,
+    "sr": 0.7045,
+    "spl": 0.5680776456940173,
+    "oracle_success": 0.7735,
+    "ndtw": 0.6945305915664237,
+    "navigation_error": 3.641253542611127,
+    "trajectory_length": 17.98771823478737,
+    "forced_stops": 235,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.891,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 52
+    }
+   },
+   "rxrfull": {
+    "episodes": 3669,
+    "failures": 99,
+    "sr": 0.7059144180975743,
+    "spl": 0.5744224712167952,
+    "oracle_success": 0.7740528754429,
+    "ndtw": 0.6956116802742431,
+    "navigation_error": 3.61691762493892,
+    "trajectory_length": 17.912928958940388,
+    "forced_stops": 422,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.5527391659853,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 99
+    }
+   }
+  },
+  "rewind_sfr_mix8k_aplus_s250": {
+   "rxr": {
+    "episodes": 1000,
+    "failures": 24,
+    "sr": 0.718,
+    "spl": 0.5652687865227028,
+    "oracle_success": 0.78,
+    "ndtw": 0.6910823679635796,
+    "navigation_error": 3.7177548153272477,
+    "trajectory_length": 18.762150304935282,
+    "forced_stops": 134,
+    "invalid_responses": 0,
+    "mean_episode_steps": 171.497,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 24
+    }
+   },
+   "rxrb_rxr": {
+    "episodes": 1000,
+    "failures": 28,
+    "sr": 0.686,
+    "spl": 0.5479547013821991,
+    "oracle_success": 0.77,
+    "ndtw": 0.6852621873870122,
+    "navigation_error": 3.8569641488301474,
+    "trajectory_length": 18.37291395194993,
+    "forced_stops": 156,
+    "invalid_responses": 0,
+    "mean_episode_steps": 174.506,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 28
+    }
+   },
+   "rxrc_rxr": {
+    "episodes": 1669,
+    "failures": 47,
+    "sr": 0.7237866986219293,
+    "spl": 0.5727371425261958,
+    "oracle_success": 0.8010784901138406,
+    "ndtw": 0.6932337688817076,
+    "navigation_error": 3.3327513261044768,
+    "trajectory_length": 18.663195230077335,
+    "forced_stops": 233,
+    "invalid_responses": 0,
+    "mean_episode_steps": 173.6452965847813,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 47
+    }
+   },
+   "rxr2k": {
+    "episodes": 2000,
+    "failures": 52,
+    "sr": 0.702,
+    "spl": 0.5566117439524509,
+    "oracle_success": 0.775,
+    "ndtw": 0.688172277675296,
+    "navigation_error": 3.7872165566849576,
+    "trajectory_length": 18.567532128442608,
+    "forced_stops": 290,
+    "invalid_responses": 0,
+    "mean_episode_steps": 173.0015,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 52
+    }
+   },
+   "rxrfull": {
+    "episodes": 3669,
+    "failures": 99,
+    "sr": 0.711910602343963,
+    "spl": 0.563947064263048,
+    "oracle_success": 0.7868629054238212,
+    "ndtw": 0.6904747112603331,
+    "navigation_error": 3.5807340345556744,
+    "trajectory_length": 18.61104854071526,
+    "forced_stops": 523,
+    "invalid_responses": 0,
+    "mean_episode_steps": 173.2943581357318,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 99
+    }
+   }
+  },
+  "rewind_sfr_mix8k_aplus_s500": {
+   "rxr": {
+    "episodes": 1000,
+    "failures": 24,
+    "sr": 0.721,
+    "spl": 0.6006235456773393,
+    "oracle_success": 0.77,
+    "ndtw": 0.7397530922324321,
+    "navigation_error": 3.4247303141727587,
+    "trajectory_length": 15.639838925004582,
+    "forced_stops": 123,
+    "invalid_responses": 0,
+    "mean_episode_steps": 151.932,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 24
+    }
+   },
+   "rxrb_rxr": {
+    "episodes": 1000,
+    "failures": 29,
+    "sr": 0.692,
+    "spl": 0.5730181735613615,
+    "oracle_success": 0.75,
+    "ndtw": 0.7225491198691038,
+    "navigation_error": 3.7173336937299206,
+    "trajectory_length": 15.772497803139753,
+    "forced_stops": 148,
+    "invalid_responses": 1,
+    "mean_episode_steps": 162.649,
+    "failure_reasons": {
+     "ValueError: ValueError: Invalid navigation response: 'MOVE'": 1,
+     "Required simulator metrics unavailable": 28
+    }
+   },
+   "rxrc_rxr": {
+    "episodes": 1669,
+    "failures": 47,
+    "sr": 0.7189934092270821,
+    "spl": 0.6036194652375596,
+    "oracle_success": 0.7711204313960456,
+    "ndtw": 0.7335124698947554,
+    "navigation_error": 3.415244657112775,
+    "trajectory_length": 15.656230758135536,
+    "forced_stops": 229,
+    "invalid_responses": 0,
+    "mean_episode_steps": 161.0527261833433,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 47
+    }
+   },
+   "rxr2k": {
+    "episodes": 2000,
+    "failures": 53,
+    "sr": 0.7065,
+    "spl": 0.5868208596193504,
+    "oracle_success": 0.76,
+    "ndtw": 0.7311511060507679,
+    "navigation_error": 3.5707315898039504,
+    "trajectory_length": 15.706168364072168,
+    "forced_stops": 271,
+    "invalid_responses": 1,
+    "mean_episode_steps": 157.2905,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 52,
+     "ValueError: ValueError: Invalid navigation response: 'MOVE'": 1
+    }
+   },
+   "rxrfull": {
+    "episodes": 3669,
+    "failures": 100,
+    "sr": 0.7121831561733443,
+    "spl": 0.5944624166585413,
+    "oracle_success": 0.765058599073317,
+    "ndtw": 0.7322252723782726,
+    "navigation_error": 3.500087386771713,
+    "trajectory_length": 15.683452129591863,
+    "forced_stops": 500,
+    "invalid_responses": 1,
+    "mean_episode_steps": 159.00190787680566,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 99,
+     "ValueError: ValueError: Invalid navigation response: 'MOVE'": 1
+    }
+   }
+  },
+  "rewind_sfr_mix8k_aplus_s750": {
+   "rxr": {
+    "episodes": 1000,
+    "failures": 24,
+    "sr": 0.723,
+    "spl": 0.5931196329709099,
+    "oracle_success": 0.775,
+    "ndtw": 0.7117836428898918,
+    "navigation_error": 3.4600601663801545,
+    "trajectory_length": 17.640168078147784,
+    "forced_stops": 106,
+    "invalid_responses": 0,
+    "mean_episode_steps": 146.607,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 24
+    }
+   },
+   "rxrb_rxr": {
+    "episodes": 1000,
+    "failures": 28,
+    "sr": 0.698,
+    "spl": 0.5745476336485059,
+    "oracle_success": 0.758,
+    "ndtw": 0.6935794422378062,
+    "navigation_error": 3.7892252389790007,
+    "trajectory_length": 18.255461098834353,
+    "forced_stops": 144,
+    "invalid_responses": 0,
+    "mean_episode_steps": 160.446,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 28
+    }
+   },
+   "rxrc_rxr": {
+    "episodes": 1669,
+    "failures": 47,
+    "sr": 0.7094068304373876,
+    "spl": 0.5866775687954359,
+    "oracle_success": 0.7669263031755542,
+    "ndtw": 0.6976408401633254,
+    "navigation_error": 3.647792395531876,
+    "trajectory_length": 17.627188356018692,
+    "forced_stops": 204,
+    "invalid_responses": 0,
+    "mean_episode_steps": 152.43019772318755,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 47
+    }
+   },
+   "rxr2k": {
+    "episodes": 2000,
+    "failures": 52,
+    "sr": 0.7105,
+    "spl": 0.5838336333097078,
+    "oracle_success": 0.7665,
+    "ndtw": 0.702681542563849,
+    "navigation_error": 3.624304750859661,
+    "trajectory_length": 17.947814588491067,
+    "forced_stops": 250,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.5265,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 52
+    }
+   },
+   "rxrfull": {
+    "episodes": 3669,
+    "failures": 99,
+    "sr": 0.7100027255382938,
+    "spl": 0.5851273177811388,
+    "oracle_success": 0.7666939220496048,
+    "ndtw": 0.7003885656473938,
+    "navigation_error": 3.6349761681309025,
+    "trajectory_length": 17.801964170939584,
+    "forced_stops": 454,
+    "invalid_responses": 0,
+    "mean_episode_steps": 153.0278004905969,
+    "failure_reasons": {
+     "Required simulator metrics unavailable": 99
+    }
+   }
+  }
+ },
+ "provenance": {
+  "rewind_sfr_mix8k_aplus_s125": {
+   "rxr": {
+    "mode": "replace",
+    "base": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr_val_unseen",
+    "reevaluated": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr99_rxrce_agent_val_unseen",
+    "weights_sha256": "c6fb8de33e44e48558cde9988385dcae9d6316ac0f0a65c7918bd55dcc92441e",
+    "checkpoint": "/home/public-1/workspace/anhdh35/svln/runs/rewind_sfr_mix8k_aplus/exports/step_0125",
+    "base_habitat_config_sha256": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869",
+    "reevaluated_habitat_config_sha256": "64c36f0aeb31c0737e1f154862b792b149dfd691c1a27d24110d5047103f3b32",
+    "episodes": 1000,
+    "replaced": 24,
+    "base_unscoreable": 24,
+    "base_other_failures_replaced": {}
+   },
+   "rxrb_rxr": {
+    "mode": "replace",
+    "base": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxrb_rxr_val_unseen",
+    "reevaluated": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr99_rxrce_agent_val_unseen",
+    "weights_sha256": "c6fb8de33e44e48558cde9988385dcae9d6316ac0f0a65c7918bd55dcc92441e",
+    "checkpoint": "/home/public-1/workspace/anhdh35/svln/runs/rewind_sfr_mix8k_aplus/exports/step_0125",
+    "base_habitat_config_sha256": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869",
+    "reevaluated_habitat_config_sha256": "64c36f0aeb31c0737e1f154862b792b149dfd691c1a27d24110d5047103f3b32",
+    "episodes": 1000,
+    "replaced": 28,
+    "base_unscoreable": 28,
+    "base_other_failures_replaced": {}
+   },
+   "rxrc_rxr": {
+    "mode": "replace",
+    "base": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxrc_rxr_val_unseen",
+    "reevaluated": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr99_rxrce_agent_val_unseen",
+    "weights_sha256": "c6fb8de33e44e48558cde9988385dcae9d6316ac0f0a65c7918bd55dcc92441e",
+    "checkpoint": "/home/public-1/workspace/anhdh35/svln/runs/rewind_sfr_mix8k_aplus/exports/step_0125",
+    "base_habitat_config_sha256": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869",
+    "reevaluated_habitat_config_sha256": "64c36f0aeb31c0737e1f154862b792b149dfd691c1a27d24110d5047103f3b32",
+    "episodes": 1669,
+    "replaced": 47,
+    "base_unscoreable": 47,
+    "base_other_failures_replaced": {}
+   },
+   "rxr2k": {
+    "mode": "replace",
+    "base": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr2k_val_unseen",
+    "reevaluated": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr99_rxrce_agent_val_unseen",
+    "weights_sha256": "c6fb8de33e44e48558cde9988385dcae9d6316ac0f0a65c7918bd55dcc92441e",
+    "checkpoint": "/home/public-1/workspace/anhdh35/svln/runs/rewind_sfr_mix8k_aplus/exports/step_0125",
+    "base_habitat_config_sha256": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869",
+    "reevaluated_habitat_config_sha256": "64c36f0aeb31c0737e1f154862b792b149dfd691c1a27d24110d5047103f3b32",
+    "episodes": 2000,
+    "replaced": 52,
+    "base_unscoreable": 52,
+    "base_other_failures_replaced": {}
+   },
+   "rxrfull": {
+    "mode": "replace",
+    "base": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxrfull_val_unseen",
+    "reevaluated": "/home/public-1/workspace/anhdh35/svln/evals/rewind_sfr_mix8k_aplus_s125_rxr99_rxrce_agent_val_unseen",
+    "weights_sha256": "c6fb8de33e44e48558cde9988385dcae9d6316ac0f0a65c7918bd55dcc92441e",
+    "checkpoint": "/home/public-1/workspace/anhdh35/svln/runs/rewind_sfr_mix8k_aplus/exports/step_0125",
+    "base_habitat_config_sha256": "6050633de10c0e20cdd2d570d2b1a8d957b5beca8a56a5ed58175f13ddef8869",
+    "reevaluated_habitat_config_sha256": "64c36f0aeb31c0737e1f154862b792b149dfd691c1a27d24110d5047103f3b32",
+    "episodes": 3669,
+    "replaced": 99,
+    "base_unscoreable": 99,
+    "base_other_failures_replaced": {}
+   }
+  }
+ },
+ "reeval": {
+  "rewind_sfr_mix8k_aplus_s125": {
+   "episodes": 99,
+   "failures": 0,
+   "sr": 0.9292929292929293,
+   "spl": 0.7602677259454569,
+   "oracle_success": 0.9797979797979798,
+   "ndtw": 0.8525722419292364,
+   "navigation_error": 1.22545064756214,
+   "trajectory_length": 8.274221556468463,
+   "forced_stops": 0,
+   "invalid_responses": 0,
+   "mean_episode_steps": 69.88888888888889,
+   "failure_reasons": {}
+  }
+ }
+}

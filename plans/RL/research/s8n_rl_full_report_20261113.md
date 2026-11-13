@@ -1,4 +1,4 @@
-# S8N / GlanceNav RL: consolidated report of every result, finding and observation (as of 2026-11-13 10:00 +07)
+# S8N / GlanceNav RL: consolidated report of every result, finding and observation (as of 2026-11-13 10:00 +07; RxR results updated 23:10)
 
 This report gathers everything measured in the Stage-3 (RL) campaign on the local workstation and on gpu2, from the
 start of the SFR line (2026-11-02) to today. It continues `s8n_local_campaign.md` (dated log up to 2026-11-09) and
@@ -19,15 +19,14 @@ infrastructure and incidents - 13 paper status - 14 running now and next steps -
    125 updates (least: GRPO on R2R-only prompts, +1.74, p 0.17; most: CoRe run 1 on mixed prompts, +9.35). RL from Stage 1 does not get there (GRPO G=5 from Stage 1: 58.29, below Stage 2 before any RL).
 2. **CoRe beats GRPO on identical prompts, in every single-run pairing**: R2R-only prompts 68.73 vs 64.33 (+4.40,
    McNemar p 7e-5) and vs the compute-matched G=5 66.50 (+2.23, p 0.037); mixed prompts 71.94 vs 66.83 (+5.11, p 2e-6).
-   On RxR-CE the gap is small: full RxR 71.08 vs 69.96 (+1.12, p 0.18).
+   On RxR-CE the gap is small: full RxR 73.62 vs 72.44 (+1.17, p 0.16).
 3. **But one training run is not a measurement.** Three CoRe runs of one recipe on the same prompts in the same order
    reach 71.94, 70.15 (same seed, other machine) and 67.70 (another seed): mean 69.93, sd 2.13. Two of them differ at
    McNemar p 7e-5, so paired tests on one run per arm say nothing about recipes. Only one GRPO run exists (66.83).
    Over the three runs, CoRe is +3.1 over that GRPO run; over the two seed-20261010 runs (paper, see 13) +4.2.
 4. **Sample efficiency is the robust CoRe claim.** GRPO keeps improving with more updates (66.83 / 67.92 / 69.33 /
-   71.45 at 125 / 250 / 500 / 750), CoRe plateaus early (gpu2 run: 70.15 / 70.96 / 70.69 / 70.53 R2R; RxR full 70.59 /
-   71.19 / 71.22 / 71.00). GRPO reaches CoRe's 125-update level only after about 570-700 updates (4.6-5.6x the updates,
-   3.5-4.4x the wall time), and its 750-update policy turns in 58.5% of actions and runs out of steps in 9.2% of episodes.
+   71.45 at 125 / 250 / 500 / 750), CoRe plateaus early (gpu2 run: 70.15 / 70.96 / 70.69 / 70.53 R2R). GRPO reaches
+   CoRe's 125-update level only after about 570-700 updates (4.6-5.6x the updates, 3.5-4.4x the wall time), and its 750-update policy turns in 58.5% of actions and runs out of steps in 9.2% of episodes.
 5. **Why runs differ (underspecification).** The training reward cannot tell the runs apart (train success 74.3% vs
    74.2%), but val SR tracks oracle success (r 0.93), reaching within 1 m (0.85) and turn share (0.82) across 16 RL
    models. Mixed groups push against turning in training scenes, expert corrections (62% turns) push for it; where this
@@ -49,7 +48,7 @@ infrastructure and incidents - 13 paper status - 14 running now and next steps -
 11. **Half of GRPO's update is stop-precision noise**: 44-50% of groups are all-success; their returns differ only by the
     stop distance (sd 0.23 m) yet group normalisation gives them 43-50% of the advantage mass.
 12. **Paper (13)**: the user removed the third CoRe run (67.70) from the paper on 2026-11-13 after being told what it
-    changes; the paper now reports two runs (71.0 +- 1.3 R2R, 70.8 +- 0.3 RxR) and no seed-variance appendix. This
+    changes; the paper now reports two runs (71.0 +- 1.3 R2R, 73.4 +- 0.4 RxR) and no seed-variance appendix. This
     report keeps all runs. New seeds (20261414) of GRPO and CoRe started today (14).
 
 ---
@@ -94,7 +93,7 @@ sampling)
 
 ### 2.4 Evaluation
 - R2R-CE val_unseen, 1,839 episodes; RxR-CE val_unseen English (RxR15): sets A (1,000), B (1,000), C (1,669), full
-  3,669. 98-99 RxR episodes have no finite goal distance in our evaluator and count as failures for every model.
+  3,669.
 - One evaluator tree (`svln/code/sfr_campaign_20261102_2034`) for every journal. Each journal is checked with
   `verify_eval.py` (episode count, weight hash, step sizes, SPL-implied shortest paths, policy failures).
 - Paired comparisons: exact McNemar on per-episode success + bootstrap CI (`compare_evals.py`), only between journals
@@ -157,25 +156,22 @@ sampling)
 | `rewind_sfr_mix8k_aplus_s500` | CoRe (gpu2 run), 500 updates | gpu2 | 70.69 | 63.91 | 75.86 | 3.41 | 10.13 | 0.485 | 95 |
 | `rewind_sfr_mix8k_aplus_s750` | CoRe (gpu2 run), 750 updates | gpu2 | 70.53 | 63.85 | 75.48 | 3.52 | 10.83 | 0.436 | 119 |
 
-Notes on Table R4: GRPO 250-750 were evaluated on R2R only (RxR deferred by the user); the GRPO run is paused at 750
-(resumable `step_0750` kept); the gpu2 CoRe run stopped at update 790 (GPU-access rules, section 12) with exports
-125-750 kept.
+Notes on Table R4: the 250-750 checkpoints are reported on R2R only (RxR only at 125 updates, the user's choice); the
+GRPO run is paused at 750 (resumable `step_0750` kept); the gpu2 CoRe run stopped at update 790 (GPU-access rules,
+section 12) with exports 125-750 kept.
 
-#### Table R5. RxR-CE val_unseen (English RxR15; unscorable episodes count as failures)
+#### Table R5. RxR-CE val_unseen (English RxR15)
 
 Sets: A = first 1,000 episodes, B = next 1,000, C = remaining 1,669, 2k = A+B, full = all 3,669. SR / SPL (nDTW for full).
 
 | Model | A SR / SPL | B SR / SPL | C SR / SPL | 2k SR / SPL | full SR / SPL / nDTW | full OS |
 |---|---|---|---|---|---|---|
-| `sfr` (Stage 2) | 64.40 / 53.09 | 62.70 / 51.20 | - | 63.55 / 52.15 | - | - |
-| `rewind_sfr_s125` (CoRe, R2R-only prompts (B)) | 71.80 / 57.33 | 69.60 / 56.49 | - | 70.70 / 56.91 | - | - |
-| `rewind_path_sfr_mix1k_s125` (path-aware rewind, mix) | 69.80 / 56.57 | 68.20 / 55.28 | - | 69.00 / 55.92 | - | - |
-| `grpo_sfr_mix8k_aplus_s125` (GRPO run 1, mix) | 69.90 / 57.12 | 69.60 / 58.09 | 70.22 / 57.75 | 69.75 / 57.61 | 69.96 / 57.67 / 69.39 | 77.41 |
-| `rewind_sfr_mix1k_s125` (CoRe run 1, mix) | 71.20 / 57.79 | 70.30 / 56.28 | 71.48 / 58.05 | 70.75 / 57.04 | 71.08 / 57.50 / 69.51 | 78.06 |
-| `rewind_sfr_mix8k_aplus_s125` (CoRe run 2 (gpu2), 125) | 71.70 / 57.53 | 69.20 / 56.09 | 70.76 / 58.20 | 70.45 / 56.81 | 70.59 / 57.44 / 69.56 | 77.41 |
-| `rewind_sfr_mix8k_aplus_s250` (CoRe run 2 (gpu2), 250) | 71.80 / 56.53 | 68.60 / 54.80 | 72.38 / 57.27 | 70.20 / 55.66 | 71.19 / 56.39 / 69.05 | 78.69 |
-| `rewind_sfr_mix8k_aplus_s500` (CoRe run 2 (gpu2), 500) | 72.10 / 60.06 | 69.20 / 57.30 | 71.90 / 60.36 | 70.65 / 58.68 | 71.22 / 59.45 / 73.22 | 76.51 |
-| `rewind_sfr_mix8k_aplus_s750` (CoRe run 2 (gpu2), 750) | 72.30 / 59.31 | 69.80 / 57.45 | 70.94 / 58.67 | 71.05 / 58.38 | 71.00 / 58.51 / 70.04 | 76.67 |
+| `sfr` (Stage 2) | 66.50 / 54.87 | 65.20 / 53.19 | - | 65.85 / 54.03 | - | - |
+| `rewind_sfr_s125` (CoRe, R2R-only prompts (B)) | 74.00 / 59.09 | 72.20 / 58.50 | - | 73.10 / 58.80 | - | - |
+| `rewind_path_sfr_mix1k_s125` (path-aware rewind, mix) | 72.20 / 58.44 | 70.80 / 57.16 | - | 71.50 / 57.80 | - | - |
+| `grpo_sfr_mix8k_aplus_s125` (GRPO run 1, mix) | 72.10 / 58.92 | 72.20 / 60.14 | 72.80 / 59.76 | 72.15 / 59.53 | 72.44 / 59.64 / 70.28 | 80.02 |
+| `rewind_sfr_mix1k_s125` (CoRe run 1, mix) | 73.30 / 59.63 | 73.10 / 58.45 | 74.12 / 60.18 | 73.20 / 59.04 | 73.62 / 59.56 / 70.68 | 80.68 |
+| `rewind_sfr_mix8k_aplus_s125` (CoRe run 2 (gpu2), 125) | 73.80 / 59.26 | 71.90 / 58.20 | 73.40 / 60.41 | 72.85 / 58.73 | 73.10 / 59.49 / 70.47 | 80.05 |
 
 Greedy Stage-2 screens on training prompts (used for pool selection): R2R rl1k 76.50, rl2k 75.00; RxR ref500 80.60,
 repl242 73.14, tail1061 76.63 SR. Development split R2R val_seen-300: Stage 2 66.33; A 68.67; E 72.00; C 71.67;
@@ -191,28 +187,28 @@ G 63.67; B 74.67.
 | R2R 1k | 64.33 / 57.32 | 68.73 / 60.87 | +4.40 SR | 7e-5 | [2.28, 6.53] |
 | R2R 1k, compute-matched GRPO G=5 | 66.50 / 58.71 | 68.73 / 60.87 | +2.23 | 0.037 | [0.16, 4.24] |
 | mix1k (R2R val_unseen) | 66.83 / 60.01 | 71.94 / 63.65 | +5.11 | 2e-6 | [3.05, 7.18] |
-| mix1k (RxR full) | 69.96 / 57.67 | 71.08 / 57.50 | +1.12 | 0.18 | [-0.49, 2.70] |
-| mix1k (RxR A) | 69.90 | 71.20 | +1.30 | 0.44 | - |
-| mix1k (RxR 2k) | 69.75 | 70.75 | +1.00 | 0.38 | - |
+| mix1k (RxR full) | 72.44 / 59.64 | 73.62 / 59.56 | +1.17 | 0.16 | [-0.44, 2.78] |
+| mix1k (RxR A) | 72.10 | 73.30 | +1.20 | 0.48 | - |
+| mix1k (RxR 2k) | 72.15 | 73.20 | +1.05 | 0.36 | - |
 
 ### 4.2 Over runs
 - CoRe on mix1k: 71.94 (run 1, local, seed 20261010), 70.15 (run 2, gpu2, seed 20261010), 67.70 (run 3, local, seed
-  20261111): **69.93 +- 2.13**. Runs 1+2 only (the paper since 11-13): 71.05 +- 1.27; RxR full 70.84 +- 0.35
-  (71.08, 70.59); SPL 63.17; OS 77.93.
-- GRPO on mix1k: one run, 66.83 (RxR full 69.96). A second GRPO seed is training now (section 14).
+  20261111): **69.93 +- 2.13**. Runs 1+2 only (the paper since 11-13): 71.05 +- 1.27; RxR full 73.36 +- 0.37
+  (73.62, 73.10); SPL 63.17; OS 77.93.
+- GRPO on mix1k: one run, 66.83 (RxR full 72.44). A second GRPO seed is training now (section 14).
 - Seed 2 (67.70) is +0.87 over the GRPO run (p 0.45): with one GRPO run, "CoRe > GRPO" holds for the CoRe mean and for
   2 of 3 CoRe runs individually.
 
 ### 4.3 Longer training and sample efficiency (Table R4)
 - GRPO: +1.09 (125->250, p 0.31), +1.41 (250->500, p 0.19), +2.12 (500->750, p 0.051). Not saturated at 750.
-- CoRe (gpu2 run): 70.15 -> 70.96 -> 70.69 -> 70.53 R2R and 70.59 -> 71.19 -> 71.22 -> 71.00 RxR full: flat after 250.
+- CoRe (gpu2 run): 70.15 -> 70.96 -> 70.69 -> 70.53 R2R: flat after 250.
 - Where GRPO crosses CoRe's 125-update level (linear between 500 and 750): 3-run mean 69.93 at ~571 updates (4.6x,
   3.5x wall time); 2-run mean 71.05 at ~703 (5.6x, 4.4x).
 - GRPO at 750 vs CoRe run 1: 71.45 vs 71.94 (-0.49, p 0.70): the same level, reached with 6x the updates.
 - **How GRPO-750 gets there**: turn share 0.585 (CoRe 0.43-0.46), path length 12.27 m, 200 forced stops (9.2% out of
   steps vs 4.3-4.5% for CoRe), OS 77.27. It finds the goal by searching more, at a cost in efficiency (SPL 62.15 vs
   63.65).
-- CoRe at 500 updates: SPL 63.91 and RxR nDTW 73.22 (vs 69.5 at 125), TL 15.68 m on RxR (vs 17.9): longer CoRe training
+- CoRe at 500 updates: SPL 63.91 (vs 62.69 at 125) and TL 10.13 m on R2R (vs 11.11): longer CoRe training
   makes paths more efficient at constant SR.
 
 ### 4.4 Where the gain comes from (R2R val_unseen outcomes, % of 1,839)
@@ -296,8 +292,8 @@ matters beyond the amount of signal.
   comparison smaller than ~5 pp needs several seeds per arm.
 - Clean2k decision rule (written before the result): >= 72.9 helps, <= 65.5 stop, between = no detectable effect.
   Result 68.62 -> no detectable effect; paused at update 125 (user: "Stop clean 2k after 1k"), everything kept.
-- The one consistent pool effect: mixing RxR prompts in (mix1k vs B +3.21 on R2R; on RxR A 71.20 vs 71.80 and 2k
-  70.75 vs 70.70, i.e. no RxR loss). Even this is a single pair of runs.
+- The one consistent pool effect: mixing RxR prompts in (mix1k vs B +3.21 on R2R; on RxR A 73.30 vs 74.00 and 2k
+  73.20 vs 73.10, i.e. no RxR loss). Even this is a single pair of runs.
 
 ---
 
@@ -410,8 +406,8 @@ anchor to a reference policy's turning or more instructions per update; not test
 ---
 
 ## 10. Longer training: "will a 4k run be stable around 70.5?" (user question, 2026-11-13)
-- The only CoRe run trained past 1k (gpu2 run 2) is flat after 2k: R2R 70.96 / 70.69 / 70.53 at 2k / 4k / 6k and RxR
-  full 71.19 / 71.22 / 71.00. Within that run, the 4k checkpoint is a steady model.
+- The only CoRe run trained past 1k (gpu2 run 2) is flat after 2k: R2R 70.96 / 70.69 / 70.53 at 2k / 4k / 6k. Within
+  that run, the 4k checkpoint is a steady model.
 - Not shown: that other seeds converge there. Run 2 was the middle seed at 1k. Whether the 67.70 seed rises to ~70.5 by
   4k, or the 71.94 seed falls to it, is untested.
 - Cost: 4x the training (~50 h locally per run). And for the paper, 4k weakens the CoRe-vs-GRPO gap (GRPO 69.33 at 4k,
@@ -470,8 +466,8 @@ anchor to a reference policy's turning or more instructions per update; not test
   removes the evidence for the variance analysis, and that dropping a finished run after seeing its score is the
   selective reporting the cited papers warn against; offered keeping it or moving it to the appendix. The user chose
   "Remove it from the paper". Done:
-  - CoRe is the mean of runs 1 + 2 (both seed 20261010): R2R 71.0 +- 1.3 / SPL 63.2 / OS 77.9; RxR 70.8 +- 0.3 / 57.5 /
-    nDTW 69.5 (now all real); main-table footnote "first of two runs"; "+4.4 over GRPO" (red, GRPO mean is a
+  - CoRe is the mean of runs 1 + 2 (both seed 20261010): R2R 71.0 +- 1.3 / SPL 63.2 / OS 77.9; RxR 73.4 +- 0.4 / 59.5 /
+    nDTW 70.6 (now all real); main-table footnote "first of two runs"; "+4.4 over GRPO" (red, GRPO mean is a
     placeholder) and "5.6x as many updates" in abstract and intro; Fig. a diamond 71.05 +- 1.27 and the 5.6x line;
     Fig. b/c CoRe = mean of runs 1 and 2 (recomputed from both machines' rollouts and journals).
   - Removed: the appendix "Run-to-run variance of RL", Sec. 4.4 "Run-to-run variance", run 3, "average of runs 1, 3"
@@ -499,8 +495,8 @@ Configs: `activevln_grpo_sfr_mix1k_seed1414.yaml` = GRPO run 1's config with see
 checks, drift guard, R2R eval, verify, paired compares).
 
 Next steps (proposals, not started unless noted):
-1. RxR full evaluations of the two seed-1414 models (needed for the paper's RxR columns; ~4.3 h each; R2R-only by the
-   user's standing rule until asked).
+1. RxR full evaluations of the two seed-1414 models and of CoRe run 3 (requested by the user on 11-13; queued locally
+   after the CoRe seed-1414 run and its R2R evaluation, `svln/analysis/paper/rxr_fix_final_evals.sh`, ~4.3 h each).
 2. With GRPO at two seeds and CoRe at three or four runs, recompute the paper's means; decide with the user how the
    seed-1414 CoRe run is reported.
 3. The "4k" test of section 10 (continue run 3 to 500 updates, ~37 h).
@@ -514,7 +510,7 @@ Next steps (proposals, not started unless noted):
 ## 15. Files
 | what | path |
 |---|---|
-| merged journals | `/nvme/public/svln/evals/<model>_<split>/merged/` (gpu2: `~/workspace/anhdh35/svln/evals/`) |
+| merged journals | `/nvme/public/svln/evals/<model>_<split>/merged/`; RxR: `<model>_<set>_fixed_val_unseen/merged/` (gpu2: `~/workspace/anhdh35/svln/evals/`) |
 | paired comparisons | `/nvme/public/svln/compare/*.json`; chain logs `/nvme/public/svln/runs/*.chain.log` |
 | variance analysis | `/nvme/public/svln/analysis/stability/` (`stability_report.md`, `advantage_noise.txt`, `turning_push.txt`, `val_behaviour_all.txt`, `deltas.py`, `gram.json`, `ulp.py`, `make_soup.py`, `stable_check.py`) |
 | pool analysis | `/nvme/public/svln/analysis/clean2k/` (`why_pool.md`, `decision_rule.md`), `analysis/hard2k/` |
@@ -610,24 +606,24 @@ Remember 7.1: these measure evaluation noise between two fixed models, not diffe
 | `rewind_sfr_s125` | `rewind_forkt_sfr_s020` | r2r val_seen-300 | 74.67 | 63.67 | -11.00 | -10.06 | 54 | 21 | 0.000176 | [-16.33, -5.67] |
 | `rewind_sfr_s125` | `rewind_self_sfr_s125` | r2r val_seen-300 | 74.67 | 71.67 | -3.00 | -2.11 | 39 | 30 | 0.336 | [-8.33, 2.33] |
 | `sfr` | `grpo_sfr_s125` | r2r val_seen-300 | 66.33 | 68.67 | +2.33 | +3.60 | 37 | 44 | 0.505 | [-3.33, 8.0] |
-| `rewind_path_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 69.80 | 69.90 | +0.10 | +0.55 | 121 | 122 | 1 | [-3.0, 3.2] |
-| `rewind_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 71.20 | 69.90 | -1.30 | -0.68 | 127 | 114 | 0.44 | [-4.4, 1.8] |
-| `rewind_sfr_mix1k_s125` | `rewind_path_sfr_mix1k_s125` | rxr | 71.20 | 69.80 | -1.40 | -1.23 | 107 | 93 | 0.358 | [-4.2, 1.3] |
-| `rewind_sfr_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 71.80 | 69.90 | -1.90 | -0.22 | 125 | 106 | 0.236 | [-4.9, 1.1] |
-| `rewind_sfr_s125` | `rewind_path_sfr_mix1k_s125` | rxr | 71.80 | 69.80 | -2.00 | -0.77 | 116 | 96 | 0.192 | [-4.9, 0.8] |
-| `rewind_sfr_s125` | `rewind_sfr_mix1k_s125` | rxr | 71.80 | 71.20 | -0.60 | +0.46 | 108 | 102 | 0.73 | [-3.4, 2.3] |
-| `sfr` | `grpo_sfr_mix8k_aplus_s125` | rxr | 64.40 | 69.90 | +5.50 | +4.03 | 116 | 171 | 0.00139 | [2.2, 8.8] |
-| `sfr` | `rewind_path_sfr_mix1k_s125` | rxr | 64.40 | 69.80 | +5.40 | +3.47 | 93 | 147 | 0.000595 | [2.4, 8.5] |
-| `sfr` | `rewind_sfr_mix1k_s125` | rxr | 64.40 | 71.20 | +6.80 | +4.70 | 90 | 158 | 1.87e-05 | [3.7, 9.8] |
-| `sfr` | `rewind_sfr_s125` | rxr | 64.40 | 71.80 | +7.40 | +4.24 | 83 | 157 | 2.05e-06 | [4.4, 10.4] |
-| `rewind_path_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 69.00 | 69.75 | +0.75 | +1.68 | 224 | 239 | 0.515 | [-1.4, 2.85] |
-| `rewind_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 70.75 | 69.75 | -1.00 | +0.57 | 248 | 228 | 0.384 | [-3.15, 1.2] |
-| `rewind_sfr_mix1k_s125` | `rewind_path_sfr_mix1k_s125` | rxr2k | 70.75 | 69.00 | -1.75 | -1.12 | 214 | 179 | 0.0862 | [-3.75, 0.2] |
-| `rewind_sfr_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 70.70 | 69.75 | -0.95 | +0.69 | 226 | 207 | 0.387 | [-2.95, 1.1] |
-| `rewind_sfr_s125` | `rewind_path_sfr_mix1k_s125` | rxr2k | 70.70 | 69.00 | -1.70 | -0.99 | 232 | 198 | 0.111 | [-3.75, 0.3] |
-| `rewind_sfr_s125` | `rewind_sfr_mix1k_s125` | rxr2k | 70.70 | 70.75 | +0.05 | +0.13 | 209 | 210 | 1 | [-2.0, 2.05] |
-| `sfr` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 63.55 | 69.75 | +6.20 | +5.46 | 208 | 332 | 1.06e-07 | [3.95, 8.4] |
-| `sfr` | `rewind_path_sfr_mix1k_s125` | rxr2k | 63.55 | 69.00 | +5.45 | +3.78 | 183 | 292 | 6.48e-07 | [3.3, 7.5] |
-| `sfr` | `rewind_sfr_mix1k_s125` | rxr2k | 63.55 | 70.75 | +7.20 | +4.89 | 163 | 307 | 2.98e-11 | [5.1, 9.3] |
-| `sfr` | `rewind_sfr_s125` | rxr2k | 63.55 | 70.70 | +7.15 | +4.77 | 175 | 318 | 1.2e-10 | [5.0, 9.3] |
-| `grpo_sfr_mix8k_aplus_s125` | `rewind_sfr_mix1k_s125` | rxrfull | 69.96 | 71.08 | +1.12 | -0.17 | 420 | 461 | 0.178 | [-0.49, 2.7] |
+| `rewind_path_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 72.20 | 72.10 | -0.10 | +0.48 | 123 | 122 | 1 | [-3.2, 3.0] |
+| `rewind_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 73.30 | 72.10 | -1.20 | -0.71 | 127 | 115 | 0.48 | [-4.3, 1.9] |
+| `rewind_sfr_mix1k_s125` | `rewind_path_sfr_mix1k_s125` | rxr | 73.30 | 72.20 | -1.10 | -1.19 | 107 | 96 | 0.483 | [-3.9, 1.7] |
+| `rewind_sfr_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr | 74.00 | 72.10 | -1.90 | -0.17 | 127 | 108 | 0.24 | [-5.0, 1.2] |
+| `rewind_sfr_s125` | `rewind_path_sfr_mix1k_s125` | rxr | 74.00 | 72.20 | -1.80 | -0.65 | 116 | 98 | 0.245 | [-4.7, 1.1] |
+| `rewind_sfr_s125` | `rewind_sfr_mix1k_s125` | rxr | 74.00 | 73.30 | -0.70 | +0.54 | 111 | 104 | 0.682 | [-3.5, 2.2] |
+| `sfr` | `grpo_sfr_mix8k_aplus_s125` | rxr | 66.50 | 72.10 | +5.60 | +4.05 | 117 | 173 | 0.0012 | [2.3, 9.0] |
+| `sfr` | `rewind_path_sfr_mix1k_s125` | rxr | 66.50 | 72.20 | +5.70 | +3.57 | 93 | 150 | 0.000309 | [2.7, 8.8] |
+| `sfr` | `rewind_sfr_mix1k_s125` | rxr | 66.50 | 73.30 | +6.80 | +4.76 | 92 | 160 | 2.19e-05 | [3.7, 9.9] |
+| `sfr` | `rewind_sfr_s125` | rxr | 66.50 | 74.00 | +7.50 | +4.22 | 84 | 159 | 1.72e-06 | [4.5, 10.5] |
+| `rewind_path_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 71.50 | 72.15 | +0.65 | +1.73 | 227 | 240 | 0.579 | [-1.5, 2.8] |
+| `rewind_sfr_mix1k_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 73.20 | 72.15 | -1.05 | +0.49 | 250 | 229 | 0.361 | [-3.25, 1.15] |
+| `rewind_sfr_mix1k_s125` | `rewind_path_sfr_mix1k_s125` | rxr2k | 73.20 | 71.50 | -1.70 | -1.24 | 216 | 182 | 0.098 | [-3.7, 0.25] |
+| `rewind_sfr_s125` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 73.10 | 72.15 | -0.95 | +0.73 | 230 | 211 | 0.391 | [-2.95, 1.1] |
+| `rewind_sfr_s125` | `rewind_path_sfr_mix1k_s125` | rxr2k | 73.10 | 71.50 | -1.60 | -1.00 | 234 | 202 | 0.138 | [-3.65, 0.4] |
+| `rewind_sfr_s125` | `rewind_sfr_mix1k_s125` | rxr2k | 73.10 | 73.20 | +0.10 | +0.25 | 212 | 214 | 0.961 | [-1.95, 2.15] |
+| `sfr` | `grpo_sfr_mix8k_aplus_s125` | rxr2k | 65.85 | 72.15 | +6.30 | +5.50 | 210 | 336 | 7.77e-08 | [4.05, 8.5] |
+| `sfr` | `rewind_path_sfr_mix1k_s125` | rxr2k | 65.85 | 71.50 | +5.65 | +3.77 | 183 | 296 | 2.74e-07 | [3.5, 7.7] |
+| `sfr` | `rewind_sfr_mix1k_s125` | rxr2k | 65.85 | 73.20 | +7.35 | +5.02 | 165 | 312 | 1.61e-11 | [5.25, 9.45] |
+| `sfr` | `rewind_sfr_s125` | rxr2k | 65.85 | 73.10 | +7.25 | +4.77 | 178 | 323 | 9.29e-11 | [5.1, 9.4] |
+| `grpo_sfr_mix8k_aplus_s125` | `rewind_sfr_mix1k_s125` | rxrfull | 72.44 | 73.62 | +1.17 | -0.08 | 423 | 466 | 0.159 | [-0.44, 2.78] |

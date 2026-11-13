@@ -1,0 +1,142 @@
+{
+  "base": "grpo_sfr_mix8k_aplus_s125",
+  "new": "grpo_sfr_mix8k_aplus_s250",
+  "episodes": 1839,
+  "metrics": {
+    "SR": {
+      "base": 0.6682979880369766,
+      "new": 0.679173463839043,
+      "abs_delta": 0.010875475802066381,
+      "rel_delta": 0.01627339300244107
+    },
+    "SPL": {
+      "base": 0.6000624213960152,
+      "new": 0.6126759654237199,
+      "abs_delta": 0.01261354402770476,
+      "rel_delta": 0.021020386509723408
+    },
+    "NE": {
+      "base": 3.8463868255696103,
+      "new": 3.7725889338043688,
+      "abs_delta": -0.07379789176524154,
+      "rel_delta": -0.019186289656218557
+    },
+    "OSR": {
+      "base": 0.744426318651441,
+      "new": 0.7449700924415443,
+      "abs_delta": 0.0005437737901032857,
+      "rel_delta": 0.0007304601899196073
+    },
+    "TL": {
+      "base": 10.91964876939113,
+      "new": 10.544381917943108,
+      "abs_delta": -0.3752668514480231,
+      "rel_delta": -0.03436620164010528
+    },
+    "steps": {
+      "base": 93.40184883088635,
+      "new": 94.82218597063621,
+      "abs_delta": 1.4203371397498614,
+      "rel_delta": 0.0152067347437793
+    },
+    "forced_stops": {
+      "base": 103,
+      "new": 110,
+      "abs_delta": 7,
+      "rel_delta": 0.06796116504854369
+    },
+    "invalid": {
+      "base": 0,
+      "new": 10,
+      "abs_delta": 10,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 10,
+      "abs_delta": 10,
+      "rel_delta": null
+    }
+  },
+  "paired_success": {
+    "both": 1066,
+    "only_base": 163,
+    "only_new": 183,
+    "neither": 427,
+    "mcnemar_exact_p": 0.30703840613955125
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.009244154431756389,
+      0.030451332245785754
+    ],
+    "SPL": [
+      -0.004994851277170411,
+      0.029969400447692623
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 99,
+      "new": 101
+    },
+    "invalid_or_failed": {
+      "base": 0,
+      "new": 10
+    },
+    "near_miss_3_to_5m": {
+      "base": 69,
+      "new": 57
+    },
+    "never_within_3m": {
+      "base": 304,
+      "new": 305
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 138,
+      "new": 117
+    },
+    "success": {
+      "base": 1229,
+      "new": 1249
+    }
+  },
+  "transitions": {
+    "success -> success": 1066,
+    "never_within_3m -> never_within_3m": 192,
+    "success -> never_within_3m": 79,
+    "never_within_3m -> success": 78,
+    "passed_goal_then_stopped_outside -> passed_goal_then_stopped_outside": 72,
+    "passed_goal_then_stopped_outside -> success": 53,
+    "forced_stop_at_cap -> forced_stop_at_cap": 46,
+    "success -> forced_stop_at_cap": 36,
+    "success -> passed_goal_then_stopped_outside": 32,
+    "near_miss_3_to_5m -> near_miss_3_to_5m": 30,
+    "forced_stop_at_cap -> success": 28,
+    "near_miss_3_to_5m -> success": 24,
+    "forced_stop_at_cap -> never_within_3m": 18,
+    "success -> near_miss_3_to_5m": 15,
+    "never_within_3m -> forced_stop_at_cap": 15,
+    "never_within_3m -> near_miss_3_to_5m": 10,
+    "passed_goal_then_stopped_outside -> never_within_3m": 8,
+    "near_miss_3_to_5m -> never_within_3m": 8,
+    "never_within_3m -> passed_goal_then_stopped_outside": 7,
+    "forced_stop_at_cap -> invalid_or_failed": 5,
+    "near_miss_3_to_5m -> passed_goal_then_stopped_outside": 5,
+    "passed_goal_then_stopped_outside -> forced_stop_at_cap": 3,
+    "never_within_3m -> invalid_or_failed": 2,
+    "success -> invalid_or_failed": 1,
+    "passed_goal_then_stopped_outside -> near_miss_3_to_5m": 1,
+    "near_miss_3_to_5m -> invalid_or_failed": 1,
+    "passed_goal_then_stopped_outside -> invalid_or_failed": 1,
+    "near_miss_3_to_5m -> forced_stop_at_cap": 1,
+    "forced_stop_at_cap -> near_miss_3_to_5m": 1,
+    "forced_stop_at_cap -> passed_goal_then_stopped_outside": 1
+  },
+  "checkpoints": {
+    "base": "/nvme/public/svln/runs/grpo_sfr_mix8k_aplus/exports/step_0125",
+    "new": "/nvme/public/svln/runs/grpo_sfr_mix8k_aplus/exports/step_0250",
+    "base_weights": "5c41de30a3aba2a8128fe1d17b01e73b2df17b6ceca13770ea345820fc66028e",
+    "new_weights": "d1f208cb6c425a9a20425041f0d3cc9227c4ee24e47c918b1a81db6d869d86ca"
+  }
+}

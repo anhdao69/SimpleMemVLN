@@ -1,0 +1,18 @@
+model                                SR     OS    SPL   turn   acts     TL    NE  stop<OS forced
+sfr                               62.59  69.98  55.59  0.432   92.9  11.33  4.27      136     55
+grpo_sfr_mix8k_aplus_s125         66.83  74.44  60.01  0.362   93.4  10.92  3.85      140    103
+grpo_sfr_mix1k_seed1414_s125      57.37  68.52  51.13  0.300   94.2  11.81  5.42      205     99
+rewind_sfr_mix1k_s125             71.94  78.58  63.65  0.455   97.0  11.51  3.32      122     86
+rewind_sfr_mix1k_seed2_s125       67.70  74.61  60.47  0.422   90.8  11.00  3.78      127     80
+
+GRPO seed 20261414 (grpo_sfr_mix1k_seed1414, local, 2026-11-13; R2R val_unseen of exports/step_0125, 1839/1839 episodes,
+verified, 0 policy failures). Same config, same 1,000 prompts in the same order (pool_ids identical) and same SFR start
+as GRPO run 1 (grpo_sfr_mix8k_aplus_s125, 66.83); only run.seed differs. Code differences vs run 1 are gated by config
+(adv_scale default 'group' -> scale None; lr_schedule default constant -> 1e-6, logged 1e-6 every step), so the update
+rule is the same. Result SR 57.37 (vs SFR 62.59: -5.22, McNemar p 1.1e-4; vs run 1: -9.46, p 4e-15).
+Training: train success plateaus at 0.77 from update 50 (run 1 keeps rising to 0.83), rollout entropy falls to 0.090
+(run 1 0.122), grad norm mean 2.4-2.5 over updates 75-124 with a 5.13 spike (run 1 1.7-1.9, max 2.67), and the turn
+share on the drift-guard prompts falls to 0.29-0.32 (Rewind 8k reference 0.44-0.46). Validation: the lowest turn share of
+any RL checkpoint (0.300; previous lowest 0.355), oracle success near SFR (68.52 vs 69.98) but 205 episodes pass within
+3 m of the goal and still fail (run 1 140), NE 5.42 m. Reading: a seed-dependent GRPO collapse (under-turning, missed
+stops), not a pipeline error. Only the step-125 export exists (export_steps [125]); RxR not evaluated (R2R-only rule).

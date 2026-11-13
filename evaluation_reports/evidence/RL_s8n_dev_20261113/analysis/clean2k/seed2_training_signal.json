@@ -1,0 +1,536 @@
+[
+ {
+  "run": "rewind_sfr_mix1k",
+  "groups": 1000,
+  "group_successes": {
+   "0": 0.018,
+   "1": 0.119,
+   "2": 0.177,
+   "3": 0.246,
+   "4": 0.44
+  },
+  "rerolled_groups": 0.065,
+  "adv_mass_share": {
+   "all_fail": 0.0,
+   "all_success": 0.359,
+   "mixed_1of4": 0.15,
+   "mixed_2of4": 0.232,
+   "mixed_3of4": 0.258
+  },
+  "action_push_per_1k_decision_mass": {
+   "forward": 0.82,
+   "left": -23.17,
+   "right": -22.18,
+   "stop": 1.09
+  },
+  "action_push_by_group": {
+   "mixed_1of4": {
+    "forward": 0.93,
+    "left": -4.87,
+    "right": -4.39,
+    "stop": 0.2
+   },
+   "mixed_2of4": {
+    "forward": -0.69,
+    "left": -7.6,
+    "right": -7.52,
+    "stop": 0.33
+   },
+   "mixed_3of4": {
+    "forward": -2.49,
+    "left": -11.69,
+    "right": -10.69,
+    "stop": 0.55
+   },
+   "all_success": {
+    "forward": 3.06,
+    "left": 0.99,
+    "right": 0.42,
+    "stop": 0.0
+   },
+   "all_fail": {
+    "forward": 0.0,
+    "left": 0.0,
+    "right": 0.0,
+    "stop": 0.0
+   }
+  },
+  "mains_early_0_24": {
+   "n": 800,
+   "no_stop": 0.083,
+   "passed_goal": 0.035,
+   "stopped_far": 0.159,
+   "stopped_near": 0.043,
+   "success": 0.681,
+   "oracle": 0.734,
+   "steps": 88.8,
+   "turn_share": 0.465,
+   "steps_over_budget": 0.579
+  },
+  "mains_late_100_124": {
+   "n": 800,
+   "no_stop": 0.107,
+   "passed_goal": 0.024,
+   "stopped_far": 0.079,
+   "stopped_near": 0.021,
+   "success": 0.769,
+   "oracle": 0.819,
+   "steps": 93.6,
+   "turn_share": 0.484,
+   "steps_over_budget": 0.596
+  },
+  "mains_all": {
+   "n": 4000,
+   "no_stop": 0.085,
+   "passed_goal": 0.034,
+   "stopped_far": 0.109,
+   "stopped_near": 0.029,
+   "success": 0.743,
+   "oracle": 0.799,
+   "steps": 87.5,
+   "turn_share": 0.457,
+   "steps_over_budget": 0.57
+  },
+  "stop_calibration_early": {
+   "1-2m": {
+    "mean_p_stop": 0.0315,
+    "n": 3926
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0106,
+    "n": 4639
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0045,
+    "n": 11545
+   },
+   "<1m": {
+    "mean_p_stop": 0.1594,
+    "n": 2308
+   },
+   ">5m": {
+    "mean_p_stop": 0.0027,
+    "n": 48619
+   }
+  },
+  "stop_calibration_late": {
+   "1-2m": {
+    "mean_p_stop": 0.0214,
+    "n": 5628
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0068,
+    "n": 5813
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0025,
+    "n": 10816
+   },
+   "<1m": {
+    "mean_p_stop": 0.1385,
+    "n": 3473
+   },
+   ">5m": {
+    "mean_p_stop": 0.0015,
+    "n": 49176
+   }
+  },
+  "rescue": {
+   "branches_per_main": 0.286,
+   "success": 0.748,
+   "takeover_mean": 7.25,
+   "takeover_actions": {
+    "left": 0.316,
+    "forward": 0.353,
+    "right": 0.309,
+    "stop": 0.022
+   },
+   "imitation_mass_vs_grpo": 0.034,
+   "contrast_mass_vs_grpo": 0.266,
+   "imitation_decisions_per_main": 1.3
+  },
+  "shape_success": {
+   "n": 2971,
+   "steps": 78.9,
+   "steps_per_d0": 8.5,
+   "turn_share": 0.432,
+   "path_over_d0": 1.13,
+   "mean_adv": 0.272
+  },
+  "shape_success_positive_adv": {
+   "n": 2028,
+   "steps": 82.7,
+   "steps_per_d0": 8.62,
+   "turn_share": 0.431,
+   "path_over_d0": 1.15,
+   "mean_adv": 0.737
+  },
+  "shape_failure": {
+   "n": 1029,
+   "steps": 112.2,
+   "steps_per_d0": 10.45,
+   "turn_share": 0.508,
+   "path_over_d0": 1.16,
+   "mean_adv": -0.785
+  },
+  "rxr_share": 0.5,
+  "d0_mean": 10.48,
+  "budget_mean": 155.2
+ },
+ {
+  "run": "rewind_sfr_mix1k_seed2",
+  "groups": 1000,
+  "group_successes": {
+   "0": 0.025,
+   "1": 0.104,
+   "2": 0.178,
+   "3": 0.263,
+   "4": 0.43
+  },
+  "rerolled_groups": 0.067,
+  "adv_mass_share": {
+   "all_fail": 0.0,
+   "all_success": 0.343,
+   "mixed_1of4": 0.14,
+   "mixed_2of4": 0.228,
+   "mixed_3of4": 0.289
+  },
+  "action_push_per_1k_decision_mass": {
+   "forward": -8.85,
+   "left": -27.71,
+   "right": -22.84,
+   "stop": 0.96
+  },
+  "action_push_by_group": {
+   "mixed_1of4": {
+    "forward": -0.08,
+    "left": -3.82,
+    "right": -3.54,
+    "stop": 0.15
+   },
+   "all_success": {
+    "forward": 0.96,
+    "left": -0.95,
+    "right": -0.06,
+    "stop": -0.0
+   },
+   "mixed_3of4": {
+    "forward": -8.28,
+    "left": -13.36,
+    "right": -12.93,
+    "stop": 0.47
+   },
+   "mixed_2of4": {
+    "forward": -1.44,
+    "left": -9.59,
+    "right": -6.31,
+    "stop": 0.34
+   },
+   "all_fail": {
+    "forward": 0.0,
+    "left": 0.0,
+    "right": 0.0,
+    "stop": 0.0
+   }
+  },
+  "mains_early_0_24": {
+   "n": 800,
+   "no_stop": 0.094,
+   "passed_goal": 0.03,
+   "stopped_far": 0.175,
+   "stopped_near": 0.031,
+   "success": 0.67,
+   "oracle": 0.726,
+   "steps": 91.2,
+   "turn_share": 0.473,
+   "steps_over_budget": 0.589
+  },
+  "mains_late_100_124": {
+   "n": 800,
+   "no_stop": 0.068,
+   "passed_goal": 0.039,
+   "stopped_far": 0.109,
+   "stopped_near": 0.019,
+   "success": 0.766,
+   "oracle": 0.82,
+   "steps": 86.8,
+   "turn_share": 0.432,
+   "steps_over_budget": 0.556
+  },
+  "mains_all": {
+   "n": 4000,
+   "no_stop": 0.074,
+   "passed_goal": 0.037,
+   "stopped_far": 0.123,
+   "stopped_near": 0.024,
+   "success": 0.742,
+   "oracle": 0.799,
+   "steps": 87.1,
+   "turn_share": 0.449,
+   "steps_over_budget": 0.566
+  },
+  "stop_calibration_early": {
+   "1-2m": {
+    "mean_p_stop": 0.0306,
+    "n": 4149
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0109,
+    "n": 4679
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0032,
+    "n": 11631
+   },
+   "<1m": {
+    "mean_p_stop": 0.1679,
+    "n": 2216
+   },
+   ">5m": {
+    "mean_p_stop": 0.0035,
+    "n": 50292
+   }
+  },
+  "stop_calibration_late": {
+   "1-2m": {
+    "mean_p_stop": 0.0229,
+    "n": 4996
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0082,
+    "n": 5609
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0041,
+    "n": 9657
+   },
+   "<1m": {
+    "mean_p_stop": 0.1348,
+    "n": 3418
+   },
+   ">5m": {
+    "mean_p_stop": 0.0021,
+    "n": 45737
+   }
+  },
+  "rescue": {
+   "branches_per_main": 0.297,
+   "success": 0.762,
+   "takeover_mean": 7.2,
+   "takeover_actions": {
+    "forward": 0.355,
+    "left": 0.312,
+    "right": 0.31,
+    "stop": 0.023
+   },
+   "imitation_mass_vs_grpo": 0.037,
+   "contrast_mass_vs_grpo": 0.269,
+   "imitation_decisions_per_main": 1.37
+  },
+  "shape_success": {
+   "n": 2969,
+   "steps": 77.8,
+   "steps_per_d0": 8.35,
+   "turn_share": 0.423,
+   "path_over_d0": 1.13,
+   "mean_adv": 0.271
+  },
+  "shape_success_positive_adv": {
+   "n": 2061,
+   "steps": 81.2,
+   "steps_per_d0": 8.47,
+   "turn_share": 0.425,
+   "path_over_d0": 1.15,
+   "mean_adv": 0.72
+  },
+  "shape_failure": {
+   "n": 1031,
+   "steps": 113.9,
+   "steps_per_d0": 10.69,
+   "turn_share": 0.499,
+   "path_over_d0": 1.21,
+   "mean_adv": -0.781
+  },
+  "rxr_share": 0.5,
+  "d0_mean": 10.48,
+  "budget_mean": 155.2
+ },
+ {
+  "run": "rewind_sfr_hard1k",
+  "groups": 1000,
+  "group_successes": {
+   "0": 0.016,
+   "1": 0.253,
+   "2": 0.237,
+   "3": 0.282,
+   "4": 0.212
+  },
+  "rerolled_groups": 0.108,
+  "adv_mass_share": {
+   "all_fail": 0.0,
+   "all_success": 0.161,
+   "mixed_1of4": 0.288,
+   "mixed_2of4": 0.269,
+   "mixed_3of4": 0.281
+  },
+  "action_push_per_1k_decision_mass": {
+   "forward": 1.06,
+   "left": -26.54,
+   "right": -24.25,
+   "stop": 1.17
+  },
+  "action_push_by_group": {
+   "mixed_3of4": {
+    "forward": -2.29,
+    "left": -11.72,
+    "right": -8.74,
+    "stop": 0.43
+   },
+   "mixed_2of4": {
+    "forward": 1.17,
+    "left": -7.92,
+    "right": -7.88,
+    "stop": 0.36
+   },
+   "mixed_1of4": {
+    "forward": 0.92,
+    "left": -6.57,
+    "right": -7.68,
+    "stop": 0.38
+   },
+   "all_fail": {
+    "forward": 0.0,
+    "left": 0.0,
+    "right": 0.0,
+    "stop": 0.0
+   },
+   "all_success": {
+    "forward": 1.26,
+    "left": -0.32,
+    "right": 0.05,
+    "stop": -0.0
+   }
+  },
+  "mains_early_0_24": {
+   "n": 800,
+   "no_stop": 0.126,
+   "passed_goal": 0.036,
+   "stopped_far": 0.26,
+   "stopped_near": 0.064,
+   "success": 0.514,
+   "oracle": 0.585,
+   "steps": 102.7,
+   "turn_share": 0.501,
+   "steps_over_budget": 0.611
+  },
+  "mains_late_100_124": {
+   "n": 800,
+   "no_stop": 0.104,
+   "passed_goal": 0.046,
+   "stopped_far": 0.126,
+   "stopped_near": 0.037,
+   "success": 0.686,
+   "oracle": 0.76,
+   "steps": 96.5,
+   "turn_share": 0.463,
+   "steps_over_budget": 0.595
+  },
+  "mains_all": {
+   "n": 4000,
+   "no_stop": 0.114,
+   "passed_goal": 0.04,
+   "stopped_far": 0.193,
+   "stopped_near": 0.049,
+   "success": 0.605,
+   "oracle": 0.677,
+   "steps": 98.6,
+   "turn_share": 0.474,
+   "steps_over_budget": 0.602
+  },
+  "stop_calibration_early": {
+   "1-2m": {
+    "mean_p_stop": 0.0266,
+    "n": 3517
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0107,
+    "n": 4199
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0069,
+    "n": 10610
+   },
+   "<1m": {
+    "mean_p_stop": 0.1492,
+    "n": 1927
+   },
+   ">5m": {
+    "mean_p_stop": 0.0033,
+    "n": 61929
+   }
+  },
+  "stop_calibration_late": {
+   "1-2m": {
+    "mean_p_stop": 0.0229,
+    "n": 4408
+   },
+   "2-3m": {
+    "mean_p_stop": 0.0088,
+    "n": 4670
+   },
+   "3-5m": {
+    "mean_p_stop": 0.0048,
+    "n": 12047
+   },
+   "<1m": {
+    "mean_p_stop": 0.1522,
+    "n": 2815
+   },
+   ">5m": {
+    "mean_p_stop": 0.0023,
+    "n": 53276
+   }
+  },
+  "rescue": {
+   "branches_per_main": 0.384,
+   "success": 0.691,
+   "takeover_mean": 7.35,
+   "takeover_actions": {
+    "right": 0.28,
+    "forward": 0.366,
+    "left": 0.338,
+    "stop": 0.016
+   },
+   "imitation_mass_vs_grpo": 0.038,
+   "contrast_mass_vs_grpo": 0.306,
+   "imitation_decisions_per_main": 1.72
+  },
+  "shape_success": {
+   "n": 2421,
+   "steps": 89.1,
+   "steps_per_d0": 9.13,
+   "turn_share": 0.443,
+   "path_over_d0": 1.17,
+   "mean_adv": 0.476
+  },
+  "shape_success_positive_adv": {
+   "n": 1904,
+   "steps": 91.8,
+   "steps_per_d0": 9.22,
+   "turn_share": 0.444,
+   "path_over_d0": 1.18,
+   "mean_adv": 0.795
+  },
+  "shape_failure": {
+   "n": 1579,
+   "steps": 113.2,
+   "steps_per_d0": 10.68,
+   "turn_share": 0.512,
+   "path_over_d0": 1.14,
+   "mean_adv": -0.73
+  },
+  "rxr_share": 0.5,
+  "d0_mean": 11.24,
+  "budget_mean": 166.0
+ }
+]

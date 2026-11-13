@@ -1,0 +1,51 @@
+{
+  "episodes": 1000,
+  "failures": 28,
+  "sr": 0.696,
+  "spl": 0.580924956924993,
+  "navigation_error": 3.8215035616837962,
+  "navigation_error_coverage": 972,
+  "navigation_error_undefined": 28,
+  "trajectory_length": 17.789829948674495,
+  "trajectory_length_coverage": 1000,
+  "trajectory_length_undefined": 0,
+  "oracle_success": 0.773,
+  "oracle_success_coverage": 1000,
+  "oracle_success_undefined": 0,
+  "ndtw": 0.6974260248082738,
+  "ndtw_coverage": 1000,
+  "ndtw_undefined": 0,
+  "forced_stops": 105,
+  "mean_episode_steps": 138.355,
+  "invalid_responses": 0,
+  "predicted_action_counts": {
+    "3": 20974,
+    "1": 90236,
+    "2": 26250,
+    "0": 895
+  },
+  "executed_action_counts": {
+    "3": 20952,
+    "1": 90166,
+    "2": 26237,
+    "0": 1000
+  },
+  "predicted_stops": 895,
+  "failure_reasons": {
+    "Required simulator metrics unavailable": 28
+  },
+  "model_latency_p50_seconds": 0.2690308100427501,
+  "model_latency_mean_seconds": 0.2561377451223625,
+  "model_latency_p95_seconds": 0.2818458020163234,
+  "transport_and_model_p50_seconds": 0.2759756059967913,
+  "transport_and_model_mean_seconds": 0.2631233347941515,
+  "transport_and_model_p95_seconds": 0.2891430410207249,
+  "environment_p50_seconds": 0.008387561014387757,
+  "environment_mean_seconds": 0.008995641857349336,
+  "environment_p95_seconds": 0.015623534016776828,
+  "peak_kv_tokens": 3088,
+  "peak_allocated_gib": 8.688366889953613,
+  "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+  "scheduled_episodes": 1000,
+  "complete": true
+}

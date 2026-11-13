@@ -1,0 +1,81 @@
+# CLEAN-2K from SFR / DAgger (rewind_sfr_clean2k, LOCAL 2026-11-11). User: "Analysis super deeply for me the reason
+# why? then try to choose the best 2k prompt to train for me". Rewind, mix1k's exact recipe (every key below unchanged),
+# from S8N_DAGGER_SF_REMAINING (SFR; R2R 62.59 / SPL 55.59 locally) on data/rl/clean2k.jsonl (1,000 R2R + 1,000 RxR,
+# interleaved; select_clean_pool.py, audit data/rl/clean2k.audit.json): A+ rows outside mix1k's 1,000 prompts whose
+# posterior pass rate under the logged policies is >= 0.66 (650 per dataset, 637 for R2R, with 0.66 <= p < 0.92 and
+# the rest p >= 0.92), scene-stratified. Why: /nvme/public/svln/analysis/clean2k/why_pool.md (low-pass-rate prompts
+# carry a weak success/failure contrast and taught the hard runs to distrust the true goal; the hard pool also had no
+# always-solved prompts). Same base, recipe and order of composition as mix1k (rewind_grpo_sfr_mix1k.yaml, R2R 71.94)
+# and rewind_sfr_hard1k (R2R 67.70); milestones at 1k (step 125, vs mix1k and hard1k at the same step) and 2k (250).
+# Changed keys vs rewind_grpo_sfr_hard1k.yaml: data.pool / pool_sha256 / max_prompts 2000 / subset_sha256 / epochs
+# comment, run.export_steps [125, 250].
+base:
+  checkpoint: /nvme/public/svln/checkpoints/stage2_S8N/S8N_DAGGER_SF_REMAINING  # HF anhdao69/stage2_S8N @ 7ef60965: SR 63.68 / SPL 56.65 val_unseen (report)
+  weight_sha256: e3ada114b9b8d9435c6d92f02304ac8232c3d3905599b3d6aa38312dec46bb5a
+  model_path: /nvme/public/svln/checkpoints/qwen-base                    # Qwen/Qwen3.5-4B @ 851bf6e8 (processor/config only)
+data:
+  pool: data/rl/clean2k.jsonl                  # select_clean_pool.py (audit: data/rl/clean2k.audit.json)
+  pool_sha256: 2a8f97b663daa09f6ac90f3cace1c86cc3a3520b08a18911d1e87b519dd23fc8
+  max_prompts: 2000                             # the whole clean-2k pool: 1,000 R2R + 1,000 RxR
+  subset_sha256: 2a8f97b663daa09f6ac90f3cace1c86cc3a3520b08a18911d1e87b519dd23fc8
+  prompts_per_step: 8                           # data.train_batch_size
+  shuffle: false                                # data.shuffle false: fixed parquet order
+  epochs: 1                                     # 2000 / 8 = 250 steps (4 R2R + 4 RxR each; 2 + 2 per rank)
+env:
+  habitat_config: docs/evaluation_setup/vln_r2r.yaml   # port: SimpleMem's Habitat 0.2.4 / HFOV 79 contract
+  split: train
+  rxr: true                                     # rxr-<id> episodes: English-guide RxR15 (rl/env_server; same simulator contract)
+  route_progress: true                          # log route progress (step_rho) of every decision
+rollout:
+  group_size: 4                                 # actor_rollout_ref.rollout.n
+  temperature: 1.2
+  top_p: 1.0
+  budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
+  budget_cap: 120                               # port: converted to primitives with N*/M per episode
+  dynamic_sampling: {enabled: true, max_sample_attempts: 2}
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 3                           # local (systems only): with optimizer offload each trainer rank holds ~59 GB of host RAM; 3 helpers + their Habitat servers per rank keep ~30 GB of the 188 GB free (5 left 9 GB, 2026-10-30 18:30)
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
+reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
+algorithm:
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+  estimator: grpo_rescue                        # GRPO + rescue branches (rl/train_grpo.rescue_prepare)
+  scale_floor: 0.05                             # branch contrasts / max(std of the step's main rewards, 0.05 * R_max), as F-B
+  rescue:                                       # trigger and takeover (rl/rollout._rescue)
+    delta: 1.0                                  # fire at the first t >= 1 with d_t >= min_{k<t} d_k + 1 m (pose before a_t)
+    goal_radius: 1.0                            # the follower's STOP radius ends a takeover
+    max_takeover: 16                            # at most 16 forced expert decisions (a 180-degree turn is 12)
+    takeover_forward: 3                         # hand back after the expert's 3rd forward move
+    rewind: true                                # fork at the closest approach before the trigger; forced STOP allowed
+  rescue_credit:
+    imitation: verified                         # forced decisions: max(0, R_rescue - R_main) / scale
+optim:
+  lr: 1.0e-6
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 32                              # systems only: smaller flat Adam temporaries on the shared GPU 0
+  grad_clip: 1.0
+  warmup_steps: 0
+trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
+runtime:
+  activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
+  checkpoint_decoder_layers: true
+  optimizer_offload: true                       # local (systems only): fp32 master + AdamW moments in host RAM (DeepSpeed CPU Adam), frees ~25 GB per GPU for the update
+  placement_margin_gib: 8                       # local (systems only): GPU 0 also holds another user's 33 GB job; 4 GiB OOMed rank 0 of run 1 at step 48, so long episodes go to GPU 1
+run:
+  seed: 20261010
+  save_every: 5                                 # systems only
+  extra_save_steps: []
+  export_steps: [125, 250]
+  keep_resumable: 1

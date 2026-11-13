@@ -1,0 +1,88 @@
+# LOCAL, SFR line, ablation "unverified imitation" (user 2026-11-03: 1k ablation table): identical to
+# rewind_grpo_sfr_r2r1k.yaml (run B) except rescue_credit.imitation unverified: every expert correction is imitated
+# with R_max / (2 scale), whatever its outcome (DAgger-style), instead of max(0, R_branch - R_main) / scale.
+# LOCAL, SFR line (user goal 2026-11-02): identical to rewind_grpo_s8n_r2r1k.yaml except the initial policy,
+# S8N_DAGGER_SF_REMAINING (HF anhdao69/stage2_S8N @ 7ef60965; one epoch from S8N epoch 1 on oracle-relabelled DAgger
+# data with the STOP-label fix + the original demonstrations of the instructions DAgger did not re-collect;
+# evaluation_reports/S8N_STAGE2_STOPFIX_R2R_EVALUATION.md: SR 63.68 / SPL 56.65 / OSR 70.64 val_unseen).
+# LOCAL: S8N GRPO + REWIND interventions (estimator grpo_rescue with rescue.rewind; s8n_local_campaign.md 2026-10-31).
+# Identical to rescue_grpo_s8n_r2r1k.yaml except rescue.rewind: when the trigger fires at t, the branch forks from
+# the main's closest approach k* = argmin_{k<t} d_k (S8N snapshot retaken at every new minimum), not from t, and the
+# follower's STOP is a forced decision there. Run 2 (fork at t) was stopped at step 22: imitating turn-arounds
+# from lost states made the policy spin.
+# LOCAL: S8N GRPO + counterfactual expert interventions (estimator grpo_rescue; plans/RL/research/s8n_local_campaign.md).
+# Identical to configs/rl/local/activevln_grpo_s8n_r2r1k.yaml (ActiveVLN GRPO on S8N) except the algorithm block's
+# estimator / rescue / rescue_credit / scale_floor keys: every main keeps its GRPO advantage, and a main whose
+# pose drifts >= delta beyond its closest approach to the goal gets one rescue branch from its own S8N snapshot.
+# ActiveVLN GRPO on the S8N policy (RL_s8n): identical to activevln_grpo_m5_r2r1k.yaml except the initial policy, S8N epoch 1
+# (episodic_window_gdn_sweep_v1: R4 recent groups + per-layer top-4 whole frames by FP32 normalised GDN
+# net-state drift; HF anhdao69/M5_S S8N), and systems-only settings for exclusive HiPerGator GPUs.
+# The trainer attends to the realised per-layer frame memory of each rollout (rl/sweep_memory.py).
+base:
+  checkpoint: /nvme/public/svln/checkpoints/stage2_S8N/S8N_DAGGER_SF_REMAINING  # HF anhdao69/stage2_S8N @ 7ef60965: SR 63.68 / SPL 56.65 val_unseen (report)
+  weight_sha256: e3ada114b9b8d9435c6d92f02304ac8232c3d3905599b3d6aa38312dec46bb5a
+  model_path: /nvme/public/svln/checkpoints/qwen-base                    # Qwen/Qwen3.5-4B @ 851bf6e8 (processor/config only)
+data:
+  pool: data/rl/activevln_r2r4k.jsonl          # data/r2r_4000_train.parquet, row order kept
+  pool_sha256: a1f93b807ab419e4940750fb1ceec2a2db192977d5132895385820f3c23bd4d1
+  max_prompts: 1000                             # port: 1k prefix of the 4K list (user request)
+  subset_sha256: ba062de32d362951d56066519f3a07caab621b0d62d75cd296aff2660ed81358
+  prompts_per_step: 8                           # data.train_batch_size
+  shuffle: false                                # data.shuffle false: fixed parquet order
+  epochs: 1                                     # 1000 / 8 = 125 steps
+env:
+  habitat_config: docs/evaluation_setup/vln_r2r.yaml   # port: SimpleMem's Habitat 0.2.4 / HFOV 79 contract
+  split: train
+rollout:
+  group_size: 4                                 # actor_rollout_ref.rollout.n
+  temperature: 1.2
+  top_p: 1.0
+  budget_factor: 2.0                            # min(2 * len(gt_actions), 120) macro actions
+  budget_cap: 120                               # port: converted to primitives with N*/M per episode
+  dynamic_sampling: {enabled: true, max_sample_attempts: 2}
+  backend: processes                            # port: IPC helper processes share the learner's live weights
+  helpers_per_rank: 3                           # local (systems only): with optimizer offload each trainer rank holds ~59 GB of host RAM; 3 helpers + their Habitat servers per rank keep ~30 GB of the 188 GB free (5 left 9 GB, 2026-10-30 18:30)
+  workers_per_rank: 1                           # (threads backend only; GIL-bound)
+reward: {success_reward_base: 15.0, ndtw_reward_base: 0.0}
+algorithm:
+  adv_estimator: grpo
+  norm_adv_by_std_in_grpo: true
+  epsilon: 1.0e-6
+  clip_ratio_low: 0.2
+  clip_ratio_high: 0.28
+  clip_ratio_c: 3.0
+  entropy_coeff: 0.0
+  kl_coef: 0.0                                  # no reference model
+  loss_agg_mode: token-mean                     # per micro-batch, as verl dp_actor
+  micro_batch_trajectories: 2                   # ppo_micro_batch_size_per_gpu
+  ppo_epochs: 1                                 # mini-batch = full batch -> one update per step
+  estimator: grpo_rescue                        # GRPO + rescue branches (rl/train_grpo.rescue_prepare)
+  scale_floor: 0.05                             # branch contrasts / max(std of the step's main rewards, 0.05 * R_max), as F-B
+  rescue:                                       # trigger and takeover (rl/rollout._rescue)
+    delta: 1.0                                  # fire at the first t >= 1 with d_t >= min_{k<t} d_k + 1 m (pose before a_t)
+    goal_radius: 1.0                            # the follower's STOP radius ends a takeover
+    max_takeover: 16                            # at most 16 forced expert decisions (a 180-degree turn is 12)
+    takeover_forward: 3                         # hand back after the expert's 3rd forward move
+    rewind: true                                # fork at the closest approach before the trigger; forced STOP allowed
+  rescue_credit:
+    imitation: unverified                       # ABLATION: every correction imitated with R_max / (2 scale) (DAgger-style)
+optim:
+  lr: 1.0e-6
+  betas: [0.9, 0.999]
+  eps: 1.0e-8
+  weight_decay: 0.01                            # verl applies it to every trainable parameter
+  param_groups: 32                              # systems only: smaller flat Adam temporaries on the shared GPU 0
+  grad_clip: 1.0
+  warmup_steps: 0
+trainable: language_model                       # port: SFT recipe keeps the vision tower + merger frozen
+runtime:
+  activation_offload_min_tokens: 1000000000    # port: host offload only on demand (rl/placement.should_offload)
+  checkpoint_decoder_layers: true
+  optimizer_offload: true                       # local (systems only): fp32 master + AdamW moments in host RAM (DeepSpeed CPU Adam), frees ~25 GB per GPU for the update
+  placement_margin_gib: 8                       # local (systems only): GPU 0 also holds another user's 33 GB job; 4 GiB OOMed rank 0 of run 1 at step 48, so long episodes go to GPU 1
+run:
+  seed: 20261010
+  save_every: 5                                 # systems only
+  extra_save_steps: []
+  export_steps: [25, 50, 75, 100, 125]
+  keep_resumable: 1

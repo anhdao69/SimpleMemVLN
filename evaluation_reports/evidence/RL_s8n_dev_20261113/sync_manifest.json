@@ -1,0 +1,8 @@
+{
+  "repo": "anhdao69/SimpleMemVLN",
+  "branch": "RL_s8n_dev",
+  "source": "2gpu_RTX6000_jump:/nvme/public/SimpleMemVLN_dev",
+  "source_archive_sha256": "4adbf870441ed7e6cfb9e9a33f3be2cae0d6a8c0ab78b95c64a08b1dc71dbbc6",
+  "base_commit": "bd377354086a985d882f2c691ddc5ecff4e03dfb",
+  "note": "Reports and evidence only. Server pull preserved hashes of all 130 dirty/untracked files. Original report versions archived. Runtime source modifications excluded."
+}

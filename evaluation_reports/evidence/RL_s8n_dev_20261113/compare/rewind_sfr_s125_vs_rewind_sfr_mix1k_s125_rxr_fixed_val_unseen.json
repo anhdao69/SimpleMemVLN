@@ -1,0 +1,116 @@
+{
+  "base": "rewind_sfr_s125",
+  "new": "rewind_sfr_mix1k_s125",
+  "episodes": 1000,
+  "metrics": {
+    "SR": {
+      "base": 0.74,
+      "new": 0.733,
+      "abs_delta": -0.007000000000000006,
+      "rel_delta": -0.009459459459459469
+    },
+    "SPL": {
+      "base": 0.5909480507553199,
+      "new": 0.5963288308524615,
+      "abs_delta": 0.005380780097141602,
+      "rel_delta": 0.00910533521561525
+    },
+    "NE": {
+      "base": 3.571831147093326,
+      "new": 3.784905187482014,
+      "abs_delta": 0.21307404038868816,
+      "rel_delta": 0.05965400703840183
+    },
+    "OSR": {
+      "base": 0.816,
+      "new": 0.796,
+      "abs_delta": -0.019999999999999907,
+      "rel_delta": -0.024509803921568516
+    },
+    "TL": {
+      "base": 17.467371488057218,
+      "new": 17.906205082022183,
+      "abs_delta": 0.438833593964965,
+      "rel_delta": 0.025123046948706856
+    },
+    "steps": {
+      "base": 141.454,
+      "new": 147.667,
+      "abs_delta": 6.212999999999994,
+      "rel_delta": 0.04392240587045961
+    },
+    "forced_stops": {
+      "base": 84,
+      "new": 100,
+      "abs_delta": 16,
+      "rel_delta": 0.19047619047619047
+    },
+    "invalid": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 0,
+      "abs_delta": 0,
+      "rel_delta": null
+    },
+    "nDTW": {
+      "base": 0.7110837721073107,
+      "new": 0.7089276050993217,
+      "abs_delta": -0.0021561670079889295,
+      "rel_delta": -0.003032226430367109
+    }
+  },
+  "paired_success": {
+    "both": 629,
+    "only_base": 111,
+    "only_new": 104,
+    "neither": 156,
+    "mcnemar_exact_p": 0.6824930716566947
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.035,
+      0.022
+    ],
+    "SPL": [
+      -0.017410116721700317,
+      0.028376376371158217
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 78,
+      "new": 92
+    },
+    "near_miss_3_to_5m": {
+      "base": 16,
+      "new": 20
+    },
+    "never_within_3m": {
+      "base": 97,
+      "new": 109
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 69,
+      "new": 46
+    },
+    "success": {
+      "base": 740,
+      "new": 733
+    }
+  },
+  "checkpoints": {
+    "base": "/nvme/public/svln/runs/rewind_sfr/exports/step_0125",
+    "new": "/nvme/public/svln/runs/rewind_sfr_mix1k/exports/step_0125",
+    "base_weights": "18531ec3ffc0a1faa1b63c2b9eb9448a902638d3614118c54061e471a1c3b201",
+    "new_weights": "647580d3779fe5f73c61733cddbc785db110f888e951c0aff032bd9b6056c622"
+  },
+  "fixed_results": {
+    "base": "/nvme/public/svln/evals/rewind_sfr_s125_rxr_fixed_val_unseen",
+    "new": "/nvme/public/svln/evals/rewind_sfr_mix1k_s125_rxr_fixed_val_unseen"
+  }
+}

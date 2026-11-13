@@ -1,0 +1,120 @@
+{
+  "base": "rewind_sfr_mix1k_s125",
+  "new": "grpo_sfr_mix8k_aplus_s125",
+  "episodes": 2000,
+  "metrics": {
+    "SR": {
+      "base": 0.732,
+      "new": 0.7215,
+      "abs_delta": -0.010499999999999954,
+      "rel_delta": -0.014344262295081905
+    },
+    "SPL": {
+      "base": 0.5904339443806493,
+      "new": 0.5953150934882036,
+      "abs_delta": 0.004881149107554217,
+      "rel_delta": 0.008267053671303438
+    },
+    "NE": {
+      "base": 3.737122473246418,
+      "new": 3.7456005754871295,
+      "abs_delta": 0.00847810224071166,
+      "rel_delta": 0.002268617713603263
+    },
+    "OSR": {
+      "base": 0.7955,
+      "new": 0.7975,
+      "abs_delta": 0.0020000000000000018,
+      "rel_delta": 0.002514142049025772
+    },
+    "TL": {
+      "base": 18.174194146717078,
+      "new": 17.571686512392674,
+      "abs_delta": -0.6025076343244038,
+      "rel_delta": -0.03315182117349828
+    },
+    "steps": {
+      "base": 150.7585,
+      "new": 129.357,
+      "abs_delta": -21.4015,
+      "rel_delta": -0.14195882819210856
+    },
+    "forced_stops": {
+      "base": 199,
+      "new": 166,
+      "abs_delta": -33,
+      "rel_delta": -0.1658291457286432
+    },
+    "invalid": {
+      "base": 0,
+      "new": 1,
+      "abs_delta": 1,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 1,
+      "abs_delta": 1,
+      "rel_delta": null
+    },
+    "nDTW": {
+      "base": 0.7023107533026341,
+      "new": 0.7055977650602749,
+      "abs_delta": 0.00328701175764079,
+      "rel_delta": 0.004680281117985925
+    }
+  },
+  "paired_success": {
+    "both": 1214,
+    "only_base": 250,
+    "only_new": 229,
+    "neither": 307,
+    "mcnemar_exact_p": 0.36082370737790137
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.0325,
+      0.0115
+    ],
+    "SPL": [
+      -0.012835699911973024,
+      0.022395285082502703
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 185,
+      "new": 159
+    },
+    "invalid_or_failed": {
+      "base": 0,
+      "new": 1
+    },
+    "near_miss_3_to_5m": {
+      "base": 29,
+      "new": 35
+    },
+    "never_within_3m": {
+      "base": 224,
+      "new": 232
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 98,
+      "new": 130
+    },
+    "success": {
+      "base": 1464,
+      "new": 1443
+    }
+  },
+  "checkpoints": {
+    "base": "/nvme/public/svln/runs/rewind_sfr_mix1k/exports/step_0125",
+    "new": "/nvme/public/svln/runs/grpo_sfr_mix8k_aplus/exports/step_0125",
+    "base_weights": "647580d3779fe5f73c61733cddbc785db110f888e951c0aff032bd9b6056c622",
+    "new_weights": "5c41de30a3aba2a8128fe1d17b01e73b2df17b6ceca13770ea345820fc66028e"
+  },
+  "fixed_results": {
+    "base": "/nvme/public/svln/evals/rewind_sfr_mix1k_s125_rxr2k_fixed_val_unseen",
+    "new": "/nvme/public/svln/evals/grpo_sfr_mix8k_aplus_s125_rxr2k_fixed_val_unseen"
+  }
+}

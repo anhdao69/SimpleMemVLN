@@ -1,0 +1,10 @@
+turning push per step = sum over trajectories of advantage x turn share (positive = update favours turning);
+"batch" = the same with batch-level std scaling (reward - group mean) / std of the step's rewards
+mixed    (now)   steps   0- 89: cumulative push seed1 -49.220 seed2 -45.905  diff  -3.315;  per-step sd seed1 0.379 seed2 0.357
+mixed    (now)   steps  90-124: cumulative push seed1 -17.936 seed2 -14.685  diff  -3.251;  per-step sd seed1 0.359 seed2 0.402
+mixed   _batch   steps   0- 89: cumulative push seed1 -54.018 seed2 -48.965  diff  -5.053;  per-step sd seed1 0.416 seed2 0.382
+mixed   _batch   steps  90-124: cumulative push seed1 -20.581 seed2 -17.308  diff  -3.273;  per-step sd seed1 0.454 seed2 0.509
+allsucc  (now)   steps   0- 89: cumulative push seed1  -1.919 seed2  -2.018  diff  +0.099;  per-step sd seed1 0.201 seed2 0.201
+allsucc  (now)   steps  90-124: cumulative push seed1  -1.073 seed2  -2.038  diff  +0.965;  per-step sd seed1 0.158 seed2 0.148
+allsucc _batch   steps   0- 89: cumulative push seed1  -1.481 seed2  -0.837  diff  -0.644;  per-step sd seed1 0.095 seed2 0.076
+allsucc _batch   steps  90-124: cumulative push seed1  -0.463 seed2  -0.410  diff  -0.053;  per-step sd seed1 0.090 seed2 0.087
