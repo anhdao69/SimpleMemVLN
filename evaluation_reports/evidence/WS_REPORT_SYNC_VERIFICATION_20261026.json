@@ -1,0 +1,767 @@
+{
+  "verified_at_utc": "2026-10-27T02:19:35.182807+00:00",
+  "read_only": true,
+  "snapshot": "2026-10-27T07:08:12.063755+07:00",
+  "metric_function_sha256": "12e5af6b38ce9273b8b619138f12865dca4cd3883cc687525e6d33293ebda794",
+  "navigation": {
+    "S1 BF16": {
+      "episodes": 1839,
+      "successes": 921,
+      "failures": 0,
+      "sr": 0.5008156606851549,
+      "spl": 0.46539054923016804,
+      "journal_sha256": "3142749865300d0dfae33eeac825c7b57d8b819fcdfbf60274a9a0ec88c32eb9",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S1 FP32": {
+      "episodes": 1839,
+      "successes": 917,
+      "failures": 0,
+      "sr": 0.49864056552474173,
+      "spl": 0.4643285026605779,
+      "journal_sha256": "eb00c9c7c1837977b1102cc25ec7b5e366e033954957d5c867ccb50b22f1687c",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S2": {
+      "episodes": 1839,
+      "successes": 926,
+      "failures": 0,
+      "sr": 0.5035345296356716,
+      "spl": 0.46896355092796443,
+      "journal_sha256": "4dd3942046900e55bea56b0bb582611226ae5e2d6ca92e9f01b8e6ca047884fd",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S3": {
+      "episodes": 1839,
+      "successes": 928,
+      "failures": 0,
+      "sr": 0.5046220772158782,
+      "spl": 0.47152476007668287,
+      "journal_sha256": "6a7e4f44399e879c5f44ecae1fe083054e6f89089e0dbff84cbc8180471eceac",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S4": {
+      "episodes": 1839,
+      "successes": 917,
+      "failures": 0,
+      "sr": 0.49864056552474173,
+      "spl": 0.46671318689952923,
+      "journal_sha256": "579256dc8b0f519af9ce1efba8c798d83a42fa91c2f0f7d7efcfc04b23100ae9",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S5": {
+      "episodes": 1839,
+      "successes": 901,
+      "failures": 0,
+      "sr": 0.48994018488308866,
+      "spl": 0.4537800169341726,
+      "journal_sha256": "74a0ae77cdd9785aa5d027d76c26b21eaa5ff8bbe76888116525ecd8fab28080",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S7": {
+      "episodes": 1839,
+      "successes": 907,
+      "failures": 1,
+      "sr": 0.49320282762370854,
+      "spl": 0.45529252972690143,
+      "journal_sha256": "9e18c5647c5fa634106828685ff3dbe802f77d0ac7698d04d57813030177fefd",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "ALL ATTEMPTED \u2014 final validation FAILED"
+    },
+    "S8N": {
+      "episodes": 1839,
+      "successes": 964,
+      "failures": 0,
+      "sr": 0.5241979336595977,
+      "spl": 0.4867931065915625,
+      "journal_sha256": "2249dacc332f3d31f3aaeb6c30b9d367439903474d5ee09b8163a84325a9b487",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S8W": {
+      "episodes": 1839,
+      "successes": 948,
+      "failures": 0,
+      "sr": 0.5154975530179445,
+      "spl": 0.48690481545332526,
+      "journal_sha256": "9d4910f520da1d8c0382809906a8e956b49654c0b9f1495d13d9687dfa9258ec",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "M5_E1 R4/B1200": {
+      "episodes": 1839,
+      "successes": 950,
+      "failures": 0,
+      "sr": 0.5165851005981512,
+      "spl": 0.48401033739315247,
+      "journal_sha256": "69c237b4d21ca0981d4803b147eb6858a08da6138052404bf296be6d79fe4e9d",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "M5_E1 served B0": {
+      "episodes": 1839,
+      "successes": 919,
+      "failures": 0,
+      "sr": 0.49972811310494836,
+      "spl": 0.4599145620309972,
+      "journal_sha256": "1fd5d89aabd6d22d2c82f1c293255f2e61a0a978a6bc3e26a1f1cab20c76f05f",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "R4B0 trained": {
+      "episodes": 1839,
+      "successes": 896,
+      "failures": 0,
+      "sr": 0.48722131593257206,
+      "spl": 0.44964877482548365,
+      "journal_sha256": "381460e8034d1e79088f5cc787f9a6c7d58a12b448e0681d29400fb6fdb31c63",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S6": {
+      "episodes": 1839,
+      "successes": 929,
+      "failures": 0,
+      "sr": 0.5051658510059815,
+      "spl": 0.47013464763767043,
+      "journal_sha256": "4e16cf144048f5c200b4c8442ebd0adb00605564b73bcea661cec09fb0cb3f73",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": false,
+      "status": "FINAL \u2014 unqualified diagnostic"
+    },
+    "S9": {
+      "episodes": 1839,
+      "successes": 932,
+      "failures": 0,
+      "sr": 0.5067971723762915,
+      "spl": 0.4743992919591677,
+      "journal_sha256": "9b2e601cf9ee3940bb606c20218a3a80876da794fe701707705963f990dc40a0",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": false,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "A0": {
+      "episodes": 1839,
+      "successes": 910,
+      "failures": 0,
+      "sr": 0.4948341489940185,
+      "spl": 0.4539418153016617,
+      "journal_sha256": "29ba42cddcb3909795c1cfc1849e3236a35cc434aa8b437b86288d0a19615db5",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "A1": {
+      "episodes": 1839,
+      "successes": 929,
+      "failures": 0,
+      "sr": 0.5051658510059815,
+      "spl": 0.46873430271902516,
+      "journal_sha256": "35da2ca9a73278637407ab2f0fa484c1aa2ed4c8248c814ccb333e46bc4a4853",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M2": {
+      "episodes": 1839,
+      "successes": 906,
+      "failures": 0,
+      "sr": 0.4926590538336052,
+      "spl": 0.4587727213938228,
+      "journal_sha256": "328379ba0ad880db3d53cad5a8fbcf42f2a97b9b9d03063aaa22a626d3eb6b78",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M2c": {
+      "episodes": 1839,
+      "successes": 848,
+      "failures": 0,
+      "sr": 0.46112017400761285,
+      "spl": 0.43365987459045585,
+      "journal_sha256": "53266abda6fc7c014b2cb00f338bd770a7093c0d90cbab1975cf58dbae6464a3",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "V0": {
+      "episodes": 1839,
+      "successes": 852,
+      "failures": 0,
+      "sr": 0.4632952691680261,
+      "spl": 0.4175680216743156,
+      "journal_sha256": "cb3ddceb2e2c96314a9fe2fad7f43780cf6a64956a1133470311d4add970500a",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "G1": {
+      "episodes": 1839,
+      "successes": 914,
+      "failures": 0,
+      "sr": 0.49700924415443176,
+      "spl": 0.46072124712845913,
+      "journal_sha256": "7bd2f8f3e24a7c31891357d70a3e9cbbfafaad4837cca4004fa3a897b25311f8",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "G3_fixed01_seed430": {
+      "episodes": 1839,
+      "successes": 909,
+      "failures": 0,
+      "sr": 0.49429037520391517,
+      "spl": 0.4565518007746351,
+      "journal_sha256": "56c2327b6702d588849464c2c7a1731e4278c9657db21813e990d50e237eef11",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "G3_M5": {
+      "episodes": 135,
+      "successes": 64,
+      "failures": 0,
+      "sr": 0.4740740740740741,
+      "spl": 0.429890089234569,
+      "journal_sha256": "325926eec3ca90814cd6329ed2c9138256ab1d543c1d3ab0693cb5b3b2a1cfe7",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "PARTIAL \u2014 archived"
+    },
+    "G3": {
+      "episodes": 1839,
+      "successes": 956,
+      "failures": 0,
+      "sr": 0.519847743338771,
+      "spl": 0.48095940511038254,
+      "journal_sha256": "a1a174f3bbd9a98add171621326ce268df2f763d0b716169e328312473721c1b",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M5": {
+      "episodes": 1839,
+      "successes": 938,
+      "failures": 0,
+      "sr": 0.5100598151169113,
+      "spl": 0.4743893808060641,
+      "journal_sha256": "2bc0cbc32b97c114d65e0f5f30c3a32eeed273500c0316260f32f1d110203869",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "G3A1": {
+      "episodes": 1839,
+      "successes": 877,
+      "failures": 0,
+      "sr": 0.476889613920609,
+      "spl": 0.43548812524177494,
+      "journal_sha256": "aa9401b88833b0723a1ec82a92433bb363a090175f692745342c16050232442e",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M1": {
+      "episodes": 1839,
+      "successes": 799,
+      "failures": 0,
+      "sr": 0.4344752582925503,
+      "spl": 0.40204753409440863,
+      "journal_sha256": "0595933ae87313fce153e33b187b6b020f9b2e8e54f996700b4743747eef8442",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M5c": {
+      "episodes": 1839,
+      "successes": 877,
+      "failures": 0,
+      "sr": 0.476889613920609,
+      "spl": 0.4394499813165714,
+      "journal_sha256": "19c4aca9bacf11c982fa236a2d375c0af8db12c3377a1b5a9f390df29622ce9a",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "R1": {
+      "episodes": 1839,
+      "successes": 907,
+      "failures": 0,
+      "sr": 0.49320282762370854,
+      "spl": 0.45825210644433634,
+      "journal_sha256": "98fe2ff825fdb1e7755ddf19ad45267e5da0ebfb5ed8e94295417a339a94889b",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "Window8-B-E1": {
+      "episodes": 1839,
+      "successes": 907,
+      "failures": 0,
+      "sr": 0.49320282762370854,
+      "spl": 0.4556109401853944,
+      "journal_sha256": "c40d98167e221b7090ec084e1b22d034121b3989db82e73b15166032d3f09f3f",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "G3 DINOv3 ViTB16": {
+      "episodes": 1839,
+      "successes": 879,
+      "failures": 0,
+      "sr": 0.47797716150081565,
+      "spl": 0.4457418237671539,
+      "journal_sha256": "f96e094af25d8bebba32b25ff9cced57b5c2c9279b0d3c05fdd5a380ba538c7e",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "COMPLETE \u2014 recomputed"
+    },
+    "M5 E1 R2/B1800 seed431": {
+      "episodes": 1839,
+      "successes": 944,
+      "failures": 0,
+      "sr": 0.5133224578575313,
+      "spl": 0.47525481946040754,
+      "journal_sha256": "11e81927bde10bf01e76c2d1056b56cbc7681888ac9d1868e7043fbc319a1f7d",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "L0": {
+      "episodes": 1839,
+      "successes": 951,
+      "failures": 0,
+      "sr": 0.5171288743882545,
+      "spl": 0.4820208020570134,
+      "journal_sha256": "eb40869b88e63989c8ffbe683d2557d3629d0bb9b3160b092c05fe097fede43f",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "L1": {
+      "episodes": 1839,
+      "successes": 932,
+      "failures": 0,
+      "sr": 0.5067971723762915,
+      "spl": 0.4717262698710256,
+      "journal_sha256": "27984117b9df1a8c8e5c03c11f583e35b1743231bc7d0086f82fb724490ef550",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "L2": {
+      "episodes": 1384,
+      "successes": 678,
+      "sr": 0.48988439306358383,
+      "spl": 0.45418499437535725,
+      "journal_sha256": "3dff2cd4ce8bc5ac3247a8f6953c28bf2c30f8d3774be13f42fb3105fec15a9c",
+      "metrics_recomputed": true,
+      "contract_order_checked": true,
+      "status": "INTERRUPTED \u2014 partial after server reboot"
+    },
+    "L3": {
+      "episodes": 1199,
+      "successes": 593,
+      "sr": 0.4945788156797331,
+      "spl": 0.46412354402524975,
+      "journal_sha256": "68194a402995d80e2c5388415c83b84999df9539b6abeb3ec710619dde7f2331",
+      "metrics_recomputed": true,
+      "contract_order_checked": true,
+      "status": "INTERRUPTED \u2014 partial after server reboot"
+    },
+    "S8N epoch 2": {
+      "episodes": 1839,
+      "successes": 912,
+      "failures": 0,
+      "sr": 0.49592169657422513,
+      "spl": 0.4493965547376225,
+      "journal_sha256": "57d26553cd9d6459a7da76fc1c58b05e7c594852967558a06f9c41a83f6e8ecb",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 unqualified diagnostic"
+    },
+    "S8N LR1E5": {
+      "episodes": 1839,
+      "successes": 908,
+      "failures": 0,
+      "sr": 0.4937466014138119,
+      "spl": 0.46435271473659634,
+      "journal_sha256": "c2d642a7a69031baca9e298226a48fc53a3b52d4fb8236a38f6186d7fa073a8c",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S8N_MUON": {
+      "episodes": 1839,
+      "successes": 779,
+      "failures": 0,
+      "sr": 0.42359978249048397,
+      "spl": 0.3778609010111041,
+      "journal_sha256": "8dc2a54627080e14d5cca921663ed42a33d3f2c453fbf08ee06a1d6e72e0efef",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 unqualified diagnostic"
+    },
+    "M5 E1 R4/B1200 seed431": {
+      "episodes": 1839,
+      "successes": 884,
+      "failures": 0,
+      "sr": 0.48069603045133225,
+      "spl": 0.44099314207311824,
+      "journal_sha256": "8fd65fb0658093e206ca16f5fe915bd5e3e78607b00c494b7899a3856eba06a5",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S8N_R4_B600": {
+      "episodes": 1839,
+      "successes": 947,
+      "failures": 0,
+      "sr": 0.5149537792278412,
+      "spl": 0.47809804655690236,
+      "journal_sha256": "becc5ec898cf431a2875fa30a39d29130d47a3ca0b1638285319031503857f24",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    },
+    "S8N_R4_B2400": {
+      "episodes": 1839,
+      "successes": 947,
+      "failures": 0,
+      "sr": 0.5149537792278412,
+      "spl": 0.47924135562655623,
+      "journal_sha256": "d7f2373b1e271a55268714d51f2e4fa932d42b1605a40846011599c19623052f",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 unqualified diagnostic"
+    },
+    "S8N_R2_B1200": {
+      "episodes": 1839,
+      "successes": 915,
+      "failures": 0,
+      "sr": 0.49755301794453505,
+      "spl": 0.46151563151938524,
+      "journal_sha256": "b1817123fb2a10e5cd14321ae4a3380bd4b5a42a18893b2bd42aa5f77ee638c6",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 unqualified diagnostic"
+    },
+    "S8N_R8_B1200": {
+      "episodes": 1839,
+      "successes": 931,
+      "failures": 0,
+      "sr": 0.5062533985861881,
+      "spl": 0.470940373589938,
+      "journal_sha256": "56c12a43a271101b525e53e1e74549f0501c72bed660b98f562f89281422fa36",
+      "metrics_recomputed": true,
+      "unique_ids_and_action_metadata_checked": true,
+      "contract_order_checked": true,
+      "status": "FINAL \u2014 navigation validated"
+    }
+  },
+  "latency": [
+    {
+      "name": "S1 BF16",
+      "samples": 192,
+      "result_sha256": "675b1ba9428c3f58ebc04a6b3f9cbddd45451c06f93f5301fb13f1f816becdb3",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S1 FP32",
+      "samples": 192,
+      "result_sha256": "39715d8043759ce5917891839010587849b947829c4251802ecdfe1a62443697",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S2",
+      "samples": 192,
+      "result_sha256": "d2a3cd67e62bbf60b25554b3948637fd62757c388eefb5f9e3762b550f162653",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S3",
+      "samples": 192,
+      "result_sha256": "d2db1186231de621259839c8e8835d8a66fc21257f0d780038cc1fce60eab7b6",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S4",
+      "samples": 192,
+      "result_sha256": "00de2947569a90db2e93d55562a7cefca4db106d81105165d35cc1f57b525ea0",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S5",
+      "samples": 192,
+      "result_sha256": "cd6cf50f854ac4be43c1d34f004b458d6db40488cd79c173cb4dc9ea6e22334b",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S7",
+      "samples": 192,
+      "result_sha256": "81b2a8521e32e5b5537c6f6281340b5463407180311efa7644fa4ddd02fc8d2a",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S8N",
+      "samples": 192,
+      "result_sha256": "bbd07aeca68723d9228d634813832c60de9e05587f11f9670990e2d2477322a3",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S8W",
+      "samples": 192,
+      "result_sha256": "b286b1d75f321b54cff115967e2c41ef169cd44e64595a67cf5e0dbd395e577c",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5_E1 R4/B1200",
+      "samples": 192,
+      "result_sha256": "a62ad792c4717e4e99aea1591a0502302bfeae22b727793522429bfbfe83551d",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5_E1 served B0",
+      "samples": 192,
+      "result_sha256": "40fe2ddc38227f65d589b42fedd4bb463d377b7b0656ef9e3c0e76431261719c",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "R4B0 trained",
+      "samples": 192,
+      "result_sha256": "4f3b48ba461bbacc5317c4ab130d35b72bcaba0171130282469e83d380e2c7dc",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S6",
+      "samples": 192,
+      "result_sha256": "e03d982028656abbbaa4621dad77c353f46f899245c0044fcc0ea061b466925e",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "S9",
+      "samples": 192,
+      "result_sha256": "8f00f95c570e3fa64a0cfc22f50374ed0fd98c06e2be79cf9316bb432cc8705d",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "A0",
+      "samples": 192,
+      "result_sha256": "cd25102a870fc65a73928b288d12c6047548f6bd6366a5790fd919f7a9a1f68d",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "A1",
+      "samples": 192,
+      "result_sha256": "1c614bdc622d709a0ca8409b4ca2385ce3fb0d1617ff936848734053e2616152",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M2",
+      "samples": 192,
+      "result_sha256": "470da8685e4bfb00dc461aadc2b6382b821715497c7f0b511944ffacdefae543",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M2c",
+      "samples": 192,
+      "result_sha256": "50243d3678147a4b732ce34a02408c4413efdcf36a26da4571a752945f0e8e2a",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "V0",
+      "samples": 192,
+      "result_sha256": "4d86236c9ab2a0b98991bea42ceb5ce321099da2452869b7a644a8dc7b600cfc",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G1",
+      "samples": 192,
+      "result_sha256": "60f6bc04c2f7d499549b20f1866edb874e0e0ca2d7a3e48514854a85a274ac5e",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3_fixed01_seed430",
+      "samples": 192,
+      "result_sha256": "95143b119e4321f60f3520909ac883207a71e5a8f14643299cd7dde675ad8624",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3_M5",
+      "samples": 192,
+      "result_sha256": "1e518ef0f2379b8a7b101c4ee525d29903764299aee3158479eda1a890b4466a",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3",
+      "samples": 192,
+      "result_sha256": "8706e8f50e916ff651cc5f24ee275f04ec9ae997c96b01a3961bb0ed1b284b14",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5",
+      "samples": 192,
+      "result_sha256": "c1eceaec5a8b00e850aa6a7217c3bf4299356833ad14be6daaafcdff29f41c5b",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3A1",
+      "samples": 192,
+      "result_sha256": "2a14580ac666e24db8afc48b20dc9ae2ad12f7a8ccf02986e63c41575a8cf1db",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M1",
+      "samples": 192,
+      "result_sha256": "659c4a7f5133f4e0f48d64ad69aff9b6290199718c29b08eb017f701597e27ed",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5c",
+      "samples": 192,
+      "result_sha256": "81ce3151d9de116121917c7a498093bb11161c764975da6c847ff7873d7ad64a",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "R1",
+      "samples": 192,
+      "result_sha256": "c8afe542b86eb526e6bb591623960286d20d6c41c7c5b65bc8ab1a13c579e345",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "Window8-B-E1",
+      "samples": 192,
+      "result_sha256": "aa255622a3e427211709be535482fba00e2a85b2bf4b50056a082ec773bef72e",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3 DINOv3 ViTB16",
+      "samples": 192,
+      "result_sha256": "02a18bd540e485f92e10c3229031743fa7214542db52e8550679041ddc916abe",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5 E1 R2/B1800 seed431",
+      "samples": 192,
+      "result_sha256": "c9c9a718a7001e0bdc28632c13c48974817d64ef2c7f0b155d289f85bb753f0f",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "M5 E1 R4/B1200 seed431",
+      "samples": 192,
+      "result_sha256": "566e98c2ea9b9e8ce86db77da1bcde85137b6abe8d012a2f8a8c8f12ca85b856",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "G3_M5 L8/L16/L24 TRIPLE",
+      "samples": 192,
+      "result_sha256": "f192e551dc2caeec87907d07f79d423bf972208c7c8bdc5cacc2bb7fd51146c0",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "L2",
+      "samples": 192,
+      "result_sha256": "70c7987fa5c7af42afc0e3d4e2e148360ce5d190b81a4437f6065f4b4e07fa08",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    },
+    {
+      "name": "L3",
+      "samples": 192,
+      "result_sha256": "41251b285cad9ab032f7fc05a850a6137471a81d22a2e1479ce2ad71666673e7",
+      "statistics_recomputed": true,
+      "no_recorded_gpu_contention": true
+    }
+  ]
+}
