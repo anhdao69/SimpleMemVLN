@@ -1,0 +1,181 @@
+{
+  "passed": true,
+  "arm": "R8B0",
+  "dataset": "rxr15",
+  "episodes": 3669,
+  "dataset_complete": true,
+  "protocol_revision": 2,
+  "compatibility": "same_frozen_protocol_mixed_hardware",
+  "protocol_configuration_equivalent": true,
+  "cross_gpu_exact": false,
+  "cross_gpu_trajectory_equivalent": false,
+  "bitwise_equivalent": false,
+  "preserved_episodes": 3344,
+  "newly_scored_episodes": 325,
+  "excluded_declared_control_copies": 4,
+  "initially_unreachable_episodes": 99,
+  "preserved_initially_unreachable_episodes": 91,
+  "geometry_metric_failures": 99,
+  "invalid_model_responses": [],
+  "known_geometry_invalid_response_episode_ids": [],
+  "unexpected_runtime_failures": 0,
+  "sr_percent": 53.202507495230314,
+  "spl_percent": 43.898572494794415,
+  "ndtw_percent": 61.84607923327386,
+  "audited_runtime_exception": {
+    "field": "gpu",
+    "original": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+    "resume": "NVIDIA RTX PRO 5000 Blackwell"
+  },
+  "migration_plan_sha256": "32de1e4bc168139086e291374e7d932a65fcd82e869e6c4b53c0cad75e5a1cea",
+  "hardware_migration_policy_sha256": "286dee5e6b54bdfd358f55f8723a894334334dc57f54e40ea07ffe6365f60459",
+  "failed_exact_gate_evidence_sha256": "2f47e9074df9b30d2c9266c5f2cd86d87d57e49bcd94e8041e1499ca7e89f607",
+  "cause": "Cross-host/hardware-associated sensitivity; cross-device numerical mechanism not isolated",
+  "cross_gpu_diagnostics": [
+    {
+      "episode_id": "10071",
+      "old_steps": 173,
+      "new_steps": 173,
+      "first_token_difference_step": null,
+      "first_action_difference_step": null,
+      "response_tokens_equal": true,
+      "trajectory_equal": true,
+      "trajectory_equal_until_first_token_difference": true,
+      "old_metrics": {
+        "distance_to_goal": 0.7447948455810547,
+        "success": 1.0,
+        "spl": 0.7001941726215517,
+        "oracle_success": 1.0,
+        "ndtw": 0.745132745326182,
+        "trajectory_length": 22.50820097707959
+      },
+      "new_metrics": {
+        "distance_to_goal": 0.7447948455810547,
+        "success": 1.0,
+        "spl": 0.7001941716944491,
+        "oracle_success": 1.0,
+        "ndtw": 0.745132745326182,
+        "trajectory_length": 22.50820097707959
+      },
+      "metric_deltas": {
+        "distance_to_goal": 0.0,
+        "success": 0.0,
+        "spl": -9.271026168988783e-10,
+        "oracle_success": 0.0,
+        "ndtw": 0.0,
+        "trajectory_length": 0.0
+      },
+      "first_difference_old_action": null,
+      "first_difference_new_action": null
+    },
+    {
+      "episode_id": "10078",
+      "old_steps": 181,
+      "new_steps": 173,
+      "first_token_difference_step": 26,
+      "first_action_difference_step": 26,
+      "response_tokens_equal": false,
+      "trajectory_equal": false,
+      "trajectory_equal_until_first_token_difference": true,
+      "old_metrics": {
+        "distance_to_goal": 0.6794646978378296,
+        "success": 1.0,
+        "spl": 0.700333996956606,
+        "oracle_success": 1.0,
+        "ndtw": 0.7441967471245085,
+        "trajectory_length": 22.50370709730734
+      },
+      "new_metrics": {
+        "distance_to_goal": 0.5957984924316406,
+        "success": 1.0,
+        "spl": 0.700666240833192,
+        "oracle_success": 1.0,
+        "ndtw": 0.7484842102671041,
+        "trajectory_length": 22.49303624293743
+      },
+      "metric_deltas": {
+        "distance_to_goal": -0.08366620540618896,
+        "success": 0.0,
+        "spl": 0.0003322438765859248,
+        "oracle_success": 0.0,
+        "ndtw": 0.004287463142595649,
+        "trajectory_length": -0.010670854369912774
+      },
+      "first_difference_old_action": "MOVE_FORWARD",
+      "first_difference_new_action": "TURN_LEFT"
+    },
+    {
+      "episode_id": "10079",
+      "old_steps": 250,
+      "new_steps": 253,
+      "first_token_difference_step": 87,
+      "first_action_difference_step": 87,
+      "response_tokens_equal": false,
+      "trajectory_equal": false,
+      "trajectory_equal_until_first_token_difference": true,
+      "old_metrics": {
+        "distance_to_goal": 14.736244201660156,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.16259507251733749,
+        "trajectory_length": 30.247795979151263
+      },
+      "new_metrics": {
+        "distance_to_goal": 14.48690128326416,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.16325499756092043,
+        "trajectory_length": 29.997795386572953
+      },
+      "metric_deltas": {
+        "distance_to_goal": -0.2493429183959961,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.0006599250435829485,
+        "trajectory_length": -0.25000059257831
+      },
+      "first_difference_old_action": "MOVE_FORWARD",
+      "first_difference_new_action": "TURN_RIGHT"
+    },
+    {
+      "episode_id": "10080",
+      "old_steps": 500,
+      "new_steps": 500,
+      "first_token_difference_step": null,
+      "first_action_difference_step": null,
+      "response_tokens_equal": true,
+      "trajectory_equal": true,
+      "trajectory_equal_until_first_token_difference": true,
+      "old_metrics": {
+        "distance_to_goal": 15.441065788269043,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.2313917991699686,
+        "trajectory_length": 19.473874300019688
+      },
+      "new_metrics": {
+        "distance_to_goal": 15.441065788269043,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.2313917991699686,
+        "trajectory_length": 19.473874300019688
+      },
+      "metric_deltas": {
+        "distance_to_goal": 0.0,
+        "success": 0.0,
+        "spl": 0.0,
+        "oracle_success": 0.0,
+        "ndtw": 0.0,
+        "trajectory_length": 0.0
+      },
+      "first_difference_old_action": null,
+      "first_difference_new_action": null
+    }
+  ],
+  "journal_sha256": "fed5c378f43ca41ed77c9209f4ba5c9bae61ea1b833fa7f0d952eacd464e5dea"
+}
