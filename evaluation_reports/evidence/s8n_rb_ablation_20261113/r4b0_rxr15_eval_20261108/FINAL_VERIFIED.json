@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "checked_unix": 1794144834.4673357,
+  "model": "R4B0",
+  "mode": "full",
+  "episodes": 3669,
+  "successes": 1942,
+  "sr_percent": 52.929953665849006,
+  "spl_percent": 43.92116912231348,
+  "ndtw_percent": 61.609368509754724,
+  "geometry_metric_failures": 99,
+  "invalid_model_responses": [],
+  "unexpected_runtime_failures": 0,
+  "initially_unreachable_episodes": 99,
+  "failure_policy": "All episodes retained; geometry missing metrics and invalid model responses score zero SR/SPL; finite partial nDTW retained",
+  "journal_sha256": "1242f0044eb73aba022352b1befa47a2584479e7e34fdac0d799954bdc5bc01c"
+}
