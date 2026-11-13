@@ -1,5 +1,7 @@
 # S8N inference-only bank and recent-context sweep
 
+For the completed trained-checkpoint evaluations on both datasets, see the [trained R/B ablation report](S8N_R_B_ABLATION.md). The results below document the earlier inference-only sweep.
+
 Snapshot: 2026-10-27T07:08:18.352007+07:00. Controller phase: **complete**. Full target: 1,839 R2R val_unseen episodes per setting. Incomplete SRs are provisional.
 
 ## Bank capacity at R4

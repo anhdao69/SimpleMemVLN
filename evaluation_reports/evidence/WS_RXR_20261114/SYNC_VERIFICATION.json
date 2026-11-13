@@ -1,0 +1,106 @@
+{
+  "verified_at": "2026-11-13T17:56:10.849514+00:00",
+  "source_host": "ws_anhdh35",
+  "checks": [
+    {
+      "model": "R2B1200",
+      "episodes": 3669,
+      "successes": 2063,
+      "failures": 0,
+      "sr_percent": 56.22785500136277,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/S8N_R2B1200/episodes.jsonl",
+      "journal_sha256": "5cc0215a9218e76d7609b74e37dd9920aa001c4b51f2ba09db6777f1aa0a89bd",
+      "certificate_sha256": "d498451edc139cf598ce46ae4990b0d8584678c32186f9da625a08fbbcfe6d5b",
+      "episode_metrics_sha256": "ba982dc8356f95be47fd67b050a55391f935ae9d1b2fced12e112a09866be925"
+    },
+    {
+      "model": "R4B0",
+      "episodes": 3669,
+      "successes": 2018,
+      "failures": 0,
+      "sr_percent": 55.00136276914691,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/R4B0/episodes.jsonl",
+      "journal_sha256": "96c0eb95c15118bcd32b689401376aa8d056f561f7c4c9e5025b681fbae2e8a4",
+      "certificate_sha256": "b231b9f34120fd93b29a82519b1ccdcef7ee7829b0930089b363a56053c41801",
+      "episode_metrics_sha256": "87699ad9b17b29b51df347b271e739dd79615f1a3e4ebb4a2fb04638cd0c9d64"
+    },
+    {
+      "model": "R4B600",
+      "episodes": 3669,
+      "successes": 2138,
+      "failures": 0,
+      "sr_percent": 58.272008721722536,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/S8N_R4B600/episodes.jsonl",
+      "journal_sha256": "a52fc5f834fb7d95226e7c60a7fb9ee37568987ace54150d30f00d7f8ac0c345",
+      "certificate_sha256": "731292100255d7af40d85877b5546ffd052e5e67d51dd6d7172baaf0e7bad18d",
+      "episode_metrics_sha256": "1f46752a4ecf36f2af29c8b8a3f94bc4e214f50c8c753c7b1e729248645cffa6"
+    },
+    {
+      "model": "R4B1200 \u2014 S8N baseline",
+      "episodes": 3669,
+      "successes": 2076,
+      "failures": 1,
+      "sr_percent": 56.58217497955847,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/S8N/episodes.jsonl",
+      "journal_sha256": "71765ec1bdd5e176d3f4b28c8bff96e31a81389e06310bf9d4d4ffc71787f3a0",
+      "certificate_sha256": "3f1e22c8eda58a8b0a6e6d4f82864d63f21f52f3ba155f563a1cff6fe8b2b2cb",
+      "episode_metrics_sha256": "1d36af1d19904a0a2f5660c2b8f1320a169dd3f4ffcffdf5fda8c8517883a774"
+    },
+    {
+      "model": "R4B2400",
+      "episodes": 3669,
+      "successes": 2105,
+      "failures": 1,
+      "sr_percent": 57.37258108476424,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/S8N_R4B2400/episodes.jsonl",
+      "journal_sha256": "41924725e7016a63dcead55193f08135a988ffd9ff12f659e936d9a5e40500fc",
+      "certificate_sha256": "fb8094276798a9f1e903dd98fdcf0ec9dcfeca6d1f5a75c954aeff3df681b000",
+      "episode_metrics_sha256": "7b86d9dcdc1a6cf4727d83fece3f6378c324c4eeab7965daab5b0cd278084f7e"
+    },
+    {
+      "model": "R8B0",
+      "episodes": 3669,
+      "successes": 2029,
+      "failures": 0,
+      "sr_percent": 55.30117198146633,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/R8B0/episodes.jsonl",
+      "journal_sha256": "47e2a42425df0466b2dbdbdab5b1211b738d7326985736810713c83cd68d97e0",
+      "certificate_sha256": "466dfda8715df53b68523775d908900f8e350bf3c30f2cee278e8ee486debacd",
+      "episode_metrics_sha256": "c10f673a08a08c5a57c6946d97fdc181f8b6510e664dbcc73ba36db38889c01e"
+    },
+    {
+      "model": "R8B1200",
+      "episodes": 3669,
+      "successes": 2055,
+      "failures": 0,
+      "sr_percent": 56.00981193785772,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/S8N_R8B1200/episodes.jsonl",
+      "journal_sha256": "760da09330014ba9dd5ae9d028017b5a3dc5326f65a4d456d009a5dcb6baca72",
+      "certificate_sha256": "2c84ebcc0dd68e78e7df60576eee0ab2317fc77e081c95efdb7478bbf291b0ac",
+      "episode_metrics_sha256": "2631f6a921e9854621604d463e92b8684102b905e8a200b41779850aa6a7b617"
+    },
+    {
+      "model": "R12B0",
+      "episodes": 3669,
+      "successes": 2082,
+      "failures": 0,
+      "sr_percent": 56.74570727718724,
+      "journal_path": "/data14t/anhdh35/rxr99_reeval_20261113/combined/R12B0/episodes.jsonl",
+      "journal_sha256": "e59c42babec8652abdafa76c96a6ddf13f1df97831ff4973264e5ed0b611f7fd",
+      "certificate_sha256": "00d03ba809a205613aa304d363cc6183310c14a8d32c3047f89e45a60b60c7ea",
+      "episode_metrics_sha256": "19a747101915ded268ec0084a62765329d17accda0249fb6a436a07d692e883f"
+    },
+    {
+      "model": "S8N_DAGGER_SF_REMAINING",
+      "episodes": 3669,
+      "successes": 2464,
+      "failures": 0,
+      "sr_percent": 67.15726355955302,
+      "journal_path": "/data14t/anhdh35/s8n_stage2_remaining_rxr99_20261113/combined/episodes.jsonl",
+      "journal_sha256": "abe3b132fdc40b01fa7950ec0c9fa2cbddef428b6cb935350a2b7a24d4328811",
+      "certificate_sha256": "78a3e66e0c1fcba5e646f183a8a1ffc9631c21c8e2ebafb3c54fda4bd1bd7852",
+      "episode_metrics_sha256": "c1aac63bc7db25c2a80b7ff4cff72c7b98fb084af95d11932b8436974a3a1bd4"
+    }
+  ],
+  "scope": "Fresh full-journal SHA256, unique IDs, counts, failure-aware success rates; compact per-episode records exported. No model rerun or independent simulator/media audit."
+}

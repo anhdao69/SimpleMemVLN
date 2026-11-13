@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "verified_at": "2026-11-14T00:50:30+07:00",
+  "models": [
+    {
+      "model": "R4B0",
+      "rerun_episodes": 99,
+      "rerun_successes": 76,
+      "full_episodes": 3669,
+      "full_successes": 2018,
+      "sr_percent": 55.00136276914691,
+      "journal_sha256": "96c0eb95c15118bcd32b689401376aa8d056f561f7c4c9e5025b681fbae2e8a4",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N_R4B600",
+      "rerun_episodes": 99,
+      "rerun_successes": 74,
+      "full_episodes": 3669,
+      "full_successes": 2138,
+      "sr_percent": 58.27200872172254,
+      "journal_sha256": "a52fc5f834fb7d95226e7c60a7fb9ee37568987ace54150d30f00d7f8ac0c345",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N",
+      "rerun_episodes": 99,
+      "rerun_successes": 82,
+      "full_episodes": 3669,
+      "full_successes": 2076,
+      "sr_percent": 56.58217497955846,
+      "journal_sha256": "71765ec1bdd5e176d3f4b28c8bff96e31a81389e06310bf9d4d4ffc71787f3a0",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [
+        "8680"
+      ],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N_R4B2400",
+      "rerun_episodes": 99,
+      "rerun_successes": 80,
+      "full_episodes": 3669,
+      "full_successes": 2105,
+      "sr_percent": 57.37258108476424,
+      "journal_sha256": "41924725e7016a63dcead55193f08135a988ffd9ff12f659e936d9a5e40500fc",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [
+        "10866"
+      ],
+      "controls_exact": true
+    },
+    {
+      "model": "R8B0",
+      "rerun_episodes": 99,
+      "rerun_successes": 77,
+      "full_episodes": 3669,
+      "full_successes": 2029,
+      "sr_percent": 55.30117198146634,
+      "journal_sha256": "47e2a42425df0466b2dbdbdab5b1211b738d7326985736810713c83cd68d97e0",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N_R2B1200",
+      "rerun_episodes": 99,
+      "rerun_successes": 76,
+      "full_episodes": 3669,
+      "full_successes": 2063,
+      "sr_percent": 56.22785500136277,
+      "journal_sha256": "5cc0215a9218e76d7609b74e37dd9920aa001c4b51f2ba09db6777f1aa0a89bd",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N_R8B1200",
+      "rerun_episodes": 99,
+      "rerun_successes": 75,
+      "full_episodes": 3669,
+      "full_successes": 2055,
+      "sr_percent": 56.00981193785773,
+      "journal_sha256": "760da09330014ba9dd5ae9d028017b5a3dc5326f65a4d456d009a5dcb6baca72",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "R12B0",
+      "rerun_episodes": 99,
+      "rerun_successes": 77,
+      "full_episodes": 3669,
+      "full_successes": 2082,
+      "sr_percent": 56.74570727718724,
+      "journal_sha256": "e59c42babec8652abdafa76c96a6ddf13f1df97831ff4973264e5ed0b611f7fd",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    },
+    {
+      "model": "S8N_DAGGER_SF_REMAINING",
+      "rerun_episodes": 99,
+      "rerun_successes": 84,
+      "full_episodes": 3669,
+      "full_successes": 2464,
+      "sr_percent": 67.15726355955302,
+      "journal_sha256": "abe3b132fdc40b01fa7950ec0c9fa2cbddef428b6cb935350a2b7a24d4328811",
+      "preserved_episode_count": 3570,
+      "retained_failure_ids": [],
+      "controls_exact": true
+    }
+  ],
+  "rerun_episodes": 891,
+  "turn_degrees": 15,
+  "r2r_values_unchanged": true,
+  "historical_section_unchanged": true,
+  "markdown_csv_json_consistent": true,
+  "published_file_sha256": {
+    "S8N_R_B_ABLATION.md": "a54872b481c1a89bce0bfebb1dade7eae17d97158762bdef8b7137069732c496",
+    "ALL_RESULTS.md": "921c1a091deb35bbc65d57052545b4d3d9c4e6a66002ef2feba3103012a9c353",
+    "evidence/S8N_R_B_ABLATION_SR_20261113.csv": "8ae0426b6f59c6fe59289a1334ac7f82cabe9cc1fd0b13808b2d77c7199b189f",
+    "evidence/S8N_R_B_ABLATION_SR_20261113.json": "20e992252277bfa7c2cccbea9a9e6b357748f7312b972d8aa5d2fa14b5dce051",
+    "S8N_STAGE2_REMAINING_RXR.md": "7aceee8b30899e19cf62c9a1d8f0e323dbc481491c30596df3cf13601c91876f",
+    "evidence/S8N_STAGE2_REMAINING_RXR_SR_20261113.csv": "805d7e0957fa54806261f11ce7445208278c5311b23c67fd56e817a81a6abc29",
+    "evidence/S8N_STAGE2_REMAINING_RXR_SR_20261113.json": "85235dee22b3726d00fb12405279a4b459053ab08f92064afc35c65a3405f369"
+  },
+  "publication_times": [
+    "2026-11-14T00:29:41+07:00",
+    "2026-11-14T00:43:29+07:00"
+  ],
+  "verification": "Recomputed success counts from all9 full journals; checked original and rerun hashes, exact fixed membership, preserved3570 original row bytes per model, serial replay controls, actual successful exits and all report cells"
+}

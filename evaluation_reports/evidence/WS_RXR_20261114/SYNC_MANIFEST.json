@@ -1,0 +1,13 @@
+{
+  "base_commit": "6158d246df982c7cc1fe1b77483b51db3054f6cd",
+  "source_snapshot_sha256": "c60a3a18259a3089e7697ca12ba5a89590d94d3c28792fbe6ecadb520136ddd8",
+  "historical_R2R_section_preserved": true,
+  "r2r_evidence_unchanged": true,
+  "prior_report_archive": "archive/WS_RXR_20261114/prior_main",
+  "source_markdown_archive": "archive/WS_RXR_20261114/server_original",
+  "published_report_sha256": {
+    "ALL_RESULTS.md": "d143ea28a0ce9e5f10bec4740b0239780223370587975d6e0d65d47a26f899ab",
+    "S8N_R_B_ABLATION.md": "668905793596bbe07899f6316c4c60176f8f3e9f664a4919e7beaf84b11ad508",
+    "S8N_STAGE2_REMAINING_RXR.md": "b3fd527b87d0caf14e3c7e82d7b03ac1e9c02d8bdebe62ffdd3fc9eae517b708"
+  }
+}

@@ -2,18 +2,18 @@
 
 ## Trained R/B ablations — final SR
 
-Updated: **2026-11-13**. Final observed success rates for eight trained R/B configurations, including the original S8N baseline. Every configuration has complete R2R and RxR results; R12B0's resumed R2R evaluation has finished.
+Updated: **2026-11-14**. Final observed success rates for eight trained R/B configurations, including the original S8N baseline. Every configuration has complete R2R and RxR results; R12B0's resumed R2R evaluation has finished.
 
 | Model | SR R2R (%) | SR RxR (%) |
 |---|---:|---:|
-| R2B1200 | 49.21 | 54.16 |
-| R4B0 | 48.72 | 52.93 |
-| R4B600 | 50.84 | 56.26 |
-| R4B1200 — S8N baseline | 52.42 | 54.35 |
-| R4B2400 | 51.33 | 55.19 |
-| R8B0 | 48.99 | 53.20 |
-| R8B1200 | 50.95 | 53.97 |
-| R12B0 | 51.22 | 54.65 |
+| R2B1200 | 49.21 | 56.23 |
+| R4B0 | 48.72 | 55.00 |
+| R4B600 | 50.84 | 58.27 |
+| R4B1200 — S8N baseline | 52.42 | 56.58 |
+| R4B2400 | 51.33 | 57.37 |
+| R8B0 | 48.99 | 55.30 |
+| R8B1200 | 50.95 | 56.01 |
+| R12B0 | 51.22 | 56.75 |
 
 R2R uses **1,839 val_unseen episodes**. RxR uses **3,669 English-guide val_unseen episodes** (en-US and en-IN) with **15° turns**. All episodes remain in the denominators; failed episodes receive zero success credit. SR is shown as a percentage rounded to two decimal places.
 
@@ -21,7 +21,11 @@ R counts recent observation groups including the current observation. B is the e
 
 [SR table CSV](evidence/S8N_R_B_ABLATION_SR_20261113.csv) · [Full-precision counts and source evidence](evidence/S8N_R_B_ABLATION_SR_20261113.json). The evidence index records success counts, full episode counts, journal digests, source-result paths, and the completed R12B0 recovery certificate.
 
-[Dedicated trained-ablation report](S8N_R_B_ABLATION.md). [Sync verification](evidence/S8N_R_B_ABLATION_SYNC_VERIFICATION_20261113.json) records source hashes, fresh journal checks and the certificate-only verification limits.
+The RxR scores include a fixed **99-episode geometry correction** per model, combined with 3,570 preserved original episodes. R2R is unchanged; failed episodes retain zero credit in the full denominator. See the [dedicated report and correction provenance](S8N_R_B_ABLATION.md#rxr-update-provenance), [fresh journal verification](evidence/WS_RXR_20261114/SYNC_VERIFICATION.json), and [archived original scores](archive/WS_RXR_20261114/prior_main/S8N_R_B_ABLATION.md).
+
+## S8N Stage2 DAgger Remaining — RxR
+
+**67.16% SR (2,464 / 3,669)** on English-guide val_unseen, 15° turns. The combined result uses the same fixed 99-episode geometry correction. [Report and original result](S8N_STAGE2_REMAINING_RXR.md) · [CSV](evidence/S8N_STAGE2_REMAINING_RXR_SR_20261113.csv) · [Source evidence](evidence/S8N_STAGE2_REMAINING_RXR_SR_20261113.json).
 
 ## Historical R2R index through 2026-11-01
 
