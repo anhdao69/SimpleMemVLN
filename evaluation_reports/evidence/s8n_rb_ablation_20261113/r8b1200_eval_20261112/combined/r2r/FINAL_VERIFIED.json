@@ -1,0 +1,150 @@
+{
+  "passed": true,
+  "arm": "S8N_R8B1200",
+  "dataset": "r2r",
+  "dataset_complete": true,
+  "episodes": 1839,
+  "verified_unix": 1794513082.432286,
+  "evidence": "/data14t/anhdh35/r8b1200_eval_20261112/results/r2r",
+  "job_template": "/data14t/anhdh35/r8b1200_eval_20261112/jobs/r2r",
+  "node": "local",
+  "workers": 6,
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+  "weights_sha256": "467bcef7dc5c87485a9c26ac61d0b6ae17c80281ff1baca7f5a3f0ff49375f54",
+  "hf_revision": "ef0f7912625f859a98fc42fbee27c854034ff191",
+  "source_identity": {
+    "source_branch": "m5_s8n_rb_ablation",
+    "source_commit": "b3a1f331a7ac33c02f0a73e5c4db04a9cc4f04da",
+    "training_source_commit": "dabf4ad085d20512640fe0ba3bda72ad4724dc76",
+    "hf_repo": "anhdao69/stage1_S8N",
+    "hf_revision": "ef0f7912625f859a98fc42fbee27c854034ff191",
+    "inference_overrides": [],
+    "reviewed_serving_contract": true,
+    "metadata_only_patch": {
+      "file": "src/qwen_vl/eval/habitat_r2r.py",
+      "before_sha256": "3494770ee7080f6e49df8f6bf1a2137ed5a66a595eb530675ebacd972a32f19d",
+      "after_sha256": "5af2f13f37da6347ff7cd9fd04e22c9423495cbd14582e9eaa8ae8968e6edd7d",
+      "purpose": "Accurately label RxR; inference/scoring unchanged"
+    },
+    "arm": "S8N_R8B1200"
+  },
+  "operations_manifest_sha256": "2d85ac43232c37c61a25930802143cf539f677bf8c91f1f449d3ae0da8862fa3",
+  "journal_sha256": "e1ab856f3410143bfaf27c167a79edee3aba85ae58e617e45b1cfa0d4ab545d0",
+  "summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.5095160413268081,
+    "spl": 0.46915708325964744,
+    "navigation_error": 5.843196685567484,
+    "navigation_error_coverage": 1839,
+    "navigation_error_undefined": 0,
+    "trajectory_length": 9.740246586063929,
+    "trajectory_length_coverage": 1839,
+    "trajectory_length_undefined": 0,
+    "oracle_success": 0.5731375747688962,
+    "oracle_success_coverage": 1839,
+    "oracle_success_undefined": 0,
+    "ndtw": null,
+    "ndtw_coverage": 0,
+    "ndtw_undefined": 1839,
+    "forced_stops": 128,
+    "mean_episode_steps": 92.9679173463839,
+    "invalid_responses": 0,
+    "predicted_action_counts": {
+      "1": 126443,
+      "3": 19966,
+      "2": 22848,
+      "0": 1711
+    },
+    "executed_action_counts": {
+      "1": 126326,
+      "3": 19962,
+      "2": 22841,
+      "0": 1839
+    },
+    "predicted_stops": 1711,
+    "failure_reasons": {},
+    "model_latency_p50_seconds": 0.3240375655586831,
+    "model_latency_mean_seconds": 0.3136308582974304,
+    "model_latency_p95_seconds": 0.33149424148723483,
+    "transport_and_model_p50_seconds": 0.33149518741993234,
+    "transport_and_model_mean_seconds": 0.32107158122379714,
+    "transport_and_model_p95_seconds": 0.33932395347510463,
+    "environment_p50_seconds": 0.004656478005927056,
+    "environment_mean_seconds": 0.004461289467710198,
+    "environment_p95_seconds": 0.006277894362574443,
+    "peak_kv_tokens": 3918,
+    "peak_allocated_gib": 8.713696479797363,
+    "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter"
+  },
+  "initially_unreachable_episode_ids": [],
+  "geometry_failure_ids": [],
+  "invalid_response_ids": [],
+  "invalid_geometry_overlap_ids": [],
+  "invalid_geometry_overlap_count": 0,
+  "same_host_serial_mps_full_controls_exact": true,
+  "all_shards_identical_to_full": true,
+  "actual_pipeline_exit": {
+    "node": "local",
+    "pid": 4177234,
+    "monitor_pid": 4177233,
+    "root": "/data14t/anhdh35/r8b1200_eval_20261112/jobs/r2r",
+    "launch_token": "6f9b94c8b1f94a14b3eeaf94ef2163e7",
+    "launched_unix": 1794503129.2475085,
+    "exit_code": 0,
+    "completed_unix": 1794513045.565021
+  },
+  "original_BF16_replay_tolerances_preserved": true,
+  "plan_replay": [
+    {
+      "steps": 64,
+      "response_tokens": 191,
+      "raw_argmax_flips": 1,
+      "outcome": {
+        "action_name": "TURN_RIGHT",
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ]
+      },
+      "allclose": true,
+      "rms": 0.024707093834877014,
+      "max_abs": 0.3125,
+      "peak_kv": 4028,
+      "mean_overlap": 0.9977678571428571,
+      "min_overlap": 0.75,
+      "plan_comparisons": 512,
+      "plan_id_mismatches": 4,
+      "evolved_reset_bitwise": true,
+      "retry_state_bitwise": true,
+      "greedy_reset_bitwise": true
+    },
+    {
+      "steps": 128,
+      "response_tokens": 383,
+      "raw_argmax_flips": 1,
+      "outcome": {
+        "action_name": "TURN_RIGHT",
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ]
+      },
+      "allclose": true,
+      "rms": 0.02366168051958084,
+      "max_abs": 0.375,
+      "peak_kv": 4028,
+      "mean_overlap": 0.9997395833333333,
+      "min_overlap": 0.75,
+      "plan_comparisons": 1024,
+      "plan_id_mismatches": 1,
+      "evolved_reset_bitwise": true,
+      "retry_state_bitwise": true,
+      "greedy_reset_bitwise": true
+    }
+  ],
+  "unexpected_runtime_failures": 0,
+  "combined_journal_sha256": "e1ab856f3410143bfaf27c167a79edee3aba85ae58e617e45b1cfa0d4ab545d0"
+}
