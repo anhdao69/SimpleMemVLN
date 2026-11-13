@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "review_type": "Completed-result audit with disclosed model-output failure retained",
+  "checked_unix": 1794097232.6849432,
+  "dataset": "RxR English-guide val_unseen",
+  "turn_degrees": 15,
+  "episodes_per_model": 3669,
+  "models": {
+    "S8N": {
+      "episodes": 3669,
+      "successes": 1994,
+      "sr_percent": 54.34723357863178,
+      "spl_percent": 45.43034449559415,
+      "ndtw_percent": 62.81917686583734,
+      "geometry_metric_failures": 99,
+      "invalid_model_responses": [
+        "8680"
+      ],
+      "unexplained_failures": 0,
+      "journal_sha256": "5c2b4e1adbf62700479d8623a7046b5a041ad0057979f62670393943654591be"
+    },
+    "S8N_DAGGER_SF_REMAINING": {
+      "episodes": 3669,
+      "successes": 2380,
+      "sr_percent": 64.86781139275007,
+      "spl_percent": 52.86414242145735,
+      "ndtw_percent": 64.88181681168936,
+      "geometry_metric_failures": 99,
+      "invalid_model_responses": [],
+      "unexplained_failures": 0,
+      "journal_sha256": "bf579bc0e36782e776a504770d1fa1bb8ccd0867c278a00b6f0543ce052867d1"
+    }
+  },
+  "paired_successes": {
+    "both": 1609,
+    "original_only": 385,
+    "dagger_only": 771,
+    "neither": 904
+  },
+  "identical_protocol_and_coverage": true,
+  "parallel_smoke_replay_exact": true,
+  "official_results_modified": false,
+  "original_final_gate": {
+    "phase": "failed",
+    "time": 1794069692.4863467,
+    "pid": 164226,
+    "error": "AssertionError('Unexpected evaluation error')"
+  },
+  "failure_policy": "All 3669 retained per model; zero SR/SPL for 99 geometry failures and the one original S8N invalid response; finite nDTW retained",
+  "limitation": "Original automatic zero-unexpected-failure gate remains failed; this separate review validates scoring and coverage with the disclosed invalid-response episode unchanged."
+}
