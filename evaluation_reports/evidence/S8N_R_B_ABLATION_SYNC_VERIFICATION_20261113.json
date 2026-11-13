@@ -1,0 +1,343 @@
+{
+  "checked_at_utc": "2026-11-13T14:22:49.981851+00:00",
+  "source_host": "ws_anhdh35",
+  "mode": "Read-only SHA-256, complete and unique episode IDs, same-dataset panel equality, SR recomputed with failed episodes retained in denominator",
+  "results": [
+    {
+      "model": "R2B1200",
+      "dataset": "r2r",
+      "source_certificate_sha256": "82c116eb6fefe65ee9f142ca9764b1cd20efed75d214f189e38b3adecd28e270",
+      "expected_journal_sha256": "e37910af0b9ea1186cfd31b0949bf1ae631a197b87d4337478226c81bfafa372",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r2b1200_eval_20261112/combined/r2r/episodes.jsonl",
+      "journal_sha256": "e37910af0b9ea1186cfd31b0949bf1ae631a197b87d4337478226c81bfafa372",
+      "episodes": 1839,
+      "successes": 905,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 49.21152800435019
+    },
+    {
+      "model": "R2B1200",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "0abe8f2fcd8ba9e5ddbe40d1184513cf72a6177766b4225bc0925288cd58dee0",
+      "expected_journal_sha256": "1a19aaa1af19b9ae1e7f0c0c47fc4a4b75c41db0bece694c2e810c2cc662c526",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r2b1200_eval_20261112/combined/rxr15/episodes.jsonl",
+      "journal_sha256": "1a19aaa1af19b9ae1e7f0c0c47fc4a4b75c41db0bece694c2e810c2cc662c526",
+      "episodes": 3669,
+      "successes": 1987,
+      "failed_episodes_retained": 99,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 54.15644589806487
+    },
+    {
+      "model": "R4B0",
+      "dataset": "r2r",
+      "source_certificate_sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87",
+      "expected_journal_sha256": "381460e8034d1e79088f5cc787f9a6c7d58a12b448e0681d29400fb6fdb31c63",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/m5_r4b0_trained_epoch1/evaluation/results/full/R4B0_trained_s429/episodes.jsonl",
+      "journal_sha256": "381460e8034d1e79088f5cc787f9a6c7d58a12b448e0681d29400fb6fdb31c63",
+      "episodes": 1839,
+      "successes": 896,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 48.72213159325721
+    },
+    {
+      "model": "R4B0",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "633c7abc5cbbf9e1263f6d33cc232bfb3151363ff47d03416734ca8abd4d03f2",
+      "expected_journal_sha256": "1242f0044eb73aba022352b1befa47a2584479e7e34fdac0d799954bdc5bc01c",
+      "certificate_verified": true,
+      "journal_verified": false,
+      "limitation": "Full episode journal not present at the certificate location on ws_anhdh35; verified saved certificate only."
+    },
+    {
+      "model": "R4B600",
+      "dataset": "r2r",
+      "source_certificate_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+      "expected_journal_sha256": "48b985cfbfb37acbd0269e7c655e3c42ea58af3ebb93ee9b4fa6bc012cfc76e8",
+      "certificate_verified": true,
+      "journal_verified": false,
+      "limitation": "Full episode journal not present at the certificate location on ws_anhdh35; verified saved certificate only."
+    },
+    {
+      "model": "R4B600",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+      "expected_journal_sha256": "300044c7dd6e19efa3c2cbe2e50bedbad1718e361a977dd0e85cb6ab03c02205",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/S8N_R4B600/rxr15/full/episodes.jsonl",
+      "journal_sha256": "300044c7dd6e19efa3c2cbe2e50bedbad1718e361a977dd0e85cb6ab03c02205",
+      "episodes": 3669,
+      "successes": 2064,
+      "failed_episodes_retained": 99,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 56.2551103843009
+    },
+    {
+      "model": "R4B1200 \u2014 S8N baseline",
+      "dataset": "r2r",
+      "source_certificate_sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87",
+      "expected_journal_sha256": "2249dacc332f3d31f3aaeb6c30b9d367439903474d5ee09b8163a84325a9b487",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/m5_s8n_epoch1/evaluation/results/full/S8N_s429/episodes.jsonl",
+      "journal_sha256": "2249dacc332f3d31f3aaeb6c30b9d367439903474d5ee09b8163a84325a9b487",
+      "episodes": 1839,
+      "successes": 964,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 52.41979336595976
+    },
+    {
+      "model": "R4B1200 \u2014 S8N baseline",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "a8eb9f02c80135a2a83939daa47a1875825c95fdac34964077c3e61a36815f51",
+      "expected_journal_sha256": "5c2b4e1adbf62700479d8623a7046b5a041ad0057979f62670393943654591be",
+      "certificate_verified": true,
+      "journal_verified": false,
+      "limitation": "Full episode journal not present at the certificate location on ws_anhdh35; verified saved certificate only."
+    },
+    {
+      "model": "R4B2400",
+      "dataset": "r2r",
+      "source_certificate_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+      "expected_journal_sha256": "b8325037e53549f63f3385631a388c851957bfc3a25b5f0c56c4630f9068a217",
+      "certificate_verified": true,
+      "journal_verified": false,
+      "limitation": "Full episode journal not present at the certificate location on ws_anhdh35; verified saved certificate only."
+    },
+    {
+      "model": "R4B2400",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+      "expected_journal_sha256": "0f03e81b84dd15e8b9744dd755d0236ec4befe35e49384ed8ddfcc13690c6f11",
+      "certificate_verified": true,
+      "journal_verified": false,
+      "limitation": "Full episode journal not present at the certificate location on ws_anhdh35; verified saved certificate only."
+    },
+    {
+      "model": "R8B0",
+      "dataset": "r2r",
+      "source_certificate_sha256": "35c30866268c00496c75235bac17a924ed689bf3e7e8c2c1f101354c9f60f264",
+      "expected_journal_sha256": "fd98d3dfce18393829ba3a20c74ff4829402c64dba8326963db2774af8ba6303",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/r2r/episodes.jsonl",
+      "journal_sha256": "fd98d3dfce18393829ba3a20c74ff4829402c64dba8326963db2774af8ba6303",
+      "episodes": 1839,
+      "successes": 901,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 48.99401848830887
+    },
+    {
+      "model": "R8B0",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "968f9d5c5e0fb1856b751e9658dbbb2e7d503f971b2160b8c9cbe0991fc394f9",
+      "expected_journal_sha256": "fed5c378f43ca41ed77c9209f4ba5c9bae61ea1b833fa7f0d952eacd464e5dea",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/rxr15/episodes.jsonl",
+      "journal_sha256": "fed5c378f43ca41ed77c9209f4ba5c9bae61ea1b833fa7f0d952eacd464e5dea",
+      "episodes": 3669,
+      "successes": 1952,
+      "failed_episodes_retained": 99,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 53.202507495230314
+    },
+    {
+      "model": "R8B1200",
+      "dataset": "r2r",
+      "source_certificate_sha256": "d180e1f2f7bd65796730be14be486835f64e12647bcbdfec3ed2d8e425ce9ab0",
+      "expected_journal_sha256": "e1ab856f3410143bfaf27c167a79edee3aba85ae58e617e45b1cfa0d4ab545d0",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r8b1200_eval_20261112/combined/r2r/episodes.jsonl",
+      "journal_sha256": "e1ab856f3410143bfaf27c167a79edee3aba85ae58e617e45b1cfa0d4ab545d0",
+      "episodes": 1839,
+      "successes": 937,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 50.95160413268081
+    },
+    {
+      "model": "R8B1200",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "c8cc2cca954c3e3be68421daa878e0d53ac8e1a2910e23a8c37230c3450ffad9",
+      "expected_journal_sha256": "4cc479d622b4b2794066b7065523e659c28e64612283b16567a611da7ea579ba",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r8b1200_rxr_accel_20261113/combined/rxr15/episodes.jsonl",
+      "journal_sha256": "4cc479d622b4b2794066b7065523e659c28e64612283b16567a611da7ea579ba",
+      "episodes": 3669,
+      "successes": 1980,
+      "failed_episodes_retained": 99,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 53.96565821749796
+    },
+    {
+      "model": "R12B0",
+      "dataset": "r2r",
+      "source_certificate_sha256": "d163aa82852bd64a734564c42c700b44c0e75ab5e194eedae7d31182a4b0223f",
+      "expected_journal_sha256": "eb1620b5e49ab7153d1b6e85da2a1e57dd6beba2eb7131b451a33857d18356fa",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r12b0_eval_20261112/combined/r2r/episodes.jsonl",
+      "journal_sha256": "eb1620b5e49ab7153d1b6e85da2a1e57dd6beba2eb7131b451a33857d18356fa",
+      "episodes": 1839,
+      "successes": 942,
+      "failed_episodes_retained": 0,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 51.22349102773246
+    },
+    {
+      "model": "R12B0",
+      "dataset": "rxr15",
+      "source_certificate_sha256": "b5ee9d9e8a2fd72bfc2f90c81b2b15a848ec7c2a4ed5d08b56ab80afaec74b4a",
+      "expected_journal_sha256": "cf6f1a73e49ccfe845cfdb64f70ba339c0b6a85cc7b5de0f46b49118e26bbb0e",
+      "certificate_verified": true,
+      "journal_verified": true,
+      "journal_path": "/data14t/anhdh35/r12b0_eval_20261112/combined/rxr15/episodes.jsonl",
+      "journal_sha256": "cf6f1a73e49ccfe845cfdb64f70ba339c0b6a85cc7b5de0f46b49118e26bbb0e",
+      "episodes": 3669,
+      "successes": 2005,
+      "failed_episodes_retained": 99,
+      "unique_ids": true,
+      "panel_matches_other_verified_runs": true,
+      "sr_percent": 54.64704279095122
+    }
+  ],
+  "errors": [],
+  "source_report_files": [
+    {
+      "path": "evaluation_reports/ALL_RESULTS.md",
+      "sha256": "96684c6f5f0dd90098e006efcb33158f279d384e7b22cd3fa046df85694e5bed",
+      "size": 10361
+    },
+    {
+      "path": "evaluation_reports/S8N_R_B_ABLATION.md",
+      "sha256": "793513229a3ba6eea053a14c28546a45e36a89152c3c2d1fef0ec69bb40bd41e",
+      "size": 1373
+    },
+    {
+      "path": "evaluation_reports/evidence/S8N_R_B_ABLATION_SR_20261113.json",
+      "sha256": "ff16dcff8ecf91a9f05b169e9aba7f22774b8de3dc4f57c220d5c02fe97836ec",
+      "size": 10492
+    },
+    {
+      "path": "evaluation_reports/evidence/S8N_R_B_ABLATION_SR_20261113.csv",
+      "sha256": "206202b10cba56cb375cb0fe16c1f4bee0f9fb8d26ff3c66c646ae200d91312c",
+      "size": 196
+    }
+  ],
+  "source_repository_head": "92ea33d15b775a2fba45c5dd047f5e2eab8df235",
+  "historical_index_preserved_from": "e9606d60fb21c543da1fb12c6e21a0d930dd8410",
+  "source_certificates": [
+    {
+      "source_file": "/data14t/anhdh35/r12b0_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r12b0_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "sha256": "d163aa82852bd64a734564c42c700b44c0e75ab5e194eedae7d31182a4b0223f",
+      "bytes": 5003
+    },
+    {
+      "source_file": "/data14t/anhdh35/r12b0_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r12b0_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "sha256": "b5ee9d9e8a2fd72bfc2f90c81b2b15a848ec7c2a4ed5d08b56ab80afaec74b4a",
+      "bytes": 7466
+    },
+    {
+      "source_file": "/data14t/anhdh35/r12b0_eval_20261112/recovery_20261113/RECOVERY_FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r12b0_eval_20261112/recovery_20261113/RECOVERY_FINAL_VERIFIED.json",
+      "sha256": "e9bae27e1b2f9d05ed0d159aa7c62732adccd5d5b22eb34621799c10eba194b3",
+      "bytes": 5155
+    },
+    {
+      "source_file": "/data14t/anhdh35/r2b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r2b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "sha256": "82c116eb6fefe65ee9f142ca9764b1cd20efed75d214f189e38b3adecd28e270",
+      "bytes": 5083
+    },
+    {
+      "source_file": "/data14t/anhdh35/r2b1200_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r2b1200_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "sha256": "0abe8f2fcd8ba9e5ddbe40d1184513cf72a6177766b4225bc0925288cd58dee0",
+      "bytes": 7526
+    },
+    {
+      "source_file": "/data14t/anhdh35/r4b0_rxr15_eval_20261108/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r4b0_rxr15_eval_20261108/FINAL_VERIFIED.json",
+      "sha256": "633c7abc5cbbf9e1263f6d33cc232bfb3151363ff47d03416734ca8abd4d03f2",
+      "bytes": 625
+    },
+    {
+      "source_file": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r8b0_rxr_resume_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "sha256": "35c30866268c00496c75235bac17a924ed689bf3e7e8c2c1f101354c9f60f264",
+      "bytes": 805
+    },
+    {
+      "source_file": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r8b0_rxr_resume_20261112/combined/rxr15/FINAL_VERIFIED.json",
+      "sha256": "968f9d5c5e0fb1856b751e9658dbbb2e7d503f971b2160b8c9cbe0991fc394f9",
+      "bytes": 5996
+    },
+    {
+      "source_file": "/data14t/anhdh35/r8b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r8b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+      "sha256": "d180e1f2f7bd65796730be14be486835f64e12647bcbdfec3ed2d8e425ce9ab0",
+      "bytes": 5072
+    },
+    {
+      "source_file": "/data14t/anhdh35/r8b1200_rxr_accel_20261113/combined/rxr15/FINAL_VERIFIED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/r8b1200_rxr_accel_20261113/combined/rxr15/FINAL_VERIFIED.json",
+      "sha256": "c8cc2cca954c3e3be68421daa878e0d53ac8e1a2910e23a8c37230c3450ffad9",
+      "bytes": 9524
+    },
+    {
+      "source_file": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+      "sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+      "bytes": 4795
+    },
+    {
+      "source_file": "/data14t/anhdh35/s8n_rxr15_eval_20261106/FINAL_REVIEWED.json",
+      "local_file": "evaluation_reports/evidence/s8n_rb_ablation_20261113/s8n_rxr15_eval_20261106/FINAL_REVIEWED.json",
+      "sha256": "a8eb9f02c80135a2a83939daa47a1875825c95fdac34964077c3e61a36815f51",
+      "bytes": 1826
+    },
+    {
+      "source_file": "/storage/anhdh35/SimpleMemVLN/evaluation_reports/evidence/ALL_RESULTS_20261027.json",
+      "local_file": "evaluation_reports/evidence/ALL_RESULTS_20261027.json",
+      "sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87",
+      "bytes": 8713343
+    }
+  ],
+  "scope": "Reports and evidence only. No evaluation rerun, checkpoint transfer, source-code merge, or server working-tree changes. Saved certificate checks do not replace native numerical/replay qualification; existing diagnostic and failure labels are preserved.",
+  "table_validation": {
+    "models": 8,
+    "dataset_results": 16,
+    "csv_json_and_markdown_match": true,
+    "historical_r2r_rows_preserved": 46,
+    "r12b0_recovery_preserved": 1485,
+    "r12b0_recovery_new": 354,
+    "r12b0_resumed_pipeline_exit_code": 0
+  }
+}
