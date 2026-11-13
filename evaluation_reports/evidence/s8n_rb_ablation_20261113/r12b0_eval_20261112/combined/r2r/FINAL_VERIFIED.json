@@ -1,0 +1,148 @@
+{
+  "passed": true,
+  "arm": "R12B0",
+  "dataset": "r2r",
+  "dataset_complete": true,
+  "episodes": 1839,
+  "verified_unix": 1794551430.0900362,
+  "evidence": "/data14t/anhdh35/r12b0_eval_20261112/results/r2r",
+  "job_template": "/data14t/anhdh35/r12b0_eval_20261112/jobs/r2r",
+  "node": "alinh",
+  "workers": 3,
+  "gpu": "NVIDIA RTX PRO 5000 Blackwell",
+  "weights_sha256": "477969654368f8e8cea91da9105485cf4560fe3168eb4e833495c6b38cba5b27",
+  "hf_revision": "dfeed95d96c9d884c08d12068452e1d752d86669",
+  "source_identity": {
+    "source_branch": "m5_s8n_rb_ablation",
+    "source_commit": "b3a1f331a7ac33c02f0a73e5c4db04a9cc4f04da",
+    "training_source_commit": "dabf4ad085d20512640fe0ba3bda72ad4724dc76",
+    "hf_repo": "anhdao69/stage1_S8N",
+    "hf_revision": "dfeed95d96c9d884c08d12068452e1d752d86669",
+    "inference_overrides": [],
+    "reviewed_serving_contract": true,
+    "metadata_only_patch": {
+      "file": "src/qwen_vl/eval/habitat_r2r.py",
+      "before_sha256": "3494770ee7080f6e49df8f6bf1a2137ed5a66a595eb530675ebacd972a32f19d",
+      "after_sha256": "5af2f13f37da6347ff7cd9fd04e22c9423495cbd14582e9eaa8ae8968e6edd7d",
+      "purpose": "Accurately label RxR; inference/scoring unchanged"
+    },
+    "arm": "R12B0"
+  },
+  "operations_manifest_sha256": "8caadb55c01bc27ad661b98ae1c67f91971f2c43f8f29e09977096673df12559",
+  "journal_sha256": "eb1620b5e49ab7153d1b6e85da2a1e57dd6beba2eb7131b451a33857d18356fa",
+  "summary": {
+    "episodes": 1839,
+    "failures": 0,
+    "sr": 0.5122349102773246,
+    "spl": 0.4743321299955042,
+    "navigation_error": 5.829342271607975,
+    "navigation_error_coverage": 1839,
+    "navigation_error_undefined": 0,
+    "trajectory_length": 9.544128383471747,
+    "trajectory_length_coverage": 1839,
+    "trajectory_length_undefined": 0,
+    "oracle_success": 0.5807504078303426,
+    "oracle_success_coverage": 1839,
+    "oracle_success_undefined": 0,
+    "ndtw": null,
+    "ndtw_coverage": 0,
+    "ndtw_undefined": 1839,
+    "forced_stops": 154,
+    "mean_episode_steps": 98.2463295269168,
+    "invalid_responses": 0,
+    "predicted_action_counts": {
+      "1": 138840,
+      "0": 1685,
+      "2": 20781,
+      "3": 19369
+    },
+    "executed_action_counts": {
+      "1": 138697,
+      "0": 1839,
+      "2": 20775,
+      "3": 19364
+    },
+    "predicted_stops": 1685,
+    "failure_reasons": {},
+    "model_latency_p50_seconds": 0.21388717205263674,
+    "model_latency_mean_seconds": 0.2026396712437067,
+    "model_latency_p95_seconds": 0.23472791948588564,
+    "transport_and_model_p50_seconds": 0.22030528692994267,
+    "transport_and_model_mean_seconds": 0.20891570204262525,
+    "transport_and_model_p95_seconds": 0.2411944800755009,
+    "environment_p50_seconds": 0.004408241016790271,
+    "environment_mean_seconds": 0.004165408864663899,
+    "environment_p95_seconds": 0.0058568372856825585,
+    "peak_kv_tokens": 3990,
+    "peak_allocated_gib": 8.694268703460693,
+    "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter"
+  },
+  "initially_unreachable_episode_ids": [],
+  "geometry_failure_ids": [],
+  "invalid_response_ids": [],
+  "invalid_geometry_overlap_ids": [],
+  "invalid_geometry_overlap_count": 0,
+  "same_host_serial_mps_full_controls_exact": true,
+  "all_shards_identical_to_full": true,
+  "actual_pipeline_exit": {
+    "node": "alinh",
+    "pid": 23152,
+    "monitor_pid": 23151,
+    "root": "/media/newdisk/vm-perception-ws/SimpleMemVLN/evaluation/r12b0_eval_20261112/jobs/r2r",
+    "launch_token": "9d6064d7551a4fe7af7c450d70559eff",
+    "launched_unix": 1794548880.880651,
+    "exit_code": 0,
+    "completed_unix": 1794551170.5090232
+  },
+  "original_BF16_replay_tolerances_preserved": true,
+  "plan_replay": [
+    {
+      "steps": 64,
+      "response_tokens": 191,
+      "raw_argmax_flips": 0,
+      "outcome": {
+        "action_name": "TURN_RIGHT",
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ]
+      },
+      "allclose": true,
+      "rms": 0.021911509335041046,
+      "max_abs": 0.5,
+      "peak_kv": 4100,
+      "empty_bank_comparisons": 512,
+      "plan_id_mismatches": 0,
+      "empty_offline_plans": true,
+      "evolved_reset_bitwise": true,
+      "retry_state_bitwise": true,
+      "greedy_reset_bitwise": true
+    },
+    {
+      "steps": 128,
+      "response_tokens": 383,
+      "raw_argmax_flips": 1,
+      "outcome": {
+        "action_name": "TURN_RIGHT",
+        "response_token_ids": [
+          15834,
+          20549,
+          248046
+        ]
+      },
+      "allclose": true,
+      "rms": 0.02114584483206272,
+      "max_abs": 0.5,
+      "peak_kv": 4100,
+      "empty_bank_comparisons": 1024,
+      "plan_id_mismatches": 0,
+      "empty_offline_plans": true,
+      "evolved_reset_bitwise": true,
+      "retry_state_bitwise": true,
+      "greedy_reset_bitwise": true
+    }
+  ],
+  "unexpected_runtime_failures": 0,
+  "combined_journal_sha256": "eb1620b5e49ab7153d1b6e85da2a1e57dd6beba2eb7131b451a33857d18356fa"
+}
