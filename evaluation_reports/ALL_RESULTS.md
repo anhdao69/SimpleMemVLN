@@ -1,4 +1,29 @@
-# All R2R evaluation results
+# Evaluation results
+
+## Trained R/B ablations — final SR
+
+Updated: **2026-11-13**. Final observed success rates for eight trained R/B configurations, including the original S8N baseline. Every configuration has complete R2R and RxR results; R12B0's resumed R2R evaluation has finished.
+
+| Model | SR R2R (%) | SR RxR (%) |
+|---|---:|---:|
+| R2B1200 | 49.21 | 54.16 |
+| R4B0 | 48.72 | 52.93 |
+| R4B600 | 50.84 | 56.26 |
+| R4B1200 — S8N baseline | 52.42 | 54.35 |
+| R4B2400 | 51.33 | 55.19 |
+| R8B0 | 48.99 | 53.20 |
+| R8B1200 | 50.95 | 53.97 |
+| R12B0 | 51.22 | 54.65 |
+
+R2R uses **1,839 val_unseen episodes**. RxR uses **3,669 English-guide val_unseen episodes** (en-US and en-IN) with **15° turns**. All episodes remain in the denominators; failed episodes receive zero success credit. SR is shown as a percentage rounded to two decimal places.
+
+R counts recent observation groups including the current observation. B is the episodic visual-token budget. R4B1200 is the original S8N baseline. The earlier [inference-only budget sweep](S8N_R_B_SWEEP.md) has its own results and evidence.
+
+[SR table CSV](evidence/S8N_R_B_ABLATION_SR_20261113.csv) · [Full-precision counts and source evidence](evidence/S8N_R_B_ABLATION_SR_20261113.json). The evidence index records success counts, full episode counts, journal digests, source-result paths, and the completed R12B0 recovery certificate.
+
+[Dedicated trained-ablation report](S8N_R_B_ABLATION.md). [Sync verification](evidence/S8N_R_B_ABLATION_SYNC_VERIFICATION_20261113.json) records source hashes, fresh journal checks and the certificate-only verification limits.
+
+## Historical R2R index through 2026-11-01
 
 Publication check: [fresh read-only verification](evidence/WS_REPORT_SYNC_VERIFICATION_20261026.json) covers 43 navigation journals and the 35 existing latency configurations. [Sync manifest](evidence/WS_REPORT_SYNC_MANIFEST_20261026.json) distinguishes the server snapshot from these merged reports.
 
@@ -12,7 +37,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 
 [Machine-readable evidence](evidence/ALL_RESULTS_20261027.json) · [CSV](evidence/ALL_RESULTS_20261027.csv) · [Latency and SR](evidence/ALL_LATENCY_SR_20261027.csv).
 
-## S campaign and matched controls
+### S campaign and matched controls
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -31,7 +56,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | S8W | 1,839 | 948 | 51.549755 | 48.690482 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
 | S9 | 1,839 | 932 | 50.679717 | 47.439929 | 0 | FINAL — navigation validated | PASS 2/2 (migrated fixtures) |
 
-## Learned rankers
+### Learned rankers
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -40,7 +65,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | L2 | 1,384 | 678 | 48.988439 | 45.418499 | 0 | PARTIAL — interrupted; not running | PASS (3/3 passed) |
 | L3 | 1,199 | 593 | 49.457882 | 46.412354 | 0 | PARTIAL — interrupted; not running | PASS (3/3 passed) |
 
-## S8N training follow-ups
+### S8N training follow-ups
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -48,7 +73,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | S8N LR1E5 | 1,839 | 908 | 49.374660 | 46.435271 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
 | S8N_MUON | 1,839 | 779 | 42.359978 | 37.786090 | 0 | FINAL — unqualified diagnostic | FAIL (0/3 passed) |
 
-## S8N stage 2: DAgger with the STOP-label fix
+### S8N stage 2: DAgger with the STOP-label fix
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -65,7 +90,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 - **"Serving audit 2/2":** the stage-2 qualification. It requires 64- and 128-step forced replays within allclose(0.75, 0.03) with RMS ≤ 0.15, a bitwise reset and a 520-step bounded stream. It is not the first-stage three-fixture native gate.
 - **Significance:** against S8N on the same episodes, all three SR gains remain significant after Bonferroni correction over six comparisons. See the [stage-2 report](S8N_STAGE2_STOPFIX_R2R_EVALUATION.md).
 
-## S8N inference-budget sweep
+### S8N inference-budget sweep
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -74,7 +99,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | S8N_R2_B1200 | 1,839 | 915 | 49.755302 | 46.151563 | 0 | FINAL — unqualified diagnostic | FAIL (1/3 passed) |
 | S8N_R8_B1200 | 1,839 | 931 | 50.625340 | 47.094037 | 0 | FINAL — navigation validated | PASS (3/3 passed) |
 
-## Earlier episodic models and baselines
+### Earlier episodic models and baselines
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -88,7 +113,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | M5 E1 R2/B1800 seed431 | 1,839 | 944 | 51.332246 | 47.525482 | 0 | FINAL — navigation validated | PASS (2/2 passed) |
 | M5 E1 R4/B1200 seed431 | 1,839 | 884 | 48.069603 | 44.099314 | 0 | FINAL — navigation validated | FAIL (1/2 passed) |
 
-## VGGT campaign
+### VGGT campaign
 
 | Model | Episodes / 1,839 | Successes | SR (%) | SPL (%) | Errors | Navigation status | Numerical replay |
 |---|---:|---:|---:|---:|---:|---|---|
@@ -102,7 +127,7 @@ S8N_DAGGER_SF_REMAINING (stage 2) has the highest completed SR in this index: **
 | A1 | 1,839 | 929 | 50.516585 | 46.873430 | 0 | COMPLETE — recomputed | See historical evidence |
 | R1 | 1,839 | 907 | 49.320283 | 45.825211 | 0 | COMPLETE — recomputed | See historical evidence |
 
-## Interpretation and provenance
+### Interpretation and provenance
 
 R2R val_unseen has1,839 episodes; the standard protocol uses seed 42, a 500-step cap, 0.25m moves, 15-degree turns and a 3m success radius. Exact per-run contracts, checkpoints, source hashes and runtime metadata are indexed in the JSON evidence. Historical configurations differ; the model names alone do not establish matched training or inference settings.
 
