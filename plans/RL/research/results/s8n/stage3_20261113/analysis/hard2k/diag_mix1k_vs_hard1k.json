@@ -1,0 +1,191 @@
+{
+ "names": [
+  "mix1k",
+  "hard1k"
+ ],
+ "base": {
+  "n": 1839,
+  "SR": 71.941,
+  "SPL": 63.654,
+  "OS": 78.575,
+  "NE": 3.323,
+  "TL": 11.512,
+  "steps": 96.991,
+  "forced_stops": 86,
+  "turn_share": 0.455,
+  "failures": {
+   "passed_goal": 122,
+   "near_miss": 62,
+   "forced_stop": 72,
+   "far": 260
+  }
+ },
+ "new": {
+  "n": 1839,
+  "SR": 68.842,
+  "SPL": 62.72,
+  "OS": 73.681,
+  "NE": 3.734,
+  "TL": 10.607,
+  "steps": 82.727,
+  "forced_stops": 59,
+  "turn_share": 0.403,
+  "failures": {
+   "passed_goal": 89,
+   "near_miss": 81,
+   "forced_stop": 56,
+   "far": 347
+  }
+ },
+ "paired": {
+  "gained": 157,
+  "lost": 214,
+  "net": -57
+ },
+ "by_path_length": {
+  "1 short (<7.6 m)": {
+   "n": 612,
+   "base_SR": 75.2,
+   "new_SR": 73.0,
+   "gained": 40,
+   "lost": 53
+  },
+  "2 mid": {
+   "n": 612,
+   "base_SR": 73.9,
+   "new_SR": 69.4,
+   "gained": 54,
+   "lost": 81
+  },
+  "3 long (>=9.8 m)": {
+   "n": 615,
+   "base_SR": 66.8,
+   "new_SR": 64.1,
+   "gained": 63,
+   "lost": 80
+  }
+ },
+ "by_instruction_length": {
+  "1 short (<21 words)": {
+   "n": 597,
+   "base_SR": 68.7,
+   "new_SR": 64.7,
+   "gained": 47,
+   "lost": 71
+  },
+  "2 mid": {
+   "n": 628,
+   "base_SR": 71.3,
+   "new_SR": 69.1,
+   "gained": 64,
+   "lost": 78
+  },
+  "3 long (>=30 words)": {
+   "n": 614,
+   "base_SR": 75.7,
+   "new_SR": 72.6,
+   "gained": 46,
+   "lost": 65
+  }
+ },
+ "by_scene": {
+  "2azQ1b91cZZ": {
+   "n": 252,
+   "base_SR": 67.9,
+   "new_SR": 67.1,
+   "gained": 21,
+   "lost": 23
+  },
+  "8194nk5LbLH": {
+   "n": 39,
+   "base_SR": 76.9,
+   "new_SR": 84.6,
+   "gained": 5,
+   "lost": 2
+  },
+  "EU6Fwq7SyZv": {
+   "n": 132,
+   "base_SR": 64.4,
+   "new_SR": 62.9,
+   "gained": 15,
+   "lost": 17
+  },
+  "QUCTc6BB5sX": {
+   "n": 255,
+   "base_SR": 72.9,
+   "new_SR": 68.2,
+   "gained": 23,
+   "lost": 35
+  },
+  "TbHJrupSAjP": {
+   "n": 264,
+   "base_SR": 81.1,
+   "new_SR": 76.1,
+   "gained": 15,
+   "lost": 28
+  },
+  "X7HyMhZNoso": {
+   "n": 141,
+   "base_SR": 74.5,
+   "new_SR": 73.0,
+   "gained": 14,
+   "lost": 16
+  },
+  "Z6MFQCViBuw": {
+   "n": 159,
+   "base_SR": 64.8,
+   "new_SR": 62.9,
+   "gained": 21,
+   "lost": 24
+  },
+  "oLBMNvg9in8": {
+   "n": 177,
+   "base_SR": 62.7,
+   "new_SR": 58.8,
+   "gained": 15,
+   "lost": 22
+  },
+  "pLe4wQe7qrG": {
+   "n": 18,
+   "base_SR": 44.4,
+   "new_SR": 38.9,
+   "gained": 0,
+   "lost": 1
+  },
+  "x8F5xyUWy9e": {
+   "n": 102,
+   "base_SR": 79.4,
+   "new_SR": 73.5,
+   "gained": 9,
+   "lost": 15
+  },
+  "zsNo4HB9uLZ": {
+   "n": 300,
+   "base_SR": 76.3,
+   "new_SR": 72.3,
+   "gained": 19,
+   "lost": 31
+  }
+ },
+ "lost_as": {
+  "far": 123,
+  "near_miss": 31,
+  "passed_goal": 34,
+  "forced_stop": 26
+ },
+ "gained_from": {
+  "passed_goal": 59,
+  "far": 59,
+  "forced_stop": 27,
+  "near_miss": 12
+ },
+ "both_fail": {
+  "n": 359,
+  "new_as": {
+   "passed_goal": 55,
+   "far": 224,
+   "near_miss": 50,
+   "forced_stop": 30
+  }
+ }
+}

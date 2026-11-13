@@ -1,0 +1,13 @@
+[
+ {
+  "steps": "0-20",
+  "main_success": 0.56,
+  "trigger_rate": 0.371,
+  "rescue_rate_on_failed": 0.47,
+  "saved_per_step": 4.86,
+  "made_worse": 11,
+  "takeover_mean": 14.1,
+  "trained_trajectories": 36.9,
+  "step_seconds": 359.0
+ }
+]

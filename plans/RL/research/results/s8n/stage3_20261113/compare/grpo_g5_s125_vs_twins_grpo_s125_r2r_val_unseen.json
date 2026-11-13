@@ -1,0 +1,139 @@
+{
+  "base": "grpo_g5_s125",
+  "new": "twins_grpo_s125",
+  "episodes": 1839,
+  "metrics": {
+    "SR": {
+      "base": 0.5829255029907559,
+      "new": 0.600326264274062,
+      "abs_delta": 0.017400761283306143,
+      "rel_delta": 0.029850746268656712
+    },
+    "SPL": {
+      "base": 0.5185648001402643,
+      "new": 0.5361092430750912,
+      "abs_delta": 0.01754444293482693,
+      "rel_delta": 0.03383269155577358
+    },
+    "NE": {
+      "base": 4.790729361932417,
+      "new": 4.873366126104938,
+      "abs_delta": 0.08263676417252075,
+      "rel_delta": 0.017249307554119044
+    },
+    "OSR": {
+      "base": 0.675910821098423,
+      "new": 0.6835236541598695,
+      "abs_delta": 0.0076128330614464446,
+      "rel_delta": 0.011263073209975874
+    },
+    "TL": {
+      "base": 10.708022121346126,
+      "new": 10.606451028787792,
+      "abs_delta": -0.10157109255833419,
+      "rel_delta": -0.009485513889241527
+    },
+    "steps": {
+      "base": 103.12941816204459,
+      "new": 108.72321914083741,
+      "abs_delta": 5.593800978792828,
+      "rel_delta": 0.054240594764177114
+    },
+    "forced_stops": {
+      "base": 144,
+      "new": 161,
+      "abs_delta": 17,
+      "rel_delta": 0.11805555555555555
+    },
+    "invalid": {
+      "base": 2,
+      "new": 0,
+      "abs_delta": -2,
+      "rel_delta": -1.0
+    },
+    "failures": {
+      "base": 2,
+      "new": 0,
+      "abs_delta": -2,
+      "rel_delta": -1.0
+    }
+  },
+  "paired_success": {
+    "both": 877,
+    "only_base": 195,
+    "only_new": 227,
+    "neither": 540,
+    "mcnemar_exact_p": 0.13118716045135256
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.004350190320826536,
+      0.03969548667754214
+    ],
+    "SPL": [
+      -0.0013634002802761244,
+      0.03692104563286272
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 131,
+      "new": 149
+    },
+    "invalid_or_failed": {
+      "base": 2,
+      "new": 0
+    },
+    "near_miss_3_to_5m": {
+      "base": 62,
+      "new": 47
+    },
+    "never_within_3m": {
+      "base": 404,
+      "new": 393
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 168,
+      "new": 146
+    },
+    "success": {
+      "base": 1072,
+      "new": 1104
+    }
+  },
+  "transitions": {
+    "success -> success": 877,
+    "never_within_3m -> never_within_3m": 250,
+    "never_within_3m -> success": 96,
+    "success -> never_within_3m": 83,
+    "passed_goal_then_stopped_outside -> success": 78,
+    "passed_goal_then_stopped_outside -> passed_goal_then_stopped_outside": 69,
+    "forced_stop_at_cap -> forced_stop_at_cap": 69,
+    "success -> passed_goal_then_stopped_outside": 58,
+    "success -> forced_stop_at_cap": 44,
+    "forced_stop_at_cap -> never_within_3m": 30,
+    "never_within_3m -> forced_stop_at_cap": 29,
+    "forced_stop_at_cap -> success": 28,
+    "near_miss_3_to_5m -> success": 24,
+    "near_miss_3_to_5m -> near_miss_3_to_5m": 19,
+    "passed_goal_then_stopped_outside -> never_within_3m": 16,
+    "never_within_3m -> near_miss_3_to_5m": 16,
+    "near_miss_3_to_5m -> never_within_3m": 14,
+    "never_within_3m -> passed_goal_then_stopped_outside": 13,
+    "success -> near_miss_3_to_5m": 10,
+    "passed_goal_then_stopped_outside -> forced_stop_at_cap": 4,
+    "near_miss_3_to_5m -> passed_goal_then_stopped_outside": 3,
+    "forced_stop_at_cap -> passed_goal_then_stopped_outside": 3,
+    "near_miss_3_to_5m -> forced_stop_at_cap": 2,
+    "invalid_or_failed -> success": 1,
+    "passed_goal_then_stopped_outside -> near_miss_3_to_5m": 1,
+    "invalid_or_failed -> forced_stop_at_cap": 1,
+    "forced_stop_at_cap -> near_miss_3_to_5m": 1
+  },
+  "checkpoints": {
+    "base": "/nvme/public/svln/runs/grpo_g5_s8n/exports/step_0125",
+    "new": "/nvme/public/svln/runs/twins_grpo_s8n/exports/step_0125",
+    "base_weights": "92e668f29cf227f91a3d45c19f73882e8b674ee770e17b30c54d3ccc4b71aca3",
+    "new_weights": "45189dc31e49dee65fcdb6e7bd863050ec84429b25fbbb4e083354b4f08fed16"
+  }
+}

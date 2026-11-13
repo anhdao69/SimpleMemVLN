@@ -59,7 +59,7 @@ Paired tests (`scripts/rl/compare_evals.py`) only between journals produced on t
 - The D2 bar of the design log stays: a method is a candidate only if it beats GRPO (and its compute
   control) with McNemar p < 0.05 on val_unseen at step 125, then holds its sign on a second seed.
 
-## 4.1 Results so far: SFR line (updated 2026-11-08 08:00)
+## 4.1 Results so far: SFR line (updated 2026-11-09 07:00)
 
 Generated from the merged journals (`svln/evals/<run>_<set>_val_unseen/merged/summary.json`); details and every
 paired test are in the dated entries of section 5. All runs start from SFR, use seed 20261010 and B's recipe unless
@@ -78,6 +78,7 @@ failures. RxR A has 24-25 of them and RxR full 98, the same episodes for every m
 | path_mix1k: path-aware rewind | `rewind_path_sfr_mix1k_s125` | 500 R2R + 500 RxR | 125 | 69.66 / 62.29 | 75.86 | 3.51 | 69.80 / 56.57 | 69.00 / 55.92 | - |
 | ActiveVLN, A+ 8k pool, 1k | `grpo_sfr_mix8k_aplus_s125` | A+ rows 0-999 (= mix1k's) | 125 | 66.83 / 60.01 | 74.44 | 3.85 | 69.90 / 57.12 | 69.75 / 57.61 | 69.96 / 57.67 |
 | ActiveVLN, A+ 8k pool, 2k | `grpo_sfr_mix8k_aplus_s250` | A+ rows 0-1999 | 250 | 67.92 / 61.27 | 74.50 | 3.77 | RxR deferred (user) | - | - |
+| ActiveVLN, A+ 8k pool, 4k | `grpo_sfr_mix8k_aplus_s500` | A+ rows 0-3999 | 500 | 69.33 / 61.44 | 74.99 | 3.55 | RxR deferred (user) | - | - |
 | Rewind, A+ 8k pool, 1k (gpu2) | `rewind_sfr_mix8k_aplus_s125` | A+ rows 0-999 | 125 | 69.91 / 61.79 on the first 1,512 of 1,839 (partial) | - | - | pending | pending | pending |
 
 Key paired R2R comparisons (McNemar, 1,839 episodes):
@@ -87,6 +88,7 @@ Key paired R2R comparisons (McNemar, 1,839 episodes):
 - **path_mix1k vs mix1k**: -2.28 (p 0.036).
 - **ActiveVLN 1k vs mix1k** (same 1,000 prompts in the same order; only the estimator differs): -5.11 (p 2e-6).
 - **ActiveVLN 2k vs mix1k**: -4.02 (p 4e-4). **ActiveVLN 2k vs ActiveVLN 1k**: +1.09 (p 0.31).
+- **ActiveVLN 4k vs mix1k**: -2.61 (p 0.023). **vs B**: +0.60 (p 0.63). **vs ActiveVLN 2k**: +1.41 (p 0.19).
 - Rewind 8k-pool 1k (gpu2) vs mix1k on the same 1,512 episodes: 69.91 vs 71.36 (-1.46, p 0.22). This is the same
   algorithm, prompts and order run on another machine, so the gap is run-to-run spread.
 
@@ -1060,3 +1062,18 @@ written. Run 5 = GRPO G = 5 from ORACLE launched 01:18 (`/nvme/public/svln/runs/
     at 1,000 (mix1k).
 - Training resumed towards step 500 at 07:20 (~257 s/step). Expected: 4k R2R ~02:30 Nov 9, 6k ~22:00 Nov 9, 8k
   ~17:00 Nov 10.
+
+### 2026-11-09 01:50-07:00 — ActiveVLN 4k evaluated
+
+- 01:50 step 500 (4k) reached (rc 0). 01:50 its export was final and kept (keep_8k step_0500), as was step 375 (16:40
+  Nov 8, kept, not evaluated). The steps 250-500 took 263 s/step; steps 500-545, 296 s.
+- 03:12 R2R val_unseen (1,839; verified: 0 problems, 0 policy failures, forced stops 79): **SR 69.33 / SPL 61.44 / OSR
+  74.99 / NE 3.55**.
+  - Paired SR deltas: vs SFR +6.74 (p 1.4e-7); vs A +5.00 (p 1.0e-5); vs B +0.60 (p 0.63); vs mix1k -2.61 (p 0.023,
+    CI [-4.79, -0.49]); vs path_mix1k -0.33 (p 0.82); vs ActiveVLN 2k +1.41 (p 0.19).
+  - Reading: plain GRPO keeps gaining about 1-1.4 SR per doubling of prompts (66.83 / 67.92 / 69.33 at 1k / 2k / 4k).
+    At 4,000 prompts it reaches rewind B's R2R-only 1k level and is still below rewind mix1k at 1,000 (p 0.023).
+- Training resumed towards step 750 at 03:12. The Hub push of 4k waited for the portal login (expired); it was renewed
+  at 06:50.
+- gpu2 is still unreachable (no ARP reply since ~00:45 Nov 8).
+- Expected: 6k R2R ~01:30 Nov 10; 8k R2R ~00:30 Nov 11. Steps 734-993 hold the longer replacement RxR rows.

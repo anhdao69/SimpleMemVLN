@@ -1,0 +1,57 @@
+[
+ {
+  "steps": "0-24",
+  "main_success": 0.661,
+  "trigger_rate": 0.292,
+  "rescue_rate_on_failed": 0.694,
+  "saved_per_step": 5.44,
+  "made_worse": 6,
+  "takeover_mean": 6.8,
+  "trained_trajectories": 38.5,
+  "step_seconds": 285.0
+ },
+ {
+  "steps": "25-49",
+  "main_success": 0.713,
+  "trigger_rate": 0.279,
+  "rescue_rate_on_failed": 0.726,
+  "saved_per_step": 4.88,
+  "made_worse": 5,
+  "takeover_mean": 6.8,
+  "trained_trajectories": 38.0,
+  "step_seconds": 275.0
+ },
+ {
+  "steps": "50-74",
+  "main_success": 0.774,
+  "trigger_rate": 0.239,
+  "rescue_rate_on_failed": 0.818,
+  "saved_per_step": 4.68,
+  "made_worse": 5,
+  "takeover_mean": 7.2,
+  "trained_trajectories": 37.8,
+  "step_seconds": 255.0
+ },
+ {
+  "steps": "75-99",
+  "main_success": 0.736,
+  "trigger_rate": 0.231,
+  "rescue_rate_on_failed": 0.787,
+  "saved_per_step": 4.28,
+  "made_worse": 4,
+  "takeover_mean": 6.1,
+  "trained_trajectories": 37.4,
+  "step_seconds": 259.0
+ },
+ {
+  "steps": "100-124",
+  "main_success": 0.789,
+  "trigger_rate": 0.211,
+  "rescue_rate_on_failed": 0.768,
+  "saved_per_step": 3.84,
+  "made_worse": 2,
+  "takeover_mean": 6.5,
+  "trained_trajectories": 36.6,
+  "step_seconds": 277.0
+ }
+]

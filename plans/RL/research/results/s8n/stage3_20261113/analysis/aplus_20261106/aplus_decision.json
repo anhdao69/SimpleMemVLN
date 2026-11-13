@@ -1,0 +1,109 @@
+{
+ "rule": "keep g if mean s(g) >= mean s(reference) - 0.03",
+ "n_star_terciles": [
+  80,
+  131
+ ],
+ "calibration": {
+  "failed|far": {
+   "p": 0.35353535353535354,
+   "successes": 69,
+   "attempts": 196
+  },
+  "failed|near": {
+   "p": 0.4,
+   "successes": 43,
+   "attempts": 108
+  },
+  "failed|reached": {
+   "p": 0.5674157303370787,
+   "successes": 100,
+   "attempts": 176
+  },
+  "solved|long": {
+   "p": 0.6660649819494585,
+   "successes": 368,
+   "attempts": 552
+  },
+  "solved|mid": {
+   "p": 0.7704918032786885,
+   "successes": 469,
+   "attempts": 608
+  },
+  "solved|short": {
+   "p": 0.8622641509433963,
+   "successes": 456,
+   "attempts": 528
+  }
+ },
+ "reference": {
+  "n": 500,
+  "mean_s": 0.6679660360106909,
+  "mean_p": 0.7052633118323857,
+  "greedy_sr": 0.806,
+  "unscorable": 0,
+  "bins": {
+   "failed|far": 37,
+   "failed|near": 22,
+   "failed|reached": 38,
+   "solved|long": 126,
+   "solved|mid": 148,
+   "solved|short": 129
+  }
+ },
+ "reference_observed_mixed_share": 0.53,
+ "groups": {
+  "-1": {
+   "n": 756,
+   "mean_s": 0.6571352292680714,
+   "mean_p": 0.6950353086914437,
+   "greedy_sr": 0.7632275132275133,
+   "unscorable": 0,
+   "bins": {
+    "failed|far": 87,
+    "failed|near": 45,
+    "failed|reached": 47,
+    "solved|long": 157,
+    "solved|mid": 182,
+    "solved|short": 238
+   },
+   "keep": true
+  },
+  "0": {
+   "n": 184,
+   "mean_s": 0.7245091472235445,
+   "mean_p": 0.6344343500499773,
+   "greedy_sr": 0.657608695652174,
+   "unscorable": 0,
+   "bins": {
+    "failed|far": 34,
+    "failed|near": 8,
+    "failed|reached": 21,
+    "solved|long": 62,
+    "solved|mid": 28,
+    "solved|short": 31
+   },
+   "keep": true
+  },
+  "4": {
+   "n": 121,
+   "mean_s": 0.5380070379702139,
+   "mean_p": 0.8044390537357031,
+   "greedy_sr": 0.9504132231404959,
+   "unscorable": 0,
+   "bins": {
+    "failed|far": 2,
+    "failed|near": 2,
+    "failed|reached": 2,
+    "solved|long": 12,
+    "solved|mid": 23,
+    "solved|short": 80
+   },
+   "keep": false
+  }
+ },
+ "replace": [
+  "4"
+ ],
+ "n_replace": 121
+}

@@ -1,0 +1,53 @@
+{
+  "episodes": 300,
+  "failures": 3,
+  "sr": 0.6166666666666667,
+  "spl": 0.5605664196779769,
+  "navigation_error": 4.354448935625454,
+  "navigation_error_coverage": 300,
+  "navigation_error_undefined": 0,
+  "trajectory_length": 11.144868957135131,
+  "trajectory_length_coverage": 300,
+  "trajectory_length_undefined": 0,
+  "oracle_success": 0.73,
+  "oracle_success_coverage": 300,
+  "oracle_success_undefined": 0,
+  "ndtw": null,
+  "ndtw_coverage": 0,
+  "ndtw_undefined": 300,
+  "forced_stops": 21,
+  "mean_episode_steps": 100.27666666666667,
+  "invalid_responses": 3,
+  "predicted_action_counts": {
+    "2": 3663,
+    "1": 22882,
+    "3": 3262,
+    "0": 276
+  },
+  "executed_action_counts": {
+    "2": 3663,
+    "1": 22861,
+    "3": 3262,
+    "0": 297
+  },
+  "predicted_stops": 276,
+  "failure_reasons": {
+    "ValueError: ValueError: Invalid navigation response: 'MOVE_FORWARDTURN_LEFT'": 1,
+    "ValueError: ValueError: Response limit reached without assistant terminator": 1,
+    "ValueError: ValueError: Invalid navigation response: 'TURN_LEFT_LEFT'": 1
+  },
+  "model_latency_p50_seconds": 0.23097627598326653,
+  "model_latency_mean_seconds": 0.22297986571398318,
+  "model_latency_p95_seconds": 0.3024114199972246,
+  "transport_and_model_p50_seconds": 0.23799414397217333,
+  "transport_and_model_mean_seconds": 0.22990654565923888,
+  "transport_and_model_p95_seconds": 0.3094983815681189,
+  "environment_p50_seconds": 0.004917417012620717,
+  "environment_mean_seconds": 0.005024696199297823,
+  "environment_p95_seconds": 0.008664207806577902,
+  "peak_kv_tokens": 2607,
+  "peak_allocated_gib": 8.673687934875488,
+  "environment_timing_note": "Habitat env.step includes simulation and rendering; not separated by this adapter",
+  "scheduled_episodes": 300,
+  "complete": true
+}

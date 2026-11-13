@@ -1,0 +1,8 @@
+rewind_sfr_mix1k
+  mixed        groups  542  reward std median  6.17  share of |advantage| mass 0.565  |adv| per group now 3.12 vs with batch-std scaling 3.35
+  all-success  groups  440  reward std median  1.39  share of |advantage| mass 0.435  |adv| per group now 2.95 vs with batch-std scaling 1.06
+  all-fail     groups   18  reward std median  0.00  share of |advantage| mass 0.000  |adv| per group now 0.00 vs with batch-std scaling 0.00
+rewind_sfr_mix1k_seed2
+  mixed        groups  545  reward std median  6.29  share of |advantage| mass 0.570  |adv| per group now 3.11 vs with batch-std scaling 3.38
+  all-success  groups  430  reward std median  1.42  share of |advantage| mass 0.430  |adv| per group now 2.97 vs with batch-std scaling 1.12
+  all-fail     groups   25  reward std median  0.00  share of |advantage| mass 0.000  |adv| per group now 0.00 vs with batch-std scaling 0.00

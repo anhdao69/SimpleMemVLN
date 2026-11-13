@@ -1,0 +1,165 @@
+{
+ "runs": {
+  "grpo_sfr": {
+   "G": 4,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.484,
+   "all_success": 0.483,
+   "all_fail_after_rerolls": 0.033,
+   "rerolled": 0.075,
+   "mean_p": 0.7346666666666667,
+   "signal_with_branches": 0.484,
+   "branch_signal_in_all_fail": 0.0,
+   "branch_signal_in_all_success": 0.0,
+   "zero_signal_trajectory_share": 0.5246195165622203,
+   "signal_by_quarter": [
+    0.63671875,
+    0.5040322580645161,
+    0.3951612903225806,
+    0.3951612903225806
+   ],
+   "p_histogram": [
+    33,
+    25,
+    125,
+    131,
+    207,
+    479
+   ],
+   "auc_signal": {
+    "N_star": 0.6126133160356205,
+    "geodesic": 0.579076974822218,
+    "instruction_words": 0.525496108014607,
+    "group_entropy": 0.7455954897815363,
+    "group_oracle_rate": 0.1615794573643411,
+    "group_truncation": 0.6474329713626754
+   },
+   "auc_all_success": {
+    "N_star": 0.37024400206638874,
+    "geodesic": 0.40597931208477,
+    "instruction_words": 0.4834288437433673,
+    "group_entropy": 0.2373984325880718,
+    "group_oracle_rate": 0.8945841392649904,
+    "group_truncation": 0.34622823984526113
+   }
+  },
+  "rewind_sfr": {
+   "G": 4,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.553,
+   "all_success": 0.421,
+   "all_fail_after_rerolls": 0.026,
+   "rerolled": 0.084,
+   "mean_p": 0.7219583333333333,
+   "signal_with_branches": 0.65,
+   "branch_signal_in_all_fail": 0.6153846153846154,
+   "branch_signal_in_all_success": 0.19239904988123516,
+   "zero_signal_trajectory_share": 0.44395017793594305,
+   "signal_by_quarter": [
+    0.671875,
+    0.5645161290322581,
+    0.5201612903225806,
+    0.45161290322580644
+   ],
+   "p_histogram": [
+    26,
+    32,
+    126,
+    125,
+    270,
+    421
+   ],
+   "auc_signal": {
+    "N_star": 0.6188797326763514,
+    "geodesic": 0.5954383452471975,
+    "instruction_words": 0.5273937966997181,
+    "group_entropy": 0.7424016246546193,
+    "group_oracle_rate": 0.14909725677714802,
+    "group_truncation": 0.6817946446270293
+   },
+   "auc_all_success": {
+    "N_star": 0.3596892832674896,
+    "geodesic": 0.3829068875405626,
+    "instruction_words": 0.47776902596416954,
+    "group_entropy": 0.23857580643176252,
+    "group_oracle_rate": 0.9075993091537133,
+    "group_truncation": 0.30569948186528495
+   }
+  },
+  "rewind_self_sfr": {
+   "G": 4,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.5,
+   "all_success": 0.468,
+   "all_fail_after_rerolls": 0.032,
+   "rerolled": 0.081,
+   "mean_p": 0.734,
+   "signal_with_branches": 0.609,
+   "branch_signal_in_all_fail": 0.21875,
+   "branch_signal_in_all_success": 0.21794871794871795,
+   "zero_signal_trajectory_share": 0.5031222123104371,
+   "signal_by_quarter": [
+    0.66796875,
+    0.46774193548387094,
+    0.4596774193548387,
+    0.39919354838709675
+   ],
+   "p_histogram": [
+    32,
+    27,
+    115,
+    142,
+    216,
+    468
+   ],
+   "auc_signal": {
+    "N_star": 0.604082,
+    "geodesic": 0.567764,
+    "instruction_words": 0.532264,
+    "group_entropy": 0.759572,
+    "group_oracle_rate": 0.169666,
+    "group_truncation": 0.691416
+   },
+   "auc_all_success": {
+    "N_star": 0.37700019278966646,
+    "geodesic": 0.41746594049225627,
+    "instruction_words": 0.4706457650536598,
+    "group_entropy": 0.2179969153653364,
+    "group_oracle_rate": 0.8834586466165414,
+    "group_truncation": 0.29887218045112784
+   }
+  }
+ },
+ "transfer": {
+  "grpo_sfr|rewind_sfr": {
+   "prompts": 1000,
+   "spearman_p": 0.6324932364932365,
+   "pearson_p": 0.6839429185734833,
+   "auc_signal_b_from_pa": 0.7219882600903754,
+   "auc_all_success_b_from_pa": 0.7805291291808713,
+   "signal_both": 0.373,
+   "signal_either": 0.664
+  },
+  "grpo_sfr|rewind_self_sfr": {
+   "prompts": 1000,
+   "spearman_p": 0.7211877611877612,
+   "pearson_p": 0.7763126206240272,
+   "auc_signal_b_from_pa": 0.782914,
+   "auc_all_success_b_from_pa": 0.8360163228584281,
+   "signal_both": 0.375,
+   "signal_either": 0.609
+  },
+  "rewind_sfr|rewind_self_sfr": {
+   "prompts": 1000,
+   "spearman_p": 0.6763506763506764,
+   "pearson_p": 0.7248121874088387,
+   "auc_signal_b_from_pa": 0.751444,
+   "auc_all_success_b_from_pa": 0.8139439142728616,
+   "signal_both": 0.394,
+   "signal_either": 0.659
+  }
+ }
+}

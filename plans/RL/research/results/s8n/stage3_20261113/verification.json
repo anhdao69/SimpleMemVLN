@@ -1,0 +1,58 @@
+{
+  "source_commit": "b4b30fcb2b2524d02a9624132579962a33eca963",
+  "checked_values": 1219,
+  "appendix_rows_checked": 101,
+  "gpu2_rows_not_independently_verified": [
+    {
+      "table": "R3",
+      "model": "rewind_sfr_mix8k_aplus_s125",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R3",
+      "model": "rewind_sfr_clean2k_s125",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R4",
+      "model": "rewind_sfr_mix8k_aplus_s125",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R4",
+      "model": "rewind_sfr_mix8k_aplus_s250",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R4",
+      "model": "rewind_sfr_mix8k_aplus_s500",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R4",
+      "model": "rewind_sfr_mix8k_aplus_s750",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R5",
+      "model": "rewind_sfr_mix8k_aplus_s125",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R5",
+      "model": "rewind_sfr_mix8k_aplus_s250",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R5",
+      "model": "rewind_sfr_mix8k_aplus_s500",
+      "reason": "summary stored on gpu2, not on requested host"
+    },
+    {
+      "table": "R5",
+      "model": "rewind_sfr_mix8k_aplus_s750",
+      "reason": "summary stored on gpu2, not on requested host"
+    }
+  ],
+  "errors": []
+}

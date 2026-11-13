@@ -1,0 +1,97 @@
+{
+ "runs": {
+  "grpo_sfr": {
+   "G": 4,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.484,
+   "all_success": 0.483,
+   "all_fail_after_rerolls": 0.033,
+   "rerolled": 0.075,
+   "mean_p": 0.7346666666666667,
+   "signal_with_branches": 0.484,
+   "branch_signal_in_all_fail": 0.0,
+   "branch_signal_in_all_success": 0.0,
+   "zero_signal_trajectory_share": 0.5246195165622203,
+   "signal_by_quarter": [
+    0.63671875,
+    0.5040322580645161,
+    0.3951612903225806,
+    0.3951612903225806
+   ],
+   "p_histogram": [
+    33,
+    25,
+    125,
+    131,
+    207,
+    479
+   ],
+   "auc_signal": {
+    "N_star": 0.6126133160356205,
+    "geodesic": 0.579076974822218,
+    "instruction_words": 0.525496108014607,
+    "group_entropy": 0.7455954897815363,
+    "group_oracle_rate": 0.1615794573643411,
+    "group_truncation": 0.6474329713626754
+   },
+   "auc_all_success": {
+    "N_star": 0.37024400206638874,
+    "geodesic": 0.40597931208477,
+    "instruction_words": 0.4834288437433673,
+    "group_entropy": 0.2373984325880718,
+    "group_oracle_rate": 0.8945841392649904,
+    "group_truncation": 0.34622823984526113
+   }
+  }
+ },
+ "transfer": {},
+ "screen": {
+  "prompts": 1000,
+  "greedy_sr": 0.765,
+  "grpo_sfr": {
+   "prompts": 1000,
+   "signal": 0.484,
+   "auc_all_success": {
+    "greedy_success": 0.6231523641329377,
+    "neg_final_d": 0.6422304183636284,
+    "neg_min_d": 0.6051615667711875,
+    "neg_steps": 0.6855605079471869,
+    "neg_tl_ratio": 0.6012310230626604,
+    "solved_score": 0.6422304183636284
+   },
+   "auc_signal_mid": {
+    "neg_final_d": 0.40456827791658656,
+    "neg_min_d": 0.40988372093023256,
+    "neg_steps": 0.45385674931129477,
+    "neg_tl_ratio": 0.4005421551668909,
+    "solved_score": 0.40456827791658656
+   },
+   "by_greedy": {
+    "0": {
+     "n": 235,
+     "signal": 0.6468085106382979,
+     "all_success": 0.22127659574468084,
+     "all_fail": 0.13191489361702127,
+     "mean_p": 0.500177304964539
+    },
+    "1": {
+     "n": 765,
+     "signal": 0.4339869281045752,
+     "all_success": 0.5633986928104575,
+     "all_fail": 0.00261437908496732,
+     "mean_p": 0.8066993464052288
+    }
+   },
+   "drop_most_solved": {
+    "0.00": 0.484,
+    "0.10": 0.48777777777777775,
+    "0.20": 0.5,
+    "0.26": 0.5094594594594595,
+    "0.30": 0.51,
+    "0.40": 0.525,
+    "0.50": 0.55
+   }
+  }
+ }
+}

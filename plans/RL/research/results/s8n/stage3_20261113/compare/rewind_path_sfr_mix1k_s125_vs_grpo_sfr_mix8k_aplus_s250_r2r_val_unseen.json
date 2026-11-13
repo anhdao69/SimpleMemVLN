@@ -1,0 +1,139 @@
+{
+  "base": "rewind_path_sfr_mix1k_s125",
+  "new": "grpo_sfr_mix8k_aplus_s250",
+  "episodes": 1839,
+  "metrics": {
+    "SR": {
+      "base": 0.6965742251223491,
+      "new": 0.679173463839043,
+      "abs_delta": -0.017400761283306143,
+      "rel_delta": -0.024980483996877436
+    },
+    "SPL": {
+      "base": 0.6228500256159386,
+      "new": 0.6126759654237199,
+      "abs_delta": -0.01017406019221867,
+      "rel_delta": -0.016334686961211098
+    },
+    "NE": {
+      "base": 3.5121594456841336,
+      "new": 3.7725889338043688,
+      "abs_delta": 0.26042948812023514,
+      "rel_delta": 0.07415081580087719
+    },
+    "OSR": {
+      "base": 0.7585644371941273,
+      "new": 0.7449700924415443,
+      "abs_delta": -0.01359434475258292,
+      "rel_delta": -0.01792114695340501
+    },
+    "TL": {
+      "base": 10.993858826945864,
+      "new": 10.544381917943108,
+      "abs_delta": -0.4494769090027564,
+      "rel_delta": -0.040884362449797144
+    },
+    "steps": {
+      "base": 95.65035345296357,
+      "new": 94.82218597063621,
+      "abs_delta": -0.828167482327359,
+      "rel_delta": -0.00865827937305651
+    },
+    "forced_stops": {
+      "base": 82,
+      "new": 110,
+      "abs_delta": 28,
+      "rel_delta": 0.34146341463414637
+    },
+    "invalid": {
+      "base": 0,
+      "new": 10,
+      "abs_delta": 10,
+      "rel_delta": null
+    },
+    "failures": {
+      "base": 0,
+      "new": 10,
+      "abs_delta": 10,
+      "rel_delta": null
+    }
+  },
+  "paired_success": {
+    "both": 1041,
+    "only_base": 240,
+    "only_new": 208,
+    "neither": 350,
+    "mcnemar_exact_p": 0.14294161981037085
+  },
+  "bootstrap_95ci": {
+    "SR": [
+      -0.03969548667754214,
+      0.005437737901033171
+    ],
+    "SPL": [
+      -0.029940519607299095,
+      0.009864204690520325
+    ]
+  },
+  "failure_taxonomy": {
+    "forced_stop_at_cap": {
+      "base": 75,
+      "new": 101
+    },
+    "invalid_or_failed": {
+      "base": 0,
+      "new": 10
+    },
+    "near_miss_3_to_5m": {
+      "base": 80,
+      "new": 57
+    },
+    "never_within_3m": {
+      "base": 293,
+      "new": 305
+    },
+    "passed_goal_then_stopped_outside": {
+      "base": 110,
+      "new": 117
+    },
+    "success": {
+      "base": 1281,
+      "new": 1249
+    }
+  },
+  "transitions": {
+    "success -> success": 1041,
+    "never_within_3m -> never_within_3m": 154,
+    "success -> never_within_3m": 120,
+    "never_within_3m -> success": 98,
+    "success -> passed_goal_then_stopped_outside": 56,
+    "passed_goal_then_stopped_outside -> success": 52,
+    "passed_goal_then_stopped_outside -> passed_goal_then_stopped_outside": 48,
+    "success -> forced_stop_at_cap": 48,
+    "near_miss_3_to_5m -> near_miss_3_to_5m": 33,
+    "forced_stop_at_cap -> forced_stop_at_cap": 32,
+    "forced_stop_at_cap -> success": 31,
+    "near_miss_3_to_5m -> success": 27,
+    "never_within_3m -> forced_stop_at_cap": 18,
+    "near_miss_3_to_5m -> never_within_3m": 16,
+    "success -> near_miss_3_to_5m": 13,
+    "never_within_3m -> passed_goal_then_stopped_outside": 10,
+    "never_within_3m -> near_miss_3_to_5m": 9,
+    "forced_stop_at_cap -> never_within_3m": 8,
+    "passed_goal_then_stopped_outside -> never_within_3m": 7,
+    "never_within_3m -> invalid_or_failed": 4,
+    "success -> invalid_or_failed": 3,
+    "forced_stop_at_cap -> invalid_or_failed": 3,
+    "near_miss_3_to_5m -> passed_goal_then_stopped_outside": 3,
+    "passed_goal_then_stopped_outside -> forced_stop_at_cap": 2,
+    "passed_goal_then_stopped_outside -> near_miss_3_to_5m": 1,
+    "forced_stop_at_cap -> near_miss_3_to_5m": 1,
+    "near_miss_3_to_5m -> forced_stop_at_cap": 1
+  },
+  "checkpoints": {
+    "base": "/nvme/public/svln/runs/rewind_path_sfr_mix1k/exports/step_0125",
+    "new": "/nvme/public/svln/runs/grpo_sfr_mix8k_aplus/exports/step_0250",
+    "base_weights": "16b91f5420586bce491350af183f8f5496fe81fe47ac1d2e3887303cf78b2f3d",
+    "new_weights": "d1f208cb6c425a9a20425041f0d3cc9227c4ee24e47c918b1a81db6d869d86ca"
+  }
+}

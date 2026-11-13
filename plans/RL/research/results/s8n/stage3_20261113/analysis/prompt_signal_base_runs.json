@@ -1,0 +1,156 @@
+{
+ "runs": {
+  "twins_grpo_s8n": {
+   "G": 4,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.632,
+   "all_success": 0.299,
+   "all_fail_after_rerolls": 0.069,
+   "rerolled": 0.152,
+   "mean_p": 0.602625,
+   "zero_signal_trajectory_share": 0.41033925686591277,
+   "signal_by_quarter": [
+    0.69921875,
+    0.6491935483870968,
+    0.5725806451612904,
+    0.6048387096774194
+   ],
+   "p_histogram": [
+    69,
+    60,
+    172,
+    186,
+    216,
+    297
+   ],
+   "auc_signal": {
+    "N_star": 0.5959428315905339,
+    "geodesic": 0.5779960099064392,
+    "instruction_words": 0.5214510525591635,
+    "group_entropy": 0.6647977435332967,
+    "group_oracle_rate": 0.2557336096587782,
+    "group_truncation": 0.6171896498348927
+   },
+   "auc_all_success": {
+    "N_star": 0.33764951168660157,
+    "geodesic": 0.37211771048525993,
+    "instruction_words": 0.47177467449749283,
+    "group_entropy": 0.2749726859383871,
+    "group_oracle_rate": 0.9158345221112696,
+    "group_truncation": 0.33737517831669045
+   }
+  },
+  "grpo_g5_s8n": {
+   "G": 5,
+   "prompts": 1000,
+   "last_step": 124,
+   "signal": 0.662,
+   "all_success": 0.278,
+   "all_fail_after_rerolls": 0.06,
+   "rerolled": 0.147,
+   "mean_p": 0.6027333333333333,
+   "zero_signal_trajectory_share": 0.3708502024291498,
+   "signal_by_quarter": [
+    0.73828125,
+    0.7016129032258065,
+    0.6088709677419355,
+    0.5967741935483871
+   ],
+   "p_histogram": [
+    60,
+    197,
+    139,
+    119,
+    207,
+    278
+   ],
+   "auc_signal": {
+    "N_star": 0.594028763474499,
+    "geodesic": 0.5725343677934893,
+    "instruction_words": 0.5482579238098643,
+    "group_entropy": 0.6726523534564436,
+    "group_oracle_rate": 0.2542434616278446,
+    "group_truncation": 0.6475267702318597
+   },
+   "auc_all_success": {
+    "N_star": 0.34925466828753066,
+    "geodesic": 0.389473185994141,
+    "instruction_words": 0.4570562386655772,
+    "group_entropy": 0.2810737559536858,
+    "group_oracle_rate": 0.9078947368421053,
+    "group_truncation": 0.29916897506925205
+   }
+  },
+  "grpo_g5_oracle": {
+   "G": 5,
+   "prompts": 792,
+   "last_step": 98,
+   "signal": 0.5744949494949495,
+   "all_success": 0.3851010101010101,
+   "all_fail_after_rerolls": 0.04040404040404041,
+   "rerolled": 0.08964646464646464,
+   "mean_p": 0.6816077441077442,
+   "zero_signal_trajectory_share": 0.4450610432852386,
+   "signal_by_quarter": [
+    0.835,
+    0.58,
+    0.45,
+    0.4270833333333333
+   ],
+   "p_histogram": [
+    32,
+    116,
+    85,
+    112,
+    142,
+    305
+   ],
+   "auc_signal": {
+    "N_star": 0.5684286040369126,
+    "geodesic": 0.5439853914631363,
+    "instruction_words": 0.49153487462092804,
+    "group_entropy": 0.7790263149313594,
+    "group_oracle_rate": 0.15168748165780807,
+    "group_truncation": 0.694642449538592
+   },
+   "auc_all_success": {
+    "N_star": 0.4092941057663177,
+    "geodesic": 0.42915811088295686,
+    "instruction_words": 0.5045140875887838,
+    "group_entropy": 0.21327633217760125,
+    "group_oracle_rate": 0.9229979466119097,
+    "group_truncation": 0.2731006160164271
+   }
+  }
+ },
+ "transfer": {
+  "twins_grpo_s8n|grpo_g5_s8n": {
+   "prompts": 1000,
+   "spearman_p": 0.7535024495024495,
+   "pearson_p": 0.7829022526911437,
+   "auc_signal_b_from_pa": 0.7615170095997426,
+   "auc_all_success_b_from_pa": 0.8578613563442874,
+   "signal_both": 0.529,
+   "signal_either": 0.765
+  },
+  "twins_grpo_s8n|grpo_g5_oracle": {
+   "prompts": 792,
+   "spearman_p": 0.38007272963025174,
+   "pearson_p": 0.4170747686447497,
+   "auc_signal_b_from_pa": 0.5773730720318258,
+   "auc_all_success_b_from_pa": 0.695876392769381,
+   "signal_both": 0.4116161616161616,
+   "signal_either": 0.8055555555555556
+  },
+  "grpo_g5_s8n|grpo_g5_oracle": {
+   "prompts": 792,
+   "spearman_p": 0.38175449484023394,
+   "pearson_p": 0.4101864928520438,
+   "auc_signal_b_from_pa": 0.6016434603971696,
+   "auc_all_success_b_from_pa": 0.6985592621267714,
+   "signal_both": 0.42803030303030304,
+   "signal_either": 0.8295454545454546
+  }
+ }
+}
