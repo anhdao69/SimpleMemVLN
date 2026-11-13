@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-11-13T21:13:27+07:00",
+  "scope": "Trained R/B ablations with the original S8N baseline",
+  "metric": "success_rate_percent",
+  "display_decimal_places": 2,
+  "datasets": {
+    "r2r": {
+      "split": "val_unseen",
+      "episodes": 1839
+    },
+    "rxr15": {
+      "split": "val_unseen",
+      "roles": [
+        "guide"
+      ],
+      "languages": [
+        "en-US",
+        "en-IN"
+      ],
+      "turn_degrees": 15,
+      "episodes": 3669
+    }
+  },
+  "failure_policy": "Retain every episode in the denominator; failed episodes receive zero success credit",
+  "results": [
+    {
+      "model": "R2B1200",
+      "checkpoint": "S8N_R2B1200",
+      "recent_groups": 2,
+      "episodic_budget_tokens": 1200,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 905,
+        "sr_percent": 49.21152800435019,
+        "sr_percent_display": "49.21",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r2b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "82c116eb6fefe65ee9f142ca9764b1cd20efed75d214f189e38b3adecd28e270",
+        "journal_sha256": "e37910af0b9ea1186cfd31b0949bf1ae631a197b87d4337478226c81bfafa372"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 1987,
+        "sr_percent": 54.15644589806487,
+        "sr_percent_display": "54.16",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r2b1200_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "0abe8f2fcd8ba9e5ddbe40d1184513cf72a6177766b4225bc0925288cd58dee0",
+        "journal_sha256": "1a19aaa1af19b9ae1e7f0c0c47fc4a4b75c41db0bece694c2e810c2cc662c526"
+      }
+    },
+    {
+      "model": "R4B0",
+      "checkpoint": "R4B0",
+      "recent_groups": 4,
+      "episodic_budget_tokens": 0,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 896,
+        "sr_percent": 48.7221315932572,
+        "sr_percent_display": "48.72",
+        "complete": true,
+        "source_file": "/storage/anhdh35/SimpleMemVLN/evaluation_reports/evidence/ALL_RESULTS_20261027.json",
+        "source_json_path": [
+          "runs",
+          "R4B0 trained"
+        ],
+        "source_file_sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87",
+        "journal_sha256": "381460e8034d1e79088f5cc787f9a6c7d58a12b448e0681d29400fb6fdb31c63"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 1942,
+        "sr_percent": 52.929953665849006,
+        "sr_percent_display": "52.93",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r4b0_rxr15_eval_20261108/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "633c7abc5cbbf9e1263f6d33cc232bfb3151363ff47d03416734ca8abd4d03f2",
+        "journal_sha256": "1242f0044eb73aba022352b1befa47a2584479e7e34fdac0d799954bdc5bc01c"
+      }
+    },
+    {
+      "model": "R4B600",
+      "checkpoint": "S8N_R4B600",
+      "recent_groups": 4,
+      "episodic_budget_tokens": 600,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 935,
+        "sr_percent": 50.84284937466014,
+        "sr_percent_display": "50.84",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+        "source_json_path": [
+          "results",
+          "S8N_R4B600_r2r"
+        ],
+        "source_file_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+        "journal_sha256": "48b985cfbfb37acbd0269e7c655e3c42ea58af3ebb93ee9b4fa6bc012cfc76e8"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 2064,
+        "sr_percent": 56.2551103843009,
+        "sr_percent_display": "56.26",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+        "source_json_path": [
+          "results",
+          "S8N_R4B600_rxr15"
+        ],
+        "source_file_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+        "journal_sha256": "300044c7dd6e19efa3c2cbe2e50bedbad1718e361a977dd0e85cb6ab03c02205"
+      }
+    },
+    {
+      "model": "R4B1200 — S8N baseline",
+      "checkpoint": "S8N",
+      "recent_groups": 4,
+      "episodic_budget_tokens": 1200,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 964,
+        "sr_percent": 52.41979336595976,
+        "sr_percent_display": "52.42",
+        "complete": true,
+        "source_file": "/storage/anhdh35/SimpleMemVLN/evaluation_reports/evidence/ALL_RESULTS_20261027.json",
+        "source_json_path": [
+          "runs",
+          "S8N"
+        ],
+        "source_file_sha256": "8aa030a92d7cbd0600b669c39420afdccfe9f96c33684730e2b5daead9ae8f87",
+        "journal_sha256": "2249dacc332f3d31f3aaeb6c30b9d367439903474d5ee09b8163a84325a9b487"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 1994,
+        "sr_percent": 54.34723357863178,
+        "sr_percent_display": "54.35",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/s8n_rxr15_eval_20261106/FINAL_REVIEWED.json",
+        "source_json_path": [
+          "models",
+          "S8N"
+        ],
+        "source_file_sha256": "a8eb9f02c80135a2a83939daa47a1875825c95fdac34964077c3e61a36815f51",
+        "journal_sha256": "5c2b4e1adbf62700479d8623a7046b5a041ad0057979f62670393943654591be"
+      }
+    },
+    {
+      "model": "R4B2400",
+      "checkpoint": "S8N_R4B2400",
+      "recent_groups": 4,
+      "episodic_budget_tokens": 2400,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 944,
+        "sr_percent": 51.33224578575312,
+        "sr_percent_display": "51.33",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+        "source_json_path": [
+          "results",
+          "S8N_R4B2400_r2r"
+        ],
+        "source_file_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+        "journal_sha256": "b8325037e53549f63f3385631a388c851957bfc3a25b5f0c56c4630f9068a217"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 2025,
+        "sr_percent": 55.19215044971382,
+        "sr_percent_display": "55.19",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/s8n_rb_trained_eval_20261110/FINAL_COMPARISON.json",
+        "source_json_path": [
+          "results",
+          "S8N_R4B2400_rxr15"
+        ],
+        "source_file_sha256": "a4a9fdfe86419247b274c73a570f64dfa8c3622c0f421934bd4bfa7b53a40bbb",
+        "journal_sha256": "0f03e81b84dd15e8b9744dd755d0236ec4befe35e49384ed8ddfcc13690c6f11"
+      }
+    },
+    {
+      "model": "R8B0",
+      "checkpoint": "R8B0",
+      "recent_groups": 8,
+      "episodic_budget_tokens": 0,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 901,
+        "sr_percent": 48.99401848830886,
+        "sr_percent_display": "48.99",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/r2r/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "35c30866268c00496c75235bac17a924ed689bf3e7e8c2c1f101354c9f60f264",
+        "journal_sha256": "fd98d3dfce18393829ba3a20c74ff4829402c64dba8326963db2774af8ba6303"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 1952,
+        "sr_percent": 53.20250749523031,
+        "sr_percent_display": "53.20",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r8b0_rxr_resume_20261112/combined/rxr15/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "968f9d5c5e0fb1856b751e9658dbbb2e7d503f971b2160b8c9cbe0991fc394f9",
+        "journal_sha256": "fed5c378f43ca41ed77c9209f4ba5c9bae61ea1b833fa7f0d952eacd464e5dea"
+      }
+    },
+    {
+      "model": "R8B1200",
+      "checkpoint": "S8N_R8B1200",
+      "recent_groups": 8,
+      "episodic_budget_tokens": 1200,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 937,
+        "sr_percent": 50.95160413268081,
+        "sr_percent_display": "50.95",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r8b1200_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "d180e1f2f7bd65796730be14be486835f64e12647bcbdfec3ed2d8e425ce9ab0",
+        "journal_sha256": "e1ab856f3410143bfaf27c167a79edee3aba85ae58e617e45b1cfa0d4ab545d0"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 1980,
+        "sr_percent": 53.96565821749795,
+        "sr_percent_display": "53.97",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r8b1200_rxr_accel_20261113/combined/rxr15/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "c8cc2cca954c3e3be68421daa878e0d53ac8e1a2910e23a8c37230c3450ffad9",
+        "journal_sha256": "4cc479d622b4b2794066b7065523e659c28e64612283b16567a611da7ea579ba"
+      }
+    },
+    {
+      "model": "R12B0",
+      "checkpoint": "R12B0",
+      "recent_groups": 12,
+      "episodic_budget_tokens": 0,
+      "r2r": {
+        "episodes": 1839,
+        "successes": 942,
+        "sr_percent": 51.223491027732464,
+        "sr_percent_display": "51.22",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r12b0_eval_20261112/combined/r2r/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "d163aa82852bd64a734564c42c700b44c0e75ab5e194eedae7d31182a4b0223f",
+        "journal_sha256": "eb1620b5e49ab7153d1b6e85da2a1e57dd6beba2eb7131b451a33857d18356fa"
+      },
+      "rxr15": {
+        "episodes": 3669,
+        "successes": 2005,
+        "sr_percent": 54.64704279095121,
+        "sr_percent_display": "54.65",
+        "complete": true,
+        "source_file": "/data14t/anhdh35/r12b0_eval_20261112/combined/rxr15/FINAL_VERIFIED.json",
+        "source_json_path": [],
+        "source_file_sha256": "b5ee9d9e8a2fd72bfc2f90c81b2b15a848ec7c2a4ed5d08b56ab80afaec74b4a",
+        "journal_sha256": "cf6f1a73e49ccfe845cfdb64f70ba339c0b6a85cc7b5de0f46b49118e26bbb0e"
+      }
+    }
+  ],
+  "r12b0_recovery": {
+    "complete": true,
+    "source_file": "/data14t/anhdh35/r12b0_eval_20261112/recovery_20261113/RECOVERY_FINAL_VERIFIED.json",
+    "source_file_sha256": "e9bae27e1b2f9d05ed0d159aa7c62732adccd5d5b22eb34621799c10eba194b3",
+    "preserved_episodes": 1485,
+    "new_episodes": 354,
+    "actual_resumed_pipeline_exit_code": 0
+  }
+}
